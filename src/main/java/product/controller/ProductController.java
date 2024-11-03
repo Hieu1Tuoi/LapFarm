@@ -10,7 +10,7 @@ public class ProductController {
 	@RequestMapping(value = {"/product", "/product/*"}, method = RequestMethod.GET)
 	public String product() {
 
-		return "product"; // test github
+		return "product"; // test
 	}
 	
 }
