@@ -11,6 +11,6 @@ public class IndexController {
 		 
 		 
 		 
-		 return "index";//QA
+		 return "index";// đm
 	 }
 }
