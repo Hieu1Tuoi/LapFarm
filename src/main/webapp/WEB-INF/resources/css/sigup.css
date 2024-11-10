@@ -1,36 +1,106 @@
 @charset "UTF-8";
+
+/* Chỉnh sửa phần nền của form */
 #sigup {
     padding: 60px 0;
-    background-color: #fff; /* Nền trắng */
+    background-color: #f4f4f9; /* Nền màu sáng để làm nổi bật form đăng ký */
 }
 
+/* Tùy chỉnh form đăng ký */
 .sigup-form {
-    background-color: #f9f9f9; /* Nền sáng cho form */
-    padding: 30px;
+    background-color: #ffffff; /* Nền trắng cho form */
+    padding: 40px;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Bóng đổ nhẹ, tạo chiều sâu */
 }
 
+/* Tiêu đề form */
 .sigup-form h2 {
     margin-bottom: 20px;
-    color: #D10024; /* Màu đỏ cho tiêu đề */
+    color: #D10024; /* Màu đỏ tươi cho tiêu đề */
+    font-size: 24px; /* Tăng kích thước chữ tiêu đề */
+    font-weight: bold;
 }
 
+/* Tùy chỉnh các trường nhập liệu */
 .sigup-form .form-control {
-    border: 1px solid #D10024; /* Viền đỏ cho input */
+    border: 1px solid #D10024; /* Viền đỏ */
+    border-radius: 4px; /* Bo góc các trường nhập liệu */
+    padding: 10px; /* Tăng khoảng cách trong input */
+    font-size: 16px; /* Tăng kích thước chữ trong input */
 }
 
 .sigup-form .form-control:focus {
     border-color: #c9302c; /* Viền đỏ đậm khi focus */
     box-shadow: 0 0 5px rgba(217, 83, 79, 0.5); /* Bóng đổ khi focus */
+    outline: none; /* Tắt viền mặc định khi focus */
 }
 
+/* Tùy chỉnh nút đăng ký */
 .sigup-form button {
     background-color: #D10024; /* Nền nút đỏ */
-    color: #fff; /* Chữ trắng */
+    color: #fff; /* Chữ màu trắng */
     border: none; /* Không viền */
+    padding: 15px; /* Tăng chiều cao nút */
+    font-size: 18px; /* Tăng kích thước chữ nút */
+    border-radius: 4px; /* Bo góc nút */
+    cursor: pointer; /* Thêm con trỏ khi hover */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển màu mượt mà */
 }
 
 .sigup-form button:hover {
     background-color: #c9302c; /* Đổi màu khi hover */
+}
+
+/* Tùy chỉnh nút "Gửi mã" */
+.sigup-form .input-group-append .btn {
+    background-color: #c9302c; /* Nền nút "Gửi mã" */
+    color: white; /* Chữ màu trắng */
+    border-radius: 4px; /* Bo góc nút */
+    padding: 12px 20px; /* Tăng khoảng cách bên trong nút */
+    font-size: 16px; /* Tăng kích thước chữ */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+}
+
+.sigup-form .input-group-append .btn:hover {
+    background-color: #b82a24; /* Đổi màu khi hover */
+}
+
+/* Tùy chỉnh thông báo cảnh báo và thành công */
+.sigup-form .form-group strong {
+    font-size: 16px; /* Kích thước chữ thông báo */
+    display: block;
+    margin-top: 10px;
+}
+
+/* Tùy chỉnh liên kết đăng nhập */
+.sigup-form .text-center a {
+    color: #D10024; /* Màu đỏ cho liên kết */
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.sigup-form .text-center a:hover {
+    text-decoration: underline; /* Gạch chân khi hover */
+}
+
+.input-group {
+    display: flex; /* Dùng flexbox để các phần tử nằm cùng dòng */
+    width: 100%;
+}
+
+.input-group .form-control {
+    flex: 1; /* Đảm bảo input chiếm hết không gian còn lại */
+    border-radius: 4px 0 0 4px; /* Bo góc chỉ cho phần input */
+}
+
+.input-group .input-group-append .btn {
+    border-radius: 0 4px 4px 0; /* Bo góc chỉ cho phần nút */
+    padding: 12px 20px; /* Tùy chỉnh kích thước nút */
+    font-size: 16px; /* Kích thước chữ trong nút */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+}
+
+.input-group .input-group-append .btn:hover {
+    background-color: #b82a24; /* Màu khi hover */
 }

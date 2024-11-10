@@ -1,5 +1,6 @@
 package LapFarm.Controller;
 
+import LapFarm.Bean.Mailer;
 import LapFarm.Entity.AccountEntity;
 import LapFarm.Entity.RoleEntity;
 
@@ -22,6 +23,9 @@ import org.apache.commons.codec.binary.Hex;
 @Controller
 public class SignupController {
 
+	@Autowired
+	Mailer mailer;
+	
 	@Autowired
 	SessionFactory factory;
 
@@ -49,35 +53,37 @@ public class SignupController {
 			model.addAttribute("cfpw", confirmPassword);
 			return "signup";
 		}
-
-		try {
-			String hql = "FROM AccountEntity WHERE email = :email";
-			Query query = session.createQuery(hql);
-			query.setParameter("email", acc.getEmail());
-
-			AccountEntity existingAccount = (AccountEntity) query.uniqueResult();
-
-			if (existingAccount != null) {
-				model.addAttribute("warning", "Email đã tồn tại!");
-				model.addAttribute("email", email);
-				model.addAttribute("pw", password);
-				model.addAttribute("cfpw", confirmPassword);
-				return "signup";
-			}
-
-			String hashedPassword = hashPasswordWithMD5(acc.getPassword());
-			acc.setPassword(hashedPassword);
-
-			session.save(acc);
-			t.commit();
-			model.addAttribute("message", "Đăng ký thành công!");
-		} catch (Exception e) {
-			t.rollback();
-			model.addAttribute("warning", "Đăng ký thất bại! " + e.getMessage());
-		} finally {
-			session.close();
-		}
+		mailer.VerifyCode(email);
 		return "signup";
+//		try {
+//			
+//			String hql = "FROM AccountEntity WHERE email = :email";
+//			Query query = session.createQuery(hql);
+//			query.setParameter("email", acc.getEmail());
+//
+//			AccountEntity existingAccount = (AccountEntity) query.uniqueResult();
+//
+//			if (existingAccount != null) {
+//				model.addAttribute("warning", "Email đã tồn tại!");
+//				model.addAttribute("email", email);
+//				model.addAttribute("pw", password);
+//				model.addAttribute("cfpw", confirmPassword);
+//				return "signup";
+//			}
+//
+//			String hashedPassword = hashPasswordWithMD5(acc.getPassword());
+//			acc.setPassword(hashedPassword);
+//
+//			session.save(acc);
+//			t.commit();
+//			model.addAttribute("message", "Đăng ký thành công!");
+//		} catch (Exception e) {
+//			t.rollback();
+//			model.addAttribute("warning", "Đăng ký thất bại! " + e.getMessage());
+//		} finally {
+//			session.close();
+//		}
+//		return "signup";
 	}
 
 	private String hashPasswordWithMD5(String password) {

@@ -89,7 +89,7 @@
 				<div class="col-md-6 col-md-offset-3">
 					<div class="sigup-form">
 						<h2 class="text-center">Đăng Ký</h2>
-						<form action="<c:url value="/signup" />" method="post">
+						<form action="<c:url value='/signup' />" method="post">
 							<div class="form-group">
 								<label for="sigup-email">Email:</label> <input type="email"
 									class="form-control" id="sigup-email" name="email"
@@ -98,8 +98,7 @@
 							<div class="form-group">
 								<label for="sigup-password">Mật khẩu:</label> <input
 									type="password" class="form-control" id="sigup-password"
-									value="${pw}" name="password"
-									minlength="6"
+									value="${pw}" name="password" minlength="6"
 									placeholder="Nhập mật khẩu của bạn" required>
 							</div>
 							<div class="form-group">
@@ -109,19 +108,27 @@
 									placeholder="Xác nhận mật khẩu của bạn" required>
 							</div>
 							<div class="form-group">
-								<strong style="color: red;">${warning}</strong>
-								<strong style="color: green;">${message}</strong>
+								<label for="verification-code">Mã xác nhận:</label>
+								<div class="input-group" style="display: flex;">
+									<input type="text" class="form-control" id="verification-code"
+										name="verificationCode" placeholder="Nhập mã xác nhận"
+										required>
+									<button type="button" class="btn btn-secondary"
+										id="send-code-btn">Gửi mã</button>
+								</div>
+							</div>
+							<div class="form-group">
+								<strong style="color: red;">${warning}</strong> <strong
+									style="color: green;">${message}</strong>
 							</div>
 							<div class="form-group">
 								<button type="submit" class="btn btn-primary btn-block">Đăng
 									Ký</button>
 							</div>
-
 							<div class="text-center">
-								Bạn đã có tài khoản? <a href="<c:url value="/login" />">Đăng
+								Bạn đã có tài khoản? <a href="<c:url value='/login' />">Đăng
 									nhập ngay!</a>
 							</div>
-
 						</form>
 					</div>
 				</div>
