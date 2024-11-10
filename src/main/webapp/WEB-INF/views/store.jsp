@@ -241,41 +241,17 @@
 						<h3 class="aside-title">Categories</h3>
 						<div class="checkbox-filter">
 
-							<div class="input-checkbox">
-								<input type="checkbox" id="category-1"> <label
-									for="category-1"> <span></span> Laptops <small>(120)</small>
-								</label>
-							</div>
+							<c:forEach var="cate" items="${categories}">
+								<div class="input-checkbox">
+									<!-- Sử dụng EL để gán id duy nhất cho từng checkbox -->
+									<input type="checkbox" id="category-${cate.idCategory}"
+										name="selectedCategories" value="${cate.idCategory}">
+									<label for="category-${cate.idCategory}"> <span></span>
+										${cate.nameCategory} <small>(chua de)</small>
+									</label>
+								</div>
+							</c:forEach>
 
-							<div class="input-checkbox">
-								<input type="checkbox" id="category-2"> <label
-									for="category-2"> <span></span> Smartphones <small>(740)</small>
-								</label>
-							</div>
-
-							<div class="input-checkbox">
-								<input type="checkbox" id="category-3"> <label
-									for="category-3"> <span></span> Cameras <small>(1450)</small>
-								</label>
-							</div>
-
-							<div class="input-checkbox">
-								<input type="checkbox" id="category-4"> <label
-									for="category-4"> <span></span> Accessories <small>(578)</small>
-								</label>
-							</div>
-
-							<div class="input-checkbox">
-								<input type="checkbox" id="category-5"> <label
-									for="category-5"> <span></span> Laptops <small>(120)</small>
-								</label>
-							</div>
-
-							<div class="input-checkbox">
-								<input type="checkbox" id="category-6"> <label
-									for="category-6"> <span></span> Smartphones <small>(740)</small>
-								</label>
-							</div>
 						</div>
 					</div>
 					<!-- /aside Widget -->
@@ -302,36 +278,16 @@
 					<div class="aside">
 						<h3 class="aside-title">Brand</h3>
 						<div class="checkbox-filter">
-							<div class="input-checkbox">
-								<input type="checkbox" id="brand-1"> <label
-									for="brand-1"> <span></span> SAMSUNG <small>(578)</small>
-								</label>
-							</div>
-							<div class="input-checkbox">
-								<input type="checkbox" id="brand-2"> <label
-									for="brand-2"> <span></span> LG <small>(125)</small>
-								</label>
-							</div>
-							<div class="input-checkbox">
-								<input type="checkbox" id="brand-3"> <label
-									for="brand-3"> <span></span> SONY <small>(755)</small>
-								</label>
-							</div>
-							<div class="input-checkbox">
-								<input type="checkbox" id="brand-4"> <label
-									for="brand-4"> <span></span> SAMSUNG <small>(578)</small>
-								</label>
-							</div>
-							<div class="input-checkbox">
-								<input type="checkbox" id="brand-5"> <label
-									for="brand-5"> <span></span> LG <small>(125)</small>
-								</label>
-							</div>
-							<div class="input-checkbox">
-								<input type="checkbox" id="brand-6"> <label
-									for="brand-6"> <span></span> SONY <small>(755)</small>
-								</label>
-							</div>
+							<c:forEach var="brand" items="${brands}">
+								<div class="input-checkbox">
+									<!-- Sử dụng EL để gán id duy nhất cho từng checkbox của brand -->
+									<input type="checkbox" id="brand-${brand.idBrand}"
+										name="selectedBrands" value="${brand.idBrand}"> <label
+										for="brand-${brand.idBrand}"> <span></span>
+										${brand.nameBrand} <small>(chua de)</small>
+									</label>
+								</div>
+							</c:forEach>
 						</div>
 					</div>
 					<!-- /aside Widget -->
