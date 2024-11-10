@@ -13,7 +13,7 @@ public class AdminController {
 		return "admin/index";
 	}
 	
-	@RequestMapping(value = { "/menu" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/menu", "/menu/" }, method = RequestMethod.GET)
 	public String menu() {
 
 		return "admin/menu";
