@@ -10,7 +10,7 @@
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
 <title>LapFarm</title>
-
+<base href="${pageContext.servletContext.contextPath}/">
 <!-- Google font -->
 <link
 	href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700"
@@ -61,7 +61,8 @@
 				</ul>
 				<ul class="header-links pull-right">
 					<li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
-					<li><a href="login"><i class="fa fa-user-o"></i> My Account</a></li>
+					<li><a href="<c:url value="/login" />"><i
+							class="fa fa-user-o"></i> My Account</a></li>
 				</ul>
 			</div>
 		</div>
@@ -76,8 +77,8 @@
 					<!-- LOGO -->
 					<div class="col-md-3">
 						<div class="header-logo">
-							<a href="home" class="logo"> <img src="/LapFarm/resources/img/logo.png" alt="">
-							</a>
+							<a href="<c:url value="/home" />" class="logo"> <img
+								src="<c:url value="/resources/img/logo.png" />" alt=""></a>
 						</div>
 					</div>
 					<!-- /LOGO -->
@@ -120,7 +121,9 @@
 									<div class="cart-list">
 										<div class="product-widget">
 											<div class="product-img">
-												<img  src="/LapFarm/resources/img/product01.png" alt="">
+												<img
+													src="${pageContext.servletContext.contextPath}/resources/img/product01.png"
+													alt="">
 											</div>
 											<div class="product-body">
 												<h3 class="product-name">
@@ -137,7 +140,9 @@
 
 										<div class="product-widget">
 											<div class="product-img">
-												<img src="/LapFarm/resources/img/product02.png" alt="">
+												<img
+													src="${pageContext.servletContext.contextPath}/resources/img/product02.png"
+													alt="">
 											</div>
 											<div class="product-body">
 												<h3 class="product-name">
@@ -191,12 +196,12 @@
 				<!-- NAV -->
 				<ul class="main-nav nav navbar-nav">
 					<li class="active"><a href="#">Home</a></li>
-					<li><a href="#">Hot Deals</a></li>
-					<li><a href="#">Categories</a></li>
-					<li><a href="#">Laptops</a></li>
-					<li><a href="#">Smartphones</a></li>
-					<li><a href="#">Cameras</a></li>
-					<li><a href="#">Accessories</a></li>
+					<li><a href="pages">Hot Deals</a></li>
+					<li><a href="pages/">Categories</a></li>
+					<li><a href="pages/laptops">Laptops</a></li>
+					<li><a href="pages/smartphones">Smartphones</a></li>
+					<li><a href="pages/cameras">Cameras</a></li>
+					<li><a href="pages/accessories">Accessories</a></li>
 				</ul>
 				<!-- /NAV -->
 			</div>
@@ -216,7 +221,9 @@
 				<div class="col-md-4 col-xs-6">
 					<div class="shop">
 						<div class="shop-img">
-							<img src="/LapFarm/resources/img/shop01.png" alt="">
+							<img
+								src="${pageContext.servletContext.contextPath}/resources/img/shop01.png"
+								alt="">
 						</div>
 						<div class="shop-body">
 							<h3>
@@ -233,7 +240,9 @@
 				<div class="col-md-4 col-xs-6">
 					<div class="shop">
 						<div class="shop-img">
-							<img src="/LapFarm/resources/img/shop03.png" alt="">
+							<img
+								src="${pageContext.servletContext.contextPath}/resources/img/shop03.png"
+								alt="">
 						</div>
 						<div class="shop-body">
 							<h3>
@@ -250,7 +259,9 @@
 				<div class="col-md-4 col-xs-6">
 					<div class="shop">
 						<div class="shop-img">
-							<img src="/LapFarm/resources/img/shop02.png" alt="">
+							<img
+								src="${pageContext.servletContext.contextPath}/resources/img/shop02.png"
+								alt="">
 						</div>
 						<div class="shop-body">
 							<h3>
@@ -302,7 +313,9 @@
 									<!-- product -->
 									<div class="product">
 										<div class="product-img">
-											<img src="/LapFarm/resources/img/product01.png" alt="">
+											<img
+												src="${pageContext.servletContext.contextPath}/resources/img/product01.png"
+												alt="">
 											<div class="product-label">
 												<span class="sale">-30%</span> <span class="new">NEW</span>
 											</div>
@@ -347,7 +360,9 @@
 									<!-- product -->
 									<div class="product">
 										<div class="product-img">
-											<img src="/LapFarm/resources/img/product02.png" alt="">
+											<img
+												src="${pageContext.servletContext.contextPath}/resources/img/product02.png"
+												alt="">
 											<div class="product-label">
 												<span class="new">NEW</span>
 											</div>
@@ -392,7 +407,9 @@
 									<!-- product -->
 									<div class="product">
 										<div class="product-img">
-											<img src="/LapFarm/resources/img/product03.png" alt="">
+											<img
+												src="${pageContext.servletContext.contextPath}/resources/img/product03.png"
+												alt="">
 											<div class="product-label">
 												<span class="sale">-30%</span>
 											</div>
@@ -433,7 +450,9 @@
 									<!-- product -->
 									<div class="product">
 										<div class="product-img">
-											<img src="/LapFarm/resources/img/product04.png" alt="">
+											<img
+												src="${pageContext.servletContext.contextPath}/resources/img/product04.png"
+												alt="">
 										</div>
 										<div class="product-body">
 											<p class="product-category">Category</p>
@@ -475,7 +494,9 @@
 									<!-- product -->
 									<div class="product">
 										<div class="product-img">
-											<img src="/LapFarm/resources/img/product05.png" alt="">
+											<img
+												src="${pageContext.servletContext.contextPath}/resources/img/product05.png"
+												alt="">
 										</div>
 										<div class="product-body">
 											<p class="product-category">Category</p>
@@ -607,7 +628,9 @@
 									<!-- product -->
 									<div class="product">
 										<div class="product-img">
-											<img src="/LapFarm/resources/img/product06.png" alt="">
+											<img
+												src="${pageContext.servletContext.contextPath}/resources/img/product06.png"
+												alt="">
 											<div class="product-label">
 												<span class="sale">-30%</span> <span class="new">NEW</span>
 											</div>
@@ -652,7 +675,9 @@
 									<!-- product -->
 									<div class="product">
 										<div class="product-img">
-											<img src="/LapFarm/resources/img/product07.png" alt="">
+											<img
+												src="${pageContext.servletContext.contextPath}/resources/img/product07.png"
+												alt="">
 											<div class="product-label">
 												<span class="new">NEW</span>
 											</div>
@@ -697,7 +722,9 @@
 									<!-- product -->
 									<div class="product">
 										<div class="product-img">
-											<img src="/LapFarm/resources/img/product08.png" alt="">
+											<img
+												src="${pageContext.servletContext.contextPath}/resources/img/product08.png"
+												alt="">
 											<div class="product-label">
 												<span class="sale">-30%</span>
 											</div>
@@ -738,7 +765,9 @@
 									<!-- product -->
 									<div class="product">
 										<div class="product-img">
-											<img src="/LapFarm/resources/img/product09.png" alt="">
+											<img
+												src="${pageContext.servletContext.contextPath}/resources/img/product09.png"
+												alt="">
 										</div>
 										<div class="product-body">
 											<p class="product-category">Category</p>
@@ -780,7 +809,9 @@
 									<!-- product -->
 									<div class="product">
 										<div class="product-img">
-											<img src="/LapFarm/resources/img/product01.png" alt="">
+											<img
+												src="${pageContext.servletContext.contextPath}/resources/img/product01.png"
+												alt="">
 										</div>
 										<div class="product-body">
 											<p class="product-category">Category</p>
@@ -852,7 +883,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product07.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product07.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -870,7 +903,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product08.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product08.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -888,7 +923,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product09.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product09.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -908,7 +945,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product01.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product01.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -926,7 +965,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product02.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product02.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -944,7 +985,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product03.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product03.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -975,7 +1018,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product04.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product04.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -993,7 +1038,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product05.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product05.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -1011,7 +1058,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product06.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product06.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -1031,7 +1080,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product07.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product07.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -1049,7 +1100,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product08.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product08.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -1067,7 +1120,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product09.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product09.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -1100,7 +1155,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product01.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product01.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -1118,7 +1175,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product02.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product02.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -1136,7 +1195,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product03.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product03.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -1156,7 +1217,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product04.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product04.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -1174,7 +1237,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product05.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product05.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -1192,7 +1257,9 @@
 							<!-- product widget -->
 							<div class="product-widget">
 								<div class="product-img">
-									<img src="/LapFarm/resources/img/product06.png" alt="">
+									<img
+										src="${pageContext.servletContext.contextPath}/resources/img/product06.png"
+										alt="">
 								</div>
 								<div class="product-body">
 									<p class="product-category">Category</p>
@@ -1303,7 +1370,7 @@
 						<div class="footer">
 							<h3 class="footer-title">Service</h3>
 							<ul class="footer-links">
-								<li><a href="#">My Account</a></li>
+								<li><a href="<c:url value="/login" />">My Account</a></li>
 								<li><a href="#">View Cart</a></li>
 								<li><a href="#">Wishlist</a></li>
 								<li><a href="#">Track My Order</a></li>
@@ -1335,8 +1402,7 @@
 						<span class="copyright"> <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 							Copyright &copy;<script>
 								document.write(new Date().getFullYear());
-							</script>
-							All rights reserved | This template is made with <i
+							</script> All rights reserved | This template is made with <i
 							class="fa fa-heart-o" aria-hidden="true"></i> by <a
 							href="https://colorlib.com" target="_blank">Colorlib</a> <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 						</span>

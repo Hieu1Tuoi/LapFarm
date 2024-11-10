@@ -64,8 +64,8 @@
 					<!-- LOGO -->
 					<div class="col-md-3">
 						<div class="header-logo">
-							<a href="home" class="logo"> <img
-								src="/LapFarm/resources/img/logo.png" alt="">
+							<a href="<c:url value="/home" />" class="logo"> <img
+								src="<c:url value="/resources/img/logo.png" />" alt="">
 							</a>
 						</div>
 					</div>
@@ -89,27 +89,29 @@
 				<div class="col-md-6 col-md-offset-3">
 					<div class="login-form">
 						<h2 class="text-center">Đăng Nhập</h2>
-						<form>
+						<form action="<c:url value="/login" />" method="post">
 							<div class="form-group">
 								<label for="email">Email:</label> <input type="email"
-									class="form-control" id="email"
+									class="form-control" id="email" name="email" value="${email}"
 									placeholder="Nhập email của bạn" required>
 							</div>
 							<div class="form-group">
 								<label for="password">Mật khẩu:</label> <input type="password"
-									class="form-control" id="password"
-									placeholder="Nhập mật khẩu của bạn" required> 
-									
-									<a href="#">Quên mật khẩu?</a>
-									
-							</div>
+									class="form-control" id="password" name="password"
+									value="${pw}" placeholder="Nhập mật khẩu của bạn" required>
+								<a href="<c:url value="/login" />">Quên mật khẩu?</a>
 
+							</div>
+							<div class="form-group">
+								<strong style="color: red;">${warning}</strong>
+							</div>
 							<div class="form-group">
 								<button type="submit" class="btn btn-primary btn-block">Đăng
 									Nhập</button>
 							</div>
 							<div class="text-center">
-								Bạn chưa có tài khoản? <a href="sigup">Đăng ký ngay!</a>
+								Bạn chưa có tài khoản? <a href="<c:url value="/signup" />">Đăng
+									ký ngay!</a>
 							</div>
 						</form>
 					</div>
@@ -145,11 +147,13 @@
 						<div class="footer">
 							<h3 class="footer-title">Categories</h3>
 							<ul class="footer-links">
-								<li><a href="#">Hot deals</a></li>
-								<li><a href="#">Laptops</a></li>
-								<li><a href="#">Smartphones</a></li>
-								<li><a href="#">Cameras</a></li>
-								<li><a href="#">Accessories</a></li>
+								<li class="active"><a href="#">Home</a></li>
+								<li><a href="pages">Hot Deals</a></li>
+								<li><a href="pages/">Categories</a></li>
+								<li><a href="pages/laptops">Laptops</a></li>
+								<li><a href="pages/smartphones">Smartphones</a></li>
+								<li><a href="pages/cameras">Cameras</a></li>
+								<li><a href="pages/accessories">Accessories</a></li>
 							</ul>
 						</div>
 					</div>
@@ -173,7 +177,7 @@
 						<div class="footer">
 							<h3 class="footer-title">Service</h3>
 							<ul class="footer-links">
-								<li><a href="#">My Account</a></li>
+								<li><a href="<c:url value="/login" />">My Account</a></li>
 								<li><a href="#">View Cart</a></li>
 								<li><a href="#">Wishlist</a></li>
 								<li><a href="#">Track My Order</a></li>

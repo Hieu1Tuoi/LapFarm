@@ -1,0 +1,68 @@
+@charset "UTF-8";
+
+body {
+	/* background-color: #15161d;  Màu nền tối cho toàn bộ trang */
+	color: #fff; /* Màu chữ trắng */
+	font-family: 'Montserrat', sans-serif;
+}
+
+.admin-dashboard {
+	display: flex; /* Sử dụng Flexbox để chia bố cục */
+	margin: 20px auto; /* Giữa trang */
+	max-width: 1200px; /* Đặt chiều rộng tối đa */
+	width: 100%; /* Chiều rộng đầy đủ */
+}
+
+.admin-menu {
+	width: 25%; /* Chiếm 25% không gian bên trái */
+	/*background-color: #1c1e25;  Màu nền menu */
+	padding: 20px;
+	border-radius: 5px;
+	border: 1px solid #d10024; /* Viền màu đỏ */
+}
+
+.admin-menu h3 {
+	color: #d10024; /* Màu tiêu đề đỏ */
+	margin-bottom: 15px;
+}
+
+.admin-menu ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+.admin-menu ul li {
+	margin: 10px 0;
+}
+
+.admin-menu ul li a {
+	color: #d10024; /* Màu chữ đỏ */
+	text-decoration: none;
+	font-size: 16px;
+	transition: background-color 0.3s, color 0.3s;
+	display: block; /* Chiếm toàn bộ chiều rộng */
+	padding: 10px;
+	border-radius: 4px; /* Bo góc cho các liên kết */
+}
+
+.admin-menu ul li a:hover {
+	background-color: #d10024; /* Màu nền khi di chuột */
+	color: #fff; /* Màu chữ trắng khi di chuột */
+}
+
+.admin-content {
+	width: 75%; /* Chiếm 75% không gian bên phải */
+	padding: 20px;
+	/*background-color: #1c1e25;  Màu nền cho phần nội dung */
+	border-radius: 5px;
+	border: 1px solid #d10024; /* Viền màu đỏ */
+	margin-left: 20px; /* Khoảng cách giữa menu và nội dung */
+}
+
+.admin-content h2 {
+	color: #d10024; /* Màu tiêu đề đỏ */
+}
+
+.admin-content p {
+	font-size: 16px;
+}

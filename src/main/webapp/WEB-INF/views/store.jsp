@@ -76,8 +76,8 @@
 					<!-- LOGO -->
 					<div class="col-md-3">
 						<div class="header-logo">
-							<a href="#" class="logo"> <img
-								src="/LapFarm/resources/img/logo.png" alt="">
+							<a href="<c:url value="/home" />" class="logo"> <img
+								src="<c:url value="/resources/img/logo.png" />" alt="">
 							</a>
 						</div>
 					</div>
@@ -191,13 +191,13 @@
 			<div id="responsive-nav">
 				<!-- NAV -->
 				<ul class="main-nav nav navbar-nav">
-					<li class="active"><a href="#">Home</a></li>
-					<li><a href="#">Hot Deals</a></li>
-					<li><a href="#">Categories</a></li>
-					<li><a href="#">Laptops</a></li>
-					<li><a href="#">Smartphones</a></li>
-					<li><a href="#">Cameras</a></li>
-					<li><a href="#">Accessories</a></li>
+					<li class="active"><a href="/">Home</a></li>
+					<li><a href="pages">Hot Deals</a></li>
+					<li><a href="pages/">Categories</a></li>
+					<li><a href="pages/laptops">Laptops</a></li>
+					<li><a href="pages/smartphones">Smartphones</a></li>
+					<li><a href="pages/cameras">Cameras</a></li>
+					<li><a href="pages/accessories">Accessories</a></li>
 				</ul>
 				<!-- /NAV -->
 			</div>
@@ -916,7 +916,7 @@
 						<div class="footer">
 							<h3 class="footer-title">Service</h3>
 							<ul class="footer-links">
-								<li><a href="#">My Account</a></li>
+								<li><a href="<c:url value="/login" />">My Account</a></li>
 								<li><a href="#">View Cart</a></li>
 								<li><a href="#">Wishlist</a></li>
 								<li><a href="#">Track My Order</a></li>
