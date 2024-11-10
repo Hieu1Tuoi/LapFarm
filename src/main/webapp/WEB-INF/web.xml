@@ -15,6 +15,11 @@
 			<param-value>/WEB-INF/configs/*.xml</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
+		<multipart-config>
+			<max-file-size>3145728</max-file-size> <!-- 5MB -->
+			<max-request-size>3145728</max-request-size>
+			<file-size-threshold>0</file-size-threshold>
+		</multipart-config>
 	</servlet>
 
 	<servlet-mapping>

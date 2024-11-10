@@ -1295,8 +1295,9 @@
 						<p>
 							Sign Up for the <strong>NEWSLETTER</strong>
 						</p>
-						<form>
-							<input class="input" type="email" placeholder="Enter Your Email">
+						<form action="home/send" method="post">
+							<input class="input" type="email" class="form-control"
+								name="email" placeholder="Nhập email của bạn" required>
 							<button class="newsletter-btn">
 								<i class="fa fa-envelope"></i> Subscribe
 							</button>
