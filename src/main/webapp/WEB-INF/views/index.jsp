@@ -2,1197 +2,361 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-
-<title>LapFarm</title>
+<title>Admin</title>
 <base href="${pageContext.servletContext.contextPath}/">
-<!-- Google font -->
-<link
-	href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700"
-	rel="stylesheet">
-
-<!-- Bootstrap -->
-<link type="text/css" rel="stylesheet"
-	href="<c:url value="/resources/css/bootstrap.min.css" />">
-
-<!-- Slick -->
-<link type="text/css" rel="stylesheet"
-	href="<c:url value="/resources/css/slick.css" />">
-<link type="text/css" rel="stylesheet"
-	href="<c:url value="/resources/css/slick-theme.css" />">
-
-<!-- nouislider -->
-<link type="text/css" rel="stylesheet"
-	href="<c:url value="/resources/css/nouislider.min.css" />">
-
-<!-- Font Awesome Icon -->
-<link rel="stylesheet"
-	href="<c:url value="/resources/css/font-awesome.min.css" />">
-
-<!-- Custom stlylesheet -->
-<link type="text/css" rel="stylesheet"
-	href="<c:url value="/resources/css/style.css" />">
-
-<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-		<![endif]-->
-
+<!-- Tell the browser to be responsive to screen width -->
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
+<!-- Bootstrap 3.3.7 -->
+<link rel="stylesheet" href="resources/admin/css/bootstrap.min.css">
+<link rel="stylesheet" href="resources/admin/css/font-awesome.min.css">
+<link rel="stylesheet" href="resources/admin/css/AdminLTE.css">
+<link rel="stylesheet" href="resources/admin/css/_all-skins.min.css">
+<link rel="stylesheet" href="resources/admin/css/jquery-ui.css">
+<link rel="stylesheet" href="resources/admin/css/style.css" />
+<script src="resources/admin/js/angular.min.js"></script>
+<script src="resources/admin/js/app.js"></script>
 </head>
-<body>
+<body class="hold-transition skin-blue sidebar-mini">
+	<!-- Site wrapper -->
+	<div class="wrapper">
 
-	<!-- HEADER --
-	<%@ include file="/WEB-INF/views/include/header.jsp" %>
-	<!-- HEADER -->
-	<!-- NAVIGATION -->
-	<nav id="navigation">
-		<!-- container -->
-		<div class="container">
-			<!-- responsive-nav -->
-			<div id="responsive-nav">
-				<!-- NAV -->
-				<ul class="main-nav nav navbar-nav">
-					<li class="active"><a href="#">Home</a></li>
-					<li><a href="pages">Hot Deals</a></li>
-					<li><a href="pages/">Categories</a></li>
-					<li><a href="pages/laptops">Laptops</a></li>
-					<li><a href="pages/smartphones">Smartphones</a></li>
-					<li><a href="pages/cameras">Cameras</a></li>
-					<li><a href="pages/accessories">Accessories</a></li>
-				</ul>
-				<!-- /NAV -->
-			</div>
-			<!-- /responsive-nav -->
-		</div>
-		<!-- /container -->
-	</nav>
-	<!-- /NAVIGATION -->
+		<header class="main-header">
+			<!-- Logo -->
+			<a href="../../index2.html" class="logo"> <!-- mini logo for sidebar mini 50x50 pixels -->
+				<span class="logo-mini"><b>A</b>LT</span> <!-- logo for regular state and mobile devices -->
+				<span class="logo-lg">BACKHOA_APTECH</span>
+			</a>
+			<!-- Header Navbar: style can be found in header.less -->
+			<nav class="navbar navbar-static-top">
+				<!-- Sidebar toggle button-->
+				<a href="#" class="sidebar-toggle" data-toggle="push-menu"
+					role="button"> <span class="sr-only">Toggle navigation</span> <span
+					class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
+				</a>
 
-	<!-- SECTION -->
-	<div class="section">
-		<!-- container -->
-		<div class="container">
-			<!-- row -->
-			<div class="row">
-				<!-- shop -->
-				<div class="col-md-4 col-xs-6">
-					<div class="shop">
-						<div class="shop-img">
-							<img
-								src="${pageContext.servletContext.contextPath}/resources/img/shop01.png"
-								alt="">
-						</div>
-						<div class="shop-body">
-							<h3>
-								Laptop<br>Collection
-							</h3>
-							<a href="#" class="cta-btn">Shop now <i
-								class="fa fa-arrow-circle-right"></i></a>
-						</div>
-					</div>
-				</div>
-				<!-- /shop -->
+				<div class="navbar-custom-menu">
+					<ul class="nav navbar-nav">
+						<!-- Messages: style can be found in dropdown.less-->
+						<li class="dropdown messages-menu"><a href="#"
+							class="dropdown-toggle" data-toggle="dropdown"> <i
+								class="fa fa-envelope-o"></i> <span class="label label-success">4</span>
+						</a>
+							<ul class="dropdown-menu">
+								<li class="header">You have 4 messages</li>
+								<li>
+									<!-- inner menu: contains the actual data -->
+									<ul class="menu">
+										<li>
+											<!-- start message --> <a href="#">
+												<div class="pull-left">
+													<img src="resources/admin/images/user2-160x160.jpg"
+														class="img-circle" alt="User Image">
+												</div>
+												<h4>
+													Support Team <small><i class="fa fa-clock-o"></i> 5
+														mins</small>
+												</h4>
+												<p>Why not buy a new awesome theme?</p>
+										</a>
+										</li>
+										<!-- end message -->
+									</ul>
+								</li>
+								<li class="footer"><a href="#">See All Messages</a></li>
+							</ul></li>
+						<!-- Notifications: style can be found in dropdown.less -->
+						<li class="dropdown notifications-menu"><a href="#"
+							class="dropdown-toggle" data-toggle="dropdown"> <i
+								class="fa fa-bell-o"></i> <span class="label label-warning">10</span>
+						</a>
+							<ul class="dropdown-menu">
+								<li class="header">You have 10 notifications</li>
+								<li>
+									<!-- inner menu: contains the actual data -->
+									<ul class="menu">
+										<li><a href="#"> <i class="fa fa-users text-aqua"></i>
+												5 new members joined today
+										</a></li>
+									</ul>
+								</li>
+								<li class="footer"><a href="#">View all</a></li>
+							</ul></li>
+						<!-- Tasks: style can be found in dropdown.less -->
+						<li class="dropdown tasks-menu"><a href="#"
+							class="dropdown-toggle" data-toggle="dropdown"> <i
+								class="fa fa-flag-o"></i> <span class="label label-danger">9</span>
+						</a>
+							<ul class="dropdown-menu">
+								<li class="header">You have 9 tasks</li>
+								<li>
+									<!-- inner menu: contains the actual data -->
+									<ul class="menu">
+										<li>
+											<!-- Task item --> <a href="#">
+												<h3>
+													Design some buttons <small class="pull-right">20%</small>
+												</h3>
+												<div class="progress xs">
+													<div class="progress-bar progress-bar-aqua"
+														style="width: 20%" role="progressbar" aria-valuenow="20"
+														aria-valuemin="0" aria-valuemax="100">
+														<span class="sr-only">20% Complete</span>
+													</div>
+												</div>
+										</a>
+										</li>
+										<!-- end task item -->
+									</ul>
+								</li>
+								<li class="footer"><a href="#">View all tasks</a></li>
+							</ul></li>
+						<!-- User Account: style can be found in dropdown.less -->
+						<li class="dropdown user user-menu"><a href="#"
+							class="dropdown-toggle" data-toggle="dropdown"> <img
+								src="resources/admin/images/user2-160x160.jpg"
+								class="user-image" alt="User Image"> <span
+								class="hidden-xs">Alexander Pierce</span>
+						</a>
+							<ul class="dropdown-menu">
+								<!-- User image -->
+								<li class="user-header"><img
+									src="resources/admin/images/user2-160x160.jpg"
+									class="img-circle" alt="User Image">
 
-				<!-- shop -->
-				<div class="col-md-4 col-xs-6">
-					<div class="shop">
-						<div class="shop-img">
-							<img
-								src="${pageContext.servletContext.contextPath}/resources/img/shop03.png"
-								alt="">
-						</div>
-						<div class="shop-body">
-							<h3>
-								Accessories<br>Collection
-							</h3>
-							<a href="#" class="cta-btn">Shop now <i
-								class="fa fa-arrow-circle-right"></i></a>
-						</div>
-					</div>
-				</div>
-				<!-- /shop -->
-
-				<!-- shop -->
-				<div class="col-md-4 col-xs-6">
-					<div class="shop">
-						<div class="shop-img">
-							<img
-								src="${pageContext.servletContext.contextPath}/resources/img/shop02.png"
-								alt="">
-						</div>
-						<div class="shop-body">
-							<h3>
-								Cameras<br>Collection
-							</h3>
-							<a href="#" class="cta-btn">Shop now <i
-								class="fa fa-arrow-circle-right"></i></a>
-						</div>
-					</div>
-				</div>
-				<!-- /shop -->
-			</div>
-			<!-- /row -->
-		</div>
-		<!-- /container -->
-	</div>
-	<!-- /SECTION -->
-
-	<!-- SECTION -->
-	<div class="section">
-		<!-- container -->
-		<div class="container">
-			<!-- row -->
-			<div class="row">
-
-				<!-- section title -->
-				<div class="col-md-12">
-					<div class="section-title">
-						<h3 class="title">New Products</h3>
-						<div class="section-nav">
-							<ul class="section-tab-nav tab-nav">
-								<li class="active"><a data-toggle="tab" href="#tab1">Laptops</a></li>
-								<li><a data-toggle="tab" href="#tab1">Smartphones</a></li>
-								<li><a data-toggle="tab" href="#tab1">Cameras</a></li>
-								<li><a data-toggle="tab" href="#tab1">Accessories</a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-				<!-- /section title -->
-
-				<!-- Products tab & slick -->
-				<div class="col-md-12">
-					<div class="row">
-						<div class="products-tabs">
-							<!-- tab -->
-							<div id="tab1" class="tab-pane active">
-								<div class="products-slick" data-nav="#slick-nav-1">
-									<!-- product -->
-									<div class="product">
-										<div class="product-img">
-											<img
-												src="${pageContext.servletContext.contextPath}/resources/img/product01.png"
-												alt="">
-											<div class="product-label">
-												<span class="sale">-30%</span> <span class="new">NEW</span>
-											</div>
+									<p>
+										Alexander Pierce - Web Developer <small>Member since
+											Nov. 2012</small>
+									</p></li>
+								<!-- Menu Body -->
+								<li class="user-body">
+									<div class="row">
+										<div class="col-xs-4 text-center">
+											<a href="#">Followers</a>
 										</div>
-										<div class="product-body">
-											<p class="product-category">Category</p>
-											<h3 class="product-name">
-												<a href="#">product name goes here</a>
-											</h3>
-											<h4 class="product-price">
-												$980.00
-												<del class="product-old-price">$990.00</del>
-											</h4>
-											<div class="product-rating">
-												<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i>
-											</div>
-											<div class="product-btns">
-												<button class="add-to-wishlist">
-													<i class="fa fa-heart-o"></i><span class="tooltipp">add
-														to wishlist</span>
-												</button>
-												<button class="add-to-compare">
-													<i class="fa fa-exchange"></i><span class="tooltipp">add
-														to compare</span>
-												</button>
-												<button class="quick-view">
-													<i class="fa fa-eye"></i><span class="tooltipp">quick
-														view</span>
-												</button>
-											</div>
+										<div class="col-xs-4 text-center">
+											<a href="#">Sales</a>
 										</div>
-										<div class="add-to-cart">
-											<button class="add-to-cart-btn">
-												<i class="fa fa-shopping-cart"></i> add to cart
-											</button>
+										<div class="col-xs-4 text-center">
+											<a href="#">Friends</a>
 										</div>
+									</div> <!-- /.row -->
+								</li>
+								<!-- Menu Footer-->
+								<li class="user-footer">
+									<div class="pull-left">
+										<a href="#" class="btn btn-default btn-flat">Profile</a>
 									</div>
-									<!-- /product -->
-
-									<!-- product -->
-									<div class="product">
-										<div class="product-img">
-											<img
-												src="${pageContext.servletContext.contextPath}/resources/img/product02.png"
-												alt="">
-											<div class="product-label">
-												<span class="new">NEW</span>
-											</div>
-										</div>
-										<div class="product-body">
-											<p class="product-category">Category</p>
-											<h3 class="product-name">
-												<a href="#">product name goes here</a>
-											</h3>
-											<h4 class="product-price">
-												$980.00
-												<del class="product-old-price">$990.00</del>
-											</h4>
-											<div class="product-rating">
-												<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star-o"></i>
-											</div>
-											<div class="product-btns">
-												<button class="add-to-wishlist">
-													<i class="fa fa-heart-o"></i><span class="tooltipp">add
-														to wishlist</span>
-												</button>
-												<button class="add-to-compare">
-													<i class="fa fa-exchange"></i><span class="tooltipp">add
-														to compare</span>
-												</button>
-												<button class="quick-view">
-													<i class="fa fa-eye"></i><span class="tooltipp">quick
-														view</span>
-												</button>
-											</div>
-										</div>
-										<div class="add-to-cart">
-											<button class="add-to-cart-btn">
-												<i class="fa fa-shopping-cart"></i> add to cart
-											</button>
-										</div>
+									<div class="pull-right">
+										<a href="#" class="btn btn-default btn-flat">Sign out</a>
 									</div>
-									<!-- /product -->
+								</li>
+							</ul></li>
 
-									<!-- product -->
-									<div class="product">
-										<div class="product-img">
-											<img
-												src="${pageContext.servletContext.contextPath}/resources/img/product03.png"
-												alt="">
-											<div class="product-label">
-												<span class="sale">-30%</span>
-											</div>
-										</div>
-										<div class="product-body">
-											<p class="product-category">Category</p>
-											<h3 class="product-name">
-												<a href="#">product name goes here</a>
-											</h3>
-											<h4 class="product-price">
-												$980.00
-												<del class="product-old-price">$990.00</del>
-											</h4>
-											<div class="product-rating"></div>
-											<div class="product-btns">
-												<button class="add-to-wishlist">
-													<i class="fa fa-heart-o"></i><span class="tooltipp">add
-														to wishlist</span>
-												</button>
-												<button class="add-to-compare">
-													<i class="fa fa-exchange"></i><span class="tooltipp">add
-														to compare</span>
-												</button>
-												<button class="quick-view">
-													<i class="fa fa-eye"></i><span class="tooltipp">quick
-														view</span>
-												</button>
-											</div>
-										</div>
-										<div class="add-to-cart">
-											<button class="add-to-cart-btn">
-												<i class="fa fa-shopping-cart"></i> add to cart
-											</button>
-										</div>
-									</div>
-									<!-- /product -->
-
-									<!-- product -->
-									<div class="product">
-										<div class="product-img">
-											<img
-												src="${pageContext.servletContext.contextPath}/resources/img/product04.png"
-												alt="">
-										</div>
-										<div class="product-body">
-											<p class="product-category">Category</p>
-											<h3 class="product-name">
-												<a href="#">product name goes here</a>
-											</h3>
-											<h4 class="product-price">
-												$980.00
-												<del class="product-old-price">$990.00</del>
-											</h4>
-											<div class="product-rating">
-												<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i>
-											</div>
-											<div class="product-btns">
-												<button class="add-to-wishlist">
-													<i class="fa fa-heart-o"></i><span class="tooltipp">add
-														to wishlist</span>
-												</button>
-												<button class="add-to-compare">
-													<i class="fa fa-exchange"></i><span class="tooltipp">add
-														to compare</span>
-												</button>
-												<button class="quick-view">
-													<i class="fa fa-eye"></i><span class="tooltipp">quick
-														view</span>
-												</button>
-											</div>
-										</div>
-										<div class="add-to-cart">
-											<button class="add-to-cart-btn">
-												<i class="fa fa-shopping-cart"></i> add to cart
-											</button>
-										</div>
-									</div>
-									<!-- /product -->
-
-									<!-- product -->
-									<div class="product">
-										<div class="product-img">
-											<img
-												src="${pageContext.servletContext.contextPath}/resources/img/product05.png"
-												alt="">
-										</div>
-										<div class="product-body">
-											<p class="product-category">Category</p>
-											<h3 class="product-name">
-												<a href="#">product name goes here</a>
-											</h3>
-											<h4 class="product-price">
-												$980.00
-												<del class="product-old-price">$990.00</del>
-											</h4>
-											<div class="product-rating">
-												<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i>
-											</div>
-											<div class="product-btns">
-												<button class="add-to-wishlist">
-													<i class="fa fa-heart-o"></i><span class="tooltipp">add
-														to wishlist</span>
-												</button>
-												<button class="add-to-compare">
-													<i class="fa fa-exchange"></i><span class="tooltipp">add
-														to compare</span>
-												</button>
-												<button class="quick-view">
-													<i class="fa fa-eye"></i><span class="tooltipp">quick
-														view</span>
-												</button>
-											</div>
-										</div>
-										<div class="add-to-cart">
-											<button class="add-to-cart-btn">
-												<i class="fa fa-shopping-cart"></i> add to cart
-											</button>
-										</div>
-									</div>
-									<!-- /product -->
-								</div>
-								<div id="slick-nav-1" class="products-slick-nav"></div>
-							</div>
-							<!-- /tab -->
-						</div>
-					</div>
+					</ul>
 				</div>
-				<!-- Products tab & slick -->
-			</div>
-			<!-- /row -->
-		</div>
-		<!-- /container -->
-	</div>
-	<!-- /SECTION -->
+			</nav>
+		</header>
 
-	<!-- HOT DEAL SECTION -->
-	<div id="hot-deal" class="section">
-		<!-- container -->
-		<div class="container">
-			<!-- row -->
-			<div class="row">
-				<div class="col-md-12">
-					<div class="hot-deal">
-						<ul class="hot-deal-countdown">
-							<li>
-								<div>
-									<h3>02</h3>
-									<span>Days</span>
-								</div>
-							</li>
-							<li>
-								<div>
-									<h3>10</h3>
-									<span>Hours</span>
-								</div>
-							</li>
-							<li>
-								<div>
-									<h3>34</h3>
-									<span>Mins</span>
-								</div>
-							</li>
-							<li>
-								<div>
-									<h3>60</h3>
-									<span>Secs</span>
-								</div>
-							</li>
-						</ul>
-						<h2 class="text-uppercase">hot deal this week</h2>
-						<p>New Collection Up to 50% OFF</p>
-						<a class="primary-btn cta-btn" href="#">Shop now</a>
-					</div>
-				</div>
-			</div>
-			<!-- /row -->
-		</div>
-		<!-- /container -->
-	</div>
-	<!-- /HOT DEAL SECTION -->
+		<<<<<<< HEAD
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<section class="content-header">
+				<h1>
+					Blank page <small>it all starts here</small>
+				</h1>
+				<ol class="breadcrumb">
+					<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+					<li><a href="#">Examples</a></li>
+					<li class="active">Blank page</li>
+				</ol>
+			</section>
 
-	<!-- SECTION -->
-	<div class="section">
-		<!-- container -->
-		<div class="container">
-			<!-- row -->
-			<div class="row">
+			<!-- Main content -->
+			<section class="content">
 
-				<!-- section title -->
-				<div class="col-md-12">
-					<div class="section-title">
-						<h3 class="title">Top selling</h3>
-						<div class="section-nav">
-							<ul class="section-tab-nav tab-nav">
-								<li class="active"><a data-toggle="tab" href="#tab2">Laptops</a></li>
-								<li><a data-toggle="tab" href="#tab2">Smartphones</a></li>
-								<li><a data-toggle="tab" href="#tab2">Cameras</a></li>
-								<li><a data-toggle="tab" href="#tab2">Accessories</a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-				<!-- /section title -->
+				<!-- Default box -->
+				<div class="box">
+					<div class="box-header with-border">
+						<h3 class="box-title">Title</h3>
 
-				<!-- Products tab & slick -->
-				<div class="col-md-12">
-					<div class="row">
-						<div class="products-tabs">
-							<!-- tab -->
-							<div id="tab2" class="tab-pane fade in active">
-								<div class="products-slick" data-nav="#slick-nav-2">
-									<!-- product -->
-									<div class="product">
-										<div class="product-img">
-											<img
-												src="${pageContext.servletContext.contextPath}/resources/img/product06.png"
-												alt="">
-											<div class="product-label">
-												<span class="sale">-30%</span> <span class="new">NEW</span>
-											</div>
-										</div>
-										<div class="product-body">
-											<p class="product-category">Category</p>
-											<h3 class="product-name">
-												<a href="#">product name goes here</a>
-											</h3>
-											<h4 class="product-price">
-												$980.00
-												<del class="product-old-price">$990.00</del>
-											</h4>
-											<div class="product-rating">
-												<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i>
-											</div>
-											<div class="product-btns">
-												<button class="add-to-wishlist">
-													<i class="fa fa-heart-o"></i><span class="tooltipp">add
-														to wishlist</span>
-												</button>
-												<button class="add-to-compare">
-													<i class="fa fa-exchange"></i><span class="tooltipp">add
-														to compare</span>
-												</button>
-												<button class="quick-view">
-													<i class="fa fa-eye"></i><span class="tooltipp">quick
-														view</span>
-												</button>
-											</div>
-										</div>
-										<div class="add-to-cart">
-											<button class="add-to-cart-btn">
-												<i class="fa fa-shopping-cart"></i> add to cart
-											</button>
-										</div>
-									</div>
-									<!-- /product -->
-
-									<!-- product -->
-									<div class="product">
-										<div class="product-img">
-											<img
-												src="${pageContext.servletContext.contextPath}/resources/img/product07.png"
-												alt="">
-											<div class="product-label">
-												<span class="new">NEW</span>
-											</div>
-										</div>
-										<div class="product-body">
-											<p class="product-category">Category</p>
-											<h3 class="product-name">
-												<a href="#">product name goes here</a>
-											</h3>
-											<h4 class="product-price">
-												$980.00
-												<del class="product-old-price">$990.00</del>
-											</h4>
-											<div class="product-rating">
-												<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star-o"></i>
-											</div>
-											<div class="product-btns">
-												<button class="add-to-wishlist">
-													<i class="fa fa-heart-o"></i><span class="tooltipp">add
-														to wishlist</span>
-												</button>
-												<button class="add-to-compare">
-													<i class="fa fa-exchange"></i><span class="tooltipp">add
-														to compare</span>
-												</button>
-												<button class="quick-view">
-													<i class="fa fa-eye"></i><span class="tooltipp">quick
-														view</span>
-												</button>
-											</div>
-										</div>
-										<div class="add-to-cart">
-											<button class="add-to-cart-btn">
-												<i class="fa fa-shopping-cart"></i> add to cart
-											</button>
-										</div>
-									</div>
-									<!-- /product -->
-
-									<!-- product -->
-									<div class="product">
-										<div class="product-img">
-											<img
-												src="${pageContext.servletContext.contextPath}/resources/img/product08.png"
-												alt="">
-											<div class="product-label">
-												<span class="sale">-30%</span>
-											</div>
-										</div>
-										<div class="product-body">
-											<p class="product-category">Category</p>
-											<h3 class="product-name">
-												<a href="#">product name goes here</a>
-											</h3>
-											<h4 class="product-price">
-												$980.00
-												<del class="product-old-price">$990.00</del>
-											</h4>
-											<div class="product-rating"></div>
-											<div class="product-btns">
-												<button class="add-to-wishlist">
-													<i class="fa fa-heart-o"></i><span class="tooltipp">add
-														to wishlist</span>
-												</button>
-												<button class="add-to-compare">
-													<i class="fa fa-exchange"></i><span class="tooltipp">add
-														to compare</span>
-												</button>
-												<button class="quick-view">
-													<i class="fa fa-eye"></i><span class="tooltipp">quick
-														view</span>
-												</button>
-											</div>
-										</div>
-										<div class="add-to-cart">
-											<button class="add-to-cart-btn">
-												<i class="fa fa-shopping-cart"></i> add to cart
-											</button>
-										</div>
-									</div>
-									<!-- /product -->
-
-									<!-- product -->
-									<div class="product">
-										<div class="product-img">
-											<img
-												src="${pageContext.servletContext.contextPath}/resources/img/product09.png"
-												alt="">
-										</div>
-										<div class="product-body">
-											<p class="product-category">Category</p>
-											<h3 class="product-name">
-												<a href="#">product name goes here</a>
-											</h3>
-											<h4 class="product-price">
-												$980.00
-												<del class="product-old-price">$990.00</del>
-											</h4>
-											<div class="product-rating">
-												<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i>
-											</div>
-											<div class="product-btns">
-												<button class="add-to-wishlist">
-													<i class="fa fa-heart-o"></i><span class="tooltipp">add
-														to wishlist</span>
-												</button>
-												<button class="add-to-compare">
-													<i class="fa fa-exchange"></i><span class="tooltipp">add
-														to compare</span>
-												</button>
-												<button class="quick-view">
-													<i class="fa fa-eye"></i><span class="tooltipp">quick
-														view</span>
-												</button>
-											</div>
-										</div>
-										<div class="add-to-cart">
-											<button class="add-to-cart-btn">
-												<i class="fa fa-shopping-cart"></i> add to cart
-											</button>
-										</div>
-									</div>
-									<!-- /product -->
-
-									<!-- product -->
-									<div class="product">
-										<div class="product-img">
-											<img
-												src="${pageContext.servletContext.contextPath}/resources/img/product01.png"
-												alt="">
-										</div>
-										<div class="product-body">
-											<p class="product-category">Category</p>
-											<h3 class="product-name">
-												<a href="#">product name goes here</a>
-											</h3>
-											<h4 class="product-price">
-												$980.00
-												<del class="product-old-price">$990.00</del>
-											</h4>
-											<div class="product-rating">
-												<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i>
-											</div>
-											<div class="product-btns">
-												<button class="add-to-wishlist">
-													<i class="fa fa-heart-o"></i><span class="tooltipp">add
-														to wishlist</span>
-												</button>
-												<button class="add-to-compare">
-													<i class="fa fa-exchange"></i><span class="tooltipp">add
-														to compare</span>
-												</button>
-												<button class="quick-view">
-													<i class="fa fa-eye"></i><span class="tooltipp">quick
-														view</span>
-												</button>
-											</div>
-										</div>
-										<div class="add-to-cart">
-											<button class="add-to-cart-btn">
-												<i class="fa fa-shopping-cart"></i> add to cart
-											</button>
-										</div>
-									</div>
-									<!-- /product -->
-								</div>
-								<div id="slick-nav-2" class="products-slick-nav"></div>
-							</div>
-							<!-- /tab -->
-						</div>
-					</div>
-				</div>
-				<!-- /Products tab & slick -->
-			</div>
-			<!-- /row -->
-		</div>
-		<!-- /container -->
-	</div>
-	<!-- /SECTION -->
-
-	<!-- SECTION -->
-	<div class="section">
-		<!-- container -->
-		<div class="container">
-			<!-- row -->
-			<div class="row">
-				<div class="col-md-4 col-xs-6">
-					<div class="section-title">
-						<h4 class="title">Top selling</h4>
-						<div class="section-nav">
-							<div id="slick-nav-3" class="products-slick-nav"></div>
-						</div>
-					</div>
-
-					<div class="products-widget-slick" data-nav="#slick-nav-3">
-						<div>
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product07.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- /product widget -->
-
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product08.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- /product widget -->
-
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product09.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- product widget -->
-						</div>
-
-						<div>
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product01.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- /product widget -->
-
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product02.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- /product widget -->
-
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product03.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- product widget -->
-						</div>
-					</div>
-				</div>
-
-				<div class="col-md-4 col-xs-6">
-					<div class="section-title">
-						<h4 class="title">Top selling</h4>
-						<div class="section-nav">
-							<div id="slick-nav-4" class="products-slick-nav"></div>
-						</div>
-					</div>
-
-					<div class="products-widget-slick" data-nav="#slick-nav-4">
-						<div>
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product04.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- /product widget -->
-
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product05.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- /product widget -->
-
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product06.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- product widget -->
-						</div>
-
-						<div>
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product07.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- /product widget -->
-
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product08.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- /product widget -->
-
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product09.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- product widget -->
-						</div>
-					</div>
-				</div>
-
-				<div class="clearfix visible-sm visible-xs"></div>
-
-				<div class="col-md-4 col-xs-6">
-					<div class="section-title">
-						<h4 class="title">Top selling</h4>
-						<div class="section-nav">
-							<div id="slick-nav-5" class="products-slick-nav"></div>
-						</div>
-					</div>
-
-					<div class="products-widget-slick" data-nav="#slick-nav-5">
-						<div>
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product01.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- /product widget -->
-
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product02.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- /product widget -->
-
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product03.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- product widget -->
-						</div>
-
-						<div>
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product04.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- /product widget -->
-
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product05.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- /product widget -->
-
-							<!-- product widget -->
-							<div class="product-widget">
-								<div class="product-img">
-									<img
-										src="${pageContext.servletContext.contextPath}/resources/img/product06.png"
-										alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-								</div>
-							</div>
-							<!-- product widget -->
-						</div>
-					</div>
-				</div>
-
-			</div>
-			<!-- /row -->
-		</div>
-		<!-- /container -->
-	</div>
-	<!-- /SECTION -->
-
-	<!-- NEWSLETTER -->
-	<div id="newsletter" class="section">
-		<!-- container -->
-		<div class="container">
-			<!-- row -->
-			<div class="row">
-				<div class="col-md-12">
-					<div class="newsletter">
-						<p>
-							Sign Up for the <strong>NEWSLETTER</strong>
-						</p>
-						<form action="home/send" method="post">
-							<input class="input" type="email" class="form-control"
-								name="email" placeholder="Nhập email của bạn" required>
-							<button class="newsletter-btn">
-								<i class="fa fa-envelope"></i> Subscribe
+						<div class="box-tools pull-right">
+							<button type="button" class="btn btn-box-tool"
+								data-widget="collapse" data-toggle="tooltip" title="Collapse">
+								<i class="fa fa-minus"></i>
 							</button>
-						</form>
-						<ul class="newsletter-follow">
-							<li><a href="#"><i class="fa fa-facebook"></i></a></li>
-							<li><a href="#"><i class="fa fa-twitter"></i></a></li>
-							<li><a href="#"><i class="fa fa-instagram"></i></a></li>
-							<li><a href="#"><i class="fa fa-pinterest"></i></a></li>
-						</ul>
+							<button type="button" class="btn btn-box-tool"
+								data-widget="remove" data-toggle="tooltip" title="Remove">
+								<i class="fa fa-times"></i>
+							</button>
+						</div>
 					</div>
+					<div class="box-body">Start creating your amazing
+						application!</div>
+					<!-- /.box-body -->
+					<div class="box-footer">Footer</div>
+					<!-- /.box-footer-->
+				</div>
+				<!-- /.box -->
+
+			</section>
+			<!-- /.content -->
+		</div>
+		<!-- /.content-wrapper -->
+
+		<footer class="main-footer">
+			<div class="pull-right hidden-xs">
+				<b>Version</b> 0.0.1
+			</div>
+			<strong>Copyright &copy; 2018 <a href="https://adminlte.io">TTPM_BKAP</a>.
+			</strong>
+		</footer>
+
+	</div>
+	<!-- ./wrapper -->
+
+	<!-- jQuery 3 -->
+
+	=======
+	<!-- =============================================== -->
+
+	<!-- Left side column. contains the sidebar -->
+	<aside class="main-sidebar">
+		<!-- sidebar: style can be found in sidebar.less -->
+		<section class="sidebar">
+			<!-- Sidebar user panel -->
+			<div class="user-panel">
+				<div class="pull-left image">
+					<img src="resources/admin/images/user2-160x160.jpg"
+						class="img-circle" alt="User Image">
+				</div>
+				<div class="pull-left info">
+					<p>Alexander Pierce</p>
+					<a href="#"><i class="fa fa-circle text-success"></i> Online</a>
 				</div>
 			</div>
-			<!-- /row -->
-		</div>
-		<!-- /container -->
+			<!-- search form -->
+			<form action="#" method="get" class="sidebar-form">
+				<div class="input-group">
+					<input type="text" name="q" class="form-control"
+						placeholder="Search..."> <span class="input-group-btn">
+						<button type="submit" name="search" id="search-btn"
+							class="btn btn-flat">
+							<i class="fa fa-search"></i>
+						</button>
+					</span>
+				</div>
+			</form>
+			<!-- /.search form -->
+			<!-- sidebar menu: : style can be found in sidebar.less -->
+
+			<ul class="sidebar-menu" data-widget="tree">
+				<li><a href="admin/products"> <i class="fa fa-th"></i> <span>Quản
+							lý Đơn Hàng </span> <span class="pull-right-container"> <small
+							class="label pull-right bg-green">FE</small>
+					</span>
+				</a></li>
+
+				<li class="treeview"><a href="#"> <i
+						class="fa fa-dashboard"></i> <span>Quản lý Sản Phẩm</span> <span
+						class="pull-right-container"> <i
+							class="fa fa-angle-left pull-right"></i>
+					</span>
+				</a>
+					<ul class="treeview-menu">
+						<li><a href=""><i class="fa fa-circle-o"></i> Dashboard
+								v1</a></li>
+						<li><a href=""><i class="fa fa-circle-o"></i> Dashboard
+								v2</a></li>
+					</ul></li>
+
+				<li><a href=""> <i class="fa fa-th"></i> <span>Widgets</span>
+						<span class="pull-right-container"> <small
+							class="label pull-right bg-green">Hot</small>
+					</span>
+				</a></li>
+
+			</ul>
+		</section>
+		<!-- /.sidebar -->
+	</aside>
+
+	<!-- =============================================== -->
+
+	<!-- Content Wrapper. Contains page content -->
+	<div class="content-wrapper">
+		<!-- Content Header (Page header) -->
+		<section class="content-header">
+			<h1>
+				Blank page <small>it all starts here</small>
+			</h1>
+			<ol class="breadcrumb">
+				<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+				<li><a href="#">Examples</a></li>
+				<li class="active">Blank page</li>
+			</ol>
+		</section>
+
+		<!-- Main content -->
+		<section class="content">
+
+			<!-- Default box -->
+			<div class="box">
+				<div class="box-header with-border">
+					<h3 class="box-title">Title</h3>
+
+					<div class="box-tools pull-right">
+						<button type="button" class="btn btn-box-tool"
+							data-widget="collapse" data-toggle="tooltip" title="Collapse">
+							<i class="fa fa-minus"></i>
+						</button>
+						<button type="button" class="btn btn-box-tool"
+							data-widget="remove" data-toggle="tooltip" title="Remove">
+							<i class="fa fa-times"></i>
+						</button>
+					</div>
+				</div>
+				<div class="box-body">Start creating your amazing application!
+				</div>
+				<!-- /.box-body -->
+				<div class="box-footer">Footer</div>
+				<!-- /.box-footer-->
+			</div>
+			<!-- /.box -->
+
+		</section>
+		<!-- /.content -->
 	</div>
-	<!-- /NEWSLETTER -->
+	<!-- /.content-wrapper -->
 
-	<!-- FOOTER -->
-	<%@ include file="/WEB-INF/views/include/footer.jsp" %>
-	<!-- /FOOTER -->
+	<footer class="main-footer">
+		<div class="pull-right hidden-xs">
+			<b>Version</b> 0.0.1
+		</div>
+		<strong>Copyright &copy; 2018 <a href="https://adminlte.io">TTPM_BKAP</a>.
+		</strong>
+	</footer>
 
-	<!-- jQuery Plugins -->
-	<script src="<c:url value='/resources/js/jquery.min.js' />"></script>
-	<script src="<c:url value='/resources/js/bootstrap.min.js' />"></script>
-	<script src="<c:url value='/resources/js/slick.min.js' />"></script>
-	<script src="<c:url value='/resources/js/nouislider.min.js' />"></script>
-	<script src="<c:url value='/resources/js/jquery.zoom.min.js' />"></script>
-	<script src="<c:url value='/resources/js/main.js' />"></script>
+	</div>
+	<!-- ./wrapper -->
 
+	<!-- jQuery 3 -->
 
+	>>>>>>> 0b7d826322ff2853a1581e86ea07654732e748b0
+	<script src="resources/admin/js/jquery.min.js"></script>
+	<script src="resources/admin/js/jquery-ui.js"></script>
+	<script src="resources/admin/js/bootstrap.min.js"></script>
+	<script src="resources/admin/js/adminlte.min.js"></script>
+	<script src="resources/admin/js/dashboard.js"></script>
+	<script src="resources/admin/tinymce/tinymce.min.js"></script>
+	<script src="resources/admin/tinymce/config.js"></script>
+	<script src="resources/admin/js/function.js"></script>
 </body>
 </html>
