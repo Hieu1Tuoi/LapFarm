@@ -239,6 +239,7 @@
 					<!-- aside Widget -->
 					<div class="aside">
 						<h3 class="aside-title">Categories</h3>
+						<h2>${products != null ? products.size() : 0}</h2>
 						<div class="checkbox-filter">
 
 							<c:forEach var="cate" items="${categories}">
