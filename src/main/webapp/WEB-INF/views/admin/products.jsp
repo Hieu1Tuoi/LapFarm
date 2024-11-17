@@ -196,8 +196,8 @@
 				<!-- sidebar menu: : style can be found in sidebar.less -->
 				<ul class="sidebar-menu" data-widget="tree">
 
-					<li><a href="menu.html"> <i class="fa fa-th"></i> <span>Quản
-								lý Menu </span> <span class="pull-right-container"> <small
+					<li><a href="/lapfarm/admin/products"> <i class="fa fa-th"></i> <span>Quản
+								lý Sản Phẩm	 </span> <span class="pull-right-container"> <small
 								class="label pull-right bg-green">FE</small>
 						</span>
 					</a></li>

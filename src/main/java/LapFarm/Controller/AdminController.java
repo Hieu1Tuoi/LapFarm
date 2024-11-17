@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping(value = "/admin")
 public class AdminController {
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
-	public String admin() {
+	public String index() {
 
 		return "admin/index";
 	}
@@ -17,5 +17,10 @@ public class AdminController {
 	public String menu() {
 
 		return "admin/menu";
+	}
+	
+	@RequestMapping(value = "/products", method = RequestMethod.GET)
+	public String products() {
+		return "/admin/products";
 	}
 }

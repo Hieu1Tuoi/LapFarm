@@ -200,7 +200,22 @@
 				<!-- /.search form -->
 				<!-- sidebar menu: : style can be found in sidebar.less -->
 
+<<<<<<< Updated upstream
 				<ul class="sidebar-menu" data-widget="tree">
+=======
+<<<<<<< HEAD
+        <li>
+          <a href="admin/products">
+            <i class="fa fa-th"></i> <span>Quản lý Sản Phẩm </span>
+            <span class="pull-right-container">
+              <small class="label pull-right bg-green">FE</small>
+            </span>
+          </a>
+        </li>
+=======
+				<ul class="sidebar-menu" data-widget="tree">
+>>>>>>> 201ae0982dc0b5eb2aa882e0b89b9f6ab1b8e25b
+>>>>>>> Stashed changes
 
 					<li><a href="admin/menu"> <i class="fa fa-th"></i> <span>Quản
 								lý Menu </span> <span class="pull-right-container"> <small
