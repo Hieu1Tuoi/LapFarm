@@ -1,6 +1,7 @@
 package LapFarm.Entity;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 import jakarta.persistence.*;
 
@@ -23,6 +24,18 @@ public class ProductEntity {
     @ManyToOne(fetch = FetchType.EAGER) // Fetch EAGER
     @JoinColumn(name = "IdCategory", referencedColumnName = "IdCategory", nullable = false)
     private CategoryEntity category;
+    
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ImageEntity> images;
+
+    // Getter cho images
+    public List<ImageEntity> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ImageEntity> images) {
+        this.images = images;
+    }
 
     @Column(name = "Describe")
     private String description;
