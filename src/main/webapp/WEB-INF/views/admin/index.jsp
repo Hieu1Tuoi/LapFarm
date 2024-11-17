@@ -207,7 +207,7 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li>
           <a href="admin/products">
-            <i class="fa fa-th"></i> <span>Quản lý Sản Phẩm </span>
+            <i class="fa fa-th"></i> <span>Quản lý Đơn Hàng </span>
             <span class="pull-right-container">
               <small class="label pull-right bg-green">FE</small>
             </span>
@@ -216,7 +216,7 @@
 
         <li class="treeview">
           <a href="#">
-            <i class="fa fa-dashboard"></i> <span>Quản lý banner</span>
+            <i class="fa fa-dashboard"></i> <span>Quản lý Sản Phẩm</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
