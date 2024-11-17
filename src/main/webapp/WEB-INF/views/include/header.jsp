@@ -8,7 +8,7 @@
         <div class="container">
             <ul class="header-links pull-left">
                 <li><a href="#"><i class="fa fa-phone"></i> 0123456789</a></li>
-                <li><a href="#"><i class="fa fa-envelope-o"></i> nhom8@email.com</a></li>
+                <li><a href="#"><i class="fa fa-envelope-o"></i> vl@email.com</a></li>
                 <li><a href="#"><i class="fa fa-map-marker"></i> 97 Man Thiện</a></li>
             </ul>
             <ul class="header-links pull-right">
