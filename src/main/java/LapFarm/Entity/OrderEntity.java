@@ -1,126 +1,47 @@
 package LapFarm.Entity;
 
-import java.security.Timestamp;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "order")
 public class OrderEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "IdOrder")
-	private Integer IdOrder;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IdOrder")
+    private int idOrder;
 
-	@Column(name = "UserOrder", nullable = false)
-	private Integer UserOrder;
+    @ManyToOne
+    @JoinColumn(name = "UserOrder", referencedColumnName = "UserId", nullable = false)
+    private UserInfoEntity userInfo;
 
-	@Column(name = "Time", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	private Timestamp Time;
+    @Column(name = "Time", nullable = false)
+    private java.sql.Timestamp time;
 
-	@Column(name = "State", nullable = false, length = 20)
-	private String State;
+    @Column(name = "State", nullable = false, length = 20)
+    private String state;
 
-	@Column(name = "TotalPrice", nullable = false)
-	private Integer TotalPrice;
+    @Column(name = "TotalPrice", nullable = false)
+    private int totalPrice;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "IdOrder", referencedColumnName = "OrderDetail")
+    // Getters and Setters
+    public int getIdOrder() { return idOrder; }
+    public void setIdOrder(int idOrder) { this.idOrder = idOrder; }
 
-	public Integer getIdOrder() {
-		return IdOrder;
-	}
+    public UserInfoEntity getUserInfo() { return userInfo; }
+    public void setUserInfo(UserInfoEntity userInfo) { this.userInfo = userInfo; }
 
-	public void setIdOrder(Integer idOrder) {
-		IdOrder = idOrder;
-	}
+    public java.sql.Timestamp getTime() { return time; }
+    public void setTime(java.sql.Timestamp time) { this.time = time; }
 
-	public Integer getUserOrder() {
-		return UserOrder;
-	}
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
 
-	public void setUserOrder(Integer userOrder) {
-		UserOrder = userOrder;
-	}
+    public int getTotalPrice() { return totalPrice; }
+    public void setTotalPrice(int totalPrice) { this.totalPrice = totalPrice; }
 
-	public Timestamp getTime() {
-		return Time;
-	}
-
-	public void setTime(Timestamp time) {
-		Time = time;
-	}
-
-	public String getState() {
-		return State;
-	}
-
-	public void setState(String state) {
-		State = state;
-	}
-
-	public Integer getTotalPrice() {
-		return TotalPrice;
-	}
-
-	public void setTotalPrice(Integer totalPrice) {
-		TotalPrice = totalPrice;
-	}
-
-	@Entity
-	@Table(name = "orderdetail")
-	public static class OrderDetail {
-		@Column(name = "OrderDetail")
-		private int OrderDetail;
-		@Column(name = "ProductOrder", nullable = false)
-		private Integer ProductOrder;
-		@Column(name = "Quantity", nullable = false)
-		private Integer Quantity;
-		@Column(name = "Price", nullable = false)
-		private Integer Price;
-
-		public int getOrderDetail() {
-			return OrderDetail;
-		}
-
-		public void setOrderDetail(int orderDetail) {
-			OrderDetail = orderDetail;
-		}
-
-		public Integer getProductOrder() {
-			return ProductOrder;
-		}
-
-		public void setProductOrder(Integer productOrder) {
-			ProductOrder = productOrder;
-		}
-
-		public Integer getQuantity() {
-			return Quantity;
-		}
-
-		public void setQuantity(Integer quantity) {
-			Quantity = quantity;
-		}
-
-		public Integer getPrice() {
-			return Price;
-		}
-
-		public void setPrice(Integer price) {
-			Price = price;
-		}
-
-	}
-
+    @Override
+    public String toString() {
+        return "OrderEntity{" + "idOrder=" + idOrder + ", userInfo=" + userInfo + ", time=" + time + ", state='" + state + '\'' + ", totalPrice=" + totalPrice + '}';
+    }
 }
