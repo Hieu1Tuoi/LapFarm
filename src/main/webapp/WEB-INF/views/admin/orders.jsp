@@ -279,57 +279,35 @@
 						<!-- /.box-header -->
 						<div class="box-body table-responsive no-padding">
 							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th>ID Đơn Hàng</th>
+										<th>Người Đặt Hàng</th>
+										<th>Thời Gian</th>
+										<th>Trạng Thái</th>
+										<th>Tổng Giá</th>
+										<th>Tùy Chọn</th>
+									</tr>
+								</thead>
 								<tbody>
-									<tr>
-										<th>Tên</th>
-										<th>Menu cha</th>
-										<th>Ngày tạo</th>
-										<th>Trạng thái</th>
-										<th>Tùy chọn</th>
-									</tr>
-									<tr>
-										<td>Trang chủ</td>
-										<td>____</td>
-										<td>10-10-2018</td>
-										<td><span class="label label-success">Hiển thị</span></td>
-										<td><a href="edit-menu.html" class="btn btn-success">Sửa</a>
-											<a href="" class="btn btn-danger">Xóa</a></td>
-									</tr>
-									<tr>
-										<td>Giới Thiệu</td>
-										<td>____</td>
-										<td>10-10-2018</td>
-										<td><span class="label label-success">Hiển thị</span></td>
-										<td><a href="" class="btn btn-success">Sửa</a> <a href=""
-											class="btn btn-danger">Xóa</a></td>
-									</tr>
-									<tr>
-										<td>Đào tạo</td>
-										<td>____</td>
-										<td>10-10-2018</td>
-										<td><span class="label label-success">Hiển thị</span></td>
-										<td><a href="" class="btn btn-success">Sửa</a> <a href=""
-											class="btn btn-danger">Xóa</a></td>
-									</tr>
-									<tr>
-										<td>Chương trình đào tạo</td>
-										<td>Đào tạo</td>
-										<td>10-10-2018</td>
-										<td><span class="label label-success">Hiển thị</span></td>
-										<td><a href="" class="btn btn-success">Sửa</a> <a href=""
-											class="btn btn-danger">Xóa</a></td>
-									</tr>
-									<tr>
-										<td>Thi đua khen thưởng</td>
-										<td>Đào tạo</td>
-										<td>10-10-2018</td>
-										<td><span class="label label-danger">Đang ẩn</span></td>
-										<td><a href="" class="btn btn-success">Sửa</a> <a href=""
-											class="btn btn-danger">Xóa</a></td>
-									</tr>
+									<c:forEach var="order" items="${orders}">
+										<tr>
+											<td>${order.idOrder}</td>
+											<td>${order.userOrder}</td>
+											<td>${order.time}</td>
+											<td>${order.state}</td>
+											<td>${order.totalPrice}</td>
+											<td><a
+												href="${pageContext.request.contextPath}/admin/edit-order/${order.idOrder}"
+												class="btn btn-success">Sửa</a> <a
+												href="${pageContext.request.contextPath}/admin/delete-order/${order.idOrder}"
+												class="btn btn-danger">Xóa</a></td>
+										</tr>
+									</c:forEach>
 								</tbody>
 							</table>
 						</div>
+
 						<!-- /.box-body -->
 					</div>
 					<!-- /.box -->
