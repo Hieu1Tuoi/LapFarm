@@ -21,14 +21,12 @@
 
     <!-- MAIN HEADER -->
     <div id="header">
-        <!-- container -->
         <div class="container">
-            <!-- row -->
             <div class="row">
                 <!-- LOGO -->
                 <div class="col-md-3">
                     <div class="header-logo">
-                        <a href="<c:url value='/home' />" class="logo"> 
+                        <a href="<c:url value='/home' />" class="logo">
                             <img src="<c:url value='/resources/img/logo.png' />" alt="">
                         </a>
                     </div>
@@ -42,7 +40,7 @@
                             <select class="input-select">
                                 <option value="0">All Categories</option>
                                 <option value="1">Category 01</option>
-                                <option value="1">Category 02</option>
+                                <option value="2">Category 02</option>
                             </select>
                             <input class="input" placeholder="Search here">
                             <button class="search-btn">Search</button>
@@ -56,8 +54,8 @@
                     <div class="header-ctn">
                         <!-- Wishlist -->
                         <div>
-                            <a href="#"> 
-                                <i class="fa fa-heart-o"></i> 
+                            <a href="#">
+                                <i class="fa fa-heart-o"></i>
                                 <span>Your Wishlist</span>
                                 <div class="qty">2</div>
                             </a>
@@ -66,29 +64,67 @@
 
                         <!-- Cart -->
                         <div class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true"> 
-                                <i class="fa fa-shopping-cart"></i> 
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                <i class="fa fa-shopping-cart"></i>
                                 <span>Your Cart</span>
-                                <div class="qty">3</div>
+                                <div class="qty">${cart.totalQuantity}</div>
                             </a>
+                            <div class="cart-dropdown">
+                                <c:choose>
+                                    <c:when test="${not empty cart.items}">
+                                        <div class="cart-list">
+                                            <c:forEach var="item" items="${cart.items}">
+                                                <div class="product-widget">
+                                                    <div class="product-img">
+                                                        <img src="${item.imageUrl}" alt="">
+                                                    </div>
+                                                    <div class="product-body">
+                                                        <h3 class="product-name">
+                                                            <a href="${item.productUrl}">${item.name}</a>
+                                                        </h3>
+                                                        <h4 class="product-price">
+                                                            <span class="qty">${item.quantity}x</span>${item.price}
+                                                        </h4>
+                                                    </div>
+                                                    <button class="delete">
+                                                        <i class="fa fa-close"></i>
+                                                    </button>
+                                                </div>
+                                            </c:forEach>
+                                        </div>
+                                        <div class="cart-summary">
+                                            <small>${cart.totalQuantity} Item(s) selected</small>
+                                            <h5>SUBTOTAL: ${cart.totalPrice}</h5>
+                                        </div>
+                                        <div class="cart-btns">
+                                            <a href="<c:url value='/cart/view' />">View Cart</a>
+                                            <a href="<c:url value='/checkout' />">Checkout <i class="fa fa-arrow-circle-right"></i></a>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="empty-cart">
+                                            <p>Your cart is currently empty.</p>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
                         </div>
                         <!-- /Cart -->
 
-                        <!-- Menu Toogle -->
+                        <!-- Menu Toggle -->
                         <div class="menu-toggle">
-                            <a href="#"> 
-                                <i class="fa fa-bars"></i> 
+                            <a href="#">
+                                <i class="fa fa-bars"></i>
                                 <span>Menu</span>
                             </a>
                         </div>
-                        <!-- /Menu Toogle -->
+                        <!-- /Menu Toggle -->
                     </div>
                 </div>
                 <!-- /ACCOUNT -->
             </div>
-            <!-- row -->
         </div>
-        <!-- container -->
     </div>
     <!-- /MAIN HEADER -->
 </header>
+<!-- /HEADER -->
