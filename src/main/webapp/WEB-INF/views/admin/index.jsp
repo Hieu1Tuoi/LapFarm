@@ -175,7 +175,7 @@
     </nav>
   </header>
 
-<<<<<<< HEAD
+
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -235,8 +235,7 @@
 
 <!-- jQuery 3 -->
 
-=======
-  <!-- =============================================== -->
+
 
   <!-- Left side column. contains the sidebar -->
   <aside class="main-sidebar">
@@ -362,8 +361,6 @@
 <!-- ./wrapper -->
 
 <!-- jQuery 3 -->
-
->>>>>>> 0b7d826322ff2853a1581e86ea07654732e748b0
 <script src="resources/admin/js/jquery.min.js"></script>
 <script src="resources/admin/js/jquery-ui.js"></script>
 <script src="resources/admin/js/bootstrap.min.js"></script>
