@@ -6,6 +6,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import jakarta.servlet.http.HttpSession;
+
 import org.apache.commons.codec.binary.Hex;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -28,7 +30,8 @@ public class LoginController {
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String login(@RequestParam("email") String email, @RequestParam("password") String password, Model model) {
+	public String login(@RequestParam("email") String email, @RequestParam("password") String password, Model model,
+			HttpSession httpSession) {
 		Session session = factory.openSession();
 		Transaction t = session.beginTransaction();
 		try {
@@ -40,6 +43,11 @@ public class LoginController {
 			AccountEntity acc = (AccountEntity) query.uniqueResult();
 
 			if (acc != null) {
+				if (acc.getRole().getId() == 1) {
+					httpSession.setAttribute("admin", acc);
+				} else if (acc.getRole().getId() == 0) {
+					httpSession.setAttribute("user", acc);
+				}
 				t.commit();
 				return "redirect:/home";
 			} else {
@@ -57,6 +65,13 @@ public class LoginController {
 		}
 	}
 	
+	@RequestMapping("/logout")
+	public String logout(HttpSession httpSession) {
+		httpSession.removeAttribute("user");
+		httpSession.removeAttribute("admin");
+		return "redirect:/login";
+	}
+
 	private String hashPasswordWithMD5(String password) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");

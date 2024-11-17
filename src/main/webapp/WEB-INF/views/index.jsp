@@ -61,8 +61,21 @@
 				</ul>
 				<ul class="header-links pull-right">
 					<li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
-					<li><a href="<c:url value="/login" />"><i
-							class="fa fa-user-o"></i> My Account</a></li>
+
+					<!-- Check if session has "user" or "admin" attribute -->
+					<c:choose>
+						<c:when
+							test="${not empty sessionScope.user or not empty sessionScope.admin}">
+							<!-- If the user is logged in, show "Logout" link -->
+							<a href="<c:url value='/logout' />"><i class="fa fa-user-o"></i>
+								Đăng xuất</a>
+						</c:when>
+						<c:otherwise>
+							<!-- If the user is not logged in, show "My Account" link -->
+							<a href="<c:url value='/login' />"><i class="fa fa-user-o"></i>
+								My Account</a>
+						</c:otherwise>
+					</c:choose>
 				</ul>
 			</div>
 		</div>
