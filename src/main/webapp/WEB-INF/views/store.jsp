@@ -51,27 +51,7 @@
 	<%@ include file="/WEB-INF/views/include/header.jsp" %>
 
 	<!-- NAVIGATION -->
-	<nav id="navigation">
-		<!-- container -->
-		<div class="container">
-			<!-- responsive-nav -->
-			<div id="responsive-nav">
-				<!-- NAV -->
-				<ul class="main-nav nav navbar-nav">
-					<li class="active"><a href="/">Home</a></li>
-					<li><a href="pages">Hot Deals</a></li>
-					<li><a href="pages/">Categories</a></li>
-					<li><a href="pages/laptops">Laptops</a></li>
-					<li><a href="pages/smartphones">Smartphones</a></li>
-					<li><a href="pages/cameras">Cameras</a></li>
-					<li><a href="pages/accessories">Accessories</a></li>
-				</ul>
-				<!-- /NAV -->
-			</div>
-			<!-- /responsive-nav -->
-		</div>
-		<!-- /container -->
-	</nav>
+	<%@ include file="/WEB-INF/views/include/navigation.jsp" %>
 	<!-- /NAVIGATION -->
 
 	<!-- BREADCRUMB -->
