@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import LapFarm.Entity.CategoryEntity;
 
@@ -15,7 +16,8 @@ import LapFarm.Entity.CategoryEntity;
 public class CategoryDAO {
     @Autowired
     private SessionFactory factory;
-
+    
+    @Transactional
     public List<CategoryEntity> getAllCategories() {
         Session session = factory.getCurrentSession();
         String hql = "FROM CategoryEntity";
