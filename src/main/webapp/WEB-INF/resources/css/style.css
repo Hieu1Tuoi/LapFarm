@@ -1122,12 +1122,12 @@ textarea.input {
 }
 
 .product-widget .product-body .product-price {
-  font-size: 14px;
+  font-size: 12px;
   color: #D10024;
 }
 
 .product-widget .product-body .product-price .product-old-price {
-  font-size: 70%;
+  font-size: 60%;
   font-weight: 400;
   color: #8D99AE;
 }

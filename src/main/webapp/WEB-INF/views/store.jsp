@@ -10,7 +10,18 @@
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
 <title>LapFarm</title>
+<style>
+.product-name {
+	display: block; /* Đặt phần tử theo dạng khối */
+	white-space: nowrap; /* Ngăn không cho xuống dòng */
+	overflow: hidden; /* Ẩn phần nội dung bị tràn */
+	text-overflow: ellipsis; /* Hiển thị dấu "..." nếu nội dung bị cắt */
+	max-width: 300px;
+}
+.product-name>a:hover{
 
+}
+</style>
 <!-- Google font -->
 <link
 	href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700"
@@ -48,6 +59,7 @@
 </head>
 <body>
 	<!-- HEADER -->
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 	<%@ include file="/WEB-INF/views/include/header.jsp" %>
 =======
@@ -185,6 +197,9 @@
 		<!-- /MAIN HEADER -->
 	</header>
 	<!-- /HEADER -->
+>>>>>>> Stashed changes
+=======
+	<%@ include file="/WEB-INF/views/include/header.jsp"%>
 >>>>>>> Stashed changes
 
 	<!-- NAVIGATION -->
@@ -357,396 +372,66 @@
 					<!-- store products -->
 					<div class="row">
 						<!-- product -->
-						<div class="col-md-4 col-xs-6">
-							<div class="product">
-								<div class="product-img">
-									<img src="/LapFarm/resources/img/product01.png" alt="">
-									<div class="product-label">
-										<span class="sale">-30%</span> <span class="new">NEW</span>
+						<c:if test="${products.size()>0}">
+							<ul class="thumbnails">
+								<c:forEach var="p" items="${products}" varStatus="loop">
+									<div class="col-md-4 col-xs-6">
+										<div class="product">
+											<div class="product-img">
+												<img src="/LapFarm/resources/img/product01.png" alt="">
+												<div class="product-label">
+													<span class="sale">${p.discount*100}%</span>
+												</div>
+											</div>
+											<div class="product-body">
+												<p class="product-category">${p.category.nameCategory}</p>
+												<h4 class="product-name">
+													<a href="#" title="${p.nameProduct}">${p.nameProduct}</a>
+												</h4>
+												<h6 class="product-price">
+													${p.getFormattedSalePrice()}
+													<del class="product-old-price"> ${p.getFormattedCalPrice()}</del>
+												</h6>
+												<div class="product-rating">
+													<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
+														class="fa fa-star"></i> <i class="fa fa-star"></i> <i
+														class="fa fa-star"></i>
+												</div>
+												<div class="product-btns">
+													<button class="add-to-wishlist">
+														<i class="fa fa-heart-o"></i><span class="tooltipp">Thêm
+															Yêu Thích</span>
+													</button>
+													<button class="add-to-compare">
+														<i class="fa fa-exchange"></i><span class="tooltipp">So
+															sánh</span>
+													</button>
+													<button class="quick-view">
+														<i class="fa fa-eye"></i><span class="tooltipp">Xem
+															nhanh</span>
+													</button>
+												</div>
+											</div>
+											<div class="add-to-cart">
+												<button class="add-to-cart-btn">
+													<i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
+												</button>
+											</div>
+										</div>
 									</div>
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-									<div class="product-rating">
-										<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-											class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-											class="fa fa-star"></i>
-									</div>
-									<div class="product-btns">
-										<button class="add-to-wishlist">
-											<i class="fa fa-heart-o"></i><span class="tooltipp">add
-												to wishlist</span>
-										</button>
-										<button class="add-to-compare">
-											<i class="fa fa-exchange"></i><span class="tooltipp">add
-												to compare</span>
-										</button>
-										<button class="quick-view">
-											<i class="fa fa-eye"></i><span class="tooltipp">quick
-												view</span>
-										</button>
-									</div>
-								</div>
-								<div class="add-to-cart">
-									<button class="add-to-cart-btn">
-										<i class="fa fa-shopping-cart"></i> add to cart
-									</button>
-								</div>
-							</div>
-						</div>
+
+									<c:if
+										test="${(loop.index +1)%3==0 || (loop.index +1)==highLightProducts.size() }">
+							</ul>
+							<c:if test="${(loop.index +1)< highLightProducts.size() }">
+								<ul class="thumbnails">
+							</c:if>
+						</c:if>
+						</c:forEach>
+						</c:if>
+
 						<!-- /product -->
 
-						<!-- product -->
-						<div class="col-md-4 col-xs-6">
-							<div class="product">
-								<div class="product-img">
-									<img src="/LapFarm/resources/img/product02.png" alt="">
-									<div class="product-label">
-										<span class="new">NEW</span>
-									</div>
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-									<div class="product-rating">
-										<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-											class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-											class="fa fa-star-o"></i>
-									</div>
-									<div class="product-btns">
-										<button class="add-to-wishlist">
-											<i class="fa fa-heart-o"></i><span class="tooltipp">add
-												to wishlist</span>
-										</button>
-										<button class="add-to-compare">
-											<i class="fa fa-exchange"></i><span class="tooltipp">add
-												to compare</span>
-										</button>
-										<button class="quick-view">
-											<i class="fa fa-eye"></i><span class="tooltipp">quick
-												view</span>
-										</button>
-									</div>
-								</div>
-								<div class="add-to-cart">
-									<button class="add-to-cart-btn">
-										<i class="fa fa-shopping-cart"></i> add to cart
-									</button>
-								</div>
-							</div>
-						</div>
-						<!-- /product -->
-
-						<div class="clearfix visible-sm visible-xs"></div>
-
-						<!-- product -->
-						<div class="col-md-4 col-xs-6">
-							<div class="product">
-								<div class="product-img">
-									<img src="/LapFarm/resources/img/product03.png" alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-									<div class="product-rating"></div>
-									<div class="product-btns">
-										<button class="add-to-wishlist">
-											<i class="fa fa-heart-o"></i><span class="tooltipp">add
-												to wishlist</span>
-										</button>
-										<button class="add-to-compare">
-											<i class="fa fa-exchange"></i><span class="tooltipp">add
-												to compare</span>
-										</button>
-										<button class="quick-view">
-											<i class="fa fa-eye"></i><span class="tooltipp">quick
-												view</span>
-										</button>
-									</div>
-								</div>
-								<div class="add-to-cart">
-									<button class="add-to-cart-btn">
-										<i class="fa fa-shopping-cart"></i> add to cart
-									</button>
-								</div>
-							</div>
-						</div>
-						<!-- /product -->
-
-						<div class="clearfix visible-lg visible-md"></div>
-
-						<!-- product -->
-						<div class="col-md-4 col-xs-6">
-							<div class="product">
-								<div class="product-img">
-									<img src="/LapFarm/resources/img/product04.png" alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-									<div class="product-rating"></div>
-									<div class="product-btns">
-										<button class="add-to-wishlist">
-											<i class="fa fa-heart-o"></i><span class="tooltipp">add
-												to wishlist</span>
-										</button>
-										<button class="add-to-compare">
-											<i class="fa fa-exchange"></i><span class="tooltipp">add
-												to compare</span>
-										</button>
-										<button class="quick-view">
-											<i class="fa fa-eye"></i><span class="tooltipp">quick
-												view</span>
-										</button>
-									</div>
-								</div>
-								<div class="add-to-cart">
-									<button class="add-to-cart-btn">
-										<i class="fa fa-shopping-cart"></i> add to cart
-									</button>
-								</div>
-							</div>
-						</div>
-						<!-- /product -->
-
-						<div class="clearfix visible-sm visible-xs"></div>
-
-						<!-- product -->
-						<div class="col-md-4 col-xs-6">
-							<div class="product">
-								<div class="product-img">
-									<img src="/LapFarm/resources/img/product05.png" alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-									<div class="product-rating"></div>
-									<div class="product-btns">
-										<button class="add-to-wishlist">
-											<i class="fa fa-heart-o"></i><span class="tooltipp">add
-												to wishlist</span>
-										</button>
-										<button class="add-to-compare">
-											<i class="fa fa-exchange"></i><span class="tooltipp">add
-												to compare</span>
-										</button>
-										<button class="quick-view">
-											<i class="fa fa-eye"></i><span class="tooltipp">quick
-												view</span>
-										</button>
-									</div>
-								</div>
-								<div class="add-to-cart">
-									<button class="add-to-cart-btn">
-										<i class="fa fa-shopping-cart"></i> add to cart
-									</button>
-								</div>
-							</div>
-						</div>
-						<!-- /product -->
-
-						<!-- product -->
-						<div class="col-md-4 col-xs-6">
-							<div class="product">
-								<div class="product-img">
-									<img src="/LapFarm/resources/img/product06.png" alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-									<div class="product-rating">
-										<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-											class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-											class="fa fa-star-o"></i>
-									</div>
-									<div class="product-btns">
-										<button class="add-to-wishlist">
-											<i class="fa fa-heart-o"></i><span class="tooltipp">add
-												to wishlist</span>
-										</button>
-										<button class="add-to-compare">
-											<i class="fa fa-exchange"></i><span class="tooltipp">add
-												to compare</span>
-										</button>
-										<button class="quick-view">
-											<i class="fa fa-eye"></i><span class="tooltipp">quick
-												view</span>
-										</button>
-									</div>
-								</div>
-								<div class="add-to-cart">
-									<button class="add-to-cart-btn">
-										<i class="fa fa-shopping-cart"></i> add to cart
-									</button>
-								</div>
-							</div>
-						</div>
-						<!-- /product -->
-
-						<div class="clearfix visible-lg visible-md visible-sm visible-xs"></div>
-
-						<!-- product -->
-						<div class="col-md-4 col-xs-6">
-							<div class="product">
-								<div class="product-img">
-									<img src="/LapFarm/resources/img/product07.png" alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-									<div class="product-rating">
-										<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-											class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-											class="fa fa-star"></i>
-									</div>
-									<div class="product-btns">
-										<button class="add-to-wishlist">
-											<i class="fa fa-heart-o"></i><span class="tooltipp">add
-												to wishlist</span>
-										</button>
-										<button class="add-to-compare">
-											<i class="fa fa-exchange"></i><span class="tooltipp">add
-												to compare</span>
-										</button>
-										<button class="quick-view">
-											<i class="fa fa-eye"></i><span class="tooltipp">quick
-												view</span>
-										</button>
-									</div>
-								</div>
-								<div class="add-to-cart">
-									<button class="add-to-cart-btn">
-										<i class="fa fa-shopping-cart"></i> add to cart
-									</button>
-								</div>
-							</div>
-						</div>
-						<!-- /product -->
-
-						<!-- product -->
-						<div class="col-md-4 col-xs-6">
-							<div class="product">
-								<div class="product-img">
-									<img src="/LapFarm/resources/img/product08.png" alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-									<div class="product-rating"></div>
-									<div class="product-btns">
-										<button class="add-to-wishlist">
-											<i class="fa fa-heart-o"></i><span class="tooltipp">add
-												to wishlist</span>
-										</button>
-										<button class="add-to-compare">
-											<i class="fa fa-exchange"></i><span class="tooltipp">add
-												to compare</span>
-										</button>
-										<button class="quick-view">
-											<i class="fa fa-eye"></i><span class="tooltipp">quick
-												view</span>
-										</button>
-									</div>
-								</div>
-								<div class="add-to-cart">
-									<button class="add-to-cart-btn">
-										<i class="fa fa-shopping-cart"></i> add to cart
-									</button>
-								</div>
-							</div>
-						</div>
-						<!-- /product -->
-
-						<div class="clearfix visible-sm visible-xs"></div>
-
-						<!-- product -->
-						<div class="col-md-4 col-xs-6">
-							<div class="product">
-								<div class="product-img">
-									<img src="/LapFarm/resources/img/product09.png" alt="">
-								</div>
-								<div class="product-body">
-									<p class="product-category">Category</p>
-									<h3 class="product-name">
-										<a href="#">product name goes here</a>
-									</h3>
-									<h4 class="product-price">
-										$980.00
-										<del class="product-old-price">$990.00</del>
-									</h4>
-									<div class="product-rating"></div>
-									<div class="product-btns">
-										<button class="add-to-wishlist">
-											<i class="fa fa-heart-o"></i><span class="tooltipp">add
-												to wishlist</span>
-										</button>
-										<button class="add-to-compare">
-											<i class="fa fa-exchange"></i><span class="tooltipp">add
-												to compare</span>
-										</button>
-										<button class="quick-view">
-											<i class="fa fa-eye"></i><span class="tooltipp">quick
-												view</span>
-										</button>
-									</div>
-								</div>
-								<div class="add-to-cart">
-									<button class="add-to-cart-btn">
-										<i class="fa fa-shopping-cart"></i> add to cart
-									</button>
-								</div>
-							</div>
-						</div>
-						<!-- /product -->
 					</div>
 					<!-- /store products -->
 
@@ -804,7 +489,7 @@
 	<!-- /NEWSLETTER -->
 
 	<!-- FOOTER -->
-	<%@ include file="/WEB-INF/views/include/footer.jsp" %>
+	<%@ include file="/WEB-INF/views/include/footer.jsp"%>
 	<!-- /FOOTER -->
 
 	<!-- jQuery Plugins -->
