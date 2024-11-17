@@ -39,7 +39,7 @@ public class Mailer {
 		return code;
 	}
 	
-	public void send(String to, ServletContext context) {
+	public String send(String to, ServletContext context) {
 		try {
 			MimeMessage mail = mailer.createMimeMessage();
 			// Đặt multipart là true để hỗ trợ gửi file đính kèm
@@ -67,9 +67,10 @@ public class Mailer {
 			// Send the email
 			mailer.send(mail);
 			System.out.println("Email đã được gửi thành công tới: " + to);
-
+			
+			return "redirect:/home";
 		} catch (MessagingException ex) {
-			ex.printStackTrace(); // In stack trace để debug
+			ex.printStackTrace();
 			throw new RuntimeException("Lỗi khi gửi email: " + ex.getMessage(), ex);
 		}
 	}

@@ -1,9 +1,20 @@
 @charset "UTF-8";
 
+:root {
+    --primary-color: #D10024;
+    --primary-hover-color: #b82a24;
+    --input-border-color: #D10024;
+    --input-focus-border-color: #c9302c;
+    --input-focus-shadow: rgba(217, 83, 79, 0.5);
+    --background-light: #f4f4f9;
+    --text-color: #333;
+    --input-height: 45px;
+}
+
 /* Chỉnh sửa phần nền của form */
 #sigup {
     padding: 60px 0;
-    background-color: #f4f4f9; /* Nền màu sáng để làm nổi bật form đăng ký */
+    background-color: var(--background-light); /* Nền sáng để làm nổi bật form đăng ký */
 }
 
 /* Tùy chỉnh form đăng ký */
@@ -17,90 +28,144 @@
 /* Tiêu đề form */
 .sigup-form h2 {
     margin-bottom: 20px;
-    color: #D10024; /* Màu đỏ tươi cho tiêu đề */
+    color: var(--primary-color); /* Màu đỏ tươi cho tiêu đề */
     font-size: 24px; /* Tăng kích thước chữ tiêu đề */
     font-weight: bold;
 }
 
 /* Tùy chỉnh các trường nhập liệu */
 .sigup-form .form-control {
-    border: 1px solid #D10024; /* Viền đỏ */
-    border-radius: 4px; /* Bo góc các trường nhập liệu */
-    padding: 10px; /* Tăng khoảng cách trong input */
-    font-size: 16px; /* Tăng kích thước chữ trong input */
+    border: 1px solid var(--input-border-color); /* Viền đỏ */
+    border-radius: 4px; /* Bo góc */
+    padding: 10px;
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .sigup-form .form-control:focus {
-    border-color: #c9302c; /* Viền đỏ đậm khi focus */
-    box-shadow: 0 0 5px rgba(217, 83, 79, 0.5); /* Bóng đổ khi focus */
-    outline: none; /* Tắt viền mặc định khi focus */
+    border-color: var(--input-focus-border-color);
+    box-shadow: 0 0 5px var(--input-focus-shadow);
+    outline: none; /* Tắt viền mặc định */
 }
 
-/* Tùy chỉnh nút đăng ký */
-.sigup-form button {
-    background-color: #D10024; /* Nền nút đỏ */
-    color: #fff; /* Chữ màu trắng */
-    border: none; /* Không viền */
-    padding: 15px; /* Tăng chiều cao nút */
-    font-size: 18px; /* Tăng kích thước chữ nút */
-    border-radius: 4px; /* Bo góc nút */
-    cursor: pointer; /* Thêm con trỏ khi hover */
-    transition: background-color 0.3s; /* Hiệu ứng chuyển màu mượt mà */
-}
-
-.sigup-form button:hover {
-    background-color: #c9302c; /* Đổi màu khi hover */
-}
-
-/* Tùy chỉnh nút "Gửi mã" */
+/* Tùy chỉnh nút */
+.sigup-form button,
 .sigup-form .input-group-append .btn {
-    background-color: #c9302c; /* Nền nút "Gửi mã" */
-    color: white; /* Chữ màu trắng */
-    border-radius: 4px; /* Bo góc nút */
-    padding: 12px 20px; /* Tăng khoảng cách bên trong nút */
-    font-size: 16px; /* Tăng kích thước chữ */
-    transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    padding: 15px;
+    font-size: 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
+.sigup-form button:hover,
 .sigup-form .input-group-append .btn:hover {
-    background-color: #b82a24; /* Đổi màu khi hover */
+    background-color: var(--primary-hover-color);
+    transform: scale(1.05); /* Hiệu ứng phóng to */
 }
 
 /* Tùy chỉnh thông báo cảnh báo và thành công */
 .sigup-form .form-group strong {
-    font-size: 16px; /* Kích thước chữ thông báo */
+    font-size: 16px;
     display: block;
     margin-top: 10px;
 }
 
 /* Tùy chỉnh liên kết đăng nhập */
 .sigup-form .text-center a {
-    color: #D10024; /* Màu đỏ cho liên kết */
+    color: var(--primary-color);
     font-weight: bold;
     text-decoration: none;
 }
 
 .sigup-form .text-center a:hover {
-    text-decoration: underline; /* Gạch chân khi hover */
+    text-decoration: underline;
 }
 
+/* Tùy chỉnh container cho phần mã xác nhận */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Tùy chỉnh label */
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+/* Xóa bỏ các style mặc định có thể gây xung đột */
+.input-group * {
+    box-sizing: border-box;
+}
+
+/* Style cho input group container */
 .input-group {
-    display: flex; /* Dùng flexbox để các phần tử nằm cùng dòng */
+    display: flex;
+    align-items: center;
+    gap: 10px;
     width: 100%;
 }
 
+/* Style chung cho input và button trong input group */
+.input-group .form-control,
+.input-group #send-code-btn {
+    height: var(--input-height);
+    line-height: var(--input-height);
+    padding: 0 15px;
+    font-size: 16px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Style riêng cho input */
 .input-group .form-control {
-    flex: 1; /* Đảm bảo input chiếm hết không gian còn lại */
-    border-radius: 4px 0 0 4px; /* Bo góc chỉ cho phần input */
+    flex: 1;
+    border: 1px solid var(--input-border-color);
+    background-color: #fff;
+    display: block;
 }
 
-.input-group .input-group-append .btn {
-    border-radius: 0 4px 4px 0; /* Bo góc chỉ cho phần nút */
-    padding: 12px 20px; /* Tùy chỉnh kích thước nút */
-    font-size: 16px; /* Kích thước chữ trong nút */
-    transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+/* Style riêng cho button */
+.input-group #send-code-btn {
+    min-width: 120px; /* Đảm bảo nút đủ rộng */
+    display: inline-flex; /* Đảm bảo căn giữa text trong nút */
+    align-items: center;
+    justify-content: center;
+    height: var(--input-height); /* Đồng bộ chiều cao */
 }
 
-.input-group .input-group-append .btn:hover {
-    background-color: #b82a24; /* Màu khi hover */
+/* Hover effect cho button */
+.input-group #send-code-btn:hover {
+    background-color: var(--primary-hover-color);
+    transform: scale(1.05);
+}
+
+/* Override cho bất kỳ style mặc định nào */
+.input-group-append {
+    display: flex;
+    align-items: center;
+}
+
+.input-group .btn-secondary {
+    height: var(--input-height) !important;
+    line-height: var(--input-height) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .input-group {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .input-group #send-code-btn {
+        width: 100%;
+    }
 }
