@@ -30,7 +30,7 @@
 		<property name="url"
 			value="jdbc:mysql://localhost:3306/lapfarm" />
 		<property name="username" value="root" />
-		<property name="password" value="" />
+		<property name="password" value="Pttktt@8" />
 	</bean>
 
 	<bean id="sessionFactory"
