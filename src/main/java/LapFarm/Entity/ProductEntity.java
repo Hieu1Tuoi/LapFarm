@@ -1,5 +1,8 @@
 package LapFarm.Entity;
 
+import java.text.DecimalFormat;
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -14,11 +17,25 @@ public class ProductEntity {
     @Column(name = "NameProduct", nullable = false)
     private String nameProduct;
 
-    @Column(name = "BrandProduct", nullable = false)
-    private Integer brandProduct;
+    @ManyToOne(fetch = FetchType.EAGER) // Fetch EAGER
+    @JoinColumn(name = "BrandProduct", referencedColumnName = "IdBrand", nullable = false)
+    private BrandEntity brand;
 
-    @Column(name = "IdCategory", nullable = false)
-    private Integer idCategory;
+    @ManyToOne(fetch = FetchType.EAGER) // Fetch EAGER
+    @JoinColumn(name = "IdCategory", referencedColumnName = "IdCategory", nullable = false)
+    private CategoryEntity category;
+    
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ImageEntity> images;
+
+    // Getter cho images
+    public List<ImageEntity> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ImageEntity> images) {
+        this.images = images;
+    }
 
     @Column(name = "Describe")
     private String description;
@@ -43,29 +60,8 @@ public class ProductEntity {
 
     // Constructors
     public ProductEntity() {}
-    
 
-
-    public ProductEntity(Long idProduct, String nameProduct, Integer brandProduct, Integer idCategory,
-			String description, Integer quantity, Double discount, Double originalPrice, Double salePrice,
-			String relatedPromotions, String state) {
-		super();
-		this.idProduct = idProduct;
-		this.nameProduct = nameProduct;
-		this.brandProduct = brandProduct;
-		this.idCategory = idCategory;
-		this.description = description;
-		this.quantity = quantity;
-		this.discount = discount;
-		this.originalPrice = originalPrice;
-		this.salePrice = salePrice;
-		this.relatedPromotions = relatedPromotions;
-		this.state = state;
-	}
-
-
-
-	// Getters and Setters
+    // Getters and Setters
     public Long getIdProduct() {
         return idProduct;
     }
@@ -82,20 +78,20 @@ public class ProductEntity {
         this.nameProduct = nameProduct;
     }
 
-    public Integer getBrandProduct() {
-        return brandProduct;
+    public BrandEntity getBrand() {
+        return brand;
     }
 
-    public void setBrandProduct(Integer brandProduct) {
-        this.brandProduct = brandProduct;
+    public void setBrand(BrandEntity brand) {
+        this.brand = brand;
     }
 
-    public Integer getIdCategory() {
-        return idCategory;
+    public CategoryEntity getCategory() {
+        return category;
     }
 
-    public void setIdCategory(Integer idCategory) {
-        this.idCategory = idCategory;
+    public void setCategory(CategoryEntity category) {
+        this.category = category;
     }
 
     public String getDescription() {
@@ -153,4 +149,31 @@ public class ProductEntity {
     public void setState(String state) {
         this.state = state;
     }
+    
+    public long calPrice() {
+    	return (long) (this.salePrice-(this.discount*this.salePrice));
+    }
+    public long calSalePrice() {
+    	return (long) (this.salePrice*1);
+    }
+    
+
+    // Định dạng giá tiền với dấu phân cách nghìn
+    public String formatPrice(Long price) {
+        DecimalFormat formatter = new DecimalFormat("#,###"); // Định dạng ###,###
+        return formatter.format(price) + "₫";
+    }
+
+    // Phương thức hiển thị giá đã định dạng
+    public String getFormattedCalPrice() {
+        Long price = calPrice();
+        return formatPrice(price);
+    }
+
+    public String getFormattedSalePrice() {
+    	long price=calSalePrice();
+        return formatPrice(price);
+    }
+
+    
 }
