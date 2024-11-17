@@ -47,10 +47,10 @@
 
 </head>
 <body>
+
 	<!-- HEADER --
 	<%@ include file="/WEB-INF/views/include/header.jsp" %>
-
-	
+	<!-- HEADER -->
 	<!-- NAVIGATION -->
 	<nav id="navigation">
 		<!-- container -->

@@ -23,6 +23,11 @@ public class IndexController {
 
 		return "index";
 	}
+	
+	@RequestMapping("error")
+	public String error() {
+		return "error";
+	}
 
 	@RequestMapping(value = "/home/send")
 	public String send(ModelMap model, @RequestParam("email") String email) {

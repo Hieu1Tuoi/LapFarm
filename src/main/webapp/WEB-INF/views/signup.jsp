@@ -107,16 +107,17 @@
 									value="${cfpw}" name="confirmPassword"
 									placeholder="Xác nhận mật khẩu của bạn" required>
 							</div>
+
 							<div class="form-group">
 								<label for="verification-code">Mã xác nhận:</label>
-								<div class="input-group" style="display: flex;">
+								<div class="input-group">
 									<input type="text" class="form-control" id="verification-code"
 										name="verificationCode" placeholder="Nhập mã xác nhận"
 										required>
-									<button type="button" class="btn btn-secondary"
-										id="send-code-btn">Gửi mã</button>
+									<button type="button" id="send-code-btn">Gửi mã</button>
 								</div>
 							</div>
+
 							<div class="form-group">
 								<strong style="color: red;">${warning}</strong> <strong
 									style="color: green;">${message}</strong>
@@ -147,4 +148,48 @@
 	<%@ include file="/WEB-INF/views/include/footer.jsp" %>
 	<!-- /FOOTER -->
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	$(document)
+			.ready(
+					function() {
+						$('#send-code-btn')
+								.click(
+										function() {
+											const email = $('#sigup-email')
+													.val();
+
+											// Kiểm tra email có được nhập vào hay không
+											if (!email) {
+												alert("Vui lòng nhập email để nhận mã xác minh!");
+												return;
+											}
+
+											// Gửi yêu cầu AJAX
+											$
+													.ajax({
+														url : 'sendVerifyCode', // Endpoint gửi mã
+														type : 'POST',
+														data : {
+															email : email
+														},
+														success : function(
+																response) {
+															// Hiển thị thông báo thành công
+															$('#code-message')
+																	.text(
+																			"Mã xác nhận đã được gửi đến email của bạn!")
+																	.show();
+															alert("Email gửi mã xác minh đã thành công!");
+														},
+														error : function(xhr,
+																status, error) {
+															// Hiển thị thông báo lỗi nếu có
+															alert("Có lỗi xảy ra khi gửi mã xác minh: "
+																	+ xhr.responseText);
+														}
+													});
+										});
+					});
+</script>
 </html>
