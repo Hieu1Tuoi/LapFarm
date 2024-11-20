@@ -3,18 +3,20 @@ package LapFarm.Entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "orderdetail")
+@Table(name = "order_details")  // Tên bảng phù hợp với database
 public class OrderDetailEntity {
 
     @EmbeddedId
     private OrderDetailId id;
 
-    @ManyToOne
-    @JoinColumn(name = "OrderDetail", referencedColumnName = "IdOrder", insertable = false, updatable = false)
+    @MapsId("order")  // Liên kết với trường trong OrderDetailId
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "OrderDetail", nullable = false)
     private OrderEntity order;
 
-    @ManyToOne
-    @JoinColumn(name = "ProductOrder", referencedColumnName = "IdProduct", insertable = false, updatable = false)
+    @MapsId("product")  // Liên kết với trường trong OrderDetailId
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ProductOrder", nullable = false)
     private ProductEntity product;
 
     @Column(name = "Quantity", nullable = false)
@@ -41,6 +43,12 @@ public class OrderDetailEntity {
 
     @Override
     public String toString() {
-        return "OrderDetailEntity{" + "order=" + order + ", product=" + product + ", quantity=" + quantity + ", price=" + price + '}';
+        return "OrderDetailEntity{" +
+                "id=" + id +
+                ", order=" + (order != null ? order.getIdOrder() : null) +
+                ", product=" + (product != null ? product.getIdProduct() : null) +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                '}';
     }
 }

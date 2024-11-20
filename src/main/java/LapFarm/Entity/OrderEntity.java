@@ -3,7 +3,7 @@ package LapFarm.Entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 public class OrderEntity {
 
     @Id
@@ -11,12 +11,12 @@ public class OrderEntity {
     @Column(name = "IdOrder")
     private int idOrder;
 
-    @ManyToOne
-    @JoinColumn(name = "UserOrder", referencedColumnName = "UserId", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "UserOrder", nullable = false)
     private UserInfoEntity userInfo;
 
     @Column(name = "Time", nullable = false)
-    private java.sql.Timestamp time;
+    private Timestamp time;
 
     @Column(name = "State", nullable = false, length = 20)
     private String state;
@@ -31,8 +31,8 @@ public class OrderEntity {
     public UserInfoEntity getUserInfo() { return userInfo; }
     public void setUserInfo(UserInfoEntity userInfo) { this.userInfo = userInfo; }
 
-    public java.sql.Timestamp getTime() { return time; }
-    public void setTime(java.sql.Timestamp time) { this.time = time; }
+    public Timestamp getTime() { return time; }
+    public void setTime(Timestamp time) { this.time = time; }
 
     public String getState() { return state; }
     public void setState(String state) { this.state = state; }
@@ -42,6 +42,12 @@ public class OrderEntity {
 
     @Override
     public String toString() {
-        return "OrderEntity{" + "idOrder=" + idOrder + ", userInfo=" + userInfo + ", time=" + time + ", state='" + state + '\'' + ", totalPrice=" + totalPrice + '}';
+        return "OrderEntity{" +
+                "idOrder=" + idOrder +
+                ", userInfo=" + (userInfo != null ? userInfo.getUserId() : null) +
+                ", time=" + time +
+                ", state='" + state + '\'' +
+                ", totalPrice=" + totalPrice +
+                '}';
     }
 }

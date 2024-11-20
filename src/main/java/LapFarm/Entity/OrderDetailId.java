@@ -2,6 +2,7 @@ package LapFarm.Entity;
 
 import jakarta.persistence.Embeddable;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 public class OrderDetailId implements Serializable {
@@ -9,7 +10,7 @@ public class OrderDetailId implements Serializable {
     private int order;
     private int product;
 
-    // Getters, Setters, equals, hashcode
+    // Getters and Setters
     public int getOrder() { return order; }
     public void setOrder(int order) { this.order = order; }
 
@@ -26,6 +27,6 @@ public class OrderDetailId implements Serializable {
 
     @Override
     public int hashCode() {
-        return 31 * order + product;
+        return Objects.hash(order, product);
     }
 }
