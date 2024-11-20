@@ -1,5 +1,7 @@
 package LapFarm.Entity;
 
+import java.sql.Timestamp;
+
 import jakarta.persistence.*;
 
 @Entity

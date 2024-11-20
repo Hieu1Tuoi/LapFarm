@@ -18,8 +18,9 @@
 	text-overflow: ellipsis; /* Hiển thị dấu "..." nếu nội dung bị cắt */
 	max-width: 300px;
 }
-.product-name>a:hover{
 
+.product-name>a:hover {
+	
 }
 </style>
 <!-- Google font -->
@@ -59,14 +60,14 @@
 </head>
 <body>
 
-	
+
 	<%@ include file="/WEB-INF/views/include/header.jsp"%>
 
 
 	<!-- NAVIGATION -->
-	<%@ include file="/WEB-INF/views/include/navigation.jsp" %>
+	<%@ include file="/WEB-INF/views/include/navigation.jsp"%>
 	<!-- /NAVIGATION -->
-	
+
 	<!-- BREADCRUMB -->
 	<div id="breadcrumb" class="section">
 		<!-- container -->
@@ -233,17 +234,18 @@
 					<!-- store products -->
 					<div class="row">
 						<!-- product -->
-						
+
 						<c:if test="${products.size()>0}">
 							<ul class="thumbnails">
 								<c:forEach var="p" items="${products}" varStatus="loop">
-								
+
 									<div class="col-md-4 col-xs-6">
 										<div class="product">
 											<div class="product-img">
-												<c:if test="${not empty p.images}">
-                    <img src="/LapFarm/resources/img/${p.images[0].image}" alt="Product Image">
-                </c:if>
+												
+													<img src="/LapFarm/resources/img/product01.png"
+														alt="Product Image">
+												
 												<div class="product-label">
 													<span class="sale">${p.discount*100}%</span>
 												</div>
@@ -255,7 +257,8 @@
 												</h4>
 												<h6 class="product-price">
 													${p.getFormattedSalePrice()}
-													<del class="product-old-price"> ${p.getFormattedCalPrice()}</del>
+													<del class="product-old-price">
+														${p.getFormattedCalPrice()}</del>
 												</h6>
 												<div class="product-rating">
 													<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
@@ -302,7 +305,7 @@
 
 					<!-- store bottom filter -->
 					<div class="store-filter clearfix">
-						<span class="store-qty">Showing 20-100 products</span>
+						
 						<ul class="store-pagination">
 							<li class="active">1</li>
 							<li><a href="#">2</a></li>

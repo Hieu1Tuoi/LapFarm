@@ -24,7 +24,7 @@ public class ProductDAO {
         // Viết câu truy vấn HQL để lấy tất cả sản phẩm
         String hql = "FROM ProductEntity"; // Truy vấn tất cả sản phẩm từ bảng ProductEntity
         Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
-
+        query.setMaxResults(9);
         // Trả về danh sách sản phẩm
         return query.list();
     }
