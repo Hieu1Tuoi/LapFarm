@@ -37,15 +37,91 @@ public class SignupController {
 		return "signup";
 	}
 
+	@RequestMapping(value = "/forgotpassword", method = RequestMethod.GET)
+	public String fogotpasswordForm() {
+		return "signup";
+	}
+
 	@PostMapping("/sendVerifyCode")
 	@ResponseBody
 	public String sendVerifyCode(@RequestParam("email") String email, HttpSession session) {
-		// Gửi mã xác minh
+
 		String code = mailer.VerifyCode(email);
 
 		session.setAttribute("verificationCode", code);
 
 		return "Mã xác minh đã được gửi: " + code;
+	}
+	
+	@RequestMapping(value = "/forgotpassword", method = RequestMethod.POST)
+	public String resetPassword(ModelMap model, @RequestParam("password") String password, 
+	                            @RequestParam("email") String email,
+	                            @RequestParam("confirmPassword") String confirmPassword,
+	                            @RequestParam("verificationCode") String verificationCode,
+	                            HttpSession verificationSession) {
+	    Session session = factory.openSession();
+	    Transaction t = session.beginTransaction();
+
+	    String codeFromSession = (String) verificationSession.getAttribute("verificationCode");
+	    
+	    // Kiểm tra mã xác nhận
+	    if (codeFromSession == null || !codeFromSession.equals(verificationCode)) {
+	        model.addAttribute("warning", "Mã xác nhận không chính xác!");
+	        model.addAttribute("email", email);
+	        model.addAttribute("pw", password);
+	        model.addAttribute("cfpw", confirmPassword);
+	        return "signup"; // Trang sửa mật khẩu
+	    }
+
+	    // Kiểm tra độ dài mật khẩu
+	    if (password.length() < 6) {
+	        model.addAttribute("warning", "Mật khẩu phải hơn 6 ký tự!");
+	        model.addAttribute("email", email);
+	        model.addAttribute("pw", password);
+	        model.addAttribute("cfpw", confirmPassword);
+	        return "signup"; // Trang sửa mật khẩu
+	    } 
+	    
+	    // Kiểm tra mật khẩu xác nhận
+	    else if (!password.equals(confirmPassword)) {
+	        model.addAttribute("warning", "Xác nhận mật khẩu không giống nhau!");
+	        model.addAttribute("email", email);
+	        model.addAttribute("pw", password);
+	        model.addAttribute("cfpw", confirmPassword);
+	        return "signup"; // Trang sửa mật khẩu
+	    }
+
+	    try {
+	        // Kiểm tra email có tồn tại trong cơ sở dữ liệu không
+	        String hql = "FROM AccountEntity WHERE email = :email";
+	        Query query = session.createQuery(hql);
+	        query.setParameter("email", email);
+
+	        AccountEntity existingAccount = (AccountEntity) query.uniqueResult();
+
+	        if (existingAccount == null) {
+	            model.addAttribute("warning", "Email không tồn tại trong hệ thống!");
+	            model.addAttribute("email", email);
+	            model.addAttribute("pw", password);
+	            model.addAttribute("cfpw", confirmPassword);
+	            return "signup"; // Trang sửa mật khẩu
+	        }
+
+	        // Mã hóa mật khẩu mới
+	        String hashedPassword = hashPasswordWithMD5(password);
+	        existingAccount.setPassword(hashedPassword);
+
+	        session.update(existingAccount); // Cập nhật mật khẩu mới
+	        t.commit();
+	        model.addAttribute("message", "Mật khẩu đã được cập nhật thành công!");
+	    } catch (Exception e) {
+	        t.rollback();
+	        model.addAttribute("warning", "Cập nhật mật khẩu thất bại! " + e.getMessage());
+	    } finally {
+	        session.close();
+	    }
+
+	    return "redirect:/login"; // Trang sửa mật khẩu
 	}
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
@@ -79,9 +155,9 @@ public class SignupController {
 			model.addAttribute("cfpw", confirmPassword);
 			return "signup";
 		}
-		
+
 		try {
-			
+
 			String hql = "FROM AccountEntity WHERE email = :email";
 			Query query = session.createQuery(hql);
 			query.setParameter("email", acc.getEmail());
@@ -108,10 +184,10 @@ public class SignupController {
 		} finally {
 			session.close();
 		}
-		
-		//verificationSession.setAttribute("email", email);
-	    // verificationSession.close();
-	    return "signup";
+
+		// verificationSession.setAttribute("email", email);
+		// verificationSession.close();
+		return "signup";
 	}
 
 	private String hashPasswordWithMD5(String password) {

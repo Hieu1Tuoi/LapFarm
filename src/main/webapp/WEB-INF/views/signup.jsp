@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>LapFarm</title>
-
+<base href="${pageContext.servletContext.contextPath}/">
 <!-- Google font -->
 <link
 	href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700"
@@ -136,7 +136,8 @@
 			</div>
 		</div>
 	</div>
-	<!-- /sigup -->
+	<!-- /Signup Form -->
+	
 	<!-- NAVIGATION -->
 	<nav id="navigation">
 		<!-- container -->
@@ -145,7 +146,7 @@
 	</nav>
 	<!-- /NAVIGATION -->
 	<!-- FOOTER -->
-	<%@ include file="/WEB-INF/views/include/footer.jsp" %>
+	<%@ include file="/WEB-INF/views/include/footer.jsp"%>
 	<!-- /FOOTER -->
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -191,5 +192,17 @@
 													});
 										});
 					});
+
+	$(document).ready(function() {
+		const currentPath = window.location.pathname;
+
+		if (currentPath.includes('/forgotpassword')) {
+			document.querySelector('.text-center').textContent = 'Quên mật khẩu';
+			document.querySelector('label[for="sigup-password"]').textContent = 'Mật khẩu mới:';
+			document.querySelector('label[for="confirm-password"]').textContent = 'Xác nhận mật khẩu mới:';
+			document.querySelector('.btn-primary').textContent = 'Đổi mật khẩu';
+			document.querySelector('form').setAttribute('action', 'forgotpassword');
+		}
+	});
 </script>
 </html>
