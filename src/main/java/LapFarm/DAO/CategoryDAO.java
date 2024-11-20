@@ -24,4 +24,19 @@ public class CategoryDAO {
         Query<CategoryEntity> query = session.createQuery(hql, CategoryEntity.class);
         return query.list();
     }
+    
+
+    @Transactional
+    public int getProductCountByCategoryId(int idCategory) {
+        Session session = factory.getCurrentSession();
+
+        // HQL để đếm số lượng sản phẩm theo idCategory
+        String hql = "SELECT COUNT(p) FROM ProductEntity p WHERE p.category.idCategory = :idCategory";
+        Query<Integer> query = session.createQuery(hql, Integer.class);
+        query.setParameter("idCategory", idCategory);
+
+        // Trả về số lượng sản phẩm
+        return query.uniqueResult();
+    }
+    
 }

@@ -25,10 +25,10 @@ public class ProductEntity {
     @JoinColumn(name = "IdCategory", referencedColumnName = "IdCategory", nullable = false)
     private CategoryEntity category;
     
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ImageEntity> images;
 
-    // Getter cho images
+    // Getter và Setter
     public List<ImageEntity> getImages() {
         return images;
     }

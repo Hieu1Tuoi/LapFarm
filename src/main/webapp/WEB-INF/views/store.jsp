@@ -99,7 +99,7 @@
 				<div id="aside" class="col-md-3">
 					<!-- aside Widget -->
 					<div class="aside">
-						<h3 class="aside-title">Categories</h3>
+						<h3 class="aside-title">DANH MỤC</h3>
 						<h2>${products != null ? products.size() : 0}</h2>
 						<div class="checkbox-filter">
 
@@ -109,7 +109,7 @@
 									<input type="checkbox" id="category-${cate.idCategory}"
 										name="selectedCategories" value="${cate.idCategory}">
 									<label for="category-${cate.idCategory}"> <span></span>
-										${cate.nameCategory} <small>(chua de)</small>
+										${cate.nameCategory} <small>(${productCounts[cate.idCategory]})</small>
 									</label>
 								</div>
 							</c:forEach>
@@ -120,7 +120,7 @@
 
 					<!-- aside Widget -->
 					<div class="aside">
-						<h3 class="aside-title">Price</h3>
+						<h3 class="aside-title">GIÁ</h3>
 						<div class="price-filter">
 							<div id="price-slider"></div>
 							<div class="input-number price-min">
@@ -138,7 +138,7 @@
 
 					<!-- aside Widget -->
 					<div class="aside">
-						<h3 class="aside-title">Brand</h3>
+						<h3 class="aside-title">THƯƠNG HIỆU</h3>
 						<div class="checkbox-filter">
 							<c:forEach var="brand" items="${brands}">
 								<div class="input-checkbox">
@@ -146,7 +146,7 @@
 									<input type="checkbox" id="brand-${brand.idBrand}"
 										name="selectedBrands" value="${brand.idBrand}"> <label
 										for="brand-${brand.idBrand}"> <span></span>
-										${brand.nameBrand} <small>(chua de)</small>
+										${brand.nameBrand} <small>(${productCountsByBrand[brand.idBrand]})</small>
 									</label>
 								</div>
 							</c:forEach>
@@ -156,54 +156,35 @@
 
 					<!-- aside Widget -->
 					<div class="aside">
-						<h3 class="aside-title">Top selling</h3>
-						<div class="product-widget">
-							<div class="product-img">
-								<img src="/LapFarm/resources/img/product01.png" alt="">
-							</div>
-							<div class="product-body">
-								<p class="product-category">Category</p>
-								<h3 class="product-name">
-									<a href="#">product name goes here</a>
-								</h3>
-								<h4 class="product-price">
-									$980.00
-									<del class="product-old-price">$990.00</del>
-								</h4>
-							</div>
-						</div>
 
-						<div class="product-widget">
-							<div class="product-img">
-								<img src="/LapFarm/resources/img/product02.png" alt="">
-							</div>
-							<div class="product-body">
-								<p class="product-category">Category</p>
-								<h3 class="product-name">
-									<a href="#">product name goes here</a>
-								</h3>
-								<h4 class="product-price">
-									$980.00
-									<del class="product-old-price">$990.00</del>
-								</h4>
-							</div>
-						</div>
+						<h3 class="aside-title">BÁN CHẠY NHẤT</h3>
 
-						<div class="product-widget">
-							<div class="product-img">
-								<img src="/LapFarm/resources/img/product03.png" alt="">
+						<c:forEach var="product" items="${products_top_sell}">
+							<div class="product-widget">
+								<div class="product-img">
+									<!-- Sử dụng thuộc tính 'image' từ ProductDTO -->
+									<img src="${product.image}" alt="">
+								</div>
+								<div class="product-body">
+									<!-- Sử dụng thuộc tính 'category' từ ProductDTO -->
+									<p class="product-category">${product.categoryName}</p>
+									<h3 class="product-name">
+										<a href="#">${product.nameProduct}</a>
+									</h3>
+									<h4 class="product-price">
+										<!-- Sử dụng phương thức 'getFormattedCalPrice' từ ProductDTO -->
+										${product.getFormattedDiscountedPrice()}
+										<del class="product-old-price">
+											<!-- Sử dụng phương thức 'getFormattedSalePrice' từ ProductDTO -->
+											${product.getFormattedSalePrice()}
+										</del>
+									</h4>
+								</div>
 							</div>
-							<div class="product-body">
-								<p class="product-category">Category</p>
-								<h3 class="product-name">
-									<a href="#">product name goes here</a>
-								</h3>
-								<h4 class="product-price">
-									$980.00
-									<del class="product-old-price">$990.00</del>
-								</h4>
-							</div>
-						</div>
+						</c:forEach>
+
+
+
 					</div>
 					<!-- /aside Widget -->
 				</div>
@@ -242,10 +223,18 @@
 									<div class="col-md-4 col-xs-6">
 										<div class="product">
 											<div class="product-img">
-												
-													<img src="/LapFarm/resources/img/product01.png"
-														alt="Product Image">
-												
+
+												<!-- Lấy hình ảnh đầu tiên từ danh sách -->
+												<c:choose>
+													<c:when test="${not empty p.images}">
+														<img src="${p.images[0].imageUrl}" alt="Product Image">
+													</c:when>
+													<c:otherwise>
+														<img src="/LapFarm/resources/img/${p.images[0].imageUrl}"
+															alt="Default Image">
+													</c:otherwise>
+												</c:choose>
+
 												<div class="product-label">
 													<span class="sale">${p.discount*100}%</span>
 												</div>
@@ -305,7 +294,7 @@
 
 					<!-- store bottom filter -->
 					<div class="store-filter clearfix">
-						
+
 						<ul class="store-pagination">
 							<li class="active">1</li>
 							<li><a href="#">2</a></li>

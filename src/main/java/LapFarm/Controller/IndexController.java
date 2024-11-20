@@ -1,6 +1,7 @@
 package LapFarm.Controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import LapFarm.Bean.Mailer;
 import LapFarm.DAO.BrandDAO;
 import LapFarm.DAO.CategoryDAO;
 import LapFarm.DAO.ProductDAO;
+import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.BrandEntity;
 import LapFarm.Entity.CategoryEntity;
 import LapFarm.Entity.ProductEntity;
@@ -33,7 +35,7 @@ public class IndexController {
 
 	@Autowired
 	private BrandDAO brandDAO;
-	
+
 	@Autowired
 	private ProductDAO productDAO;
 
@@ -46,9 +48,22 @@ public class IndexController {
 		// Lấy danh sách Brand
 		List<BrandEntity> brands = brandDAO.getAllBrands();
 		model.addAttribute("brands", brands);
-		
+
 		List<ProductEntity> products = productDAO.getAllProducts();
 		model.addAttribute("products", products);
+		
+		   // Lấy số lượng sản phẩm theo tất cả danh mục
+	    Map<Integer, Long> productCounts = productDAO.getProductCountByAllCategories(categories);
+	    model.addAttribute("productCounts", productCounts); // Truyền Map vào Model
+
+	 // Lấy số lượng sản phẩm theo tất cả brand
+	    Map<Integer, Long> productCountsByBrand = productDAO.getProductCountByAllBrands(brands);
+	    model.addAttribute("productCountsByBrand", productCountsByBrand);
+	    
+	    List<ProductDTO> products_top_sell = productDAO.getTop5ProductsByLowestQuantity();
+		model.addAttribute("products_top_sell", products_top_sell);
+		
+		
 		return "store";
 	}
 

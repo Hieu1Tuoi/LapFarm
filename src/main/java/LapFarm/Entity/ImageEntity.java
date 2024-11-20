@@ -12,6 +12,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+
+
 @Entity
 @Table(name = "image")
 public class ImageEntity {
@@ -19,30 +21,32 @@ public class ImageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdImage")
-    private int idImage;
+    private Long idImage;
 
-    // Chế độ EAGER: tải đối tượng liên kết ngay khi tải ImageEntity
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ProductImage")
+    @Column(name = "Image", nullable = false)
+    private String imageUrl;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ProductImage", referencedColumnName = "IdProduct", nullable = false)
     private ProductEntity product;
 
-    @Column(name = "Image", nullable = false, columnDefinition = "TEXT")
-    private String image;
-
-    // Constructor không tham số
-    public ImageEntity() {
-    }
-
-    // Getter và Setter cho IdImage
-    public int getIdImage() {
+    // Getters và Setters
+    public Long getIdImage() {
         return idImage;
     }
 
-    public void setIdImage(int idImage) {
+    public void setIdImage(Long idImage) {
         this.idImage = idImage;
     }
 
-    // Getter và Setter cho ProductEntity
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public ProductEntity getProduct() {
         return product;
     }
@@ -51,31 +55,13 @@ public class ImageEntity {
         this.product = product;
     }
 
-    // Getter và Setter cho Image
-    public String getImage() {
-        return image;
+    // Constructor không tham số
+    public ImageEntity() {
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    // Optional: Override các phương thức toString, equals, hashCode nếu cần
-    @Override
-    public String toString() {
-        return "ImageEntity{idImage=" + idImage + ", product=" + product + ", image='" + image + "'}";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ImageEntity that = (ImageEntity) o;
-        return idImage == that.idImage;
-    }
-
-    @Override
-    public int hashCode() {
-        return Integer.hashCode(idImage);
+    // Constructor đầy đủ tham số
+    public ImageEntity(String imageUrl, ProductEntity product) {
+        this.imageUrl = imageUrl;
+        this.product = product;
     }
 }
