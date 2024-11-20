@@ -256,9 +256,9 @@
 													<a href="#" title="${p.nameProduct}">${p.nameProduct}</a>
 												</h4>
 												<h6 class="product-price">
-													${p.getFormattedSalePrice()}
+													${p.getFormattedCalPrice()}
 													<del class="product-old-price">
-														${p.getFormattedCalPrice()}</del>
+														${p.getFormattedSalePrice()}</del>
 												</h6>
 												<div class="product-rating">
 													<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
