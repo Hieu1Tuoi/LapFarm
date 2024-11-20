@@ -163,7 +163,16 @@
 							<div class="product-widget">
 								<div class="product-img">
 									<!-- Sử dụng thuộc tính 'image' từ ProductDTO -->
-									<img src="${product.image}" alt="">
+									<c:choose>
+										<c:when test="${not empty product.image}">
+											<img src="${product.image}" alt="Product Image">
+										</c:when>
+										<c:otherwise>
+											<img src="/LapFarm/resources/img/${p.images[0].imageUrl}"
+												alt="Default Image">
+										</c:otherwise>
+									</c:choose>
+
 								</div>
 								<div class="product-body">
 									<!-- Sử dụng thuộc tính 'category' từ ProductDTO -->
