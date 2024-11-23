@@ -1,7 +1,7 @@
 package LapFarm.DTO;
 
 public class ProductDTO {
-    private Long idProduct;
+    private int idProduct;
     private String nameProduct;
     private String brandName; // Tên thương hiệu thay vì đối tượng Brand
     private String categoryName; // Tên danh mục thay vì đối tượng Category
@@ -14,7 +14,7 @@ public class ProductDTO {
     private String image; // Đường dẫn ảnh chính (nếu cần)
 
     // Constructor
-    public ProductDTO(Long idProduct, String nameProduct, String brandName, 
+    public ProductDTO(int idProduct, String nameProduct, String brandName, 
                       String categoryName, String description, Integer quantity,
                       Double discount, Double originalPrice, Double salePrice, String state, String image) {
         this.idProduct = idProduct;
@@ -31,11 +31,11 @@ public class ProductDTO {
     }
 
     // Getter và Setter
-    public Long getIdProduct() {
+    public int getIdProduct() {
         return idProduct;
     }
 
-    public void setIdProduct(Long idProduct) {
+    public void setIdProduct(int idProduct) {
         this.idProduct = idProduct;
     }
 

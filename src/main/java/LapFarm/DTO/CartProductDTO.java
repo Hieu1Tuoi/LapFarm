@@ -1,15 +1,11 @@
 package LapFarm.DTO;
 
-import LapFarm.Entity.ProductEntity;
-
 public class CartProductDTO {
-    
     private String productName;
     private int quantity;
     private String formattedPrice;
-    private double totalPrice; // Add a field for the total price
+    private double totalPrice;
 
-    // Constructors
     public CartProductDTO(String productName, int quantity, String formattedPrice, double totalPrice) {
         this.productName = productName;
         this.quantity = quantity;
@@ -40,11 +36,6 @@ public class CartProductDTO {
 
     public void setFormattedPrice(String formattedPrice) {
         this.formattedPrice = formattedPrice;
-    }
-
-    // New method to calculate total price for each product
-    public double getTotalPrice(ProductEntity product) {
-        return product.getSalePrice() * this.quantity;
     }
 
     public double getTotalPrice() {

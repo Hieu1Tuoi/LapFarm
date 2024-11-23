@@ -26,10 +26,10 @@ public class CartDAO {
 	}
 
 	@Transactional
-	public void clearCart(String userEmail) {
+	public void clearCart(int userId) {
 		Session session = factory.getCurrentSession();
-		String hql = "DELETE FROM CartEntity WHERE user.email = :email";
-		session.createQuery(hql).setParameter("email", userEmail).executeUpdate();
+		String hql = "DELETE FROM CartEntity c WHERE c.id.userId = :userId";
+		session.createQuery(hql).setParameter("userId", userId).executeUpdate();
 	}
 
 }

@@ -1,7 +1,7 @@
 package LapFarm.Controller;
 
 import LapFarm.Bean.Mailer;
-import LapFarm.DAO.AccountDAO;
+import LapFarm.DAO.UserDAO;
 import LapFarm.Entity.AccountEntity;
 import LapFarm.Entity.RoleEntity;
 import jakarta.servlet.http.HttpSession;
@@ -31,7 +31,7 @@ public class SignupController {
 	Mailer mailer;
 
 	@Autowired
-	private AccountDAO accountDAO;
+	private UserDAO accountDAO;
 
 	@Autowired
 	SessionFactory factory;

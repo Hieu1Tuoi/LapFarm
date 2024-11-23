@@ -113,199 +113,195 @@
 		<!-- /container -->
 	</div>
 	<!-- /BREADCRUMB -->
-	
-<form action="payment" method="post">
-	<!-- SECTION -->
-	<div class="section">
-		<!-- container -->
-		<div class="container">
-			<!-- row -->
-			<div class="row">
 
-				<div class="col-md-7">
-					<!-- Billing Details -->
-					<div class="billing-details">
-						<div class="section-title">
-							<h3 class="title">Địa chỉ thanh toán</h3>
+	<form action="payment" method="post">
+		<!-- SECTION -->
+		<div class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+
+					<div class="col-md-7">
+						<!-- Billing Details -->
+						<div class="billing-details">
+							<div class="section-title">
+								<h3 class="title">Địa chỉ thanh toán</h3>
+							</div>
+
+							<!-- Họ và tên -->
+							<div class="form-group">
+								<input class="input" type="text" name="fullName"
+									placeholder="Họ và tên" value="${userInfo.fullName}">
+							</div>
+
+							<!-- Email -->
+							<div class="form-group">
+								<input class="input" type="email" placeholder="Email"
+									value="${userInfo.account.email}" disabled> <span
+									class="error-message" id="error-email"></span>
+							</div>
+
+							<!-- Địa chỉ -->
+							<div class="form-group">
+								<input class="input" type="text" name="address"
+									placeholder="Địa chỉ" value="${userInfo.address}"> <span
+									class="error-message" id="error-address"></span>
+							</div>
+
+							<!-- Số điện thoại -->
+							<div class="form-group">
+								<input class="input" type="tel" name="tel"
+									placeholder="Số điện thoại" value="${userInfo.phone}">
+								<span class="error-message" id="error-tel"></span>
+							</div>
+
+							<div class="form-group">
+								<div class="input-checkbox">
+									<input type="checkbox" id="create-account"> <label
+										for="create-account"> <span></span> Create Account?
+									</label>
+									<div class="caption">
+										<p>Lorem ipsum dolor sit amet, consectetur adipisicing
+											elit, sed do eiusmod tempor incididunt.</p>
+										<input class="input" type="password" name="password"
+											placeholder="Enter Your Password">
+									</div>
+								</div>
+							</div>
 						</div>
+						<!-- /Billing Details -->
 
-						<!-- Họ -->
-						<div class="form-group">
-							<input class="input" type="text" name="first-name"
-								placeholder="Họ" value="${userInfo.fullName}">
-						</div>
-
-						<!-- Tên -->
-						<div class="form-group">
-							<input class="input" type="text" name="last-name"
-								placeholder="Tên" value="${userInfo.fullName}"> <span
-								class="error-message" id="error-last-name"></span>
-						</div>
-
-						<!-- Email -->
-						<div class="form-group">
-							<input class="input" type="email" name="email"
-								placeholder="Email" value="${userInfo.account.email}"> <span
-								class="error-message" id="error-email"></span>
-						</div>
-
-						<!-- Địa chỉ -->
-						<div class="form-group">
-							<input class="input" type="text" name="address"
-								placeholder="Địa chỉ" value="${userInfo.address}"> <span
-								class="error-message" id="error-address"></span>
-						</div>
-
-						<!-- Số điện thoại -->
-						<div class="form-group">
-							<input class="input" type="tel" name="tel"
-								placeholder="Số điện thoại" value="${userInfo.phone}"> <span
-								class="error-message" id="error-tel"></span>
-						</div>
-
-						<div class="form-group">
+						<!-- Shiping Details -->
+						<div class="shiping-details">
+							<div class="section-title">
+								<h3 class="title">Shiping address</h3>
+							</div>
 							<div class="input-checkbox">
-								<input type="checkbox" id="create-account"> <label
-									for="create-account"> <span></span> Create Account?
+								<input type="checkbox" id="shiping-address"> <label
+									for="shiping-address"> <span></span> Ship to a diffrent
+									address?
 								</label>
 								<div class="caption">
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing
-										elit, sed do eiusmod tempor incididunt.</p>
-									<input class="input" type="password" name="password"
-										placeholder="Enter Your Password">
+									<div class="form-group">
+										<input class="input" type="text" name="first-name"
+											placeholder="First Name">
+									</div>
+									<div class="form-group">
+										<input class="input" type="text" name="last-name"
+											placeholder="Last Name">z
+									</div>
+									<div class="form-group">
+										<input class="input" type="email" name="email"
+											placeholder="Email">
+									</div>
+									<div class="form-group">
+										<input class="input" type="text" name="address"
+											placeholder="Address">
+									</div>
+									<div class="form-group">
+										<input class="input" type="text" name="city"
+											placeholder="City">
+									</div>
+									<div class="form-group">
+										<input class="input" type="text" name="country"
+											placeholder="Country">
+									</div>
+									<div class="form-group">
+										<input class="input" type="text" name="zip-code"
+											placeholder="ZIP Code">
+									</div>
+									<div class="form-group">
+										<input class="input" type="tel" name="tel"
+											placeholder="Telephone">
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<!-- /Billing Details -->
+						<!-- /Shiping Details -->
 
-					<!-- Shiping Details -->
-					<div class="shiping-details">
-						<div class="section-title">
-							<h3 class="title">Shiping address</h3>
+						<!-- Order notes -->
+						<div class="order-notes">
+							<textarea name="note" class="input" placeholder="Order Notes"></textarea>
 						</div>
+						<!-- /Order notes -->
+					</div>
+
+					<!-- Order Details -->
+					<div class="col-md-5 order-details">
+						<div class="section-title text-center">
+							<h3 class="title">Đơn hàng của bạn</h3>
+						</div>
+						<div class="order-summary">
+							<div class="order-col">
+								<div>
+									<strong>Sản phẩm</strong>
+								</div>
+								<div>
+									<strong>Tổng tiền</strong>
+								</div>
+							</div>
+							<div class="order-products">
+								<c:forEach var="product" items="${cartProducts}"
+									varStatus="status">
+									<div class="order-col">
+										<div>
+											<strong>${product.quantity}x</strong> <span>${product.productName}</span>
+										</div>
+										<div>
+											<span>${product.formattedPrice}</span> VND
+										</div>
+									</div>
+								</c:forEach>
+							</div>
+							<div class="order-col">
+								<div>Phí giao hàng</div>
+								<div>
+									<strong>FREE</strong>
+								</div>
+							</div>
+							<div class="order-col">
+								<div>
+									<strong>THÀNH TIỀN</strong>
+								</div>
+								<div>
+									<strong class="order-total">${totalAmount} VND</strong>
+								</div>
+							</div>
+						</div>
+						<!-- Phương thức thanh toán -->
+						<div class="payment-method">
+							<div class="input-radio">
+								<input type="radio" name="payment" value="0" id="payment-1"
+									value="bank-transfer"> <label for="payment-1"><span></span>
+									Chuyển khoản ngân hàng</label>
+							</div>
+							<div class="input-radio">
+								<input type="radio" name="payment" value="1" id="payment-2"
+									value="cash"> <label for="payment-2"><span></span>
+									Thanh toán tiền mặt</label>
+							</div>
+							<span class="error-message" id="error-payment"></span>
+						</div>
+
+						<!-- Điều khoản -->
 						<div class="input-checkbox">
-							<input type="checkbox" id="shiping-address"> <label
-								for="shiping-address"> <span></span> Ship to a diffrent
-								address?
-							</label>
-							<div class="caption">
-								<div class="form-group">
-									<input class="input" type="text" name="first-name"
-										placeholder="First Name">
-								</div>
-								<div class="form-group">
-									<input class="input" type="text" name="last-name"
-										placeholder="Last Name">z
-								</div>
-								<div class="form-group">
-									<input class="input" type="email" name="email"
-										placeholder="Email">
-								</div>
-								<div class="form-group">
-									<input class="input" type="text" name="address"
-										placeholder="Address">
-								</div>
-								<div class="form-group">
-									<input class="input" type="text" name="city" placeholder="City">
-								</div>
-								<div class="form-group">
-									<input class="input" type="text" name="country"
-										placeholder="Country">
-								</div>
-								<div class="form-group">
-									<input class="input" type="text" name="zip-code"
-										placeholder="ZIP Code">
-								</div>
-								<div class="form-group">
-									<input class="input" type="tel" name="tel"
-										placeholder="Telephone">
-								</div>
-							</div>
+							<input type="checkbox" id="terms"> <label for="terms">
+								<span></span> Tôi đã đọc và chấp nhận các <a href="#">điều
+									khoản và điều kiện</a>
+							</label> <span class="error-message" id="error-terms"></span>
 						</div>
+						<button style="width: 425px;" type="submit"
+							class="primary-btn order-submit">Thanh toán</button>
 					</div>
-					<!-- /Shiping Details -->
-
-					<!-- Order notes -->
-					<div class="order-notes">
-						<textarea name="note" class="input" placeholder="Order Notes"></textarea>
-					</div>
-					<!-- /Order notes -->
+					<!-- /Order Details -->
 				</div>
-
-				<!-- Order Details -->
-				<div class="col-md-5 order-details">
-					<div class="section-title text-center">
-						<h3 class="title">Đơn hàng của bạn</h3>
-					</div>
-					<div class="order-summary">
-						<div class="order-col">
-							<div>
-								<strong>Sản phẩm</strong>
-							</div>
-							<div>
-								<strong>Tổng tiền</strong>
-							</div>
-						</div>
-						<div class="order-products">
-							<c:forEach var="product" items="${cartProducts}"
-								varStatus="status">
-								<div class="order-col">
-									<div>
-										<span>${product.quantity}</span>x <span>${product.productName}</span>
-									</div>
-									<div>
-										<span>${product.formattedPrice}</span> VND
-									</div>
-								</div>
-							</c:forEach>
-						</div>
-						<div class="order-col">
-							<div>Phí giao hàng</div>
-							<div>
-								<strong>FREE</strong>
-							</div>
-						</div>
-						<div class="order-col">
-							<div>
-								<strong>THÀNH TIỀN</strong>
-							</div>
-							<div>
-								<strong class="order-total">${totalAmount} VND</strong>
-							</div>
-						</div>
-					</div>
-					<!-- Phương thức thanh toán -->
-					<div class="payment-method">
-						<div class="input-radio">
-							<input type="radio" name="payment" value="0" id="payment-1"
-								value="bank-transfer"> <label for="payment-1"><span></span>
-								Chuyển khoản ngân hàng</label>
-						</div>
-						<div class="input-radio">
-							<input type="radio" name="payment" value="1" id="payment-2" value="cash">
-							<label for="payment-2"><span></span> Thanh toán tiền mặt</label>
-						</div>
-						<span class="error-message" id="error-payment"></span>
-					</div>
-
-					<!-- Điều khoản -->
-					<div class="input-checkbox">
-						<input type="checkbox" id="terms"> <label for="terms">
-							<span></span> Tôi đã đọc và chấp nhận các <a href="#">điều
-								khoản và điều kiện</a>
-						</label> <span class="error-message" id="error-terms"></span>
-					</div>
-					<button style="width: 425px;" type="submit" class="primary-btn order-submit">Thanh toán</button>
-				</div>
-				<!-- /Order Details -->
+				<!-- /row -->
 			</div>
-			<!-- /row -->
+			<!-- /container -->
 		</div>
-		<!-- /container -->
-	</div>
-	<!-- /SECTION -->
-</form>
+		<!-- /SECTION -->
+	</form>
 	<!-- NEWSLETTER -->
 	<div id="newsletter" class="section">
 		<!-- container -->
@@ -350,64 +346,63 @@
 	<script src="<c:url value='/resources/js/nouislider.min.js' />"></script>
 	<script src="<c:url value='/resources/js/jquery.zoom.min.js' />"></script>
 	<script src="<c:url value='/resources/js/main.js' />"></script>
+
 	<script>
-	function validateForm(event) {
-	    // Lấy giá trị của các input
-	    const lastName = document.querySelector("input[name='last-name']").value.trim();
-	    const email = document.querySelector("input[name='email']").value.trim();
-	    const address = document.querySelector("input[name='address']").value.trim();
-	    const tel = document.querySelector("input[name='tel']").value.trim();
-	    const paymentMethod = document.querySelector("input[name='payment']:checked");
-	    const termsAccepted = document.querySelector("#terms").checked;
+function validateForm(event) {
+    // Lấy giá trị của các input
+    const fullName = document.querySelector("input[name='fullName']").value.trim();
+    const email = document.querySelector("input[name='email']").value.trim();
+    const address = document.querySelector("input[name='address']").value.trim();
+    const tel = document.querySelector("input[name='tel']").value.trim();
+    const paymentMethod = document.querySelector("input[name='payment']:checked");
+    const termsAccepted = document.querySelector("#terms").checked;
 
-	    // Đặt lại thông báo lỗi
-	    document.querySelectorAll(".error-message").forEach(span => span.innerText = "");
+    // Đặt lại thông báo lỗi
+    document.querySelectorAll(".error-message").forEach(span => span.innerText = "");
 
-	    // Kiểm tra và hiển thị lỗi
-	    let isValid = true;
+    // Kiểm tra và hiển thị lỗi
+    let isValid = true;
 
-	    if (!lastName) {
-	        document.getElementById("error-last-name").innerText = "Tên không được để trống.";
-	        isValid = false;
-	    }
+    if (!fullName) {
+        document.getElementById("error-last-name").innerText = "Tên không được để trống.";
+        isValid = false;
+    }
 
-	    if (!email) {
-	        document.getElementById("error-email").innerText = "Email không được để trống.";
-	        isValid = false;
-	    }
+    if (!address) {
+        document.getElementById("error-address").innerText = "Địa chỉ không được để trống.";
+        isValid = false;
+    }
 
-	    if (!address) {
-	        document.getElementById("error-address").innerText = "Địa chỉ không được để trống.";
-	        isValid = false;
-	    }
+    if (!tel) {
+        document.getElementById("error-tel").innerText = "Số điện thoại không được để trống.";
+        isValid = false;
+    } else if (!/^\d{10}$/.test(tel)) {
+        document.getElementById("error-tel").innerText = "Số điện thoại phải đúng 10 chữ số.";
+        isValid = false;
+    }
 
-	    if (!tel) {
-	        document.getElementById("error-tel").innerText = "Số điện thoại không được để trống.";
-	        isValid = false;
-	    }
+    if (!paymentMethod) {
+        document.getElementById("error-payment").innerText = "Vui lòng chọn phương thức thanh toán.";
+        isValid = false;
+    }
 
-	    if (!paymentMethod) {
-	        document.getElementById("error-payment").innerText = "Vui lòng chọn phương thức thanh toán.";
-	        isValid = false;
-	    }
+    if (!termsAccepted) {
+        document.getElementById("error-terms").innerText = "Bạn phải chấp nhận các điều khoản.";
+        isValid = false;
+    }
 
-	    if (!termsAccepted) {
-	        document.getElementById("error-terms").innerText = "Bạn phải chấp nhận các điều khoản.";
-	        isValid = false;
-	    }
+    // Ngăn form submit nếu có lỗi
+    if (!isValid) {
+        event.preventDefault();
+    }
+}
 
-	    // Ngăn form submit nếu có lỗi
-	    if (!isValid) {
-	        event.preventDefault();
-	    }
-	}
-
-	// Gắn sự kiện click vào nút thanh toán
-	document.addEventListener("DOMContentLoaded", function () {
-	    const submitButton = document.querySelector(".order-submit");
-	    submitButton.addEventListener("click", validateForm);
-	});
-	</script>
+// Gắn sự kiện click vào nút thanh toán
+document.addEventListener("DOMContentLoaded", function () {
+    const submitButton = document.querySelector(".order-submit");
+    submitButton.addEventListener("click", validateForm);
+});
+</script>
 
 </body>
 </html>
