@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -57,8 +57,8 @@
 										<li>
 											<!-- start message --> <a href="#">
 												<div class="pull-left">
-													<img src="resources/admin/images/user2-160x160.jpg"
-														class="img-circle" alt="User Image">
+													<img src="resources/admin/images/user2-160x160.jpg" class="img-circle"
+														alt="User Image">
 												</div>
 												<h4>
 													Support Team <small><i class="fa fa-clock-o"></i> 5
@@ -121,14 +121,13 @@
 						<!-- User Account: style can be found in dropdown.less -->
 						<li class="dropdown user user-menu"><a href="#"
 							class="dropdown-toggle" data-toggle="dropdown"> <img
-								src="resources/admin/images/user2-160x160.jpg"
-								class="user-image" alt="User Image"> <span
-								class="hidden-xs">Alexander Pierce</span>
+								src="resources/admin/images/user2-160x160.jpg" class="user-image"
+								alt="User Image"> <span class="hidden-xs">Alexander
+									Pierce</span>
 						</a>
 							<ul class="dropdown-menu">
 								<!-- User image -->
-								<li class="user-header"><img
-									src="resources/admin/images/user2-160x160.jpg"
+								<li class="user-header"><img src="resources/admin/images/user2-160x160.jpg"
 									class="img-circle" alt="User Image">
 
 									<p>
@@ -217,7 +216,6 @@
 									class="fa fa-circle-o"></i> ${category.nameCategory}
 							</a></li>
 						</c:forEach>
-						<li>hiiiiiiiiii</li>
 						</ul>
 					</li>
 
@@ -258,7 +256,6 @@
 				</ol>
 			</section>
 
-			<!-- Main content -->
 			<!-- Main content -->
 			<section class="content">
 
@@ -333,6 +330,7 @@
 				<!-- /.box -->
 
 			</section>
+			<!-- /.content -->
 		</div>
 		<!-- /.content-wrapper -->
 
@@ -357,32 +355,5 @@
 	<script src="resources/admin/tinymce/tinymce.min.js"></script>
 	<script src="resources/admin/tinymce/config.js"></script>
 	<script src="resources/admin/js/function.js"></script>
-</body>
-</html>
-
-</div>
-<!-- /.content-wrapper -->
-
-<footer class="main-footer">
-	<div class="pull-right hidden-xs">
-		<b>Version</b> 0.0.1
-	</div>
-	<strong>Copyright &copy; 2018 <a href="https://adminlte.io">TTPM_BKAP</a>.
-	</strong>
-</footer>
-
-</div>
-<!-- ./wrapper -->
-
-<!-- jQuery 3 -->
-
-<script src="resources/admin/js/jquery.min.js"></script>
-<script src="resources/admin/js/jquery-ui.js"></script>
-<script src="resources/admin/js/bootstrap.min.js"></script>
-<script src="resources/admin/js/adminlte.min.js"></script>
-<script src="resources/admin/js/dashboard.js"></script>
-<script src="resources/admin/tinymce/tinymce.min.js"></script>
-<script src="resources/admin/tinymce/config.js"></script>
-<script src="resources/admin/js/function.js"></script>
 </body>
 </html>
