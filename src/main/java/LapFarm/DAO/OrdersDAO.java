@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import LapFarm.DTO.OrdersDTO;
+import LapFarm.Entity.OrderDetailsEntity;
 import LapFarm.Entity.OrdersEntity;
 
 @Repository
@@ -32,7 +33,24 @@ public class OrdersDAO {
                         order.getTime(),
                         order.getState(),
                         order.getTotalPrice(),
-                        order.getUserInfo().getFullName()))
+                        order.getUserInfo().getFullName(),
+                		order.getPaymentMethod(),
+                		order.getNote()
+                		))
                 .collect(Collectors.toList());
+    }
+    
+    @Transactional
+    public void saveOrder(OrdersEntity order, List<OrderDetailsEntity> orderDetailsList) {
+        Session session = factory.getCurrentSession();
+
+        // Lưu đơn hàng
+        session.save(order);
+
+        // Lưu chi tiết đơn hàng
+        for (OrderDetailsEntity orderDetail : orderDetailsList) {
+            orderDetail.setOrder(order); // Liên kết chi tiết với đơn hàng
+            session.save(orderDetail);
+        }
     }
 }

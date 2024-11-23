@@ -1,6 +1,7 @@
 package LapFarm.DTO;
 
 import java.util.Date;
+import java.util.List;
 
 public class OrdersDTO {
     private int orderId;
@@ -8,14 +9,19 @@ public class OrdersDTO {
     private String state;
     private double totalPrice;
     private String userFullname;
+    private byte paymentMethod;  // PaymentMethod (0 or 1)
+    private String note;        // Order note
+    private List<OrderDetailDTO> orderDetails; // List of order details (product info)
 
     // Constructor
-    public OrdersDTO(int orderId, Date time, String state, double totalPrice, String userFullname) {
+    public OrdersDTO(int orderId, Date time, String state, double totalPrice, String userFullname, byte paymentMethod, String note) {
         this.orderId = orderId;
         this.time = time;
         this.state = state;
         this.totalPrice = totalPrice;
         this.userFullname = userFullname;
+        this.paymentMethod = paymentMethod;
+        this.note = note;
     }
 
     // Getters and Setters
@@ -59,6 +65,30 @@ public class OrdersDTO {
         this.userFullname = userFullname;
     }
 
+    public int getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(byte paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public List<OrderDetailDTO> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(List<OrderDetailDTO> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
+
     // toString() method
     @Override
     public String toString() {
@@ -68,6 +98,9 @@ public class OrdersDTO {
                 ", state='" + state + '\'' +
                 ", totalPrice=" + totalPrice +
                 ", userFullname='" + userFullname + '\'' +
+                ", paymentMethod=" + paymentMethod +
+                ", note='" + note + '\'' +
+                ", orderDetails=" + orderDetails +
                 '}';
     }
 }

@@ -1,7 +1,6 @@
 package LapFarm.Entity;
 
 import java.sql.Timestamp;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -26,30 +25,79 @@ public class OrdersEntity {
     @Column(name = "TotalPrice", nullable = false)
     private int totalPrice;
 
+    @Column(name = "PaymentMethod", nullable = false)
+    private byte paymentMethod; // PaymentMethod: 0 or 1 (TINYINT)
+
+    @Column(name = "Note", columnDefinition = "TEXT COLLATE utf8mb4_general_ci", nullable = true)
+    private String note; // Note (TEXT)
+
     // Getters and Setters
-    public int getIdOrder() { return idOrder; }
-    public void setIdOrder(int idOrder) { this.idOrder = idOrder; }
+    public int getIdOrder() {
+        return idOrder;
+    }
 
-    public UserInfoEntity getUserInfo() { return userInfo; }
-    public void setUserInfo(UserInfoEntity userInfo) { this.userInfo = userInfo; }
+    public void setIdOrder(int idOrder) {
+        this.idOrder = idOrder;
+    }
 
-    public Timestamp getTime() { return time; }
-    public void setTime(Timestamp time) { this.time = time; }
+    public UserInfoEntity getUserInfo() {
+        return userInfo;
+    }
 
-    public String getState() { return state; }
-    public void setState(String state) { this.state = state; }
+    public void setUserInfo(UserInfoEntity userInfo) {
+        this.userInfo = userInfo;
+    }
 
-    public int getTotalPrice() { return totalPrice; }
-    public void setTotalPrice(int totalPrice) { this.totalPrice = totalPrice; }
+    public Timestamp getTime() {
+        return time;
+    }
+
+    public void setTime(Timestamp time) {
+        this.time = time;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public int getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public byte getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(byte paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
 
     @Override
     public String toString() {
-        return "OrderEntity{" +
+        return "OrdersEntity{" +
                 "idOrder=" + idOrder +
                 ", userInfo=" + (userInfo != null ? userInfo.getUserId() : null) +
                 ", time=" + time +
                 ", state='" + state + '\'' +
                 ", totalPrice=" + totalPrice +
+                ", paymentMethod=" + paymentMethod +
+                ", note='" + note + '\'' +
                 '}';
     }
 }

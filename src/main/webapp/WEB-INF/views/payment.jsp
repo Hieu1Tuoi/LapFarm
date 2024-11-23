@@ -10,7 +10,15 @@
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
 <title>LapFarm</title>
-
+<base href="${pageContext.servletContext.contextPath}/">
+<style>
+.error-message {
+	color: red;
+	font-size: 12px;
+	margin-top: 5px;
+	display: block;
+}
+</style>
 <!-- Google font -->
 <link
 	href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700"
@@ -19,6 +27,10 @@
 <!-- Bootstrap -->
 <link type="text/css" rel="stylesheet"
 	href="<c:url value="/resources/css/bootstrap.min.css" />">
+
+<!-- Login -->
+<link type="text/css" rel="stylesheet"
+	href="<c:url value="/resources/css/login.css" />">
 
 <!-- Slick -->
 <link type="text/css" rel="stylesheet"
@@ -37,23 +49,50 @@
 <!-- Custom stlylesheet -->
 <link type="text/css" rel="stylesheet"
 	href="<c:url value="/resources/css/style.css" />">
-
-<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-		<![endif]-->
-
 </head>
 <body>
 	<!-- HEADER -->
-	<%@ include file="/WEB-INF/views/include/header.jsp" %>
-	<!-- /HEADER -->
+	<header>
+		<!-- TOP HEADER -->
+		<div id="top-header">
+			<div class="container">
+				<ul class="header-links pull-left">
+					<li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
+					<li><a href="#"><i class="fa fa-envelope-o"></i>
+							vailonluon@email.com</a></li>
+					<li><a href="#"><i class="fa fa-map-marker"></i> 1734
+							Stonecoal Road</a></li>
+				</ul>
+			</div>
+		</div>
+		<!-- /TOP HEADER -->
 
-	<!-- NAVIGATION -->
-	<%@ include file="/WEB-INF/views/include/navigation.jsp" %>
-	<!-- /NAVIGATION -->
+		<!-- MAIN HEADER -->
+		<div id="header">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<!-- LOGO -->
+					<div class="col-md-3">
+						<div class="header-logo">
+							<a href="<c:url value="home" />" class="logo"> <img
+								src="<c:url value="/resources/img/logo.png" />" alt="">
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- NAVIGATION -->
+		<nav id="navigation">
+			<!-- container -->
+			<div class="container"></div>
+			<!-- /container -->
+		</nav>
+		<!-- /NAVIGATION -->
+	</header>
+	<!-- /HEADER -->
 
 	<!-- BREADCRUMB -->
 	<div id="breadcrumb" class="section">
@@ -62,10 +101,10 @@
 			<!-- row -->
 			<div class="row">
 				<div class="col-md-12">
-					<h3 class="breadcrumb-header">Checkout</h3>
+					<h3 class="breadcrumb-header">Thanh toán</h3>
 					<ul class="breadcrumb-tree">
-						<li><a href="#">Home</a></li>
-						<li class="active">Checkout</li>
+						<li><a href="home">Trang chủ</a></li>
+						<li class="active">Thanh toán</li>
 					</ul>
 				</div>
 			</div>
@@ -74,7 +113,8 @@
 		<!-- /container -->
 	</div>
 	<!-- /BREADCRUMB -->
-
+	
+<form action="payment" method="post">
 	<!-- SECTION -->
 	<div class="section">
 		<!-- container -->
@@ -86,39 +126,43 @@
 					<!-- Billing Details -->
 					<div class="billing-details">
 						<div class="section-title">
-							<h3 class="title">Billing address</h3>
+							<h3 class="title">Địa chỉ thanh toán</h3>
 						</div>
+
+						<!-- Họ -->
 						<div class="form-group">
 							<input class="input" type="text" name="first-name"
-								placeholder="First Name">
+								placeholder="Họ" value="${userInfo.fullName}">
 						</div>
+
+						<!-- Tên -->
 						<div class="form-group">
 							<input class="input" type="text" name="last-name"
-								placeholder="Last Name">
+								placeholder="Tên" value="${userInfo.fullName}"> <span
+								class="error-message" id="error-last-name"></span>
 						</div>
+
+						<!-- Email -->
 						<div class="form-group">
 							<input class="input" type="email" name="email"
-								placeholder="Email">
+								placeholder="Email" value="${userInfo.account.email}"> <span
+								class="error-message" id="error-email"></span>
 						</div>
+
+						<!-- Địa chỉ -->
 						<div class="form-group">
 							<input class="input" type="text" name="address"
-								placeholder="Address">
+								placeholder="Địa chỉ" value="${userInfo.address}"> <span
+								class="error-message" id="error-address"></span>
 						</div>
-						<div class="form-group">
-							<input class="input" type="text" name="city" placeholder="City">
-						</div>
-						<div class="form-group">
-							<input class="input" type="text" name="country"
-								placeholder="Country">
-						</div>
-						<div class="form-group">
-							<input class="input" type="text" name="zip-code"
-								placeholder="ZIP Code">
-						</div>
+
+						<!-- Số điện thoại -->
 						<div class="form-group">
 							<input class="input" type="tel" name="tel"
-								placeholder="Telephone">
+								placeholder="Số điện thoại" value="${userInfo.phone}"> <span
+								class="error-message" id="error-tel"></span>
 						</div>
+
 						<div class="form-group">
 							<div class="input-checkbox">
 								<input type="checkbox" id="create-account"> <label
@@ -152,7 +196,7 @@
 								</div>
 								<div class="form-group">
 									<input class="input" type="text" name="last-name"
-										placeholder="Last Name">
+										placeholder="Last Name">z
 								</div>
 								<div class="form-group">
 									<input class="input" type="email" name="email"
@@ -184,7 +228,7 @@
 
 					<!-- Order notes -->
 					<div class="order-notes">
-						<textarea class="input" placeholder="Order Notes"></textarea>
+						<textarea name="note" class="input" placeholder="Order Notes"></textarea>
 					</div>
 					<!-- /Order notes -->
 				</div>
@@ -192,81 +236,67 @@
 				<!-- Order Details -->
 				<div class="col-md-5 order-details">
 					<div class="section-title text-center">
-						<h3 class="title">Your Order</h3>
+						<h3 class="title">Đơn hàng của bạn</h3>
 					</div>
 					<div class="order-summary">
 						<div class="order-col">
 							<div>
-								<strong>PRODUCT</strong>
+								<strong>Sản phẩm</strong>
 							</div>
 							<div>
-								<strong>TOTAL</strong>
+								<strong>Tổng tiền</strong>
 							</div>
 						</div>
 						<div class="order-products">
-							<div class="order-col">
-								<div>1x Product Name Goes Here</div>
-								<div>$980.00</div>
-							</div>
-							<div class="order-col">
-								<div>2x Product Name Goes Here</div>
-								<div>$980.00</div>
-							</div>
+							<c:forEach var="product" items="${cartProducts}"
+								varStatus="status">
+								<div class="order-col">
+									<div>
+										<span>${product.quantity}</span>x <span>${product.productName}</span>
+									</div>
+									<div>
+										<span>${product.formattedPrice}</span> VND
+									</div>
+								</div>
+							</c:forEach>
 						</div>
 						<div class="order-col">
-							<div>Shiping</div>
+							<div>Phí giao hàng</div>
 							<div>
 								<strong>FREE</strong>
 							</div>
 						</div>
 						<div class="order-col">
 							<div>
-								<strong>TOTAL</strong>
+								<strong>THÀNH TIỀN</strong>
 							</div>
 							<div>
-								<strong class="order-total">$2940.00</strong>
+								<strong class="order-total">${totalAmount} VND</strong>
 							</div>
 						</div>
 					</div>
+					<!-- Phương thức thanh toán -->
 					<div class="payment-method">
 						<div class="input-radio">
-							<input type="radio" name="payment" id="payment-1"> <label
-								for="payment-1"> <span></span> Direct Bank Transfer
-							</label>
-							<div class="caption">
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-									sed do eiusmod tempor incididunt ut labore et dolore magna
-									aliqua.</p>
-							</div>
+							<input type="radio" name="payment" value="0" id="payment-1"
+								value="bank-transfer"> <label for="payment-1"><span></span>
+								Chuyển khoản ngân hàng</label>
 						</div>
 						<div class="input-radio">
-							<input type="radio" name="payment" id="payment-2"> <label
-								for="payment-2"> <span></span> Cheque Payment
-							</label>
-							<div class="caption">
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-									sed do eiusmod tempor incididunt ut labore et dolore magna
-									aliqua.</p>
-							</div>
+							<input type="radio" name="payment" value="1" id="payment-2" value="cash">
+							<label for="payment-2"><span></span> Thanh toán tiền mặt</label>
 						</div>
-						<div class="input-radio">
-							<input type="radio" name="payment" id="payment-3"> <label
-								for="payment-3"> <span></span> Paypal System
-							</label>
-							<div class="caption">
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-									sed do eiusmod tempor incididunt ut labore et dolore magna
-									aliqua.</p>
-							</div>
-						</div>
+						<span class="error-message" id="error-payment"></span>
 					</div>
+
+					<!-- Điều khoản -->
 					<div class="input-checkbox">
 						<input type="checkbox" id="terms"> <label for="terms">
-							<span></span> I've read and accept the <a href="#">terms &
-								conditions</a>
-						</label>
+							<span></span> Tôi đã đọc và chấp nhận các <a href="#">điều
+								khoản và điều kiện</a>
+						</label> <span class="error-message" id="error-terms"></span>
 					</div>
-					<a href="#" class="primary-btn order-submit">Place order</a>
+					<button style="width: 425px;" type="submit" class="primary-btn order-submit">Thanh toán</button>
 				</div>
 				<!-- /Order Details -->
 			</div>
@@ -275,7 +305,7 @@
 		<!-- /container -->
 	</div>
 	<!-- /SECTION -->
-
+</form>
 	<!-- NEWSLETTER -->
 	<div id="newsletter" class="section">
 		<!-- container -->
@@ -287,8 +317,9 @@
 						<p>
 							Sign Up for the <strong>NEWSLETTER</strong>
 						</p>
-						<form>
-							<input class="input" type="email" placeholder="Enter Your Email">
+						<form action="home/send">
+							<input name="email" class="input" type="email"
+								placeholder="Enter Your Email">
 							<button class="newsletter-btn">
 								<i class="fa fa-envelope"></i> Subscribe
 							</button>
@@ -309,7 +340,7 @@
 	<!-- /NEWSLETTER -->
 
 	<!-- FOOTER -->
-	<%@ include file="/WEB-INF/views/include/footer.jsp" %>
+	<%@ include file="/WEB-INF/views/include/footer.jsp"%>
 	<!-- /FOOTER -->
 
 	<!-- jQuery Plugins -->
@@ -319,6 +350,64 @@
 	<script src="<c:url value='/resources/js/nouislider.min.js' />"></script>
 	<script src="<c:url value='/resources/js/jquery.zoom.min.js' />"></script>
 	<script src="<c:url value='/resources/js/main.js' />"></script>
+	<script>
+	function validateForm(event) {
+	    // Lấy giá trị của các input
+	    const lastName = document.querySelector("input[name='last-name']").value.trim();
+	    const email = document.querySelector("input[name='email']").value.trim();
+	    const address = document.querySelector("input[name='address']").value.trim();
+	    const tel = document.querySelector("input[name='tel']").value.trim();
+	    const paymentMethod = document.querySelector("input[name='payment']:checked");
+	    const termsAccepted = document.querySelector("#terms").checked;
+
+	    // Đặt lại thông báo lỗi
+	    document.querySelectorAll(".error-message").forEach(span => span.innerText = "");
+
+	    // Kiểm tra và hiển thị lỗi
+	    let isValid = true;
+
+	    if (!lastName) {
+	        document.getElementById("error-last-name").innerText = "Tên không được để trống.";
+	        isValid = false;
+	    }
+
+	    if (!email) {
+	        document.getElementById("error-email").innerText = "Email không được để trống.";
+	        isValid = false;
+	    }
+
+	    if (!address) {
+	        document.getElementById("error-address").innerText = "Địa chỉ không được để trống.";
+	        isValid = false;
+	    }
+
+	    if (!tel) {
+	        document.getElementById("error-tel").innerText = "Số điện thoại không được để trống.";
+	        isValid = false;
+	    }
+
+	    if (!paymentMethod) {
+	        document.getElementById("error-payment").innerText = "Vui lòng chọn phương thức thanh toán.";
+	        isValid = false;
+	    }
+
+	    if (!termsAccepted) {
+	        document.getElementById("error-terms").innerText = "Bạn phải chấp nhận các điều khoản.";
+	        isValid = false;
+	    }
+
+	    // Ngăn form submit nếu có lỗi
+	    if (!isValid) {
+	        event.preventDefault();
+	    }
+	}
+
+	// Gắn sự kiện click vào nút thanh toán
+	document.addEventListener("DOMContentLoaded", function () {
+	    const submitButton = document.querySelector(".order-submit");
+	    submitButton.addEventListener("click", validateForm);
+	});
+	</script>
 
 </body>
 </html>

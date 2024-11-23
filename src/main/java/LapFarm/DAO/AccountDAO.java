@@ -60,13 +60,7 @@ public class AccountDAO {
 
             if (account != null) {
                 UserInfoEntity userinfo = new UserInfoEntity();
-                userinfo.setAccount(account); // Liên kết với AccountEntity
-                userinfo.setFullName("Default Name"); // Giá trị mặc định
-                userinfo.setDob("1900-01-01");
-                userinfo.setSex("Unknown");
-                userinfo.setPhone("0000000000");
-                userinfo.setAvatar("default-avatar.png");
-                userinfo.setAddress("Default Address");
+                userinfo.setAccount(account);
 
                 session.save(userinfo);
                 t.commit();

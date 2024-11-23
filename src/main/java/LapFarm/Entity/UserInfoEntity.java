@@ -43,6 +43,12 @@ public class UserInfoEntity {
 
 	// Constructors
 	public UserInfoEntity() {
+		this.fullName = "";
+		this.dob = null;
+		this.sex = null;
+		this.phone = null;
+		this.avatar = null;
+		this.address = null;
 	}
 
 	public UserInfoEntity(String email, String fullName, String dob, String sex, String phone, String avatar,

@@ -157,7 +157,4 @@ public class ProductEntity {
     	return (long) (this.salePrice*1);
     }
     
-
-  
-    
 }

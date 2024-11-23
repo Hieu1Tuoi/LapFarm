@@ -63,7 +63,7 @@ body {
 	<div class="error-container">
 		<h1>403</h1>
 		<p>Không có quyền truy cập vào trang này.</p>
-		<a href="login" class="back-button">Đăng nhập</a>
+		<a href="home" class="back-button">Quay lại trang chủ</a>
 	</div>
 </body>
 </html>
