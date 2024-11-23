@@ -57,7 +57,7 @@ public class BrandController {
 	    // Lấy toàn bộ thông tin Category
 	    BrandEntity brand = brandDAO.getBrandById(idBrand);
 	    model.addAttribute("brand", brand);
-    	List<ProductEntity> products = productDAO.getProductsByBrandID(idBrand);
+    	List<ProductEntity> products = productDAO.getProductsByBrandId(idBrand);
 	   
     	 model.addAttribute("productsByBrand", products);
  	    
