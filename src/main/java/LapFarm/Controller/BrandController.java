@@ -21,7 +21,7 @@ import jakarta.transaction.Transactional;
 
 @Controller
 @Transactional
-public class CategoryController {
+public class BrandController {
     @Autowired
     private ProductDAO productDAO;
     @Autowired
@@ -31,8 +31,8 @@ public class CategoryController {
 	private BrandDAO brandDAO;
 
 
-    @RequestMapping(value = "/products-category", method = RequestMethod.GET)
-    public String getProductsByCategory(@RequestParam(value = "idCategory", required = false) Integer idCategory, Model model) {
+    @RequestMapping(value = "/products-brand", method = RequestMethod.GET)
+    public String getProductsByBrand(@RequestParam(value = "idBrand", required = false) Integer idBrand, Model model) {
        
     	// Lấy danh sách Category
 		List<CategoryEntity> categories = categoryDAO.getAllCategories();
@@ -55,12 +55,12 @@ public class CategoryController {
 	    model.addAttribute("productCountsByBrand", productCountsByBrand);
 	    
 	    // Lấy toàn bộ thông tin Category
-	    CategoryEntity category = categoryDAO.getCategoryById(idCategory);
-	    model.addAttribute("category", category);
-    	List<ProductEntity> products = productDAO.getProductsByCategoryEn(idCategory);
+	    BrandEntity brand = brandDAO.getBrandById(idBrand);
+	    model.addAttribute("brand", brand);
+    	List<ProductEntity> products = productDAO.getProductsByBrandID(idBrand);
+	   
 
-        model.addAttribute("productsByCategory", products);
-        return "productsByCategory"; // The view name
+        return "productsByBrand"; // The view name
     }
 }
 

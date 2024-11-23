@@ -176,5 +176,21 @@ public class ProductDAO {
         // Nếu không có sản phẩm nào, trả về 0
         return totalQuantity != null ? totalQuantity : 0L;
     }
+    
+    // Brand
+    @Transactional
+    public List<ProductEntity> getProductsByBrandID(Integer brandId) {
+        // Lấy session từ factory
+        Session session = factory.getCurrentSession();
+
+        // Viết câu truy vấn HQL để lấy sản phẩm theo categoryId
+        String hql = "SELECT p FROM ProductEntity p JOIN FETCH p.images WHERE p.brand.idBrand = :brandId"; // Truy vấn sản phẩm theo danh mục
+        Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+        query.setParameter("brandId", brandId);  // Set parameter cho categoryId
+        query.setMaxResults(9); // Giới hạn số lượng sản phẩm trả về, có thể điều chỉnh theo nhu cầu
+
+        // Trả về danh sách sản phẩm
+        return query.list();
+    }
 
 }

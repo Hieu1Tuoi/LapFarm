@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,7 +107,7 @@
 							<c:forEach var="cate" items="${categories}">
 								<div class="category-item">
 									<!-- Thẻ <a> chứa liên kết động -->
-									<a href="products?idCategory=${cate.idCategory}">
+									<a href="products-category?idCategory=${cate.idCategory}">
 										${cate.nameCategory} <small>(${productCounts[cate.idCategory]})</small>
 									</a>
 								</div>
@@ -144,8 +144,9 @@
 							<c:forEach var="brand" items="${brands}">
 								<div class="brand-item">
 									<!-- Thẻ <a> thay thế checkbox -->
-									<a href="/thuong-hieu" class="brand-link"
-										data-brand-id="${brand.idBrand}"> ${brand.nameBrand} <small>(${productCountsByBrand[brand.idBrand]})</small>
+									<a href="products-brand?idBrand=${brand.idBrand}"
+										class="brand-link" data-brand-id="${brand.idBrand}">
+										${brand.nameBrand} <small>(${productCountsByBrand[brand.idBrand]})</small>
 									</a>
 
 								</div>
@@ -202,7 +203,7 @@
 
 				<!-- STORE -->
 				<div id="store" class="col-md-9">
-				
+
 					<h3>
 						TẤT CẢ SẢN PHẨM:
 						<fmt:formatNumber value="${totalQuantity}" type="number"
@@ -243,9 +244,12 @@
 														title="${p.nameProduct}">${p.nameProduct}</a>
 												</h4>
 												<h6 class="product-price">
-													${p.getFormattedCalPrice()}
+													<td><fmt:formatNumber value="${p.calPrice()}"
+															type="number" groupingUsed="true" /> ₫</td>
 													<del class="product-old-price">
-														${p.getFormattedSalePrice()}</del>
+														<td><fmt:formatNumber value="${p.calSalePrice()}"
+																type="number" groupingUsed="true" /> ₫</td>
+													</del>
 												</h6>
 												<div class="product-rating">
 													<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i

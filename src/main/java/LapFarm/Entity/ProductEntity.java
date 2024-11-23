@@ -158,22 +158,6 @@ public class ProductEntity {
     }
     
 
-    // Định dạng giá tiền với dấu phân cách nghìn
-    public String formatPrice(Long price) {
-        DecimalFormat formatter = new DecimalFormat("#,###"); // Định dạng ###,###
-        return formatter.format(price) + "₫";
-    }
-
-    // Phương thức hiển thị giá đã định dạng
-    public String getFormattedCalPrice() {
-        Long price = calPrice();
-        return formatPrice(price);
-    }
-
-    public String getFormattedSalePrice() {
-    	long price=calSalePrice();
-        return formatPrice(price);
-    }
-
+  
     
 }

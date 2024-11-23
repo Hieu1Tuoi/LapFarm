@@ -196,7 +196,7 @@
 				<!-- STORE -->
 				<div id="store" class="col-md-9">
 					<h3>
-						SẢN PHẨM THEO "${category.nameCategory}": 
+						SẢN PHẨM THEO "${brand.nameBrand}": 
 						<fmt:formatNumber value="${productCounts[category.idCategory]}" type="number"
 							groupingUsed="true" />
 					</h3>
