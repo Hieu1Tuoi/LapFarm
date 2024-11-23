@@ -22,119 +22,76 @@ public class ProductDAO {
     @Autowired
     private SessionFactory factory;
 
-    // Hàm lấy danh sách tất cả sản phẩm
+    // Lấy danh sách tất cả sản phẩm
+    @Transactional
     public List<ProductEntity> getAllProducts() {
-        // Lấy session từ factory
         Session session = factory.getCurrentSession();
-
-        // Viết câu truy vấn HQL để lấy tất cả sản phẩm
-        String hql = "SELECT p FROM ProductEntity p JOIN FETCH p.images"; // Truy vấn tất cả sản phẩm từ bảng ProductEntity
+        String hql = "SELECT p FROM ProductEntity p JOIN FETCH p.images"; 
         Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
-        query.setMaxResults(9);
-        // Trả về danh sách sản phẩm
+        query.setMaxResults(9); // Giới hạn kết quả nếu cần
         return query.list();
     }
-    
+
+    // Lấy sản phẩm theo ID
+    @Transactional
+    public ProductEntity getProductById(Integer id) {
+        Session session = factory.getCurrentSession();
+        return session.get(ProductEntity.class, id); // Trả về đối tượng sản phẩm theo ID
+    }
+
+    // Đếm số lượng sản phẩm theo danh mục
     @Transactional
     public Map<Integer, Long> getProductCountByAllCategories(List<CategoryEntity> categories) {
         Session session = factory.getCurrentSession();
-
-        // HQL đếm số lượng sản phẩm group theo idCategory
         String hql = "SELECT p.category.idCategory, COUNT(p) FROM ProductEntity p GROUP BY p.category.idCategory";
         List<Object[]> results = session.createQuery(hql).list();
 
-        // Khởi tạo Map với giá trị mặc định là 0 cho tất cả danh mục
         Map<Integer, Long> countMap = new HashMap<>();
         for (CategoryEntity category : categories) {
-            countMap.put(category.getIdCategory(), 0L); // Mặc định là 0
+            countMap.put(category.getIdCategory(), 0L);
         }
 
-        // Cập nhật số lượng từ kết quả truy vấn
         for (Object[] row : results) {
             Integer idCategory = (Integer) row[0];
             Long count = (Long) row[1];
-            countMap.put(idCategory, count); // Ghi đè nếu có sản phẩm
+            countMap.put(idCategory, count);
         }
-
         return countMap;
     }
-    
+
+    // Đếm số lượng sản phẩm theo thương hiệu
     @Transactional
     public Map<Integer, Long> getProductCountByAllBrands(List<BrandEntity> brands) {
         Session session = factory.getCurrentSession();
-
-        // HQL đếm số lượng sản phẩm group theo idBrand
         String hql = "SELECT p.brand.idBrand, COUNT(p) FROM ProductEntity p GROUP BY p.brand.idBrand";
         List<Object[]> results = session.createQuery(hql).list();
 
-        // Khởi tạo Map với giá trị mặc định là 0 cho tất cả thương hiệu
         Map<Integer, Long> countMap = new HashMap<>();
         for (BrandEntity brand : brands) {
-            countMap.put(brand.getIdBrand(), 0L); // Mặc định là 0
+            countMap.put(brand.getIdBrand(), 0L);
         }
 
-        // Cập nhật số lượng từ kết quả truy vấn
         for (Object[] row : results) {
             Integer idBrand = (Integer) row[0];
             Long count = (Long) row[1];
-            countMap.put(idBrand, count); // Ghi đè nếu có sản phẩm
+            countMap.put(idBrand, count);
         }
-
         return countMap;
     }
 
-    //TOP SELLING
+    // Lấy 5 sản phẩm bán chạy nhất (theo số lượng thấp nhất)
     @Transactional
     public List<ProductDTO> getTop5ProductsByLowestQuantity() {
         Session session = factory.getCurrentSession();
-
-        // Truy vấn lấy sản phẩm cùng với ảnh (dùng JOIN FETCH nếu cần)
         String hql = "SELECT p FROM ProductEntity p LEFT JOIN FETCH p.images ORDER BY p.quantity ASC";
-        Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
-        query.setMaxResults(5);
+        Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class).setMaxResults(5);
 
-        // Lấy danh sách các sản phẩm từ cơ sở dữ liệu
         List<ProductEntity> products = query.list();
 
-        // Chuyển đổi từ ProductEntity sang ProductDTO
-        List<ProductDTO> productDTOs = products.stream().map(product -> {
-            String image = product.getImages() != null && !product.getImages().isEmpty()
-                    ? product.getImages().get(0).getImageUrl() // Lấy ảnh đầu tiên nếu có
-                    : null;
-            
-            // Chuyển đổi thông tin từ ProductEntity sang ProductDTO
-            return new ProductDTO(
-                product.getIdProduct(),
-                product.getNameProduct(),
-                product.getBrand() != null ? product.getBrand().getNameBrand() : null, // Tên thương hiệu
-                product.getCategory() != null ? product.getCategory().getNameCategory() : null, // Tên danh mục
-                product.getDescription(),
-                product.getQuantity(),
-                product.getDiscount(),
-                product.getSalePrice(),
-                image
-            );
-        }).toList();
-
-        return productDTOs;
-    }
-
-    @Transactional
-    public List<ProductDTO> getProductsByCategory(Integer idCategory) {
-        Session session = factory.getCurrentSession();
-
-        String hql = "SELECT p FROM ProductEntity p WHERE p.category.idCategory = :idCategory";
-        Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
-        query.setParameter("idCategory", idCategory);
-        
-        List<ProductEntity> products = query.list();
-
-        // Chuyển đổi từ ProductEntity sang ProductDTO
         return products.stream().map(product -> {
-            String image = product.getImages() != null && !product.getImages().isEmpty()
-                    ? product.getImages().get(0).getImageUrl()
-                    : null;
-            
+            String image = (product.getImages() != null && !product.getImages().isEmpty())
+                    ? product.getImages().get(0).getImageUrl() : null;
+
             return new ProductDTO(
                 product.getIdProduct(),
                 product.getNameProduct(),
@@ -149,53 +106,60 @@ public class ProductDAO {
         }).toList();
     }
 
+    // Lấy danh sách sản phẩm theo danh mục
     @Transactional
-    public List<ProductEntity> getProductsByCategoryEn(Integer categoryId) {
-        // Lấy session từ factory
+    public List<ProductDTO> getProductsByCategory(Integer idCategory) {
         Session session = factory.getCurrentSession();
-
-        // Viết câu truy vấn HQL để lấy sản phẩm theo categoryId
-        String hql = "SELECT p FROM ProductEntity p JOIN FETCH p.images WHERE p.category.idCategory = :categoryId"; // Truy vấn sản phẩm theo danh mục
+        String hql = "SELECT p FROM ProductEntity p WHERE p.category.idCategory = :idCategory";
         Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
-        query.setParameter("categoryId", categoryId);  // Set parameter cho categoryId
-        query.setMaxResults(9); // Giới hạn số lượng sản phẩm trả về, có thể điều chỉnh theo nhu cầu
+        query.setParameter("idCategory", idCategory);
 
-        // Trả về danh sách sản phẩm
-        return query.list();
+        List<ProductEntity> products = query.list();
+
+        return products.stream().map(product -> {
+            String image = (product.getImages() != null && !product.getImages().isEmpty())
+                    ? product.getImages().get(0).getImageUrl() : null;
+
+            return new ProductDTO(
+                product.getIdProduct(),
+                product.getNameProduct(),
+                product.getBrand() != null ? product.getBrand().getNameBrand() : null,
+                product.getCategory() != null ? product.getCategory().getNameCategory() : null,
+                product.getDescription(),
+                product.getQuantity(),
+                product.getDiscount(),
+                product.getSalePrice(),
+                image
+            );
+        }).toList();
     }
 
-    @Transactional
-    public Long getTotalProductQuantity() {
-        // Lấy session từ SessionFactory
-        Session session = factory.getCurrentSession();
-        
-        // Truy vấn HQL để tính tổng số lượng sản phẩm
-        String hql = "SELECT SUM(p.quantity) FROM ProductEntity p";
-        Long totalQuantity = session.createQuery(hql, Long.class).uniqueResult();
-        
-        // Nếu không có sản phẩm nào, trả về 0
-        return totalQuantity != null ? totalQuantity : 0L;
-    }
-    
+    // Lấy danh sách sản phẩm theo thương hiệu
     @Transactional
     public List<ProductEntity> getProductsByBrandId(Integer brandId) {
-        // Lấy session từ factory
         Session session = factory.getCurrentSession();
-
-        // Viết câu truy vấn HQL để lấy sản phẩm theo brandId
         String hql = "SELECT p FROM ProductEntity p JOIN FETCH p.images WHERE p.brand.idBrand = :brandId";
-
         Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
-
-        // Gắn giá trị tham số cho brandId
-        query.setParameter("brandId", brandId);
-
-        // Giới hạn số lượng kết quả trả về (nếu cần)
-        query.setMaxResults(9);
-
-        // Trả về danh sách sản phẩm
+        query.setParameter("brandId", brandId).setMaxResults(9);
         return query.list();
     }
 
+    // Lấy sản phẩm theo danh mục (Entity)
+    @Transactional
+    public List<ProductEntity> getProductsByCategoryEn(Integer categoryId) {
+        Session session = factory.getCurrentSession();
+        String hql = "SELECT p FROM ProductEntity p JOIN FETCH p.images WHERE p.category.idCategory = :categoryId";
+        Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+        query.setParameter("categoryId", categoryId).setMaxResults(9);
+        return query.list();
+    }
 
+    // Tính tổng số lượng sản phẩm
+    @Transactional
+    public Long getTotalProductQuantity() {
+        Session session = factory.getCurrentSession();
+        String hql = "SELECT SUM(p.quantity) FROM ProductEntity p";
+        Long totalQuantity = session.createQuery(hql, Long.class).uniqueResult();
+        return totalQuantity != null ? totalQuantity : 0L;
+    }
 }
