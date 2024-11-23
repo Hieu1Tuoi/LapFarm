@@ -231,7 +231,9 @@ public class ProductDAO {
                 product.getDescription(),
                 product.getQuantity(),
                 product.getDiscount(),
+                product.getOriginalPrice(),
                 product.getSalePrice(),
+                product.getState(),
                 image
             );
         }).collect(Collectors.toList());
