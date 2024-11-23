@@ -11,9 +11,6 @@ public class UserInfoEntity {
     @Column(name = "UserId", nullable = false)
     private int userId;
 
-    @Column(name = "Email", nullable = false, length = 50)
-    private String email;
-
     @Column(name = "FullName", nullable = false, length = 50)
     private String fullName;
 
@@ -32,41 +29,40 @@ public class UserInfoEntity {
     @Column(name = "Address", columnDefinition = "TEXT")
     private String address;
 
-    // Constructors
-    public UserInfoEntity() {
-        this.fullName = "";
-        this.dob = null;
-        this.sex = null;
-        this.phone = null;
-        this.avatar = null;
-        this.address = null;
-    }
+	@OneToOne
+	@JoinColumn(name = "Email", referencedColumnName = "Email", nullable = false)
+	private AccountEntity account;
+	
+	public AccountEntity getAccount() {
+		return account;
+	}
 
-    public UserInfoEntity(String email, String fullName, String dob, String sex, String phone, String avatar, String address) {
-        this.email = email;
-        this.fullName = fullName;
-        this.dob = dob;
-        this.sex = sex;
-        this.phone = phone;
-        this.avatar = avatar;
-        this.address = address;
-    }
+	public void setAccount(AccountEntity account) {
+		this.account = account;
+	}
 
-    // Getters and Setters
+	// Constructors
+	public UserInfoEntity() {
+	}
+
+	public UserInfoEntity(String email, String fullName, String dob, String sex, String phone, String avatar,
+			String address) {
+		/* this.email = email; */
+		this.fullName = fullName;
+		this.dob = dob;
+		this.sex = sex;
+		this.phone = phone;
+		this.avatar = avatar;
+		this.address = address;
+	}
+
+	// Getters and Setters
     public int getUserId() {
         return userId;
     }
 
     public void setUserId(int userId) {
         this.userId = userId;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getFullName() {
@@ -117,11 +113,11 @@ public class UserInfoEntity {
         this.address = address;
     }
 
+
     @Override
     public String toString() {
         return "UserInfoEntity{" +
-                "userId=" + userId +
-                ", email='" + email + '\'' +
+                "userId=" + userId+ 
                 ", fullName='" + fullName + '\'' +
                 ", dob='" + dob + '\'' +
                 ", sex='" + sex + '\'' +
@@ -131,3 +127,4 @@ public class UserInfoEntity {
                 '}';
     }
 }
+

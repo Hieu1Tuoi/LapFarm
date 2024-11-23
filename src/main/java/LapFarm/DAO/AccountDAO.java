@@ -53,17 +53,26 @@ public class AccountDAO {
         Transaction t = session.beginTransaction();
 
         try {
-            UserInfoEntity userinfo = new UserInfoEntity();
-            userinfo.setEmail(email);
-            userinfo.setFullName("Default Name"); // Set default values to avoid null errors
-            userinfo.setDob("1900-01-01");
-            userinfo.setSex("Unknown");
-            userinfo.setPhone("0000000000");
-            userinfo.setAvatar("default-avatar.png");
-            userinfo.setAddress("Default Address");
+            String hql = "FROM AccountEntity WHERE email = :email";
+            Query query = session.createQuery(hql);
+            query.setParameter("email", email);
+            AccountEntity account = (AccountEntity) query.uniqueResult();
 
-            session.save(userinfo);
-            t.commit();
+            if (account != null) {
+                UserInfoEntity userinfo = new UserInfoEntity();
+                userinfo.setAccount(account); // Liên kết với AccountEntity
+                userinfo.setFullName("Default Name"); // Giá trị mặc định
+                userinfo.setDob("1900-01-01");
+                userinfo.setSex("Unknown");
+                userinfo.setPhone("0000000000");
+                userinfo.setAvatar("default-avatar.png");
+                userinfo.setAddress("Default Address");
+
+                session.save(userinfo);
+                t.commit();
+            } else {
+                throw new RuntimeException("Tài khoản không tồn tại!");
+            }
         } catch (Exception e) {
             t.rollback();
             throw e;
