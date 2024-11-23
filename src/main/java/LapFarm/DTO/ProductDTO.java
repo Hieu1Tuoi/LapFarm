@@ -103,16 +103,11 @@ public class ProductDTO {
     public double calDiscountedPrice() {
         return salePrice - (salePrice * discount);
     }
-
-    public String formatPrice(double price) {
-        return String.format("%,.0f₫", price);
+    
+    public long calPrice() {
+    	return (long) (this.salePrice-(this.discount*this.salePrice));
     }
-
-    public String getFormattedDiscountedPrice() {
-        return formatPrice(calDiscountedPrice());
-    }
-
-    public String getFormattedSalePrice() {
-        return formatPrice(salePrice);
+    public long calSalePrice() {
+    	return (long) (this.salePrice*1);
     }
 }

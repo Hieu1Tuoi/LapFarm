@@ -59,7 +59,8 @@ public class BrandController {
 	    model.addAttribute("brand", brand);
     	List<ProductEntity> products = productDAO.getProductsByBrandID(idBrand);
 	   
-
+    	 model.addAttribute("productsByBrand", products);
+ 	    
         return "productsByBrand"; // The view name
     }
 }
