@@ -3,6 +3,7 @@ package LapFarm.DAO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -120,7 +121,7 @@ public class ProductDAO {
     }
 
     @Transactional
-    public List<ProductDTO> getProductsByCategory(Integer idCategory) {
+    public List<ProductDTO> getProductsByCategory(int idCategory) {
         Session session = factory.getCurrentSession();
 
         String hql = "SELECT p FROM ProductEntity p WHERE p.category.idCategory = :idCategory";
@@ -195,6 +196,41 @@ public class ProductDAO {
 
         // Trả về danh sách sản phẩm
         return query.list();
+    }
+    
+    @Transactional
+    public List<ProductDTO> getDataProductPaginates(int start, int end) {
+        Session session = factory.getCurrentSession();
+
+        // HQL để lấy danh sách ProductEntity
+        String hql = "SELECT p FROM ProductEntity p LEFT JOIN FETCH p.brand b LEFT JOIN FETCH p.category c";
+        Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+
+        // Thiết lập phân trang
+        query.setFirstResult(start - 1); // Vị trí bắt đầu (Hibernate tính từ 0)
+        query.setMaxResults(end - start + 1); // Số lượng kết quả cần lấy
+
+        // Lấy danh sách ProductEntity
+        List<ProductEntity> products = query.list();
+
+        // Chuyển đổi từ ProductEntity sang ProductDTO
+        return products.stream().map(product -> {
+            String image = product.getImages() != null && !product.getImages().isEmpty()
+                    ? product.getImages().get(0).getImageUrl() // Lấy ảnh đầu tiên nếu có
+                    : null;
+
+            return new ProductDTO(
+                product.getIdProduct(),
+                product.getNameProduct(),
+                product.getBrand() != null ? product.getBrand().getNameBrand() : null, // Tên thương hiệu
+                product.getCategory() != null ? product.getCategory().getNameCategory() : null, // Tên danh mục
+                product.getDescription(),
+                product.getQuantity(),
+                product.getDiscount(),
+                product.getSalePrice(),
+                image
+            );
+        }).collect(Collectors.toList());
     }
 
 
