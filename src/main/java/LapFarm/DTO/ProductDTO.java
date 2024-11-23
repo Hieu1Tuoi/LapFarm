@@ -131,15 +131,4 @@ public class ProductDTO {
     public long calSalePrice() {
     	return (long) (this.salePrice*1);
     }
-<<<<<<< Updated upstream
-    
-    public long calPrice() {
-    	return (long) (this.salePrice-(this.discount*this.salePrice));
-    }
-    public long calSalePrice() {
-    	return (long) (this.salePrice*1);
-    }
-=======
-
->>>>>>> Stashed changes
 }
