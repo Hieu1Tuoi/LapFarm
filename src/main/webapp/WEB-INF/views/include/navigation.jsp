@@ -8,7 +8,7 @@
 		<div id="responsive-nav">
 			<!-- NAV -->
 			<ul class="main-nav nav navbar-nav">
-				<li class="active"><a href="/">Trang chủ</a></li>
+				<li class="active"><a href="home">Trang chủ</a></li>
 				<li><a href="pages">Ưu đãi</a></li>
 				<li><a href="pages/laptops">Laptop</a></li>
 			</ul>

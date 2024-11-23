@@ -39,4 +39,17 @@ public class CategoryDAO {
         return query.uniqueResult();
     }
     
+    @Transactional
+    public CategoryEntity getCategoryById(int idCategory) {
+        Session session = factory.getCurrentSession();
+
+        // HQL để lấy thông tin Category theo idCategory
+        String hql = "FROM CategoryEntity c WHERE c.idCategory = :idCategory";
+        Query<CategoryEntity> query = session.createQuery(hql, CategoryEntity.class);
+        query.setParameter("idCategory", idCategory);
+
+        return query.uniqueResult();
+    }
+
+    
 }

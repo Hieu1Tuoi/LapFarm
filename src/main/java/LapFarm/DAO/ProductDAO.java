@@ -119,6 +119,62 @@ public class ProductDAO {
         return productDTOs;
     }
 
+    @Transactional
+    public List<ProductDTO> getProductsByCategory(Integer idCategory) {
+        Session session = factory.getCurrentSession();
 
+        String hql = "SELECT p FROM ProductEntity p WHERE p.category.idCategory = :idCategory";
+        Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+        query.setParameter("idCategory", idCategory);
+        
+        List<ProductEntity> products = query.list();
+
+        // Chuyển đổi từ ProductEntity sang ProductDTO
+        return products.stream().map(product -> {
+            String image = product.getImages() != null && !product.getImages().isEmpty()
+                    ? product.getImages().get(0).getImageUrl()
+                    : null;
+            
+            return new ProductDTO(
+                product.getIdProduct(),
+                product.getNameProduct(),
+                product.getBrand() != null ? product.getBrand().getNameBrand() : null,
+                product.getCategory() != null ? product.getCategory().getNameCategory() : null,
+                product.getDescription(),
+                product.getQuantity(),
+                product.getDiscount(),
+                product.getSalePrice(),
+                image
+            );
+        }).toList();
+    }
+
+    @Transactional
+    public List<ProductEntity> getProductsByCategoryEn(Integer categoryId) {
+        // Lấy session từ factory
+        Session session = factory.getCurrentSession();
+
+        // Viết câu truy vấn HQL để lấy sản phẩm theo categoryId
+        String hql = "SELECT p FROM ProductEntity p JOIN FETCH p.images WHERE p.category.idCategory = :categoryId"; // Truy vấn sản phẩm theo danh mục
+        Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+        query.setParameter("categoryId", categoryId);  // Set parameter cho categoryId
+        query.setMaxResults(9); // Giới hạn số lượng sản phẩm trả về, có thể điều chỉnh theo nhu cầu
+
+        // Trả về danh sách sản phẩm
+        return query.list();
+    }
+
+    @Transactional
+    public Long getTotalProductQuantity() {
+        // Lấy session từ SessionFactory
+        Session session = factory.getCurrentSession();
+        
+        // Truy vấn HQL để tính tổng số lượng sản phẩm
+        String hql = "SELECT SUM(p.quantity) FROM ProductEntity p";
+        Long totalQuantity = session.createQuery(hql, Long.class).uniqueResult();
+        
+        // Nếu không có sản phẩm nào, trả về 0
+        return totalQuantity != null ? totalQuantity : 0L;
+    }
 
 }

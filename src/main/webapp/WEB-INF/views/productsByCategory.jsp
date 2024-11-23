@@ -1,16 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-	<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <base href="${pageContext.servletContext.contextPath}/">
-<title>LapFarm</title>
+<title>Products By Category</title>
+
 <style>
 .product-name {
 	display: block; /* Đặt phần tử theo dạng khối */
@@ -59,38 +59,31 @@
 		<![endif]-->
 
 </head>
-
 <body>
 
-	<%@ include file="/WEB-INF/views/include/header.jsp"%>
+</head>
+<body>
 
+    <!-- Include header and navigation -->
+    <%@ include file="/WEB-INF/views/include/header.jsp" %>
+    <%@ include file="/WEB-INF/views/include/navigation.jsp" %>
 
-	<!-- NAVIGATION -->
-	<%@ include file="/WEB-INF/views/include/navigation.jsp"%>
-	<!-- /NAVIGATION -->
+    <!-- Breadcrumb -->
+    <div id="breadcrumb" class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="breadcrumb-tree">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Categories</a></li>
+                        <li class="active">${categoryName}</li> <!-- Category name dynamically passed from controller -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<!-- BREADCRUMB -->
-	<div id="breadcrumb" class="section">
-		<!-- container -->
-		<div class="container">
-			<!-- row -->
-			<div class="row">
-				<div class="col-md-12">
-					<ul class="breadcrumb-tree">
-						<li><a href="#">Home</a></li>
-						<li><a href="#">All Categories</a></li>
-						<li><a href="#">Accessories</a></li>
-						<li class="active">Headphones (227,490 Results)</li>
-					</ul>
-				</div>
-			</div>
-			<!-- /row -->
-		</div>
-		<!-- /container -->
-	</div>
-	<!-- /BREADCRUMB -->
-
-	<!-- SECTION -->
+    <!-- SECTION -->
 	<div class="section">
 		<!-- container -->
 		<div class="container">
@@ -100,7 +93,7 @@
 				<div id="aside" class="col-md-3">
 					<!-- aside Widget -->
 					<div class="aside">
-						<h2>${products != null ? products.size() : 0}</h2>
+						<h2>${productsByCategory != null ? productsByCategory.size() : 0}</h2>
 						<h3 class="aside-title">DANH MỤC</h3>
 
 						<div class="category-filter">
@@ -119,7 +112,7 @@
 					<!-- /aside Widget -->
 
 					<!-- aside Widget -->
-					<div class="aside">
+						<div class="aside">
 						<h3 class="aside-title">GIÁ</h3>
 						<div class="price-filter">
 							<div id="price-slider"></div>
@@ -202,20 +195,18 @@
 
 				<!-- STORE -->
 				<div id="store" class="col-md-9">
-				
 					<h3>
-						TẤT CẢ SẢN PHẨM:
-						<fmt:formatNumber value="${totalQuantity}" type="number"
+						SẢN PHẨM THEO "${category.nameCategory}": 
+						<fmt:formatNumber value="${productCounts[category.idCategory]}" type="number"
 							groupingUsed="true" />
 					</h3>
-
 					<!-- store products -->
 					<div class="row">
 						<!-- product -->
 
-						<c:if test="${products.size()>0}">
+						<c:if test="${productsByCategory.size()>0}">
 							<ul class="thumbnails">
-								<c:forEach var="p" items="${products}" varStatus="loop">
+								<c:forEach var="p" items="${productsByCategory}" varStatus="loop">
 
 									<div class="col-md-4 col-xs-6">
 										<div class="product">
@@ -310,50 +301,12 @@
 		<!-- /container -->
 	</div>
 	<!-- /SECTION -->
+	
 
-	<!-- NEWSLETTER -->
-	<div id="newsletter" class="section">
-		<!-- container -->
-		<div class="container">
-			<!-- row -->
-			<div class="row">
-				<div class="col-md-12">
-					<div class="newsletter">
-						<p>
-							Sign Up for the <strong>NEWSLETTER</strong>
-						</p>
-						<form>
-							<input class="input" type="email" placeholder="Enter Your Email">
-							<button class="newsletter-btn">
-								<i class="fa fa-envelope"></i> Subscribe
-							</button>
-						</form>
-						<ul class="newsletter-follow">
-							<li><a href="#"><i class="fa fa-facebook"></i></a></li>
-							<li><a href="#"><i class="fa fa-twitter"></i></a></li>
-							<li><a href="#"><i class="fa fa-instagram"></i></a></li>
-							<li><a href="#"><i class="fa fa-pinterest"></i></a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<!-- /row -->
-		</div>
-		<!-- /container -->
-	</div>
-	<!-- /NEWSLETTER -->
+    <!-- Include footer -->
+    <%@ include file="/WEB-INF/views/include/footer.jsp" %>
 
-	<!-- FOOTER -->
-	<%@ include file="/WEB-INF/views/include/footer.jsp"%>
-	<!-- /FOOTER -->
-
-	<!-- jQuery Plugins -->
-	<script src="<c:url value='/resources/js/jquery.min.js' />"></script>
-	<script src="<c:url value='/resources/js/bootstrap.min.js' />"></script>
-	<script src="<c:url value='/resources/js/slick.min.js' />"></script>
-	<script src="<c:url value='/resources/js/nouislider.min.js' />"></script>
-	<script src="<c:url value='/resources/js/jquery.zoom.min.js' />"></script>
-	<script src="<c:url value='/resources/js/main.js' />"></script>
+    <!-- JavaScript links (same as in store.jsp) -->
 
 </body>
 </html>
