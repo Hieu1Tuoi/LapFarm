@@ -96,22 +96,30 @@
 	</div>
 	<!-- /store products -->
 	<div class="store-filter clearfix">
-	
+
 		<c:forEach var="item" begin="1" end="${paginateInfo.totalPage}"
 			varStatus="loop">
 			<ul class="store-pagination">
-			<c:if test="${(loop.index)==paginateInfo.currentPage }">
-				
-				<li class="active"><a href="products-category?idCategory=${category.idCategory}&page=${loop.index}">${loop.index} </li>
-			</c:if>
-			<c:if test="${(loop.index)!=paginateInfo.currentPage}">
-				<li><a href="products-category?idCategory=${category.idCategory}&page=${loop.index}">${loop.index}</a></li>
-			</c:if>
-		
+				<c:if test="${(loop.index)==paginateInfo.currentPage }">
+
+					<li class="active"><a
+						href="products-category?idCategory=${category.idCategory}&page=${loop.index}">${loop.index}</li>
+				</c:if>
+				<c:if test="${(loop.index)!=paginateInfo.currentPage}">
+					<li><a
+						href="products-category?idCategory=${category.idCategory}&page=${loop.index}">${loop.index}</a></li>
+				</c:if>
 		</c:forEach>
-		<li><a href="#"><i class="fa fa-angle-right"></i></a></li>
-				
-			</ul>
+		<!-- Nút điều hướng đến trang tiếp theo -->
+		<c:if test="${paginateInfo.currentPage < paginateInfo.totalPage}">
+			<li><a
+				href="products-category?idCategory=${category.idCategory}&page=${paginateInfo.currentPage + 1}">
+					<i class="fa fa-angle-right"></i>
+			</a></li>
+		</c:if>
+
+
+		</ul>
 	</div>
 	<!-- /store bottom filter -->
 </div>
