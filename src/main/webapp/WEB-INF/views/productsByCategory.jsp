@@ -5,7 +5,8 @@
 <%@ include file="/WEB-INF/views/layouts/user-aside.jsp"%>
 <!-- STORE -->
 <div id="store" class="col-md-9">
-<h2>${productsByCategory != null ? productsByCategory.size() : 0}</h2>
+	<h2></h2>
+	<h2>${ProductsPaginate != null ? ProductsPaginate.size() : 0}</h2>
 	<h3>
 		SẢN PHẨM THEO "${category.nameCategory}":
 		<fmt:formatNumber value="${productCounts[category.idCategory]}"
@@ -15,9 +16,9 @@
 	<div class="row">
 		<!-- product -->
 
-		<c:if test="${productsByCategory.size()>0}">
+		<c:if test="${ProductsPaginate.size()>0}">
 			<ul class="thumbnails">
-				<c:forEach var="p" items="${productsByCategory}" varStatus="loop">
+				<c:forEach var="p" items="${ProductsPaginate}" varStatus="loop">
 
 					<div class="col-md-4 col-xs-6">
 						<div class="product">
@@ -25,11 +26,11 @@
 								<a href="chi-tiet-san-pham/${p.idProduct}"></a>
 								<!-- Lấy hình ảnh đầu tiên từ danh sách -->
 								<c:choose>
-									<c:when test="${not empty p.images}">
-										<img src="${p.images[0].imageUrl}" alt="Product Image">
+									<c:when test="${not empty p.image}">
+										<img src="${p.image}" alt="Product Image">
 									</c:when>
 									<c:otherwise>
-										<img src="/LapFarm/resources/img/${p.images[0].imageUrl}"
+										<img src="/LapFarm/resources/img/${p.image}"
 											alt="Default Image">
 									</c:otherwise>
 								</c:choose>
@@ -39,7 +40,7 @@
 								</div>
 							</div>
 							<div class="product-body">
-								<p class="product-category">${p.category.nameCategory}</p>
+								<p class="product-category">${p.categoryName}</p>
 								<h4 class="product-name">
 									<a href="chi-tiet-san-pham/${p.idProduct}"
 										title="${p.nameProduct}">${p.nameProduct}</a>
@@ -81,9 +82,9 @@
 					</div>
 
 					<c:if
-						test="${(loop.index +1)%3==0 || (loop.index +1)==highLightProducts.size() }">
+						test="${(loop.index +1)%3==0 || (loop.index +1)==ProductsPaginate.size() }">
 			</ul>
-			<c:if test="${(loop.index +1)< highLightProducts.size() }">
+			<c:if test="${(loop.index +1)< ProductsPaginate.size() }">
 				<ul class="thumbnails">
 			</c:if>
 		</c:if>
@@ -94,5 +95,34 @@
 
 	</div>
 	<!-- /store products -->
+	<div class="store-filter clearfix">
 
-	<%@ include file="/WEB-INF/views/layouts/user-footer.jsp"%>
+		<c:forEach var="item" begin="1" end="${paginateInfo.totalPage}"
+			varStatus="loop">
+			<ul class="store-pagination">
+				<c:if test="${(loop.index)==paginateInfo.currentPage }">
+
+					<li class="active"><a
+						href="products-category?idCategory=${category.idCategory}&page=${loop.index}">${loop.index}</li>
+				</c:if>
+				<c:if test="${(loop.index)!=paginateInfo.currentPage}">
+					<li><a
+						href="products-category?idCategory=${category.idCategory}&page=${loop.index}">${loop.index}</a></li>
+				</c:if>
+		</c:forEach>
+		<!-- Nút điều hướng đến trang tiếp theo -->
+		<c:if test="${paginateInfo.currentPage < paginateInfo.totalPage}">
+			<li><a
+				href="products-category?idCategory=${category.idCategory}&page=${paginateInfo.currentPage + 1}">
+					<i class="fa fa-angle-right"></i>
+			</a></li>
+		</c:if>
+
+
+		</ul>
+	</div>
+	<!-- /store bottom filter -->
+</div>
+<!-- /STORE -->
+
+<%@ include file="/WEB-INF/views/layouts/user-footer.jsp"%>

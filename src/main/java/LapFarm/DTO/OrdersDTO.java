@@ -7,14 +7,13 @@ public class OrdersDTO {
     private int orderId;
     private Date time;
     private String state;
-    private double totalPrice;
+    private long  totalPrice;
     private String userFullname;
     private byte paymentMethod;  // PaymentMethod (0 or 1)
     private String note;        // Order note
     private List<OrderDetailDTO> orderDetails; // List of order details (product info)
 
-    // Constructor
-    public OrdersDTO(int orderId, Date time, String state, double totalPrice, String userFullname, byte paymentMethod, String note) {
+    public OrdersDTO(int orderId, Date time, String state, long totalPrice, String userFullname) {
         this.orderId = orderId;
         this.time = time;
         this.state = state;
@@ -49,11 +48,11 @@ public class OrdersDTO {
         this.state = state;
     }
 
-    public double getTotalPrice() {
+    public long getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(double totalPrice) {
+    public void setTotalPrice(long totalPrice) {
         this.totalPrice = totalPrice;
     }
 

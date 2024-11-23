@@ -8,13 +8,15 @@ public class ProductDTO {
     private String description;
     private Integer quantity;
     private Double discount;
+    private Double originalPrice;
     private Double salePrice;
+    private String state;
     private String image; // Đường dẫn ảnh chính (nếu cần)
 
     // Constructor
     public ProductDTO(Long idProduct, String nameProduct, String brandName, 
                       String categoryName, String description, Integer quantity,
-                      Double discount, Double salePrice, String image) {
+                      Double discount, Double originalPrice, Double salePrice, String state, String image) {
         this.idProduct = idProduct;
         this.nameProduct = nameProduct;
         this.brandName = brandName;
@@ -22,7 +24,9 @@ public class ProductDTO {
         this.description = description;
         this.quantity = quantity;
         this.discount = discount;
+        this.originalPrice = originalPrice;
         this.salePrice = salePrice;
+        this.state = state;
         this.image = image;
     }
 
@@ -90,8 +94,17 @@ public class ProductDTO {
     public void setSalePrice(Double salePrice) {
         this.salePrice = salePrice;
     }
+    
 
-    public String getImage() {
+    public Double getOriginalPrice() {
+		return originalPrice;
+	}
+
+	public void setOriginalPrice(Double originalPrice) {
+		this.originalPrice = originalPrice;
+	}
+
+	public String getImage() {
         return image;
     }
 
@@ -99,9 +112,17 @@ public class ProductDTO {
         this.image = image;
     }
 
-    // Các phương thức bổ sung nếu cần (ví dụ như tính toán giá đã giảm, định dạng tiền tệ...)
-    public double calDiscountedPrice() {
-        return salePrice - (salePrice * discount);
+    public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	// Các phương thức bổ sung nếu cần (ví dụ như tính toán giá đã giảm, định dạng tiền tệ...)
+    public long calOriginalPrice() {
+    	return (long) (this.originalPrice*1);
     }
     
     public long calPrice() {
