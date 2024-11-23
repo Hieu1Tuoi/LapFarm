@@ -1,13 +1,39 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<style>
+.dropdown-menu {
+    display: none; /* Ẩn menu theo mặc định */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    float: left;
+    min-width: 15rem; /* Tăng chiều rộng tối thiểu */
+    padding: 1rem 0; /* Tăng khoảng cách trên dưới của menu */
+    margin: 0;
+    font-size: 16px; /* Tăng kích thước chữ */
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1); /* Thêm hiệu ứng bóng mờ */
+}
 
 
-<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-		<![endif]-->
+.dropdown-item {
+    padding: 12px 20px; /* Tăng khoảng cách bên trong của các item */
+    font-size: 16px; /* Kích thước chữ của item */
+    color: #212529;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-item:hover {
+    background-color: #f1f1f1; /* Hiệu ứng hover */
+    color: #000;
+}
+
+
+</style>
 
 <!-- HEADER -->
 <header>
@@ -21,7 +47,23 @@
             </ul>
             <ul class="header-links pull-right">
                 <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
-                <li><a href="<c:url value='/login' />"><i class="fa fa-user-o"></i> My Account</a></li>
+                <c:choose>
+                    <c:when test="${not empty sessionScope.user}">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle">
+                                <i class="fa fa-user-o"></i> Tài khoản
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="<c:url value='/account' />">Thông tin</a>
+                                <a class="dropdown-item" href="<c:url value='/orders' />">Đơn hàng</a>
+                                <a class="dropdown-item" href="<c:url value='/logout' />">Đăng xuất</a>
+                            </div>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li><a href="<c:url value='/login' />"><i class="fa fa-user-o"></i> My Account</a></li>
+                    </c:otherwise>
+                </c:choose>
             </ul>
         </div>
     </div>
@@ -62,9 +104,7 @@
                     <div class="header-ctn">
                         <!-- Wishlist -->
                         <div>
-                            <a href="#">
-                                <i class="fa fa-heart-o"></i>
-                                <span>Your Wishlist</span>
+                            <a href="#"> <i class="fa fa-heart-o"></i> <span>Your Wishlist</span>
                                 <div class="qty">2</div>
                             </a>
                         </div>
@@ -72,9 +112,8 @@
 
                         <!-- Cart -->
                         <div class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                                <i class="fa fa-shopping-cart"></i>
-                                <span>Your Cart</span>
+                            <a href="#" class="dropdown-toggle">
+                                <i class="fa fa-shopping-cart"></i> <span>Your Cart</span>
                                 <div class="qty">${cart.totalQuantity}</div>
                             </a>
                             <div class="cart-dropdown">
@@ -105,7 +144,7 @@
                                             <h5>SUBTOTAL: ${cart.totalPrice}</h5>
                                         </div>
                                         <div class="cart-btns">
-                                            <a href="<c:url value='/cart/view' />">View Cart</a>
+                                            <a href="<c:url value='/cart/view' />">View Cart</a> 
                                             <a href="<c:url value='/checkout' />">Checkout <i class="fa fa-arrow-circle-right"></i></a>
                                         </div>
                                     </c:when>
@@ -121,9 +160,7 @@
 
                         <!-- Menu Toggle -->
                         <div class="menu-toggle">
-                            <a href="#">
-                                <i class="fa fa-bars"></i>
-                                <span>Menu</span>
+                            <a href="#"> <i class="fa fa-bars"></i> <span>Menu</span>
                             </a>
                         </div>
                         <!-- /Menu Toggle -->
@@ -136,3 +173,27 @@
     <!-- /MAIN HEADER -->
 </header>
 <!-- /HEADER -->
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap 4 JavaScript -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<script>
+$(document).ready(function () {
+    // Xử lý hiển thị/ẩn dropdown khi nhấp vào nút
+    $('.dropdown-toggle').on('click', function (e) {
+        e.preventDefault();
+        $(this).next('.dropdown-menu').toggle(); // Hiện/ẩn menu
+    });
+
+    // Đóng menu khi nhấp ra ngoài
+    $(document).on('click', function (e) {
+        if (!$(e.target).closest('.dropdown').length) {
+            $('.dropdown-menu').hide(); // Ẩn menu
+        }
+    });
+});
+
+</script>

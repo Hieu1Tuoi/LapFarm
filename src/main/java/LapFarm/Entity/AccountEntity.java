@@ -22,6 +22,21 @@ public class AccountEntity {
 	@JoinColumn(name = "Role", referencedColumnName = "Id", nullable = false)
 	private RoleEntity role;
 
+	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private UserInfoEntity userInfo;
+	
+	
+	public UserInfoEntity getUserInfo() {
+		return userInfo;
+	}
+
+	public void setUserInfo(UserInfoEntity userInfo) {
+		this.userInfo = userInfo;
+		if (userInfo != null) {
+			userInfo.setAccount(this);
+		}
+	}
+
 	// Constructors
 	public AccountEntity() {
 		this.role = new RoleEntity(0, "user");
