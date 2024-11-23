@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "order_details")  // Tên bảng phù hợp với database
-public class OrderDetailEntity {
+public class OrderDetailsEntity {
 
     @EmbeddedId
     private OrderDetailId id;
@@ -12,7 +12,7 @@ public class OrderDetailEntity {
     @MapsId("order")  // Liên kết với trường trong OrderDetailId
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "OrderDetail", nullable = false)
-    private OrderEntity order;
+    private OrdersEntity order;
 
     @MapsId("product")  // Liên kết với trường trong OrderDetailId
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,8 +29,8 @@ public class OrderDetailEntity {
     public OrderDetailId getId() { return id; }
     public void setId(OrderDetailId id) { this.id = id; }
 
-    public OrderEntity getOrder() { return order; }
-    public void setOrder(OrderEntity order) { this.order = order; }
+    public OrdersEntity getOrder() { return order; }
+    public void setOrder(OrdersEntity order) { this.order = order; }
 
     public ProductEntity getProduct() { return product; }
     public void setProduct(ProductEntity product) { this.product = product; }
