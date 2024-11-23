@@ -6,7 +6,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>Admin/Menu</title>
+<title>Đơn hàng</title>
 <base href="${pageContext.servletContext.contextPath}/">
 <!-- Tell the browser to be responsive to screen width -->
 <meta
@@ -260,8 +260,6 @@
 				<div class="col-xs-12">
 					<div class="box">
 						<div class="box-header">
-							<a href="add-menu.html" class="btn btn-success">+Thêm mới
-								Menu</a>
 
 							<div class="box-tools">
 								<div class="input-group input-group-sm" style="width: 150px;">
@@ -292,15 +290,15 @@
 								<tbody>
 									<c:forEach var="order" items="${orders}">
 										<tr>
-											<td>${order.idOrder}</td>
-											<td>${order.userOrder}</td>
+											<td>${order.orderId}</td>
+											<td>${order.userFullname}</td>
 											<td>${order.time}</td>
 											<td>${order.state}</td>
 											<td>${order.totalPrice}</td>
 											<td><a
-												href="${pageContext.request.contextPath}/admin/edit-order/${order.idOrder}"
+												href="${pageContext.request.contextPath}/admin/edit-order/${order.orderId}"
 												class="btn btn-success">Sửa</a> <a
-												href="${pageContext.request.contextPath}/admin/delete-order/${order.idOrder}"
+												href="${pageContext.request.contextPath}/admin/delete-order/${order.orderId}"
 												class="btn btn-danger">Xóa</a></td>
 										</tr>
 									</c:forEach>
