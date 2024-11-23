@@ -13,7 +13,7 @@ public class OrdersDTO {
     private String note;        // Order note
     private List<OrderDetailDTO> orderDetails; // List of order details (product info)
 
-    public OrdersDTO(int orderId, Date time, String state, long totalPrice, String userFullname) {
+    public OrdersDTO(int orderId, Date time, String state, long totalPrice, String userFullname, byte paymentMethod, String note) {
         this.orderId = orderId;
         this.time = time;
         this.state = state;
