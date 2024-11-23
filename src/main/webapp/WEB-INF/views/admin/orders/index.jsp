@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -202,6 +203,28 @@
 					</span>
 				</a></li>
 
+					<li class="treeview"><a href="#"> <i
+							class="fa fa-dashboard"></i> <span>Quản lý sản phẩm</span> <span
+							class="pull-right-container"> <i
+								class="fa fa-angle-left pull-right"></i>
+						</span>
+					</a>
+						<ul class="treeview-menu">
+						<!-- Sử dụng JSTL để lặp qua danh sách categories -->
+						<c:forEach var="category" items="${categories}">
+							<li><a href="admin/product?category=${category.idCategory }"> <i
+									class="fa fa-circle-o"></i> ${category.nameCategory}
+							</a></li>
+						</c:forEach>
+						</ul>
+					</li>
+
+					<li><a href=""> <i class="fa fa-th"></i> <span>Widgets</span>
+							<span class="pull-right-container"> <small
+								class="label pull-right bg-green">Hot</small>
+						</span>
+					</a></li>
+
 				<script>
 					function submitForm() {
 						var form = document.createElement('form');
@@ -211,28 +234,8 @@
 						document.body.appendChild(form);
 						form.submit(); // Gửi form
 					}
-				</script>
-				
-				<li class="treeview"><a href="#"> <i
-						class="fa fa-dashboard"></i> <span>Quản lý sản phẩm</span> <span
-						class="pull-right-container"> <i
-							class="fa fa-angle-left pull-right"></i>
-					</span>
-				</a>
-					<ul class="treeview-menu">
-						<!-- Sử dụng JSTL để lặp qua danh sách categories -->
-						<c:forEach var="category" items="${categories}">
-							<li><a href="/products/${category.idCategory}"> <i
-									class="fa fa-circle-o"></i> ${category.nameCategory}
-							</a></li>
-						</c:forEach>
-					</ul></li>
 
-					<li><a href=""> <i class="fa fa-th"></i> <span>Widgets</span>
-							<span class="pull-right-container"> <small
-								class="label pull-right bg-green">Hot</small>
-						</span>
-					</a></li>
+				</script>
 
 				</ul>
 			</section>
@@ -294,12 +297,20 @@
 											<td>${order.userFullname}</td>
 											<td>${order.time}</td>
 											<td>${order.state}</td>
-											<td>${order.totalPrice}</td>
-											<td><a
+											<td>
+												<fmt:formatNumber value="${order.totalPrice}" type="number" groupingUsed="true" /> VNĐ
+											</td>
+											<td>
+												<a
+												href="${pageContext.request.contextPath}/admin/view-order/${order.orderId}"
+												class="btn btn-success">Xem</a>
+												<a
 												href="${pageContext.request.contextPath}/admin/edit-order/${order.orderId}"
-												class="btn btn-success">Sửa</a> <a
+												class="btn btn-success">Sửa</a> 
+												<a
 												href="${pageContext.request.contextPath}/admin/delete-order/${order.orderId}"
-												class="btn btn-danger">Xóa</a></td>
+												class="btn btn-danger">Xóa</a>
+											</td>
 										</tr>
 									</c:forEach>
 								</tbody>

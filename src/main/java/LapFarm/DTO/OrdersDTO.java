@@ -6,11 +6,11 @@ public class OrdersDTO {
     private int orderId;
     private Date time;
     private String state;
-    private double totalPrice;
+    private long  totalPrice;
     private String userFullname;
 
     // Constructor
-    public OrdersDTO(int orderId, Date time, String state, double totalPrice, String userFullname) {
+    public OrdersDTO(int orderId, Date time, String state, long totalPrice, String userFullname) {
         this.orderId = orderId;
         this.time = time;
         this.state = state;
@@ -43,11 +43,11 @@ public class OrdersDTO {
         this.state = state;
     }
 
-    public double getTotalPrice() {
+    public long getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(double totalPrice) {
+    public void setTotalPrice(long totalPrice) {
         this.totalPrice = totalPrice;
     }
 
