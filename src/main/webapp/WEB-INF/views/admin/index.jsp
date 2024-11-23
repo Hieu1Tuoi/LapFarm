@@ -265,24 +265,12 @@
 			<!-- sidebar menu: : style can be found in sidebar.less -->
 
 			<ul class="sidebar-menu" data-widget="tree">
-				<li><a href="javascript:void(0);" onclick="submitForm()"> <i
+				<li><a href="javascript:void(0);" onclick="linkToOrders()"> <i
 						class="fa fa-th"></i> <span>Quản lý đơn hàng</span> <span
 						class="pull-right-container"> <small
 							class="label pull-right bg-green">FE</small>
 					</span>
 				</a></li>
-
-				<script>
-					function submitForm() {
-						var form = document.createElement('form');
-						form.method = 'GET'; // Hoặc POST nếu bạn cần
-						form.action = '${pageContext.request.contextPath}/admin/orders'; // Thay action của form
-
-						document.body.appendChild(form);
-						form.submit(); // Gửi form
-					}
-				</script>
-				
 				<li class="treeview"><a href="#"> <i
 						class="fa fa-dashboard"></i> <span>Quản lý sản phẩm</span> <span
 						class="pull-right-container"> <i
@@ -292,12 +280,26 @@
 					<ul class="treeview-menu">
 						<!-- Sử dụng JSTL để lặp qua danh sách categories -->
 						<c:forEach var="category" items="${categories}">
-							<li><a href="/products/${category.idCategory}"> <i
+							<li><a href="admin/product?category=${category.idCategory }"> <i
 									class="fa fa-circle-o"></i> ${category.nameCategory}
 							</a></li>
 						</c:forEach>
-					</ul></li>
+					</ul>
+				</li>
+				
 
+				<script>
+					function linkToOrders() {
+						var form = document.createElement('form');
+						form.method = 'GET'; // Hoặc POST nếu bạn cần
+						form.action = '${pageContext.request.contextPath}/admin/orders'; // Thay action của form
+
+						document.body.appendChild(form);
+						form.submit(); // Gửi form
+					}
+
+				</script>
+				
 
 				<li><a href=""> <i class="fa fa-th"></i> <span>Widgets</span>
 						<span class="pull-right-container"> <small

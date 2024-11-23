@@ -112,7 +112,9 @@ public class ProductDAO {
                 product.getDescription(),
                 product.getQuantity(),
                 product.getDiscount(),
+                product.getOriginalPrice(),
                 product.getSalePrice(),
+                product.getState(),
                 image
             );
         }).toList();
@@ -144,7 +146,9 @@ public class ProductDAO {
                 product.getDescription(),
                 product.getQuantity(),
                 product.getDiscount(),
+                product.getOriginalPrice(),
                 product.getSalePrice(),
+                product.getState(),
                 image
             );
         }).toList();

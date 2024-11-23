@@ -35,4 +35,16 @@ public class OrdersDAO {
                         order.getUserInfo().getFullName()))
                 .collect(Collectors.toList());
     }
+    
+    @Transactional
+    public List<OrdersEntity> getAllOrders() {
+        Session session = factory.getCurrentSession();
+
+        // Truy vấn lấy danh sách tất cả Orders mà không cần thông tin User
+        String hql = "SELECT o FROM OrdersEntity o";
+        List<OrdersEntity> ordersList = session.createQuery(hql, OrdersEntity.class).getResultList();
+
+        // Trả về danh sách OrdersEntity
+        return ordersList;
+    }
 }
