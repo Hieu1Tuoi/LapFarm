@@ -39,7 +39,7 @@
 		<property name="packagesToScan" value="LapFarm.Entity" />
 		<property name="hibernateProperties">
 			<props>
-				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
 			</props>
@@ -58,16 +58,10 @@
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
 		p:prefix="/WEB-INF/views/" p:suffix=".jsp" />
 
-<!-- 	<mvc:interceptors>
-		<mvc:interceptor>
-			<mvc:mapping path="/login" />
-			<bean class="LapFarm.Interceptor.LoggerInterceptor" />
-		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/admin/**" />
-			<bean class="LapFarm.Interceptor.GlobalInterceptor" />
-		</mvc:interceptor>
-	</mvc:interceptors> -->
+	<!-- <mvc:interceptors> <mvc:interceptor> <mvc:mapping path="/login" /> 
+		<bean class="LapFarm.Interceptor.LoggerInterceptor" /> </mvc:interceptor> 
+		<mvc:interceptor> <mvc:mapping path="/admin/**" /> <bean class="LapFarm.Interceptor.GlobalInterceptor" 
+		/> </mvc:interceptor> </mvc:interceptors> -->
 
 	<context:component-scan base-package="LapFarm.*" />
 </beans>

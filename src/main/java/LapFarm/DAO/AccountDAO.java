@@ -1,0 +1,110 @@
+package LapFarm.DAO;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import org.apache.commons.codec.binary.Hex;
+import LapFarm.Entity.AccountEntity;
+import LapFarm.Entity.UserInfoEntity;
+
+@Repository
+public class AccountDAO {
+    @Autowired
+    private SessionFactory factory;
+
+    public boolean checkEmailExists(String email) {
+        Session session = factory.openSession();
+        try {
+            String hql = "FROM AccountEntity WHERE email = :email";
+            Query query = session.createQuery(hql);
+            query.setParameter("email", email);
+            AccountEntity existingAccount = (AccountEntity) query.uniqueResult();
+            return existingAccount != null;
+        } finally {
+            session.close();
+        }
+    }
+
+    public void saveAccount(AccountEntity acc) {
+        Session session = factory.openSession();
+        Transaction t = session.beginTransaction();
+        acc.setPassword(hashPasswordWithMD5(acc.getPassword()));
+
+        try {
+            session.save(acc);
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
+
+    public void createUserinfo(String email) {
+        Session session = factory.openSession();
+        Transaction t = session.beginTransaction();
+
+        try {
+            UserInfoEntity userinfo = new UserInfoEntity();
+            userinfo.setEmail(email);
+            userinfo.setFullName("Default Name"); // Set default values to avoid null errors
+            userinfo.setDob("1900-01-01");
+            userinfo.setSex("Unknown");
+            userinfo.setPhone("0000000000");
+            userinfo.setAvatar("default-avatar.png");
+            userinfo.setAddress("Default Address");
+
+            session.save(userinfo);
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
+
+    public void updatePassword(String email, String newPassword) {
+        Session session = factory.openSession();
+        Transaction t = session.beginTransaction();
+
+        try {
+            String hql = "FROM AccountEntity WHERE email = :email";
+            Query query = session.createQuery(hql);
+            query.setParameter("email", email);
+            AccountEntity existingAccount = (AccountEntity) query.uniqueResult();
+
+            if (existingAccount != null) {
+                String hashedPassword = hashPasswordWithMD5(newPassword);
+                existingAccount.setPassword(hashedPassword);
+                session.update(existingAccount);
+                t.commit();
+            } else {
+                throw new RuntimeException("Email không tồn tại trong hệ thống!");
+            }
+        } catch (Exception e) {
+            t.rollback();
+            throw e;
+        } finally {
+            session.close();
+        }
+    }
+
+    private String hashPasswordWithMD5(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] digest = md.digest(password.getBytes());
+            return Hex.encodeHexString(digest);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("MD5 algorithm not found", e);
+        }
+    }
+}
