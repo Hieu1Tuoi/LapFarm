@@ -117,8 +117,6 @@
 					<i class="fa fa-angle-right"></i>
 			</a></li>
 		</c:if>
-
-
 		</ul>
 	</div>
 	<!-- /store bottom filter -->

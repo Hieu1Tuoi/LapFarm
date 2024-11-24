@@ -197,14 +197,14 @@
 				<!-- sidebar menu: : style can be found in sidebar.less -->
 				<ul class="sidebar-menu" data-widget="tree">
 				<li><a href="javascript:void(0);" onclick="submitForm()"> <i
-						class="fa fa-th"></i> <span>Quản lý đơn hàng</span> <span
+						class="fa fa-truck"></i> <span>Quản lý đơn hàng</span> <span
 						class="pull-right-container"> <small
 							class="label pull-right bg-green">FE</small>
 					</span>
 				</a></li>
 
 					<li class="treeview"><a href="#"> <i
-							class="fa fa-dashboard"></i> <span>Quản lý sản phẩm</span> <span
+							class="fa fa-laptop"></i> <span>Quản lý sản phẩm</span> <span
 							class="pull-right-container"> <i
 								class="fa fa-angle-left pull-right"></i>
 						</span>
@@ -263,7 +263,7 @@
 				<div class="col-xs-12">
 					<div class="box">
 						<div class="box-header">
-
+							<a href="add-menu.html" class="btn btn-success">+ Tạo đơn hàng</a>
 							<div class="box-tools">
 								<div class="input-group input-group-sm" style="width: 150px;">
 									<input type="text" name="table_search"

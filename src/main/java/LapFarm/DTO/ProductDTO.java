@@ -14,7 +14,8 @@ public class ProductDTO {
     private String image; // Đường dẫn ảnh chính (nếu cần)
 
     // Constructor
-    public ProductDTO(int idProduct, String nameProduct, String brandName, 
+
+    public ProductDTO(Integer idProduct, String nameProduct, String brandName, 
                       String categoryName, String description, Integer quantity,
                       Double discount, Double originalPrice, Double salePrice, String state, String image) {
         this.idProduct = idProduct;

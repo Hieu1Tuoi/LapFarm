@@ -3,18 +3,15 @@
 <%@ include file="/WEB-INF/views/layouts/user-header.jsp"%>
 <%@ include file="/WEB-INF/views/layouts/user-breadcumb.jsp"%>
 <%@ include file="/WEB-INF/views/layouts/user-aside.jsp"%>
-
-<!-- SECTION -->
-
 <!-- STORE -->
 <div id="store" class="col-md-9">
+	<h2></h2>
 	<h2>${ProductsPaginate != null ? ProductsPaginate.size() : 0}</h2>
 	<h3>
-		TẤT CẢ SẢN PHẨM:
-		<fmt:formatNumber value="${products.size()}" type="number"
-			groupingUsed="true" />
+			TÌM KIẾM TỪ KHÓA: "${searchText}":
+		<fmt:formatNumber value="${productCounts[category.idCategory]}"
+			type="number" groupingUsed="true" />
 	</h3>
-
 	<!-- store products -->
 	<div class="row">
 		<!-- product -->
@@ -26,7 +23,7 @@
 					<div class="col-md-4 col-xs-6">
 						<div class="product">
 							<div class="product-img">
-								<a href="${pageContext.request.contextPath}/product/${p.idProduct}"></a>
+								<a href="chi-tiet-san-pham/${p.idProduct}"></a>
 								<!-- Lấy hình ảnh đầu tiên từ danh sách -->
 								<c:choose>
 									<c:when test="${not empty p.image}">
@@ -45,7 +42,7 @@
 							<div class="product-body">
 								<p class="product-category">${p.categoryName}</p>
 								<h4 class="product-name">
-									<a href="${pageContext.request.contextPath}/product/${p.idProduct}"
+									<a href="chi-tiet-san-pham/${p.idProduct}"
 										title="${p.nameProduct}">${p.nameProduct}</a>
 								</h4>
 								<h6 class="product-price">
@@ -106,27 +103,24 @@
 				<c:if test="${(loop.index)==paginateInfo.currentPage }">
 
 					<li class="active"><a
-						href="home?page=${loop.index}">${loop.index}</li>
+						href="search?page=${loop.index}">${loop.index}</li>
 				</c:if>
 				<c:if test="${(loop.index)!=paginateInfo.currentPage}">
 					<li><a
-						href="home?page=${loop.index}">${loop.index}</a></li>
+						href="search?page=${loop.index}">${loop.index}</a></li>
 				</c:if>
 		</c:forEach>
 		<!-- Nút điều hướng đến trang tiếp theo -->
 		<c:if test="${paginateInfo.currentPage < paginateInfo.totalPage}">
 			<li><a
-				href="home?page=${paginateInfo.currentPage + 1}">
+				href="search?page=${paginateInfo.currentPage + 1}">
 					<i class="fa fa-angle-right"></i>
 			</a></li>
 		</c:if>
 		</ul>
 	</div>
-					<!-- /store bottom filter -->
-			
 	<!-- /store bottom filter -->
 </div>
 <!-- /STORE -->
-
 
 <%@ include file="/WEB-INF/views/layouts/user-footer.jsp"%>
