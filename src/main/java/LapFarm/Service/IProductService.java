@@ -10,7 +10,7 @@ import LapFarm.DTO.ProductDTO;
 public interface IProductService {
 	public Long getTotalProductQuantity();
 
-	public List<ProductDTO> GetDataProductPaginates(int start, int end);
+	public List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText);
 	
 	 public List<ProductDTO> getAllProductsDTO();
 

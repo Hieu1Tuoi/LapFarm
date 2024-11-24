@@ -270,12 +270,18 @@ public class ProductDAO {
 
     
     @Transactional
-    public List<ProductDTO> getDataProductPaginates(int start, int end) {
+    public List<ProductDTO> getDataProductPaginates(int start, int end, String searchText) {
         Session session = factory.getCurrentSession();
 
-        // HQL để lấy danh sách ProductEntity
-        String hql = "SELECT p FROM ProductEntity p LEFT JOIN FETCH p.brand b LEFT JOIN FETCH p.category c";
+        // HQL để lấy danh sách ProductEntity với điều kiện lọc nếu có searchText
+        String hql = "SELECT p FROM ProductEntity p LEFT JOIN FETCH p.brand b LEFT JOIN FETCH p.category c" +
+                     (searchText != null && !searchText.trim().isEmpty() ? " WHERE LOWER(p.nameProduct) LIKE :searchText" : "");
         Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+
+        // Thiết lập giá trị cho tham số searchText nếu có
+        if (searchText != null && !searchText.trim().isEmpty()) {
+            query.setParameter("searchText", "%" + searchText.toLowerCase() + "%");
+        }
 
         // Thiết lập phân trang
         query.setFirstResult(start - 1); // Vị trí bắt đầu (Hibernate tính từ 0)
@@ -284,26 +290,20 @@ public class ProductDAO {
         // Lấy danh sách ProductEntity
         List<ProductEntity> products = query.list();
 
-        // Chuyển đổi từ ProductEntity sang ProductDTO
-        return products.stream().map(product -> {
-            String image = product.getImages() != null && !product.getImages().isEmpty()
-                    ? product.getImages().get(0).getImageUrl() // Lấy ảnh đầu tiên nếu có
-                    : null;
+        // Chuyển đổi sang ProductDTO
+        return products.stream()
+                .map(product -> {
+                    String image = product.getImages() != null && !product.getImages().isEmpty()
+                            ? product.getImages().get(0).getImageUrl() // Lấy ảnh đầu tiên nếu có
+                            : null;
 
-            return new ProductDTO(
-                product.getIdProduct(),
-                product.getNameProduct(),
-                product.getBrand() != null ? product.getBrand().getNameBrand() : null, // Tên thương hiệu
-                product.getCategory() != null ? product.getCategory().getNameCategory() : null, // Tên danh mục
-                product.getDescription(),
-                product.getQuantity(),
-                product.getDiscount(),
-                product.getOriginalPrice(),
-                product.getSalePrice(),
-                product.getState(),
-                image
-            );
-        }).collect(Collectors.toList());
+                    return new ProductDTO(product.getIdProduct(), product.getNameProduct(),
+                            product.getBrand() != null ? product.getBrand().getNameBrand() : null, // Tên thương hiệu
+                            product.getCategory() != null ? product.getCategory().getNameCategory() : null, // Tên danh mục
+                            product.getDescription(), product.getQuantity(), product.getDiscount(), product.getOriginalPrice(),
+                            product.getSalePrice(), product.getState(), image);
+                })
+                .collect(Collectors.toList());
     }
 
     @Transactional

@@ -69,7 +69,7 @@ public class IndexController extends BaseController {
 		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
 		_mvShare.addObject("paginateInfo", paginateInfo);
 		_mvShare.addObject("ProductsPaginate",
-				productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd()));
+				productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), ""));
 		_mvShare.setViewName("store");
 		return _mvShare;
 	}
@@ -102,7 +102,7 @@ public class IndexController extends BaseController {
 		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
 		_mvShare.addObject("paginateInfo", paginateInfo);
 		_mvShare.addObject("ProductsPaginate",
-				productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd()));
+				productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), ""));
 		_mvShare.setViewName("store");
 		return _mvShare;
 	}

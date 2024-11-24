@@ -61,7 +61,7 @@ public class BrandController extends BaseController {
 		int totalData =  brandService.getProductsByBrand(idBrand).size();
 		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
 		_mvShare.addObject("paginateInfo", paginateInfo);
-		_mvShare.addObject("ProductsPaginate",brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd()));
+		_mvShare.addObject("ProductsPaginate",brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), ""));
 		_mvShare.setViewName("productsByBrand");
 		return _mvShare; // The view name
 	}
@@ -93,7 +93,7 @@ public class BrandController extends BaseController {
 				int totalData =  brandService.getProductsByBrand(idBrand).size();
 				PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
 				_mvShare.addObject("paginateInfo", paginateInfo);
-				_mvShare.addObject("ProductsPaginate",brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd()));
+				_mvShare.addObject("ProductsPaginate",brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), ""));
 				_mvShare.setViewName("productsByCategory");
 		
 		_mvShare.setViewName("productsByBrand");

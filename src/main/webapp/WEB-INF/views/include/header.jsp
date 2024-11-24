@@ -92,7 +92,7 @@
 								<option value="0">All Categories</option>
 								<option value="1">Category 01</option>
 								<option value="2">Category 02</option>
-							</select> <input id="searchInput" class="input" name="searchtext"
+							</select> <input value="${searchText}" id="searchInput" class="input" name="searchtext"
 								placeholder="Search here">
 							<button type="submit" class="search-btn">Tìm Kiếm</button>
 						</form>
