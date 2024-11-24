@@ -2,7 +2,9 @@ package LapFarm.DAO;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import org.apache.commons.codec.binary.Hex;
+
+import LapFarm.DTO.UserInfoDTO;
 import LapFarm.Entity.AccountEntity;
 import LapFarm.Entity.UserInfoEntity;
 
@@ -19,6 +23,58 @@ import LapFarm.Entity.UserInfoEntity;
 public class UserDAO {
 	@Autowired
 	private SessionFactory factory;
+	@Autowired
+    private OrdersDAO ordersDAO;
+	
+	public List<UserInfoEntity> getAllUserInfo() {
+	    Session session = factory.openSession();
+	    try {
+	        String hql = "FROM UserInfoEntity";
+	        Query<UserInfoEntity> query = session.createQuery(hql, UserInfoEntity.class);
+	        return query.list(); // Trả về danh sách tất cả các bản ghi trong UserInfoEntity
+	    } finally {
+	        session.close();
+	    }
+	}
+	
+	// Phương thức trả về danh sách người dùng với số lượng đơn hàng
+    public List<UserInfoDTO> getAllUserInfoWithOrderCount() {
+        Session session = factory.openSession();
+        try {
+            String hql = "FROM UserInfoEntity";
+            Query<UserInfoEntity> query = session.createQuery(hql, UserInfoEntity.class);
+            List<UserInfoEntity> userInfoList = query.list();
+
+            // Duyệt qua tất cả người dùng và thêm số lượng đơn hàng
+            List<UserInfoDTO> userInfoDTOList = new ArrayList<>();
+            for (UserInfoEntity userInfo : userInfoList) {
+                // Gọi OrdersDAO để lấy số lượng đơn hàng của người dùng này
+                long numberOfOrders = ordersDAO.countOrdersByUserId(userInfo.getUserId());
+                
+                // Lấy trạng thái (state) từ AccountEntity
+                String state = userInfo.getAccount() != null ? userInfo.getAccount().getState() : null;
+
+                // Tạo UserInfoDTO và thêm vào danh sách
+                UserInfoDTO userInfoDTO = new UserInfoDTO(
+                        userInfo.getUserId(),
+                        userInfo.getAccount().getEmail(),
+                        userInfo.getFullName(),
+                        userInfo.getDob(),
+                        userInfo.getSex(),
+                        userInfo.getPhone(),
+                        userInfo.getAvatar(),
+                        userInfo.getAddress(),
+                        numberOfOrders,
+                        state
+                );
+                userInfoDTOList.add(userInfoDTO);
+            }
+
+            return userInfoDTOList; // Trả về danh sách UserInfoDTO
+        } finally {
+            session.close();
+        }
+    }
 
 	public boolean checkEmailExists(String email) {
 		Session session = factory.openSession();

@@ -18,8 +18,8 @@ public class CategoryServiceImp implements ICategoryService {
 	private CategoryDAO categoryDAO;
 	
 	@Override
-	public List<ProductDTO> GetDataProductPaginates(int start, int end) {
-		return productDAO.getDataProductPaginates(start, end);
+	public List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText, int category) {
+		return productDAO.getDataProductPaginates(start, end, searchText, category);
 	}
 
 	@Override

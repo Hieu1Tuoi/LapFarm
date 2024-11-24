@@ -10,12 +10,10 @@ import LapFarm.DTO.ProductDTO;
 public interface IProductService {
 	public Long getTotalProductQuantity();
 
-	public List<ProductDTO> GetDataProductPaginates(int start, int end);
 
 	public List<ProductDTO> getAllProductsDTO();
 
-	public List<ProductDTO> findProductsByPriceRange(int minPrice, int maxPrice);
 
-	public List<ProductDTO> findProductsByPriceGreaterThan(int minPrice);
+	List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText, int category);
 
 }

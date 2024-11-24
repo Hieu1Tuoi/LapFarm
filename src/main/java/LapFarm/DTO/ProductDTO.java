@@ -1,103 +1,112 @@
 package LapFarm.DTO;
 
 public class ProductDTO {
-    private int idProduct;
-    private String nameProduct;
-    private String brandName; // Tên thương hiệu thay vì đối tượng Brand
-    private String categoryName; // Tên danh mục thay vì đối tượng Category
-    private String description;
-    private Integer quantity;
-    private Double discount;
-    private Double originalPrice;
-    private Double salePrice;
-    private String state;
-    private String image; // Đường dẫn ảnh chính (nếu cần)
+	private int idProduct;
+	private String nameProduct;
+	private String brandName; // Tên thương hiệu thay vì đối tượng Brand
+	private int idCategory;
+	private String categoryName;// Tên danh mục thay vì đối tượng Category
+	private String description;
+	private Integer quantity;
+	private Double discount;
+	private Double originalPrice;
+	private Double salePrice;
+	private String state;
+	private String image; // Đường dẫn ảnh chính (nếu cần)
 
-    // Constructor
+	// Constructor
 
-    public ProductDTO(Integer idProduct, String nameProduct, String brandName, 
-                      String categoryName, String description, Integer quantity,
-                      Double discount, Double originalPrice, Double salePrice, String state, String image) {
-        this.idProduct = idProduct;
-        this.nameProduct = nameProduct;
-        this.brandName = brandName;
-        this.categoryName = categoryName;
-        this.description = description;
-        this.quantity = quantity;
-        this.discount = discount;
-        this.originalPrice = originalPrice;
-        this.salePrice = salePrice;
-        this.state = state;
-        this.image = image;
-    }
+	public ProductDTO(Integer idProduct, String nameProduct, String brandName, String categoryName, int idCategory,
+			String description, Integer quantity, Double discount, Double originalPrice, Double salePrice, String state,
+			String image) {
+		this.idProduct = idProduct;
+		this.nameProduct = nameProduct;
+		this.brandName = brandName;
+		this.idCategory = idCategory;
+		this.categoryName = categoryName;
+		this.description = description;
+		this.quantity = quantity;
+		this.discount = discount;
+		this.originalPrice = originalPrice;
+		this.salePrice = salePrice;
+		this.state = state;
+		this.image = image;
+	}
 
-    // Getter và Setter
-    public int getIdProduct() {
-        return idProduct;
-    }
+	// Getter và Setter
+	public int getIdProduct() {
+		return idProduct;
+	}
 
-    public void setIdProduct(int idProduct) {
-        this.idProduct = idProduct;
-    }
+	public void setIdProduct(int idProduct) {
+		this.idProduct = idProduct;
+	}
 
-    public String getNameProduct() {
-        return nameProduct;
-    }
+	public String getNameProduct() {
+		return nameProduct;
+	}
 
-    public void setNameProduct(String nameProduct) {
-        this.nameProduct = nameProduct;
-    }
+	public void setNameProduct(String nameProduct) {
+		this.nameProduct = nameProduct;
+	}
 
-    public String getBrandName() {
-        return brandName;
-    }
+	public String getBrandName() {
+		return brandName;
+	}
 
-    public void setBrandName(String brandName) {
-        this.brandName = brandName;
-    }
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
 
-    public String getCategoryName() {
-        return categoryName;
-    }
+	public int getIdCategory() {
+		return idCategory;
+	}
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
+	public void setIdCategory(int idCategory) {
+		this.idCategory = idCategory;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getCategoryName() {
+		return categoryName;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
 
-    public Integer getQuantity() {
-        return quantity;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public Double getDiscount() {
-        return discount;
-    }
+	public Integer getQuantity() {
+		return quantity;
+	}
 
-    public void setDiscount(Double discount) {
-        this.discount = discount;
-    }
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
 
-    public Double getSalePrice() {
-        return salePrice;
-    }
+	public Double getDiscount() {
+		return discount;
+	}
 
-    public void setSalePrice(Double salePrice) {
-        this.salePrice = salePrice;
-    }
-    
+	public void setDiscount(Double discount) {
+		this.discount = discount;
+	}
 
-    public Double getOriginalPrice() {
+	public Double getSalePrice() {
+		return salePrice;
+	}
+
+	public void setSalePrice(Double salePrice) {
+		this.salePrice = salePrice;
+	}
+
+	public Double getOriginalPrice() {
 		return originalPrice;
 	}
 
@@ -106,14 +115,14 @@ public class ProductDTO {
 	}
 
 	public String getImage() {
-        return image;
-    }
+		return image;
+	}
 
-    public void setImage(String image) {
-        this.image = image;
-    }
+	public void setImage(String image) {
+		this.image = image;
+	}
 
-    public String getState() {
+	public String getState() {
 		return state;
 	}
 
@@ -133,4 +142,9 @@ public class ProductDTO {
     public long calSalePrice() {
     	return (long) (this.salePrice*1);
     }
+
+	
+
+
+
 }

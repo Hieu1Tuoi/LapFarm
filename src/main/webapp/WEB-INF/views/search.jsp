@@ -103,17 +103,17 @@
 				<c:if test="${(loop.index)==paginateInfo.currentPage }">
 
 					<li class="active"><a
-						href="search?page=${loop.index}">${loop.index}</li>
+						href="search?category=${searchCategory}&searchtext=${searchText}&?page=${loop.index}">${loop.index}</li>
 				</c:if>
 				<c:if test="${(loop.index)!=paginateInfo.currentPage}">
 					<li><a
-						href="search?page=${loop.index}">${loop.index}</a></li>
+						href="search?category=${searchCategory}&searchtext=${searchText}&?page=${loop.index}">${loop.index}</a></li>
 				</c:if>
 		</c:forEach>
 		<!-- Nút điều hướng đến trang tiếp theo -->
 		<c:if test="${paginateInfo.currentPage < paginateInfo.totalPage}">
 			<li><a
-				href="search?page=${paginateInfo.currentPage + 1}">
+				href="search?category=${searchCategory}&searchtext=${searchText}&?page=${paginateInfo.currentPage + 1}">
 					<i class="fa fa-angle-right"></i>
 			</a></li>
 		</c:if>

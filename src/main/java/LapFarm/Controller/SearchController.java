@@ -41,7 +41,6 @@ public class SearchController extends BaseController {
 		// Lấy danh sách Brand
 		_mvShare.addObject("brands", _baseService.getBrandEntities());
 
-
 		_mvShare.addObject("products", productService.getAllProductsDTO());
 
 		// Lấy số lượng sản phẩm theo tất cả danh mục
@@ -57,31 +56,25 @@ public class SearchController extends BaseController {
 		// Thêm vào model để hiển thị trên view
 		_mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
 
-		int totalData = productService.getAllProductsDTO().size();
+		int totalData = filter(productService.getAllProductsDTO(), searchText, Integer.valueOf(category)).size();
 		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
 		_mvShare.addObject("paginateInfo", paginateInfo);
 
-		List<ProductDTO> allProducts = productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd());
+		List<ProductDTO> allProducts = productService.GetDataProductPaginates(paginateInfo.getStart(),
+				paginateInfo.getEnd(), searchText, Integer.valueOf(category));
 
 		// Kiểm tra searchText và lọc danh sách sản phẩm
-		List<ProductDTO> filteredProducts;
-		if (searchText == null || searchText.trim().isEmpty()) {
-			// Nếu searchText null hoặc rỗng, trả về toàn bộ danh sách sản phẩm
-			filteredProducts = allProducts;
-		} else {
-			// Lọc danh sách theo nameProduct
-			filteredProducts = allProducts.stream()
-					.filter(product -> product.getNameProduct().toLowerCase().contains(searchText.toLowerCase()))
-					.collect(Collectors.toList());
-		}
+
 		_mvShare.addObject("searchText", searchText);
-		_mvShare.addObject("ProductsPaginate", filteredProducts);
+		_mvShare.addObject("searchCategory", category);
+		_mvShare.addObject("ProductsPaginate", allProducts);
 		_mvShare.setViewName("search");
 		return _mvShare;
 	}
 
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET, params = "page")
-	public ModelAndView Index(@RequestParam(value = "page", defaultValue = "1") int currentPage) {
+	public ModelAndView Index(@RequestParam("category") String category, @RequestParam("searchtext") String searchText,
+			@RequestParam(value = "page", defaultValue = "1") int currentPage) {
 		// Lấy danh sách Category
 		_mvShare.addObject("categories", _baseService.getCategoryEntities());
 
@@ -104,13 +97,36 @@ public class SearchController extends BaseController {
 		// Thêm vào model để hiển thị trên view
 		_mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
 
-		int totalData = productService.getAllProductsDTO().size();
-		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
+		int totalData = filter(productService.getAllProductsDTO(), searchText, Integer.valueOf(category)).size();
+		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
 		_mvShare.addObject("paginateInfo", paginateInfo);
-		
-		_mvShare.addObject("ProductsPaginate",
-				productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd()));
+
+		List<ProductDTO> allProducts = productService.GetDataProductPaginates(paginateInfo.getStart(),
+				paginateInfo.getEnd(), searchText, Integer.valueOf(category));
+
+		// Kiểm tra searchText và lọc danh sách sản phẩm
+
+		_mvShare.addObject("searchText", searchText);
+		_mvShare.addObject("searchCategory", category);
+		_mvShare.addObject("ProductsPaginate", allProducts);
 		_mvShare.setViewName("search");
 		return _mvShare;
 	}
+
+	public List<ProductDTO> filter(List<ProductDTO> list, String searchText, int idCategory) {
+		// Nếu không có điều kiện tìm kiếm (searchText và idCategory = 0), trả về toàn
+		// bộ danh sách
+		if ((searchText == null || searchText.trim().isEmpty()) && idCategory == 0) {
+			return list;
+		}
+
+		// Thực hiện lọc theo các tiêu chí
+		return list.stream().filter(product -> {
+			boolean matchesSearchText = (searchText == null || searchText.trim().isEmpty())
+					|| product.getNameProduct().toLowerCase().contains(searchText.toLowerCase());
+			boolean matchesCategory = (idCategory == 0) || (product.getIdCategory() == idCategory);
+			return matchesSearchText && matchesCategory;
+		}).collect(Collectors.toList());
+	}
+
 }

@@ -14,20 +14,7 @@
 					<p>Alexander Pierce</p>
 					<a href="#"><i class="fa fa-circle text-success"></i> Online</a>
 				</div>
-			</div>
-			<!-- search form -->
-			<form action="#" method="get" class="sidebar-form">
-				<div class="input-group">
-					<input type="text" name="q" class="form-control"
-						placeholder="Search..."> <span class="input-group-btn">
-						<button type="submit" name="search" id="search-btn"
-							class="btn btn-flat">
-							<i class="fa fa-search"></i>
-						</button>
-					</span>
-				</div>
-			</form>
-			<!-- /.search form -->
+			</div>	
 			<!-- sidebar menu: : style can be found in sidebar.less -->
 
 			<ul class="sidebar-menu" data-widget="tree">
@@ -66,7 +53,7 @@
 				</script>
 
 
-				<li><a href=""> <i class="fa fa-th"></i> <span>Widgets</span>
+				<li><a href="admin/manage-user"> <i class="fa fa-user"></i> <span>Quản lý người dùng</span>
 						<span class="pull-right-container"> <small
 							class="label pull-right bg-green">Hot</small>
 					</span>

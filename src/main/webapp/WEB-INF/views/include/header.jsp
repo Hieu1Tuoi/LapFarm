@@ -55,14 +55,15 @@
 						</a>
 							<div class="dropdown-menu">
 								<a class="dropdown-item" href="<c:url value='/account' />">Thông
-									tin</a> <a class="dropdown-item" href="<c:url value='/orders' />">Đơn
-									hàng</a> <a class="dropdown-item" href="<c:url value='/logout' />">Đăng
+									tin</a> <a class="dropdown-item"
+									href="<c:url value='/account#orders-history' />">Đơn hàng</a> <a
+									class="dropdown-item" href="<c:url value='/logout' />">Đăng
 									xuất</a>
 							</div></li>
 					</c:when>
 					<c:otherwise>
 						<li><a href="<c:url value='/login' />"><i
-								class="fa fa-user-o"></i> My Account</a></li>
+								class="fa fa-user-o"></i> Tài khoản</a></li>
 					</c:otherwise>
 				</c:choose>
 			</ul>
@@ -89,12 +90,15 @@
 					<div class="header-search">
 						<form action="search" method="get">
 							<select class="input-select" name="category">
-								<option value="0">All Categories</option>
-								<option value="1">Category 01</option>
-								<option value="2">Category 02</option>
-							</select> <input id="searchInput" class="input" name="searchtext"
-								placeholder="Search here">
-							<button type="submit" class="search-btn">Search</button>
+								<option value="0" ${searchCategory == 0 ? 'selected' : ''}>All
+									Categories</option>
+								<option value="1" ${searchCategory == 1 ? 'selected' : ''}>Category
+									01</option>
+								<option value="2" ${searchCategory == 2 ? 'selected' : ''}>Category
+									02</option>
+							</select> <input value="${searchText}" id="searchInput" class="input"
+								name="searchtext" placeholder="Search here">
+							<button type="submit" class="search-btn">Tìm Kiếm</button>
 						</form>
 					</div>
 				</div>
@@ -106,8 +110,7 @@
 					<div class="header-ctn">
 						<!-- Wishlist -->
 						<div>
-							<a href="#"> <i class="fa fa-heart-o"></i> <span>Your
-									Wishlist</span>
+							<a href="#"> <i class="fa fa-heart-o"></i> <span>Wishlish</span>
 								<div class="qty">2</div>
 							</a>
 						</div>
@@ -116,7 +119,7 @@
 						<!-- Cart -->
 						<div class="dropdown">
 							<a href="#" class="dropdown-toggle"> <i
-								class="fa fa-shopping-cart"></i> <span>Your Cart</span>
+								class="fa fa-shopping-cart"></i> <span>Giỏ hàng</span>
 								<div class="qty">${cart.totalQuantity}</div>
 							</a>
 							<div class="cart-dropdown">

@@ -12,10 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import LapFarm.DAO.CategoryDAO;
 import LapFarm.DAO.OrdersDAO;
 import LapFarm.DAO.ProductDAO;
+import LapFarm.DAO.UserDAO;
 import LapFarm.DTO.OrdersDTO;
 import LapFarm.DTO.ProductDTO;
+import LapFarm.DTO.UserInfoDTO;
 import LapFarm.Entity.CategoryEntity;
 import LapFarm.Entity.ProductEntity;
+import LapFarm.Entity.UserInfoEntity;
 
 @Controller
 @RequestMapping(value = "/admin")
@@ -26,6 +29,8 @@ public class AdminController {
 	private OrdersDAO ordersDAO;
 	@Autowired
 	private ProductDAO productDAO;
+	@Autowired
+	private UserDAO userDAO;
 	
 	@RequestMapping(value = "/home" , method = RequestMethod.GET)
 	public String index(ModelMap model) {
@@ -60,5 +65,19 @@ public class AdminController {
 
 	    // Trả về view cho trang quản lý sản phẩm của danh mục
 	    return "/admin/products/category";
+	}
+	
+	@RequestMapping(value = { "/manage-user" }, method = RequestMethod.GET)
+	public String userIndex(ModelMap model) {
+	    // Lấy danh sách từ DAO
+		List<CategoryEntity> categories = categoryDAO.getAllCategories();
+		List<UserInfoDTO> userInfoDTO = userDAO.getAllUserInfoWithOrderCount();
+	    // Đưa danh sách vào Model để đẩy sang view
+		
+	    model.addAttribute("categories", categories);
+	    model.addAttribute("userInfoDTO", userInfoDTO);
+
+	    // Trả về view cho trang quản lý sản phẩm của danh mục
+	    return "/admin/user/index";
 	}
 }
