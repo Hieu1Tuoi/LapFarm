@@ -306,5 +306,14 @@ public class ProductDAO {
         }).collect(Collectors.toList());
     }
 
+    @Transactional
+    public ProductEntity getProductById(int idProduct) {
+        Session session = factory.getCurrentSession();
+        String hql = "SELECT p FROM ProductEntity p JOIN FETCH p.images WHERE p.idProduct = :idProduct";
+        Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+        query.setParameter("idProduct", idProduct);
+
+        return query.uniqueResult(); // Trả về sản phẩm hoặc null nếu không tìm thấy
+    }
 
 }
