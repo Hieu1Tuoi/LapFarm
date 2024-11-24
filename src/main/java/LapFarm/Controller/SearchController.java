@@ -56,7 +56,7 @@ public class SearchController extends BaseController {
 		// Thêm vào model để hiển thị trên view
 		_mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
 
-		int totalData = filter(productService.getAllProductsDTO(), searchText).size();
+		int totalData = filter(productService.getAllProductsDTO(), searchText, Integer.valueOf(category)).size();
 		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
 		_mvShare.addObject("paginateInfo", paginateInfo);
 
@@ -97,7 +97,7 @@ public class SearchController extends BaseController {
 		// Thêm vào model để hiển thị trên view
 		_mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
 
-		int totalData = filter(productService.getAllProductsDTO(), searchText).size();
+		int totalData = filter(productService.getAllProductsDTO(), searchText, Integer.valueOf(category)).size();
 		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
 		_mvShare.addObject("paginateInfo", paginateInfo);
 
@@ -113,16 +113,20 @@ public class SearchController extends BaseController {
 		return _mvShare;
 	}
 
-	public List<ProductDTO> filter(List<ProductDTO> list, String searchText) {
-		// Nếu searchText null hoặc rỗng, trả về toàn bộ danh sách
-		if (searchText == null || searchText.trim().isEmpty()) {
+	public List<ProductDTO> filter(List<ProductDTO> list, String searchText, int idCategory) {
+		// Nếu không có điều kiện tìm kiếm (searchText và idCategory = 0), trả về toàn
+		// bộ danh sách
+		if ((searchText == null || searchText.trim().isEmpty()) && idCategory == 0) {
 			return list;
 		}
 
-		// Lọc danh sách theo nameProduct (không phân biệt hoa thường)
-		return list.stream()
-				.filter(product -> product.getNameProduct().toLowerCase().contains(searchText.toLowerCase()))
-				.collect(Collectors.toList());
+		// Thực hiện lọc theo các tiêu chí
+		return list.stream().filter(product -> {
+			boolean matchesSearchText = (searchText == null || searchText.trim().isEmpty())
+					|| product.getNameProduct().toLowerCase().contains(searchText.toLowerCase());
+			boolean matchesCategory = (idCategory == 0) || (product.getIdCategory() == idCategory);
+			return matchesSearchText && matchesCategory;
+		}).collect(Collectors.toList());
 	}
 
 }

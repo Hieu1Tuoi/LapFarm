@@ -55,8 +55,9 @@ public class ProductDAO {
 			return new ProductDTO(product.getIdProduct(), product.getNameProduct(),
 					product.getBrand() != null ? product.getBrand().getNameBrand() : null,
 					product.getCategory() != null ? product.getCategory().getNameCategory() : null,
-					product.getDescription(), product.getQuantity(), product.getDiscount(), product.getOriginalPrice(),
-					product.getSalePrice(), product.getState(), image);
+					product.getCategory().getIdCategory(), product.getDescription(), product.getQuantity(),
+					product.getDiscount(), product.getOriginalPrice(), product.getSalePrice(), product.getState(),
+					image);
 		}).toList();
 	}
 
@@ -129,10 +130,11 @@ public class ProductDAO {
 
 			// Chuyển đổi thông tin từ ProductEntity sang ProductDTO
 			return new ProductDTO(product.getIdProduct(), product.getNameProduct(),
-					product.getBrand() != null ? product.getBrand().getNameBrand() : null, // Tên thương hiệu
-					product.getCategory() != null ? product.getCategory().getNameCategory() : null, // Tên danh mục
-					product.getDescription(), product.getQuantity(), product.getDiscount(), product.getOriginalPrice(),
-					product.getSalePrice(), product.getState(), image);
+					product.getBrand() != null ? product.getBrand().getNameBrand() : null,
+					product.getCategory() != null ? product.getCategory().getNameCategory() : null,
+					product.getCategory().getIdCategory(), product.getDescription(), product.getQuantity(),
+					product.getDiscount(), product.getOriginalPrice(), product.getSalePrice(), product.getState(),
+					image);
 		}).toList();
 
 		return productDTOs;
@@ -157,8 +159,9 @@ public class ProductDAO {
 			return new ProductDTO(product.getIdProduct(), product.getNameProduct(),
 					product.getBrand() != null ? product.getBrand().getNameBrand() : null,
 					product.getCategory() != null ? product.getCategory().getNameCategory() : null,
-					product.getDescription(), product.getQuantity(), product.getDiscount(), product.getOriginalPrice(),
-					product.getSalePrice(), product.getState(), image);
+					product.getCategory().getIdCategory(), product.getDescription(), product.getQuantity(),
+					product.getDiscount(), product.getOriginalPrice(), product.getSalePrice(), product.getState(),
+					image);
 		}).toList();
 	}
 
@@ -237,8 +240,9 @@ public class ProductDAO {
 			return new ProductDTO(product.getIdProduct(), product.getNameProduct(),
 					product.getBrand() != null ? product.getBrand().getNameBrand() : null,
 					product.getCategory() != null ? product.getCategory().getNameCategory() : null,
-					product.getDescription(), product.getQuantity(), product.getDiscount(), product.getOriginalPrice(),
-					product.getSalePrice(), product.getState(), image);
+					product.getCategory().getIdCategory(), product.getDescription(), product.getQuantity(),
+					product.getDiscount(), product.getOriginalPrice(), product.getSalePrice(), product.getState(),
+					image);
 		}).toList();
 	}
 
@@ -282,10 +286,11 @@ public class ProductDAO {
 					: null;
 
 			return new ProductDTO(product.getIdProduct(), product.getNameProduct(),
-					product.getBrand() != null ? product.getBrand().getNameBrand() : null, // Tên thương hiệu
-					product.getCategory() != null ? product.getCategory().getNameCategory() : null, // Tên danh mục
-					product.getDescription(), product.getQuantity(), product.getDiscount(), product.getOriginalPrice(),
-					product.getSalePrice(), product.getState(), image);
+					product.getBrand() != null ? product.getBrand().getNameBrand() : null,
+					product.getCategory() != null ? product.getCategory().getNameCategory() : null,
+					product.getCategory().getIdCategory(), product.getDescription(), product.getQuantity(),
+					product.getDiscount(), product.getOriginalPrice(), product.getSalePrice(), product.getState(),
+					image);
 		}).collect(Collectors.toList());
 	}
 
