@@ -40,6 +40,7 @@ public class UserInfoEntity {
 	public void setAccount(AccountEntity account) {
 		this.account = account;
 	}
+	
 
 	// Constructors
 	public UserInfoEntity() {

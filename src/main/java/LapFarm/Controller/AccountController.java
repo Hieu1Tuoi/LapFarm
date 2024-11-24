@@ -59,12 +59,11 @@ public class AccountController {
 		return "account/profile";
 	}
 
-	/* @PostMapping("/profile/update") */
+	@PostMapping("/profile/update") 
 	public String updateProfile(@RequestParam("fullname") String fullName,
 			@RequestParam("dob") String dob,
 			@RequestParam("sex") String sex, 
 			@RequestParam("phone") String phone,
-			@RequestParam("avatar") String avatar,
 			@RequestParam("address") String address,
 			HttpSession httpSession, Model model) {
 		AccountEntity user = (AccountEntity) httpSession.getAttribute("user");
@@ -77,14 +76,22 @@ public class AccountController {
 		try {
 			AccountEntity account = session.get(AccountEntity.class, user.getEmail());
 			UserInfoEntity userInfo = account.getUserInfo();
+			if (userInfo == null) {
+				userInfo = new UserInfoEntity();
+				userInfo.setFullName(fullName);
+				userInfo.setDob(dob);
+				userInfo.setSex(sex);
+				userInfo.setPhone(phone);
+				userInfo.setAddress(address);
+				account.setUserInfo(userInfo);
+				session.save(userInfo);
+			}
 			userInfo.setFullName(fullName);
 			userInfo.setDob(dob);
 			userInfo.setSex(sex);
 			userInfo.setPhone(phone);
-			userInfo.setAvatar(avatar);
 			userInfo.setAddress(address);
-			
-			session.update(userInfo);
+			session.update(account);
 			t.commit();
 			model.addAttribute("success", "Profile updated successfully");
 			
@@ -95,7 +102,7 @@ public class AccountController {
 		}finally {
 			session.close();
 		}
-		return "account/profile";
+		return "redirect:/account#profile";
 	}
 	private void loadUserProfile(String email, Model model) {
 		Session session = factory.openSession();

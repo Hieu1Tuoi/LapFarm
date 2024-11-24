@@ -102,13 +102,7 @@ h1 {
 .tab.active {
 	display: block; /* Chỉ hiện tab đang chọn */
 }
-
 /* Phần thông tin User Profile */
-#profile img {
-	border-radius: 50%;
-	border: 2px solid #ddd;
-	margin-top: 10px;
-}
 
 /* Style cho các danh sách */
 ul {
@@ -118,7 +112,6 @@ ul {
 ul li {
 	line-height: 1.8;
 }
-
 /* Nút "Save changes" hoặc các nút */
 button, .btn {
 	background-color: #d10000;
@@ -129,10 +122,56 @@ button, .btn {
 	cursor: pointer;
 	font-weight: bold;
 	transition: background-color 0.3s;
+	margin-left: 12.9%;
 }
 
 button:hover, .btn:hover {
 	background-color: #a00000;
+}
+
+//profile
+.container {
+	max-width: 600px;
+	margin: 50px auto;
+	padding: 20px;
+	background: white;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+	display: flex;
+	align-items: center;
+	margin-bottom: 15px;
+}
+
+label {
+	width: 10%; /* Chiều rộng cố định của label */
+	margin-right: 30px; /* Khoảng cách giữa label và input */
+	text-align: right; /* Căn lề phải */
+}
+
+input[type="text"], input[type="date"], select {
+	width: 40%; /* Độ rộng của input */
+	padding: 8px 10px;
+	font-size: 14px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+input[type="radio"] {
+	margin-right: 5px;
+}
+
+.link {
+	color: #007bff;
+	text-decoration: none;
+	margin-left: 10px;
+	font-size: 14px;
+}
+
+.link:hover {
+	text-decoration: underline;
 }
 </style>
 <script>
@@ -165,7 +204,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const currentHash = window.location.hash.substring(1) || 'profile'; // Loại bỏ dấu "#" nếu có
     showTab(currentHash);
 });
-
 </script>
 </head>
 <body>
@@ -173,7 +211,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	<h1>Account Overview</h1>
 	<ul class="tab-links">
 		<li><a href="#profile" onclick="showTab('profile');">Profile</a></li>
-		<li><a href="#address" onclick="showTab('address');">Addresses</a></li>
 		<li><a href="#orders-history"
 			onclick="showTab('orders-history');">Order History</a></li>
 		<li><a href="#viewed" onclick="showTab('viewed');">Viewed
@@ -181,23 +218,42 @@ document.addEventListener('DOMContentLoaded', function () {
 	</ul>
 
 	<div id="profile" class="tab">
-		<h2>User Profile</h2>
-		<p>Name: ${userInfo.fullname}</p>
-		<p>Email: ${userProfile.email}</p>
-		<p>Date of Birth: ${userInfo.dob}</p>
-		<p>Sex: ${userInfo.sex}</p>
-		<p>Phone: ${userInfo.phone}</p>
-		<img src="${userInfor.avatar}" alt="Avatar"
-			style="width: 100px; height: 100px;">
-	</div>
-
-	<div id="addresses" class="tab">
-		<h2>User Addresses</h2>
-		<ul>
-			<c:forEach var="address" items="${addresses}">
-				<li>${address}</li>
-			</c:forEach>
-		</ul>
+		<div class="container">
+			<h1>Thông tin tài khoản</h1>
+			<form action="${pageContext.servletContext.contextPath}/profile/update" method="post">
+				<div class="form-group">
+					<label for="fullname">Họ Tên</label> <input type="text"
+						id="fullname" name="fullname" value="${userInfo.fullName}">
+				</div>
+				<div class="form-group">
+					<label>Giới tính</label>
+					<div>
+						<input type="radio" id="male" name="sex" value="Nam"> <label
+							for="male" style="display: inline">Nam</label> <input
+							type="radio" id="female" name="sex" value="Nữ"> <label
+							for="female" style="display: inline;">Nữ</label>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="phone">Số điện thoại</label> <input type="text"
+						id="phone" name="phone" value="${userInfo.phone}">
+				</div>
+				<div class="form-group">
+					<label for="address">Địa chỉ</label> <input type="text"
+						id="address" name="address" value="${userInfo.address}">
+				</div>
+				<div class="form-group">
+					<label for="email">Email</label> <input type="text" id="email"
+						name="email" value="${ userProfile.email}" readonly> <a
+						href="#" class="link">Thay đổi</a>
+				</div>
+				<div class="form-group">
+					<label for="dob">Ngày sinh</label> <input type="date" id="dob"
+						name="dob" value="${userInfo.dob}"/>
+				</div>
+				<button type="submit" class="button">LƯU THAY ĐỔI</button>
+			</form>
+		</div>
 	</div>
 
 	<div id="orders-history" class="tab">
