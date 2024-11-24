@@ -16,11 +16,6 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class AccountController {
-	/*
-	 * @RequestMapping(value = "/account") public String index(Model model) {
-	 * 
-	 * return "account"; }
-	 */
 	@Autowired
 	SessionFactory factory;
 
@@ -56,7 +51,7 @@ public class AccountController {
 			return "redirect:/login";
 		}
 		loadUserProfile(user.getEmail(), model);
-		return "account/profile";
+		return "redirect:/account#profile";
 	}
 
 	@PostMapping("/profile/update") 
