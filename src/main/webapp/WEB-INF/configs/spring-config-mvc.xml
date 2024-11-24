@@ -58,7 +58,7 @@
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
 		p:prefix="/WEB-INF/views/" p:suffix=".jsp" />
 
-	<mvc:interceptors>
+<!-- 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/login" />
 			<bean class="LapFarm.Interceptor.LoggerInterceptor" />
@@ -67,7 +67,7 @@
 			<mvc:mapping path="/admin/**" />
 			<bean class="LapFarm.Interceptor.GlobalInterceptor" />
 		</mvc:interceptor>
-	</mvc:interceptors>
+	</mvc:interceptors> -->
 
 	<context:component-scan base-package="LapFarm.*" />
 </beans>

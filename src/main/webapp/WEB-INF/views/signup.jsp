@@ -137,7 +137,7 @@
 		</div>
 	</div>
 	<!-- /Signup Form -->
-	
+
 	<!-- NAVIGATION -->
 	<nav id="navigation">
 		<!-- container -->
@@ -193,16 +193,21 @@
 										});
 					});
 
-	$(document).ready(function() {
-		const currentPath = window.location.pathname;
+	$(document)
+			.ready(
+					function() {
+						const currentPath = window.location.pathname;
 
-		if (currentPath.includes('/forgotpassword')) {
-			document.querySelector('.text-center').textContent = 'Quên mật khẩu';
-			document.querySelector('label[for="sigup-password"]').textContent = 'Mật khẩu mới:';
-			document.querySelector('label[for="confirm-password"]').textContent = 'Xác nhận mật khẩu mới:';
-			document.querySelector('.btn-primary').textContent = 'Đổi mật khẩu';
-			document.querySelector('form').setAttribute('action', 'forgotpassword');
-		}
-	});
+						if (currentPath.includes('/forgotpassword')) {
+							document.querySelector('.text-center').textContent = 'Quên mật khẩu';
+							document
+									.querySelector('label[for="sigup-password"]').textContent = 'Mật khẩu mới:';
+							document
+									.querySelector('label[for="confirm-password"]').textContent = 'Xác nhận mật khẩu mới:';
+							document.querySelector('.btn-primary').textContent = 'Đổi mật khẩu';
+							document.querySelector('form').setAttribute(
+									'action', 'forgotpassword');
+						}
+					});
 </script>
 </html>

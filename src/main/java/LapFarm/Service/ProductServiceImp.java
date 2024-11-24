@@ -28,6 +28,4 @@ public class ProductServiceImp implements IProductService {
 		return productDAO.getAllProductsDTO();
 	}
 	
-	
-
 }
