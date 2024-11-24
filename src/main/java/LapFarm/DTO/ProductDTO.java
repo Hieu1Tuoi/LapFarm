@@ -130,21 +130,17 @@ public class ProductDTO {
 		this.state = state;
 	}
 
-	// Các phương thức bổ sung nếu cần (ví dụ như tính toán giá đã giảm, định dạng tiền tệ...)
-    public long calOriginalPrice() {
-    	return (long) (this.originalPrice*1);
-    }
-    
-    public long calPrice() {
-        // Tính giá sau khi giảm, đảm bảo không có lỗi khi discount = 0
-        return (long) (this.salePrice - (this.discount != null ? this.discount * this.salePrice : 0));
-    }
-    public long calSalePrice() {
-    	return (long) (this.salePrice*1);
-    }
+	// Các phương thức bổ sung nếu cần (ví dụ như tính toán giá đã giảm, định dạng
+	// tiền tệ...)
+	public long calOriginalPrice() {
+		return (long) (this.originalPrice * 1);
+	}
 
-	
+	public long calPrice() {
+		return (long) (this.salePrice - (this.discount * this.salePrice));
+	}
 
-
-
+	public long calSalePrice() {
+		return (long) (this.salePrice * 1);
+	}
 }
