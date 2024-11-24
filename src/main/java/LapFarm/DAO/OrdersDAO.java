@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -60,5 +61,20 @@ public class OrdersDAO {
         Session session = factory.getCurrentSession();
         session.saveOrUpdate(orderDetails); // This will save or update the order detail entity
     }
+    
+    @Transactional
+    public Long countOrdersByUserId(int userId) {
+        Session session = factory.getCurrentSession();
+        try {
+            String hql = "SELECT COUNT(o) FROM OrdersEntity o WHERE o.userInfo.userId = :userId";
+            Query<Long> query = session.createQuery(hql, Long.class);
+            query.setParameter("userId", userId);
+            return query.uniqueResult(); // Trả về số lượng đơn hàng cho userId
+        } catch (Exception e) {
+            e.printStackTrace();
+            return (long) -1; // Trả về 0 nếu có lỗi xảy ra
+        }
+    }
+
 
 }
