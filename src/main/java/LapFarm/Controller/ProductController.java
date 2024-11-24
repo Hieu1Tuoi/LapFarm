@@ -17,7 +17,7 @@ import LapFarm.Entity.ProductEntity;
 @Controller
 public class ProductController {
 	
-	@RequestMapping(value = {"/product", "/product/*"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/product-detail", "/product-detail/*"}, method = RequestMethod.GET)
 	public String product() {
 
 		return "product";
@@ -25,7 +25,7 @@ public class ProductController {
 	@Autowired
     private ProductDAO productDAO;
 
-    @RequestMapping(value = "/product/{idProduct}")
+    @RequestMapping(value = "/product-detail/{idProduct}")
     public String productDetail(@PathVariable("idProduct") int idProduct, Model model) {
         // Lấy thông tin sản phẩm từ DAO
         ProductEntity product = productDAO.getProductById(idProduct);
