@@ -1,6 +1,6 @@
 package LapFarm.Entity;
 
-import java.text.DecimalFormat;
+
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -9,10 +9,12 @@ import jakarta.persistence.*;
 @Table(name = "product")
 public class ProductEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "IdProduct")
-	private int idProduct;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "IdProduct")
+    private int idProduct;
+
+
 
 	@Column(name = "NameProduct", nullable = false)
 	private String nameProduct;
@@ -58,18 +60,19 @@ public class ProductEntity {
 	@Column(name = "State", nullable = false)
 	private String state;
 
+    // Getters and Setters
+    public int getIdProduct() {
+        return idProduct;
+    }
+
+    public void setIdProduct(int idProduct) {
+        this.idProduct = idProduct;
+    }
+
 	// Constructors
 	public ProductEntity() {
 	}
 
-	// Getters and Setters
-	public int getIdProduct() {
-		return idProduct;
-	}
-
-	public void setIdProduct(int idProduct) {
-		this.idProduct = idProduct;
-	}
 
 	public String getNameProduct() {
 		return nameProduct;

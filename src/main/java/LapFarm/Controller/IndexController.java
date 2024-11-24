@@ -9,21 +9,26 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import LapFarm.Bean.Mailer;
 import LapFarm.DAO.BrandDAO;
 import LapFarm.DAO.CategoryDAO;
 import LapFarm.DAO.ProductDAO;
+import LapFarm.DTO.PaginatesDto;
 import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.BrandEntity;
 import LapFarm.Entity.CategoryEntity;
 import LapFarm.Entity.ProductEntity;
+import LapFarm.Service.PaginatesServiceImp;
+import LapFarm.Service.ProductServiceImp;
 import jakarta.servlet.ServletContext;
 import jakarta.transaction.Transactional;
 
 @Controller
 @Transactional
-public class IndexController {
+public class IndexController extends BaseController {
+
 	@Autowired
 	Mailer mailer;
 
@@ -31,44 +36,75 @@ public class IndexController {
 	private ServletContext context;
 
 	@Autowired
-	private CategoryDAO categoryDAO;
-
+	ProductServiceImp productService;
 	@Autowired
-	private BrandDAO brandDAO;
+	private PaginatesServiceImp paginateService;
+	private int totalProductPage = 9;
 
-	@Autowired
-	private ProductDAO productDAO;
-
-	@RequestMapping(value = { "", "/", "/home" }, method = RequestMethod.GET)
-	public String index(ModelMap model) {
+	@RequestMapping(value = { "", "/", "/home" }, method = RequestMethod.GET, params = "!page")
+	public ModelAndView Index() {
 		// Lấy danh sách Category
-		List<CategoryEntity> categories = categoryDAO.getAllCategories();
-		model.addAttribute("categories", categories);
+		_mvShare.addObject("categories", _baseService.getCategoryEntities());
 
 		// Lấy danh sách Brand
-		List<BrandEntity> brands = brandDAO.getAllBrands();
-		model.addAttribute("brands", brands);
+		_mvShare.addObject("brands", _baseService.getBrandEntities());
 
-		List<ProductEntity> products = productDAO.getAllProducts();
-		model.addAttribute("products", products);
-		
-		   // Lấy số lượng sản phẩm theo tất cả danh mục
-	    Map<Integer, Long> productCounts = productDAO.getProductCountByAllCategories(categories);
-	    model.addAttribute("productCounts", productCounts); // Truyền Map vào Model
+		_mvShare.addObject("products", productService.getAllProductsDTO());
 
-	 // Lấy số lượng sản phẩm theo tất cả brand
-	    Map<Integer, Long> productCountsByBrand = productDAO.getProductCountByAllBrands(brands);
-	    model.addAttribute("productCountsByBrand", productCountsByBrand);
-	    
-	    List<ProductDTO> products_top_sell = productDAO.getTop5ProductsByLowestQuantity();
-		model.addAttribute("products_top_sell", products_top_sell);
-		
-		Long totalQuantity = productDAO.getTotalProductQuantity();
+		// Lấy số lượng sản phẩm theo tất cả danh mục
+		_mvShare.addObject("productCounts",
+				_baseService.getProductCountByAllCategories(_baseService.getCategoryEntities())); // Truyền Map vào
+																									// Model
+
+		// Lấy số lượng sản phẩm theo tất cả brand
+		_mvShare.addObject("productCountsByBrand",
+				_baseService.getProductCountByAllBrands(_baseService.getBrandEntities()));
+
+		_mvShare.addObject("products_top_sell", _baseService.getTop5ProductsByLowestQuantity());
 
 		// Thêm vào model để hiển thị trên view
-		model.addAttribute("totalQuantity", totalQuantity);
+		_mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
+
+		int totalData = productService.getAllProductsDTO().size();
+		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
+		_mvShare.addObject("paginateInfo", paginateInfo);
+		_mvShare.addObject("ProductsPaginate",
+				productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd()));
+		_mvShare.setViewName("store");
+		return _mvShare;
+	}
+
+	@RequestMapping(value = { "", "/", "/home" }, method = RequestMethod.GET, params = "page")
+	public ModelAndView Index(@RequestParam(value = "page", defaultValue = "1") int currentPage) {
+		// Lấy danh sách Category
+		_mvShare.addObject("categories", _baseService.getCategoryEntities());
+
+		// Lấy danh sách Brand
+		_mvShare.addObject("brands", _baseService.getBrandEntities());
+
+		_mvShare.addObject("products", productService.getAllProductsDTO());
+
+		// Lấy số lượng sản phẩm theo tất cả danh mục
+		_mvShare.addObject("productCounts",
+				_baseService.getProductCountByAllCategories(_baseService.getCategoryEntities())); // Truyền Map vào
+																									// Model
+
+		// Lấy số lượng sản phẩm theo tất cả brand
+		_mvShare.addObject("productCountsByBrand",
+				_baseService.getProductCountByAllBrands(_baseService.getBrandEntities()));
+
+		_mvShare.addObject("products_top_sell", _baseService.getTop5ProductsByLowestQuantity());
+
+		// Thêm vào model để hiển thị trên view
+		_mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
 		
-		return "store";
+		int totalData = productService.getAllProductsDTO().size();
+		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
+		_mvShare.addObject("paginateInfo", paginateInfo);
+		_mvShare.addObject("ProductsPaginate",
+				productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd()));
+		_mvShare.setViewName("store");
+		return _mvShare;
 	}
 
 	@RequestMapping("error")
