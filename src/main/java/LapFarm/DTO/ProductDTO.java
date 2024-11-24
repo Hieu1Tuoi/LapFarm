@@ -127,7 +127,8 @@ public class ProductDTO {
     }
     
     public long calPrice() {
-    	return (long) (this.salePrice-(this.discount*this.salePrice));
+        // Tính giá sau khi giảm, đảm bảo không có lỗi khi discount = 0
+        return (long) (this.salePrice - (this.discount != null ? this.discount * this.salePrice : 0));
     }
     public long calSalePrice() {
     	return (long) (this.salePrice*1);

@@ -315,5 +315,76 @@ public class ProductDAO {
 
         return query.uniqueResult(); // Trả về sản phẩm hoặc null nếu không tìm thấy
     }
+    
+    @Transactional
+    public List<ProductDTO> findByPriceBetween(int minPrice, int maxPrice) {
+        // Bắt đầu giao dịch
+        Session session = factory.getCurrentSession();
+
+        // Lấy tất cả các sản phẩm
+        String hql = "FROM ProductEntity p";
+        Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+
+        // Lấy danh sách sản phẩm từ query
+        List<ProductEntity> products = query.list();
+
+        // Lọc sản phẩm có giá thực tế sau giảm giá nằm trong khoảng [minPrice, maxPrice]
+        List<ProductDTO> filteredProducts = products.stream()
+            .filter(p -> {
+                long actualPrice = p.calPrice(); // Tính giá thực tế của sản phẩm
+                return actualPrice >= minPrice && actualPrice <= maxPrice; // Kiểm tra giá nằm trong khoảng
+            })
+            .map(this::mapToProductDTO)
+            .collect(Collectors.toList());
+
+        return filteredProducts;
+    }
+
+
+    @Transactional
+    public List<ProductDTO> findByPriceGreaterThan(int minPrice) {
+        // Bắt đầu giao dịch
+        Session session = factory.getCurrentSession();
+
+        // Lấy tất cả các sản phẩm
+        String hql = "FROM ProductEntity p";
+        Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+
+        // Lấy danh sách sản phẩm từ query
+        List<ProductEntity> products = query.list();
+
+        // Lọc sản phẩm có giá thực tế sau giảm giá lớn hơn minPrice
+        List<ProductDTO> filteredProducts = products.stream()
+            .filter(p -> p.calPrice() > minPrice) // Tính giá thực tế và kiểm tra
+            .map(this::mapToProductDTO)
+            .collect(Collectors.toList());
+
+        return filteredProducts;
+    }
+
+
+
+    // PHƯƠNG THỨC CHUYỂN ĐỔI ENTITY -> DTO
+    private ProductDTO mapToProductDTO(ProductEntity product) {
+        // Lấy hình ảnh đầu tiên nếu có, nếu không có thì gán giá trị null
+        String image = (product.getImages() != null && !product.getImages().isEmpty()) 
+                        ? product.getImages().get(0).getImageUrl() 
+                        : null;
+
+        // Tạo và trả về ProductDTO từ ProductEntity
+        return new ProductDTO(
+            product.getIdProduct(),
+            product.getNameProduct(),
+            product.getBrand() != null ? product.getBrand().getNameBrand() : null,
+            product.getCategory() != null ? product.getCategory().getNameCategory() : null,
+            product.getDescription(),
+            product.getQuantity(),
+            product.getDiscount(),
+            product.getOriginalPrice(),
+            product.getSalePrice(),
+            product.getState(),
+            image
+        );
+    }
 
 }

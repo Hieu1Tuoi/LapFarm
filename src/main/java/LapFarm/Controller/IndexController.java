@@ -97,7 +97,7 @@ public class IndexController extends BaseController {
 
 		// Thêm vào model để hiển thị trên view
 		_mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
-		
+
 		int totalData = productService.getAllProductsDTO().size();
 		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
 		_mvShare.addObject("paginateInfo", paginateInfo);
@@ -122,4 +122,7 @@ public class IndexController extends BaseController {
 		}
 		return "redirect:/home";
 	}
+
+
+
 }

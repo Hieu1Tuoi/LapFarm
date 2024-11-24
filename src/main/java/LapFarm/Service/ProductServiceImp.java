@@ -27,5 +27,15 @@ public class ProductServiceImp implements IProductService {
 	public List<ProductDTO> getAllProductsDTO() {
 		return productDAO.getAllProductsDTO();
 	}
+
+	@Override
+	public List<ProductDTO> findProductsByPriceRange(int minPrice, int maxPrice) {
+		return  productDAO.findByPriceBetween(minPrice, maxPrice);
+	}
+
+	@Override
+	public List<ProductDTO> findProductsByPriceGreaterThan(int minPrice) {
+		return productDAO.findByPriceGreaterThan(minPrice);
+	}
 	
 }
