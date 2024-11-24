@@ -1,19 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>Đơn hàng</title>
+<title>Admin</title>
 <base href="${pageContext.servletContext.contextPath}/">
-<script>
-    function base_url() {
-        return "${pageContext.servletContext.contextPath}";
-    }
-</script>
 <!-- Tell the browser to be responsive to screen width -->
 <meta
 	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
@@ -62,8 +56,8 @@
 										<li>
 											<!-- start message --> <a href="#">
 												<div class="pull-left">
-													<img src="resources/admin/images/user2-160x160.jpg" class="img-circle"
-														alt="User Image">
+													<img src="resources/admin/images/user2-160x160.jpg"
+														class="img-circle" alt="User Image">
 												</div>
 												<h4>
 													Support Team <small><i class="fa fa-clock-o"></i> 5
@@ -126,13 +120,14 @@
 						<!-- User Account: style can be found in dropdown.less -->
 						<li class="dropdown user user-menu"><a href="#"
 							class="dropdown-toggle" data-toggle="dropdown"> <img
-								src="resources/admin/images/user2-160x160.jpg" class="user-image"
-								alt="User Image"> <span class="hidden-xs">Alexander
-									Pierce</span>
+								src="resources/admin/images/user2-160x160.jpg"
+								class="user-image" alt="User Image"> <span
+								class="hidden-xs">Alexander Pierce</span>
 						</a>
 							<ul class="dropdown-menu">
 								<!-- User image -->
-								<li class="user-header"><img src="resources/admin/images/user2-160x160.jpg"
+								<li class="user-header"><img
+									src="resources/admin/images/user2-160x160.jpg"
 									class="img-circle" alt="User Image">
 
 									<p>
@@ -168,131 +163,3 @@
 				</div>
 			</nav>
 		</header>
-
-		<!-- =============================================== -->
-
-		<!-- Left side column. contains the sidebar -->
-		<aside class="main-sidebar">
-			<!-- sidebar: style can be found in sidebar.less -->
-			<section class="sidebar">
-				<!-- Sidebar user panel -->
-				<div class="user-panel">
-					<div class="pull-left image">
-						<img src="resources/admin/images/user2-160x160.jpg" class="img-circle"
-							alt="User Image">
-					</div>
-					<div class="pull-left info">
-						<p>Alexander Pierce</p>
-						<a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-					</div>
-				</div>
-				<!-- search form -->
-				<form action="#" method="get" class="sidebar-form">
-					<div class="input-group">
-						<input type="text" name="q" class="form-control"
-							placeholder="Search..."> <span class="input-group-btn">
-							<button type="submit" name="search" id="search-btn"
-								class="btn btn-flat">
-								<i class="fa fa-search"></i>
-							</button>
-						</span>
-					</div>
-				</form>
-				<!-- /.search form -->
-				<!-- sidebar menu: : style can be found in sidebar.less -->
-				<ul class="sidebar-menu" data-widget="tree">
-				<li><a href="javascript:void(0);" onclick="submitForm()"> <i
-						class="fa fa-th"></i> <span>Quản lý đơn hàng</span> <span
-						class="pull-right-container"> <small
-							class="label pull-right bg-green">FE</small>
-					</span>
-				</a></li>
-
-					<li class="treeview"><a href="#"> <i
-							class="fa fa-dashboard"></i> <span>Quản lý sản phẩm</span> <span
-							class="pull-right-container"> <i
-								class="fa fa-angle-left pull-right"></i>
-						</span>
-					</a>
-						<ul class="treeview-menu">
-						<!-- Sử dụng JSTL để lặp qua danh sách categories -->
-						<c:forEach var="category" items="${categories}">
-							<li><a href="admin/product?category=${category.idCategory }"> <i
-									class="fa fa-circle-o"></i> ${category.nameCategory}
-							</a></li>
-						</c:forEach>
-						</ul>
-					</li>
-
-					<li><a href=""> <i class="fa fa-th"></i> <span>Widgets</span>
-							<span class="pull-right-container"> <small
-								class="label pull-right bg-green">Hot</small>
-						</span>
-					</a></li>
-
-				<script>
-					function submitForm() {
-						var form = document.createElement('form');
-						form.method = 'GET'; // Hoặc POST nếu bạn cần
-						form.action = '${pageContext.request.contextPath}/admin/orders'; // Thay action của form
-
-						document.body.appendChild(form);
-						form.submit(); // Gửi form
-					}
-
-				</script>
-
-				</ul>
-			</section>
-			<!-- /.sidebar -->
-		</aside>
-
-		<!-- =============================================== -->
-
-		<!-- Content Wrapper. Contains page content -->
-		<div class="content-wrapper">
-			<!-- Content Header (Page header) -->
-			<section class="content-header">
-				<h1>Quản lý menu trang giao diện</h1>
-				<ol class="breadcrumb">
-					<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-					<li><a href="#">Examples</a></li>
-					<li class="active">Blank page</li>
-				</ol>
-			</section>
-
-			<!-- Main content -->
-			<section class="content">
-
-				<!-- Default box -->
-				<jsp:include page="${body}" />
-				<!-- /.box -->
-
-			</section>
-			<!-- /.content -->
-		</div>
-		<!-- /.content-wrapper -->
-
-		<footer class="main-footer">
-			<div class="pull-right hidden-xs">
-				<b>Version</b> 0.0.1
-			</div>
-			<strong>Copyright &copy; 2018 <a href="https://adminlte.io">TTPM_BKAP</a>.
-			</strong>
-		</footer>
-
-	</div>
-	<!-- ./wrapper -->
-
-	<!-- jQuery 3 -->
-
-	<script src="resources/admin/js/jquery.min.js"></script>
-	<script src="resources/admin/js/jquery-ui.js"></script>
-	<script src="resources/admin/js/bootstrap.min.js"></script>
-	<script src="resources/admin/js/adminlte.min.js"></script>
-	<script src="resources/admin/js/dashboard.js"></script>
-	<script src="resources/admin/tinymce/tinymce.min.js"></script>
-	<script src="resources/admin/tinymce/config.js"></script>
-	<script src="resources/admin/js/function.js"></script>
-</body>
-</html>
