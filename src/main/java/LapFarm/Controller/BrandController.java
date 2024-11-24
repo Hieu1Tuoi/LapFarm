@@ -62,6 +62,7 @@ public class BrandController {
     	 model.addAttribute("productsByBrand", products);
  	    
         return "productsByBrand"; // The view name
+       
     }
 }
 

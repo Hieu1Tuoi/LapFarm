@@ -26,7 +26,7 @@
 					<div class="col-md-4 col-xs-6">
 						<div class="product">
 							<div class="product-img">
-								<a href="chi-tiet-san-pham/${p.idProduct}"></a>
+								<a href="${pageContext.request.contextPath}/product/${p.idProduct}"></a>
 								<!-- Lấy hình ảnh đầu tiên từ danh sách -->
 								<c:choose>
 									<c:when test="${not empty p.images}">
@@ -45,7 +45,7 @@
 							<div class="product-body">
 								<p class="product-category">${p.category.nameCategory}</p>
 								<h4 class="product-name">
-									<a href="chi-tiet-san-pham/${p.idProduct}"
+									<a href="${pageContext.request.contextPath}/product/${p.idProduct}"
 										title="${p.nameProduct}">${p.nameProduct}</a>
 								</h4>
 								<h6 class="product-price">
