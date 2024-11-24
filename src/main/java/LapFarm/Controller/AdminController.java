@@ -33,8 +33,9 @@ public class AdminController {
         List<CategoryEntity> categories = categoryDAO.getAllCategories();
 
         // Đưa danh sách vào Model để đẩy sang view
+        model.addAttribute("body", "/admin/index");
         model.addAttribute("categories", categories);
-		return "/admin/index";
+		return "/admin/layout";
 	}
 	
 	@RequestMapping(value = { "/orders" }, method = RequestMethod.GET)
@@ -55,10 +56,11 @@ public class AdminController {
 		List<CategoryEntity> categories = categoryDAO.getAllCategories();
 	    List<ProductDTO> products = productDAO.getProductsByCategory(id);
 	    // Đưa danh sách vào Model để đẩy sang view
+        model.addAttribute("body", "/admin/products/category");
 	    model.addAttribute("categories", categories);
 	    model.addAttribute("products", products); // Sản phẩm của danh mục
 
 	    // Trả về view cho trang quản lý sản phẩm của danh mục
-	    return "/admin/products/category";
+	    return "/admin/layout";
 	}
 }
