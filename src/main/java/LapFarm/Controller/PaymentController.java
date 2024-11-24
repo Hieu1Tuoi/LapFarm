@@ -50,9 +50,13 @@ public class PaymentController {
 		// Retrieve the user info and cart products
 		UserInfoEntity userInfo = account.getUserInfo(); // Get the user's info
 		List<CartEntity> cartEntities = cartDAO.getCartByUserEmail(account.getEmail());
+		if (cartEntities == null || cartEntities.isEmpty()) {
+			return "redirect:/home";
+		}
 		List<CartProductDTO> cartProductDTOList = new ArrayList<>();
+		System.out.println(cartProductDTOList);
 		double totalAmount = 0.0;
-
+		
 		for (CartEntity cartEntity : cartEntities) {
 			ProductEntity product = cartEntity.getProduct();
 			String formattedPrice = new DecimalFormat("#,###").format(product.getSalePrice());
