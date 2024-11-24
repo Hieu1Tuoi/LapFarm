@@ -8,7 +8,7 @@
 	<h2></h2>
 	<h2>${ProductsPaginate != null ? ProductsPaginate.size() : 0}</h2>
 	<h3>
-		SẢN PHẨM THEO "${category.nameCategory}":
+			TÌM KIẾM TỪ KHÓA: "${searchText}":
 		<fmt:formatNumber value="${productCounts[category.idCategory]}"
 			type="number" groupingUsed="true" />
 	</h3>
@@ -103,17 +103,17 @@
 				<c:if test="${(loop.index)==paginateInfo.currentPage }">
 
 					<li class="active"><a
-						href="products-category?idCategory=${category.idCategory}&page=${loop.index}">${loop.index}</li>
+						href="search?page=${loop.index}">${loop.index}</li>
 				</c:if>
 				<c:if test="${(loop.index)!=paginateInfo.currentPage}">
 					<li><a
-						href="products-category?idCategory=${category.idCategory}&page=${loop.index}">${loop.index}</a></li>
+						href="search?page=${loop.index}">${loop.index}</a></li>
 				</c:if>
 		</c:forEach>
 		<!-- Nút điều hướng đến trang tiếp theo -->
 		<c:if test="${paginateInfo.currentPage < paginateInfo.totalPage}">
 			<li><a
-				href="products-category?idCategory=${category.idCategory}&page=${paginateInfo.currentPage + 1}">
+				href="search?page=${paginateInfo.currentPage + 1}">
 					<i class="fa fa-angle-right"></i>
 			</a></li>
 		</c:if>

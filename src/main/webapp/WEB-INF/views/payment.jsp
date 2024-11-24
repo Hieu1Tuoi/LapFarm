@@ -132,7 +132,8 @@
 							<!-- Họ và tên -->
 							<div class="form-group">
 								<input class="input" type="text" name="fullName"
-									placeholder="Họ và tên" value="${userInfo.fullName}">
+									placeholder="Họ và tên" value="${userInfo.fullName}"><span
+									class="error-message" id="error-fullname"></span>
 							</div>
 
 							<!-- Email -->
@@ -364,7 +365,7 @@ function validateForm(event) {
     let isValid = true;
 
     if (!fullName) {
-        document.getElementById("error-last-name").innerText = "Tên không được để trống.";
+        document.getElementById("error-fullname").innerText = "Tên không được để trống.";
         isValid = false;
     }
 

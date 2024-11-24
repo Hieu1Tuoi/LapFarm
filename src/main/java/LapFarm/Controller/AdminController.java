@@ -34,7 +34,7 @@ public class AdminController {
 
         // Đưa danh sách vào Model để đẩy sang view
         model.addAttribute("categories", categories);
-		return "/admin/index";
+		return "/admin/layout";
 	}
 	
 	@RequestMapping(value = { "/orders" }, method = RequestMethod.GET)
