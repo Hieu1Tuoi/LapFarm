@@ -18,8 +18,8 @@ public class BrandServiceImp implements IBrandService {
 	private BrandDAO brandDAO;
 	
 	@Override
-	public List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText) {
-		return productDAO.getDataProductPaginates(start, end, searchText);
+	public List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText, int category) {
+		return productDAO.getDataProductPaginates(start, end, searchText, category);
 	}
 
 	@Override

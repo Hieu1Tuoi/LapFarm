@@ -61,7 +61,7 @@ public class SearchController extends BaseController {
 		_mvShare.addObject("paginateInfo", paginateInfo);
 
 		List<ProductDTO> allProducts = productService.GetDataProductPaginates(paginateInfo.getStart(),
-				paginateInfo.getEnd(), searchText);
+				paginateInfo.getEnd(), searchText, Integer.valueOf(category));
 
 		// Kiểm tra searchText và lọc danh sách sản phẩm
 
@@ -102,7 +102,7 @@ public class SearchController extends BaseController {
 		_mvShare.addObject("paginateInfo", paginateInfo);
 
 		List<ProductDTO> allProducts = productService.GetDataProductPaginates(paginateInfo.getStart(),
-				paginateInfo.getEnd(), searchText);
+				paginateInfo.getEnd(), searchText, Integer.valueOf(category));
 
 		// Kiểm tra searchText và lọc danh sách sản phẩm
 

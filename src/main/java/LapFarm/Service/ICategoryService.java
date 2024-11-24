@@ -10,6 +10,6 @@ import LapFarm.Entity.CategoryEntity;
 public interface ICategoryService {
 	public List<ProductDTO> getProductsByCategory(int idCategory);
 	public CategoryEntity getCategoryById(int idCategory);
-	List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText);
+	List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText, int category);
 	
 }

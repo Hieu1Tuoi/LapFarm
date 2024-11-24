@@ -41,15 +41,17 @@ public class BrandController extends BaseController {
 
 		// Lấy danh sách Brand
 		_mvShare.addObject("brands", _baseService.getBrandEntities());
-		
-		
+
 		_mvShare.addObject("products", _baseService.getAllProducts());
 
 		// Lấy số lượng sản phẩm theo tất cả danh mục
-		_mvShare.addObject("productCounts", _baseService.getProductCountByAllCategories(_baseService.getCategoryEntities())); // Truyền Map vào Model
+		_mvShare.addObject("productCounts",
+				_baseService.getProductCountByAllCategories(_baseService.getCategoryEntities())); // Truyền Map vào
+																									// Model
 
 		// Lấy số lượng sản phẩm theo tất cả brand
-		_mvShare.addObject("productCountsByBrand", _baseService.getProductCountByAllBrands(_baseService.getBrandEntities()));
+		_mvShare.addObject("productCountsByBrand",
+				_baseService.getProductCountByAllBrands(_baseService.getBrandEntities()));
 
 		_mvShare.addObject("products_top_sell", _baseService.getTop5ProductsByLowestQuantity());
 
@@ -58,10 +60,11 @@ public class BrandController extends BaseController {
 
 		_mvShare.addObject("AllProductByID", brandService.getProductsByBrand(idBrand));
 
-		int totalData =  brandService.getProductsByBrand(idBrand).size();
+		int totalData = brandService.getProductsByBrand(idBrand).size();
 		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
 		_mvShare.addObject("paginateInfo", paginateInfo);
-		_mvShare.addObject("ProductsPaginate",brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), ""));
+		_mvShare.addObject("ProductsPaginate",
+				brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0));
 		_mvShare.setViewName("productsByBrand");
 		return _mvShare; // The view name
 	}
@@ -78,26 +81,29 @@ public class BrandController extends BaseController {
 		_mvShare.addObject("products", _baseService.getAllProducts());
 
 		// Lấy số lượng sản phẩm theo tất cả danh mục
-		_mvShare.addObject("productCounts", _baseService.getProductCountByAllCategories(_baseService.getCategoryEntities())); // Truyền Map vào Model
+		_mvShare.addObject("productCounts",
+				_baseService.getProductCountByAllCategories(_baseService.getCategoryEntities())); // Truyền Map vào
+																									// Model
 
 		// Lấy số lượng sản phẩm theo tất cả brand
-		_mvShare.addObject("productCountsByBrand", _baseService.getProductCountByAllBrands(_baseService.getBrandEntities()));
+		_mvShare.addObject("productCountsByBrand",
+				_baseService.getProductCountByAllBrands(_baseService.getBrandEntities()));
 
 		_mvShare.addObject("products_top_sell", _baseService.getTop5ProductsByLowestQuantity());
 
 		// Lấy toàn bộ thông tin Category
-				_mvShare.addObject("brand", brandService.getBrandById(idBrand));
+		_mvShare.addObject("brand", brandService.getBrandById(idBrand));
 
-				_mvShare.addObject("AllProductByID", brandService.getProductsByBrand(idBrand));
+		_mvShare.addObject("AllProductByID", brandService.getProductsByBrand(idBrand));
 
-				int totalData =  brandService.getProductsByBrand(idBrand).size();
-				PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
-				_mvShare.addObject("paginateInfo", paginateInfo);
-				_mvShare.addObject("ProductsPaginate",brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), ""));
-				_mvShare.setViewName("productsByCategory");
-		
+		int totalData = brandService.getProductsByBrand(idBrand).size();
+		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
+		_mvShare.addObject("paginateInfo", paginateInfo);
+		_mvShare.addObject("ProductsPaginate",
+				brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0));
+		_mvShare.setViewName("productsByCategory");
+
 		_mvShare.setViewName("productsByBrand");
 		return _mvShare; // View name
 	}
 }
-

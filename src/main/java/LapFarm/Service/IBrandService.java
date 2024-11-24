@@ -11,5 +11,5 @@ import LapFarm.Entity.CategoryEntity;
 public interface IBrandService {
 	public List<ProductDTO> getProductsByBrand(int idBrand);
 	public BrandEntity getBrandById(int idBrand);
-	List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText);
+	List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText, int category);
 }

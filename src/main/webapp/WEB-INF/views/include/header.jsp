@@ -55,8 +55,9 @@
 						</a>
 							<div class="dropdown-menu">
 								<a class="dropdown-item" href="<c:url value='/account' />">Thông
-									tin</a> <a class="dropdown-item" href="<c:url value='/account#orders-history' />">Đơn
-									hàng</a> <a class="dropdown-item" href="<c:url value='/logout' />">Đăng
+									tin</a> <a class="dropdown-item"
+									href="<c:url value='/account#orders-history' />">Đơn hàng</a> <a
+									class="dropdown-item" href="<c:url value='/logout' />">Đăng
 									xuất</a>
 							</div></li>
 					</c:when>
@@ -89,11 +90,14 @@
 					<div class="header-search">
 						<form action="search" method="get">
 							<select class="input-select" name="category">
-								<option value="0">All Categories</option>
-								<option value="1">Category 01</option>
-								<option value="2">Category 02</option>
-							</select> <input value="${searchText}" id="searchInput" class="input" name="searchtext"
-								placeholder="Search here">
+								<option value="0" ${searchCategory == 0 ? 'selected' : ''}>All
+									Categories</option>
+								<option value="1" ${searchCategory == 1 ? 'selected' : ''}>Category
+									01</option>
+								<option value="2" ${searchCategory == 2 ? 'selected' : ''}>Category
+									02</option>
+							</select> <input value="${searchText}" id="searchInput" class="input"
+								name="searchtext" placeholder="Search here">
 							<button type="submit" class="search-btn">Tìm Kiếm</button>
 						</form>
 					</div>
