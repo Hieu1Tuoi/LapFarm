@@ -349,7 +349,6 @@
 
 	<!-- jQuery 3 -->
 
-	>>>>>>> 0b7d826322ff2853a1581e86ea07654732e748b0
 	<script src="resources/admin/js/jquery.min.js"></script>
 	<script src="resources/admin/js/jquery-ui.js"></script>
 	<script src="resources/admin/js/bootstrap.min.js"></script>
