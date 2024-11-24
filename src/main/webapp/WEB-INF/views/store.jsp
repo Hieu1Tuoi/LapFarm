@@ -8,7 +8,7 @@
 
 <!-- STORE -->
 <div id="store" class="col-md-9">
-<h2>${products != null ? products.size() : 0}</h2>
+	<h2>${products != null ? products.size() : 0}</h2>
 	<h3>
 		TẤT CẢ SẢN PHẨM:
 		<fmt:formatNumber value="${totalQuantity}" type="number"
@@ -98,7 +98,7 @@
 
 	</div>
 	<!-- /store products -->
-				<div class="store-filter clearfix">
+	<div class="store-filter clearfix">
 
 		<c:forEach var="item" begin="1" end="${paginateInfo.totalPage}"
 			varStatus="loop">
@@ -126,4 +126,17 @@
 				</div>
 				<!-- /STORE -->
 
-	<%@ include file="/WEB-INF/views/layouts/user-footer.jsp"%>
+		<ul class="store-pagination">
+			<li class="active">1</li>
+			<li><a href="#">2</a></li>
+			<li><a href="#">3</a></li>
+			<li><a href="#">4</a></li>
+			<li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+		</ul>
+	</div>
+	<!-- /store bottom filter -->
+</div>
+<!-- /STORE -->
+
+
+<%@ include file="/WEB-INF/views/layouts/user-footer.jsp"%>

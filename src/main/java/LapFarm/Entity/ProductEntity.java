@@ -1,6 +1,6 @@
 package LapFarm.Entity;
 
-import java.text.DecimalFormat;
+
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -14,52 +14,51 @@ public class ProductEntity {
     @Column(name = "IdProduct")
     private int idProduct;
 
-    @Column(name = "NameProduct", nullable = false)
-    private String nameProduct;
 
-    @ManyToOne(fetch = FetchType.EAGER) // Fetch EAGER
-    @JoinColumn(name = "BrandProduct", referencedColumnName = "IdBrand", nullable = false)
-    private BrandEntity brand;
 
-    @ManyToOne(fetch = FetchType.EAGER) // Fetch EAGER
-    @JoinColumn(name = "IdCategory", referencedColumnName = "IdCategory", nullable = false)
-    private CategoryEntity category;
-    
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<ImageEntity> images;
+	@Column(name = "NameProduct", nullable = false)
+	private String nameProduct;
 
-    // Getter và Setter
-    public List<ImageEntity> getImages() {
-        return images;
-    }
+	@ManyToOne(fetch = FetchType.EAGER) // Fetch EAGER
+	@JoinColumn(name = "BrandProduct", referencedColumnName = "IdBrand", nullable = false)
+	private BrandEntity brand;
 
-    public void setImages(List<ImageEntity> images) {
-        this.images = images;
-    }
+	@ManyToOne(fetch = FetchType.EAGER) // Fetch EAGER
+	@JoinColumn(name = "IdCategory", referencedColumnName = "IdCategory", nullable = false)
+	private CategoryEntity category;
 
-    @Column(name = "Describe")
-    private String description;
+	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<ImageEntity> images;
 
-    @Column(name = "Quantity", nullable = false)
-    private Integer quantity;
+	// Getter và Setter
+	public List<ImageEntity> getImages() {
+		return images;
+	}
 
-    @Column(name = "Discount")
-    private Double discount;
+	public void setImages(List<ImageEntity> images) {
+		this.images = images;
+	}
 
-    @Column(name = "OriginalPrice", nullable = false)
-    private Double originalPrice;
+	@Column(name = "Describe")
+	private String description;
 
-    @Column(name = "SalePrice", nullable = false)
-    private Double salePrice;
+	@Column(name = "Quantity", nullable = false)
+	private Integer quantity;
 
-    @Column(name = "RelatedPromotions")
-    private String relatedPromotions;
+	@Column(name = "Discount")
+	private Double discount;
 
-    @Column(name = "State", nullable = false)
-    private String state;
+	@Column(name = "OriginalPrice", nullable = false)
+	private Double originalPrice;
 
-    // Constructors
-    public ProductEntity() {}
+	@Column(name = "SalePrice", nullable = false)
+	private Double salePrice;
+
+	@Column(name = "RelatedPromotions")
+	private String relatedPromotions;
+
+	@Column(name = "State", nullable = false)
+	private String state;
 
     // Getters and Setters
     public int getIdProduct() {
@@ -70,91 +69,97 @@ public class ProductEntity {
         this.idProduct = idProduct;
     }
 
-    public String getNameProduct() {
-        return nameProduct;
-    }
+	// Constructors
+	public ProductEntity() {
+	}
 
-    public void setNameProduct(String nameProduct) {
-        this.nameProduct = nameProduct;
-    }
 
-    public BrandEntity getBrand() {
-        return brand;
-    }
+	public String getNameProduct() {
+		return nameProduct;
+	}
 
-    public void setBrand(BrandEntity brand) {
-        this.brand = brand;
-    }
+	public void setNameProduct(String nameProduct) {
+		this.nameProduct = nameProduct;
+	}
 
-    public CategoryEntity getCategory() {
-        return category;
-    }
+	public BrandEntity getBrand() {
+		return brand;
+	}
 
-    public void setCategory(CategoryEntity category) {
-        this.category = category;
-    }
+	public void setBrand(BrandEntity brand) {
+		this.brand = brand;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public CategoryEntity getCategory() {
+		return category;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setCategory(CategoryEntity category) {
+		this.category = category;
+	}
 
-    public Integer getQuantity() {
-        return quantity;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public Double getDiscount() {
-        return discount;
-    }
+	public Integer getQuantity() {
+		return quantity;
+	}
 
-    public void setDiscount(Double discount) {
-        this.discount = discount;
-    }
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
 
-    public Double getOriginalPrice() {
-        return originalPrice;
-    }
+	public Double getDiscount() {
+		return discount;
+	}
 
-    public void setOriginalPrice(Double originalPrice) {
-        this.originalPrice = originalPrice;
-    }
+	public void setDiscount(Double discount) {
+		this.discount = discount;
+	}
 
-    public Double getSalePrice() {
-        return salePrice;
-    }
+	public Double getOriginalPrice() {
+		return originalPrice;
+	}
 
-    public void setSalePrice(Double salePrice) {
-        this.salePrice = salePrice;
-    }
+	public void setOriginalPrice(Double originalPrice) {
+		this.originalPrice = originalPrice;
+	}
 
-    public String getRelatedPromotions() {
-        return relatedPromotions;
-    }
+	public Double getSalePrice() {
+		return salePrice;
+	}
 
-    public void setRelatedPromotions(String relatedPromotions) {
-        this.relatedPromotions = relatedPromotions;
-    }
+	public void setSalePrice(Double salePrice) {
+		this.salePrice = salePrice;
+	}
 
-    public String getState() {
-        return state;
-    }
+	public String getRelatedPromotions() {
+		return relatedPromotions;
+	}
 
-    public void setState(String state) {
-        this.state = state;
-    }
-    
-    public long calPrice() {
-    	return (long) (this.salePrice-(this.discount*this.salePrice));
-    }
-    public long calSalePrice() {
-    	return (long) (this.salePrice*1);
-    }
-    
+	public void setRelatedPromotions(String relatedPromotions) {
+		this.relatedPromotions = relatedPromotions;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public long calPrice() {
+		return (long) (this.salePrice - (this.discount * this.salePrice));
+	}
+
+	public long calSalePrice() {
+		return (long) (this.salePrice * 1);
+	}
+
 }
