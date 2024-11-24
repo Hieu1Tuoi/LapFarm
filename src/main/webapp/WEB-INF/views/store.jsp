@@ -100,14 +100,28 @@
 	<!-- /store products -->
 				<div class="store-filter clearfix">
 
-						<ul class="store-pagination">
-							<li class="active">1</li>
-							<li><a href="#">2</a></li>
-							<li><a href="#">3</a></li>
-							<li><a href="#">4</a></li>
-							<li><a href="#"><i class="fa fa-angle-right"></i></a></li>
-						</ul>
-					</div>
+		<c:forEach var="item" begin="1" end="${paginateInfo.totalPage}"
+			varStatus="loop">
+			<ul class="store-pagination">
+				<c:if test="${(loop.index)==paginateInfo.currentPage }">
+
+					<li class="active"><a
+						href="home?page=${loop.index}">${loop.index}</li>
+				</c:if>
+				<c:if test="${(loop.index)!=paginateInfo.currentPage}">
+					<li><a
+						href="home?page=${loop.index}">${loop.index}</a></li>
+				</c:if>
+		</c:forEach>
+		<!-- Nút điều hướng đến trang tiếp theo -->
+		<c:if test="${paginateInfo.currentPage < paginateInfo.totalPage}">
+			<li><a
+				href="home?page=${paginateInfo.currentPage + 1}">
+					<i class="fa fa-angle-right"></i>
+			</a></li>
+		</c:if>
+		</ul>
+	</div>
 					<!-- /store bottom filter -->
 				</div>
 				<!-- /STORE -->

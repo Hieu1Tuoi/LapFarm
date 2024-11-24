@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import LapFarm.DTO.ProductDTO;
-import LapFarm.Entity.CategoryEntity;
+
 @Service
-public interface ICategoryService {
-	public List<ProductDTO> getProductsByCategory(int idCategory);
+public interface IProductService {
+	public Long getTotalProductQuantity();
+
 	public List<ProductDTO> GetDataProductPaginates(int start, int end);
-	public CategoryEntity getCategoryById(int idCategory);
-	
+
 }

@@ -12,7 +12,7 @@ public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdProduct")
-    private Long idProduct;
+    private int idProduct;
 
     @Column(name = "NameProduct", nullable = false)
     private String nameProduct;
@@ -62,11 +62,11 @@ public class ProductEntity {
     public ProductEntity() {}
 
     // Getters and Setters
-    public Long getIdProduct() {
+    public int getIdProduct() {
         return idProduct;
     }
 
-    public void setIdProduct(Long idProduct) {
+    public void setIdProduct(int idProduct) {
         this.idProduct = idProduct;
     }
 

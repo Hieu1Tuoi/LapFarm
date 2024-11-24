@@ -31,7 +31,6 @@ public class ProductDAO {
         // Viết câu truy vấn HQL để lấy tất cả sản phẩm
         String hql = "SELECT p FROM ProductEntity p JOIN FETCH p.images"; // Truy vấn tất cả sản phẩm từ bảng ProductEntity
         Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
-        query.setMaxResults(9);
         // Trả về danh sách sản phẩm
         return query.list();
     }
@@ -201,6 +200,41 @@ public class ProductDAO {
         // Trả về danh sách sản phẩm
         return query.list();
     }
+    
+    @Transactional
+    public List<ProductDTO> getProductsByBrand(int idBrand) {
+        Session session = factory.getCurrentSession();
+
+        // HQL query để lấy danh sách sản phẩm theo idBrand
+        String hql = "SELECT p FROM ProductEntity p WHERE p.brand.idBrand = :idBrand";
+        Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+        query.setParameter("idBrand", idBrand);
+
+        // Lấy danh sách sản phẩm từ kết quả query
+        List<ProductEntity> products = query.list();
+
+        // Chuyển đổi từ ProductEntity sang ProductDTO
+        return products.stream().map(product -> {
+            String image = product.getImages() != null && !product.getImages().isEmpty()
+                    ? product.getImages().get(0).getImageUrl()
+                    : null;
+
+            return new ProductDTO(
+                product.getIdProduct(),
+                product.getNameProduct(),
+                product.getBrand() != null ? product.getBrand().getNameBrand() : null,
+                product.getCategory() != null ? product.getCategory().getNameCategory() : null,
+                product.getDescription(),
+                product.getQuantity(),
+                product.getDiscount(),
+                product.getOriginalPrice(),
+                product.getSalePrice(),
+                product.getState(),
+                image
+            );
+        }).toList();
+    }
+
     
     @Transactional
     public List<ProductDTO> getDataProductPaginates(int start, int end) {
