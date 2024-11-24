@@ -87,18 +87,19 @@
 				<!-- SEARCH BAR -->
 				<div class="col-md-6">
 					<div class="header-search">
-						<form id="searchForm">
-							<select class="input-select">
+						<form action="search" method="get">
+							<select class="input-select" name="category">
 								<option value="0">All Categories</option>
 								<option value="1">Category 01</option>
 								<option value="2">Category 02</option>
-							</select> <input id="searchInput" class="input" placeholder="Search here">
-							<button type="button" class="search-btn"
-								onclick="searchProducts()">Search</button>
+							</select> <input id="searchInput" class="input" name="searchtext"
+								placeholder="Search here">
+							<button type="submit" class="search-btn">Search</button>
 						</form>
 					</div>
 				</div>
 				<!-- /SEARCH BAR -->
+
 
 				<!-- ACCOUNT -->
 				<div class="col-md-3 clearfix">
@@ -185,19 +186,18 @@
 	src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 <script>
-$(document).ready(function () {
-    // Xử lý hiển thị/ẩn dropdown khi nhấp vào nút
-    $('.dropdown-toggle').on('click', function (e) {
-        e.preventDefault();
-        $(this).next('.dropdown-menu').toggle(); // Hiện/ẩn menu
-    });
+	$(document).ready(function() {
+		// Xử lý hiển thị/ẩn dropdown khi nhấp vào nút
+		$('.dropdown-toggle').on('click', function(e) {
+			e.preventDefault();
+			$(this).next('.dropdown-menu').toggle(); // Hiện/ẩn menu
+		});
 
-    // Đóng menu khi nhấp ra ngoài
-    $(document).on('click', function (e) {
-        if (!$(e.target).closest('.dropdown').length) {
-            $('.dropdown-menu').hide(); // Ẩn menu
-        }
-    });
-});
-
+		// Đóng menu khi nhấp ra ngoài
+		$(document).on('click', function(e) {
+			if (!$(e.target).closest('.dropdown').length) {
+				$('.dropdown-menu').hide(); // Ẩn menu
+			}
+		});
+	});
 </script>

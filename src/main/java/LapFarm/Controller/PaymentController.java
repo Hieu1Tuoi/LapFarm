@@ -107,7 +107,7 @@ public class PaymentController {
 			// Tạo đơn hàng mới
 			OrdersEntity order = new OrdersEntity();
 			order.setUserInfo(account.getUserInfo());
-			order.setState("Chờ lấy hàng"); // Trạng thái ban đầu là "Chờ xác nhận"
+			order.setState("Chờ lấy hàng"); // Trạng thái ban đầu là "Chờ lấy hàng"
 			order.setPaymentMethod(paymentMethod);
 			order.setTotalPrice((int) calculateTotalPrice(cartItems)); // Tính tổng giá trị đơn hàng từ các sản phẩm
 																		// trong giỏ hàng
