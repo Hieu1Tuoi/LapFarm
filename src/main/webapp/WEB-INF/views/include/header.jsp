@@ -98,12 +98,12 @@
 									02</option>
 							</select> <input value="${searchText}" id="searchInput" class="input"
 								name="searchtext" placeholder="Search here">
+								<input value="${priceRange}" name="priceRange" style="display: none;">
 							<button type="submit" class="search-btn">Tìm Kiếm</button>
 						</form>
 					</div>
 				</div>
 				<!-- /SEARCH BAR -->
-
 
 				<!-- ACCOUNT -->
 				<div class="col-md-3 clearfix">

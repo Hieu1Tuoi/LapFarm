@@ -1,0 +1,105 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar {
+    width: 200px; /* Giảm chiều rộng của sidebar đi một nửa */
+    padding: 10px 0; /* Giảm padding đi một nửa */
+    margin: 10px 0; /* Giảm margin đi một nửa */
+}
+
+.filter-container {
+    margin-bottom: 10px; /* Giảm margin bottom đi một nửa */
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.filter-container h3 {
+    margin: 0 0 10px 0; /* Giảm margin bottom đi một nửa */
+    font-size: 18px; 
+    color: #333;
+    padding-left: 0;
+}
+
+.slider-container {
+    margin: 10px 0; /* Giảm margin đi một nửa */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 0;
+}
+
+.price-slider {
+    width: calc(25% - 10px); /* Giảm chiều rộng của thanh trượt đi một nửa */
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px; 
+    background: #ddd;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+    margin-left: 0;
+}
+
+.price-slider:hover {
+    opacity: 1;
+}
+
+.price-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px; 
+    height: 16px; 
+    background: #D10024;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.price-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0; /* Giảm margin đi một nửa */
+    font-size: 14px; 
+    color: #333;
+    padding-left: 0;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.apply-button {
+    width: 48%; /* Chia chiều rộng cho hai nút */
+    padding: 4px; /* Giảm padding đi một nửa */
+    background-color: #D10024;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12.8px; 
+    margin-left: 0;
+}
+
+.apply-button:hover {
+    background-color: #D10024;
+}
+
+.cancel-button {
+    width: 48%; /* Chia chiều rộng cho hai nút */
+    padding: 4px; /* Giảm padding đi một nửa */
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12.8px; 
+    margin-left: 0;
+}
+
+.cancel-button:hover {
+    background-color: #c82333;
+}

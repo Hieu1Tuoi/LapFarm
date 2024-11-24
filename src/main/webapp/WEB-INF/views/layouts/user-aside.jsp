@@ -28,37 +28,26 @@
 				<!-- /aside Widget -->
 
 				<!-- aside Widget -->
-				<div class="aside">
-					<h3 class="aside-title">GIÁ</h3>
-					<div class="price-filter">
-						<div class="price-item">
-							<a href="products-price?priceRange=0-1000000"> Dưới 1.000.000
-							</a>
+				<div class="sidebar">
+					<div class="filter-container">
+						<h3>GIÁ</h3>
+						<div class="slider-container">
+							<input type="range" min="${priceMin}" max="${priceMax}" value="${priceMin}"
+								class="price-slider" id="minPriceSlider"> <input
+								type="range" min="${priceMin}" max="${priceMax}"
+								value="${priceMax}" class="price-slider" id="maxPriceSlider">
 						</div>
-						<br>
-						<div class="price-item">
-							<a href="products-price?priceRange=1000000-5000000">
-								1.000.000 - 5.000.000 </a>
+						<div class="price-container">
+							<span id="minPriceLabel">0 ₫</span> <span id="maxPriceLabel">50,000,000
+								₫</span>
 						</div>
-						<br>
-						<div class="price-item">
-							<a  href="products-price?priceRange=5000000-10000000">
-								5.000.000 - 10.000.000 </a>
+						<div class="button-container">
+							<button class="apply-button" onclick="applyFilter()">Áp
+								Dụng</button>
+							<button class="cancel-button" onclick="resetFilter()">Hủy</button>
 						</div>
-						<br>
-						<div class="price-item">
-							<a href="products-price?priceRange=10000000-20000000">
-								10.000.000 - 20.000.000 </a>
-						</div>
-						<br>
-						<div class="price-item">
-							<a href="products-price?priceRange=20000000-0"> Trên
-								20.000.000 </a>
-						</div>
-						<br>
 					</div>
 				</div>
-
 				<!-- /aside Widget -->
 
 				<!-- aside Widget -->

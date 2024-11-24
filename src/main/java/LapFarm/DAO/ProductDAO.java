@@ -171,13 +171,7 @@ public class ProductDAO {
 		Session session = factory.getCurrentSession();
 
 		// Viết câu truy vấn HQL để lấy sản phẩm theo categoryId
-		String hql = "SELECT p FROM ProductEntity p JOIN FETCH p.images WHERE p.category.idCategory = :categoryId"; // Truy
-																													// vấn
-																													// sản
-																													// phẩm
-																													// theo
-																													// danh
-																													// mục
+		String hql = "SELECT p FROM ProductEntity p JOIN FETCH p.images WHERE p.category.idCategory = :categoryId";
 		Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
 		query.setParameter("categoryId", categoryId); // Set parameter cho categoryId
 		query.setMaxResults(9); // Giới hạn số lượng sản phẩm trả về, có thể điều chỉnh theo nhu cầu
@@ -247,51 +241,89 @@ public class ProductDAO {
 	}
 
 	@Transactional
-	public List<ProductDTO> getDataProductPaginates(int start, int end, String searchText, int category) {
-		Session session = factory.getCurrentSession();
+	public List<ProductDTO> getDataProductPaginates(int start, int end, String searchText, Integer category, String priceRange) { 
+	    Session session = factory.getCurrentSession();
 
-		// HQL để lấy danh sách ProductEntity với điều kiện lọc nếu có searchText và
-		// category
-		String hql = "SELECT p FROM ProductEntity p LEFT JOIN FETCH p.brand b LEFT JOIN FETCH p.category c"
-				+ (searchText != null && !searchText.trim().isEmpty() ? " WHERE LOWER(p.nameProduct) LIKE :searchText"
-						: "")
-				+ (category != 0
-						? (searchText != null && !searchText.trim().isEmpty() ? " AND" : " WHERE")
-								+ " p.category.idCategory = :category"
-						: "");
+	    // Xử lý giá trị priceMin và priceMax từ priceRange
+	    double priceMin = Double.MIN_VALUE;
+	    double priceMax = Double.MAX_VALUE;
+	    if (priceRange != null && !priceRange.isEmpty()) {
+	        String[] parts = priceRange.split("-");
+	        if (parts.length == 2) {
+	            try {
+	                priceMin = Double.parseDouble(parts[0].trim());
+	                priceMax = Double.parseDouble(parts[1].trim());
+	            } catch (NumberFormatException e) {
+	                // Nếu parse không thành công, giữ lại giá trị mặc định
+	            }
+	        }
+	    }
 
-		Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+	    // Tạo phần đầu của câu truy vấn
+	    StringBuilder hql = new StringBuilder("SELECT p FROM ProductEntity p LEFT JOIN FETCH p.brand b LEFT JOIN FETCH p.category c");
 
-		// Thiết lập giá trị cho tham số searchText nếu có
-		if (searchText != null && !searchText.trim().isEmpty()) {
-			query.setParameter("searchText", "%" + searchText.toLowerCase() + "%");
-		}
+	    // Lọc theo searchText nếu có
+	    if (searchText != null && !searchText.trim().isEmpty()) {
+	        hql.append(" WHERE LOWER(p.nameProduct) LIKE :searchText");
+	    }
 
-		// Thiết lập giá trị cho tham số category nếu có
-		if (category != 0) {
-			query.setParameter("category", category);
-		}
+	    // Lọc theo category nếu có
+	    if (category != null && category != 0) {
+	        if (hql.toString().contains("WHERE")) {
+	            hql.append(" AND p.category.idCategory = :category");
+	        } else {
+	            hql.append(" WHERE p.category.idCategory = :category");
+	        }
+	    }
 
-		// Thiết lập phân trang
-		query.setFirstResult(start - 1); // Vị trí bắt đầu (Hibernate tính từ 0)
-		query.setMaxResults(end - start + 1); // Số lượng kết quả cần lấy
+	    // Lọc theo priceRange nếu có
+	    if (priceRange != null && !priceRange.isEmpty()) {
+	        if (hql.toString().contains("WHERE")) {
+	            hql.append(" AND (p.salePrice * (1 - p.discount)) BETWEEN :priceMin AND :priceMax");
+	        } else {
+	            hql.append(" WHERE (p.salePrice * (1 - p.discount)) BETWEEN :priceMin AND :priceMax");
+	        }
+	    }
 
-		// Lấy danh sách ProductEntity
-		List<ProductEntity> products = query.list();
+	    // Tạo truy vấn
+	    Query<ProductEntity> query = session.createQuery(hql.toString(), ProductEntity.class);
 
-		// Chuyển đổi sang ProductDTO
-		return products.stream().map(product -> {
-			String image = product.getImages() != null && !product.getImages().isEmpty()
-					? product.getImages().get(0).getImageUrl() // Lấy ảnh đầu tiên nếu có
-					: null;
+	    // Thiết lập tham số cho searchText nếu có
+	    if (searchText != null && !searchText.trim().isEmpty()) {
+	        query.setParameter("searchText", "%" + searchText.toLowerCase() + "%");
+	    }
 
-			return new ProductDTO(product.getIdProduct(), product.getNameProduct(),
-					product.getBrand() != null ? product.getBrand().getNameBrand() : null,
-					product.getCategory() != null ? product.getCategory().getNameCategory() : null,
-					product.getCategory().getIdCategory(), product.getDescription(), product.getQuantity(),
-					product.getDiscount(), product.getOriginalPrice(), product.getSalePrice(), product.getState(),
-					image);
-		}).collect(Collectors.toList());
+	    // Thiết lập tham số cho category nếu có
+	    if (category != null && category != 0) {
+	        query.setParameter("category", category);
+	    }
+
+	    // Thiết lập tham số cho priceMin và priceMax
+	    if (priceRange != null && !priceRange.isEmpty()) {
+	        query.setParameter("priceMin", priceMin);
+	        query.setParameter("priceMax", priceMax);
+	    }
+
+	    // Thiết lập phân trang
+	    query.setFirstResult(start - 1); // Vị trí bắt đầu (Hibernate tính từ 0)
+	    query.setMaxResults(end - start + 1); // Số lượng kết quả cần lấy
+
+	    // Lấy danh sách ProductEntity
+	    List<ProductEntity> products = query.list();
+
+	    // Chuyển đổi sang ProductDTO
+	    return products.stream().map(product -> {
+	        String image = product.getImages() != null && !product.getImages().isEmpty()
+	                ? product.getImages().get(0).getImageUrl() // Lấy ảnh đầu tiên nếu có
+	                : null;
+
+	        return new ProductDTO(product.getIdProduct(), product.getNameProduct(),
+	                product.getBrand() != null ? product.getBrand().getNameBrand() : null,
+	                product.getCategory() != null ? product.getCategory().getNameCategory() : null,
+	                product.getCategory().getIdCategory(), product.getDescription(), product.getQuantity(),
+	                product.getDiscount(), product.getOriginalPrice(), product.getSalePrice(), product.getState(),
+	                image);
+	    }).collect(Collectors.toList());
 	}
 
 	@Transactional
@@ -303,7 +335,35 @@ public class ProductDAO {
 
 		return query.uniqueResult(); // Trả về sản phẩm hoặc null nếu không tìm thấy
 	}
-	
-	
+
+	@Transactional
+	public Map<String, Double> getMinMaxPrices() {
+		Session session = factory.getCurrentSession();
+
+		// HQL để tính giá trị nhỏ nhất và lớn nhất của SalePrice sau khi áp dụng
+		// discount
+		String hql = "SELECT MIN(p.salePrice * (1 - p.discount)), MAX(p.salePrice * (1 - p.discount)) "
+				+ "FROM ProductEntity p";
+
+		Query<Object[]> query = session.createQuery(hql, Object[].class);
+		Object[] result = query.uniqueResult();
+
+		// Tạo Map để trả về kết quả
+		Map<String, Double> minMaxPrices = new HashMap<>();
+		if (result != null) {
+			// Làm tròn kết quả đến 2 chữ số thập phân
+			double minPrice = result[0] != null ? Math.round((Double) result[0] * 100.0) / 100.0 : 0.0;
+			double maxPrice = result[1] != null ? Math.round((Double) result[1] * 100.0) / 100.0 : 0.0;
+
+			minMaxPrices.put("min", minPrice);
+			minMaxPrices.put("max", maxPrice);
+		} else {
+			// Trường hợp không có sản phẩm
+			minMaxPrices.put("min", 0.0);
+			minMaxPrices.put("max", 0.0);
+		}
+
+		return minMaxPrices;
+	}
 
 }

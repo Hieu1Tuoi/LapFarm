@@ -9,6 +9,7 @@ import LapFarm.DAO.BrandDAO;
 import LapFarm.DAO.ProductDAO;
 import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.BrandEntity;
+
 @Service
 public class BrandServiceImp implements IBrandService {
 
@@ -16,10 +17,11 @@ public class BrandServiceImp implements IBrandService {
 	private ProductDAO productDAO;
 	@Autowired
 	private BrandDAO brandDAO;
-	
+
 	@Override
-	public List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText, int category) {
-		return productDAO.getDataProductPaginates(start, end, searchText, category);
+	public List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText, int category,
+			String priceRange) {
+		return productDAO.getDataProductPaginates(start, end, searchText, category, priceRange);
 	}
 
 	@Override

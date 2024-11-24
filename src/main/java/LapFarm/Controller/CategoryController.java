@@ -63,7 +63,7 @@ public class CategoryController extends BaseController {
 		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
 		_mvShare.addObject("paginateInfo", paginateInfo);
 		_mvShare.addObject("ProductsPaginate",
-				categoryService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0));
+				categoryService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, ""));
 		_mvShare.setViewName("productsByCategory");
 		return _mvShare; // The view name
 	}
@@ -104,7 +104,7 @@ public class CategoryController extends BaseController {
 
 		// Lấy sản phẩm cho trang hiện tại
 		List<ProductDTO> productsPaginate = categoryService.GetDataProductPaginates(paginateInfo.getStart(),
-				paginateInfo.getEnd(), "", 0);
+				paginateInfo.getEnd(), "", 0, "");
 		_mvShare.addObject("ProductsPaginate", productsPaginate);
 
 		_mvShare.setViewName("productsByCategory");

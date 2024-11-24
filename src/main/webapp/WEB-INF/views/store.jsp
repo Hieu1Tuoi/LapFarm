@@ -105,25 +105,22 @@
 			<ul class="store-pagination">
 				<c:if test="${(loop.index)==paginateInfo.currentPage }">
 
-					<li class="active"><a
-						href="home?page=${loop.index}">${loop.index}</li>
+					<li class="active"><a href="home?page=${loop.index}">${loop.index}</li>
 				</c:if>
 				<c:if test="${(loop.index)!=paginateInfo.currentPage}">
-					<li><a
-						href="home?page=${loop.index}">${loop.index}</a></li>
+					<li><a href="home?page=${loop.index}">${loop.index}</a></li>
 				</c:if>
 		</c:forEach>
 		<!-- Nút điều hướng đến trang tiếp theo -->
 		<c:if test="${paginateInfo.currentPage < paginateInfo.totalPage}">
-			<li><a
-				href="home?page=${paginateInfo.currentPage + 1}">
-					<i class="fa fa-angle-right"></i>
+			<li><a href="home?page=${paginateInfo.currentPage + 1}"> <i
+					class="fa fa-angle-right"></i>
 			</a></li>
 		</c:if>
 		</ul>
 	</div>
-					<!-- /store bottom filter -->
-			
+	<!-- /store bottom filter -->
+
 	<!-- /store bottom filter -->
 </div>
 <!-- /STORE -->

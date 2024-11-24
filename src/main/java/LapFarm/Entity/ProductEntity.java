@@ -14,8 +14,6 @@ public class ProductEntity {
     @Column(name = "IdProduct")
     private int idProduct;
 
-
-
 	@Column(name = "NameProduct", nullable = false)
 	private String nameProduct;
 

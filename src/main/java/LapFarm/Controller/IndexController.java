@@ -69,7 +69,11 @@ public class IndexController extends BaseController {
 		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
 		_mvShare.addObject("paginateInfo", paginateInfo);
 		_mvShare.addObject("ProductsPaginate",
-				productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0));
+				productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, ""));
+		Map<String, Double> price = productService.getMinMaxPrices();
+		_mvShare.addObject("priceMin", price.get("min"));
+		_mvShare.addObject("priceMax", price.get("max"));
+
 		_mvShare.setViewName("store");
 		return _mvShare;
 	}
@@ -102,7 +106,10 @@ public class IndexController extends BaseController {
 		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
 		_mvShare.addObject("paginateInfo", paginateInfo);
 		_mvShare.addObject("ProductsPaginate",
-				productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0));
+				productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, ""));
+		Map<String, Double> price = productService.getMinMaxPrices();
+		_mvShare.addObject("priceMin", price.get("min"));
+		_mvShare.addObject("priceMax", price.get("max"));
 		_mvShare.setViewName("store");
 		return _mvShare;
 	}
@@ -122,7 +129,5 @@ public class IndexController extends BaseController {
 		}
 		return "redirect:/home";
 	}
-
-
 
 }

@@ -1,6 +1,7 @@
 package LapFarm.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,9 @@ public interface IProductService {
 	public List<ProductDTO> getAllProductsDTO();
 
 
-	List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText, int category);
+	public Map<String, Double> getMinMaxPrices();
+
+
+	List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText, int category, String priceRange);
 
 }
