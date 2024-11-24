@@ -11,5 +11,7 @@ public interface IProductService {
 	public Long getTotalProductQuantity();
 
 	public List<ProductDTO> GetDataProductPaginates(int start, int end);
+	
+	 public List<ProductDTO> getAllProductsDTO();
 
 }

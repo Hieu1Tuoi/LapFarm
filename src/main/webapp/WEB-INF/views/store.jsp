@@ -8,10 +8,10 @@
 
 <!-- STORE -->
 <div id="store" class="col-md-9">
-	<h2>${products != null ? products.size() : 0}</h2>
+	<h2>${ProductsPaginate != null ? ProductsPaginate.size() : 0}</h2>
 	<h3>
 		TẤT CẢ SẢN PHẨM:
-		<fmt:formatNumber value="${totalQuantity}" type="number"
+		<fmt:formatNumber value="${products.size()}" type="number"
 			groupingUsed="true" />
 	</h3>
 
@@ -19,9 +19,9 @@
 	<div class="row">
 		<!-- product -->
 
-		<c:if test="${products.size()>0}">
+		<c:if test="${ProductsPaginate.size()>0}">
 			<ul class="thumbnails">
-				<c:forEach var="p" items="${products}" varStatus="loop">
+				<c:forEach var="p" items="${ProductsPaginate}" varStatus="loop">
 
 					<div class="col-md-4 col-xs-6">
 						<div class="product">
@@ -29,11 +29,11 @@
 								<a href="chi-tiet-san-pham/${p.idProduct}"></a>
 								<!-- Lấy hình ảnh đầu tiên từ danh sách -->
 								<c:choose>
-									<c:when test="${not empty p.images}">
-										<img src="${p.images[0].imageUrl}" alt="Product Image">
+									<c:when test="${not empty p.image}">
+										<img src="${p.image}" alt="Product Image">
 									</c:when>
 									<c:otherwise>
-										<img src="/LapFarm/resources/img/${p.images[0].imageUrl}"
+										<img src="/LapFarm/resources/img/${p.image}"
 											alt="Default Image">
 									</c:otherwise>
 								</c:choose>
@@ -43,7 +43,7 @@
 								</div>
 							</div>
 							<div class="product-body">
-								<p class="product-category">${p.category.nameCategory}</p>
+								<p class="product-category">${p.categoryName}</p>
 								<h4 class="product-name">
 									<a href="chi-tiet-san-pham/${p.idProduct}"
 										title="${p.nameProduct}">${p.nameProduct}</a>
@@ -85,9 +85,9 @@
 					</div>
 
 					<c:if
-						test="${(loop.index +1)%3==0 || (loop.index +1)==highLightProducts.size() }">
+						test="${(loop.index +1)%3==0 || (loop.index +1)==ProductsPaginate.size() }">
 			</ul>
-			<c:if test="${(loop.index +1)< highLightProducts.size() }">
+			<c:if test="${(loop.index +1)< ProductsPaginate.size() }">
 				<ul class="thumbnails">
 			</c:if>
 		</c:if>

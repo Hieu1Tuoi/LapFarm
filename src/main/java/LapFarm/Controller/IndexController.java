@@ -49,7 +49,7 @@ public class IndexController extends BaseController {
 		// Lấy danh sách Brand
 		_mvShare.addObject("brands", _baseService.getBrandEntities());
 
-		_mvShare.addObject("products", _baseService.getAllProducts());
+		_mvShare.addObject("products", productService.getAllProductsDTO());
 
 		// Lấy số lượng sản phẩm theo tất cả danh mục
 		_mvShare.addObject("productCounts",
@@ -65,7 +65,7 @@ public class IndexController extends BaseController {
 		// Thêm vào model để hiển thị trên view
 		_mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
 
-		int totalData = _baseService.getAllProducts().size();
+		int totalData = productService.getAllProductsDTO().size();
 		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
 		_mvShare.addObject("paginateInfo", paginateInfo);
 		_mvShare.addObject("ProductsPaginate",
@@ -82,7 +82,7 @@ public class IndexController extends BaseController {
 		// Lấy danh sách Brand
 		_mvShare.addObject("brands", _baseService.getBrandEntities());
 
-		_mvShare.addObject("products", _baseService.getAllProducts());
+		_mvShare.addObject("products", productService.getAllProductsDTO());
 
 		// Lấy số lượng sản phẩm theo tất cả danh mục
 		_mvShare.addObject("productCounts",
@@ -97,7 +97,8 @@ public class IndexController extends BaseController {
 
 		// Thêm vào model để hiển thị trên view
 		_mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
-		int totalData = _baseService.getAllProducts().size();
+		
+		int totalData = productService.getAllProductsDTO().size();
 		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
 		_mvShare.addObject("paginateInfo", paginateInfo);
 		_mvShare.addObject("ProductsPaginate",

@@ -22,6 +22,11 @@ public class ProductServiceImp implements IProductService {
 	public List<ProductDTO> GetDataProductPaginates(int start, int end) {
 		return productDAO.getDataProductPaginates(start, end);
 	}
+
+	@Override
+	public List<ProductDTO> getAllProductsDTO() {
+		return productDAO.getAllProductsDTO();
+	}
 	
 	
 
