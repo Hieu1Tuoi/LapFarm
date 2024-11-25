@@ -365,5 +365,47 @@ public class ProductDAO {
 
 		return minMaxPrices;
 	}
+	@Transactional
+	public List<ProductDTO> getRelatedProductsByBrand(int brandId, int excludeProductId, int limit) {
+	    Session session = factory.getCurrentSession();
 
+	    // HQL query để lấy sản phẩm cùng brand nhưng không bao gồm sản phẩm hiện tại
+	    String hql = "SELECT p FROM ProductEntity p " +
+	                 "WHERE p.brand.idBrand = :brandId AND p.idProduct != :excludeProductId";
+
+	    Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+	    query.setParameter("brandId", brandId);
+	    query.setParameter("excludeProductId", excludeProductId);
+	    query.setMaxResults(limit); // Giới hạn số lượng sản phẩm liên quan
+
+	    // Lấy danh sách sản phẩm từ query
+	    List<ProductEntity> products = query.list();
+
+	    // Chuyển đổi từ ProductEntity sang ProductDTO
+	    return products.stream().map(product -> {
+	        String image = product.getImages() != null && !product.getImages().isEmpty()
+	                ? product.getImages().get(0).getImageUrl()
+	                : null;
+
+	        return new ProductDTO(product.getIdProduct(), product.getNameProduct(),
+	                product.getBrand() != null ? product.getBrand().getNameBrand() : null,
+	                product.getCategory() != null ? product.getCategory().getNameCategory() : null,
+	                product.getCategory().getIdCategory(), product.getDescription(), product.getQuantity(),
+	                product.getDiscount(), product.getOriginalPrice(), product.getSalePrice(), product.getState(),
+	                image);
+	    }).toList();
+	}
+
+	@Transactional
+	public Long countProductsByBrand(int brandId) {
+	    Session session = factory.getCurrentSession();
+
+	    // HQL query để đếm số lượng sản phẩm theo brand
+	    String hql = "SELECT COUNT(p) FROM ProductEntity p WHERE p.brand.idBrand = :brandId";
+
+	    Query<Long> query = session.createQuery(hql, Long.class);
+	    query.setParameter("brandId", brandId);
+
+	    return query.uniqueResult();
+	}
 }

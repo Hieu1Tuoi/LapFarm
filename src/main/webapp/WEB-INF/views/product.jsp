@@ -82,82 +82,48 @@
                     <button class="btn btn-outline-secondary btn-lg">
                         <i class="fa fa-heart-o"></i> Thêm yêu thích
                     </button>
-                    <button class="btn btn-outline-info btn-lg">
-                        <i class="fa fa-eye"></i> Xem nhanh
-                    </button>
                 </div>
             </div>
         </div>
     </c:if>
-
-    <!-- Sản phẩm liên quan -->
-    <c:if test="${not empty relatedProducts}">
-        <div class="related-products mt-5">
-            <h3 class="section-title text-center mb-4">Sản phẩm liên quan</h3>
-            <div class="row">
-                <c:forEach var="related" items="${relatedProducts}">
-                    <div class="col-md-3 mb-4">
-                        <div class="card h-100">
-                            <img src="${related.images[0].imageUrl}" class="card-img-top" alt="${related.nameProduct}">
-                            <div class="card-body">
-                                <h5 class="card-title">${related.nameProduct}</h5>
-                                <p class="card-text">
-                                    <strong>Giá:</strong> 
-                                    <fmt:formatNumber value="${related.calPrice()}" type="number" groupingUsed="true" /> ₫
-                                </p>
-                                <a href="${pageContext.request.contextPath}/product/${related.idProduct}" class="btn btn-primary btn-sm">
-                                    Xem chi tiết
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </c:forEach>
+	<div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="section-title text-center">
+                    <h3 class="title">Related Products</h3>
+                </div>
             </div>
-        </div>
-    </c:if>
-   <div class="container mt-5">
-    <!-- Tiêu đề thương hiệu -->
-    <div class="row">
-        <div class="col-md-12 text-center">
-            <h2 class="mb-3">Thương hiệu: ${brand.nameBrand}</h2>
-            <p class="text-muted">${brand.description}</p>
-        </div>
-    </div>
 
-    <!-- Danh sách sản phẩm -->
-    <div class="row">
-        <c:if test="${not empty productsByBrand}">
-            <c:forEach var="product" items="${productsByBrand}">
-                <!-- product -->
-                <div class="col-md-3 col-sm-6 mb-4">
-                    <div class="card h-100">
-                        <img src="${product.images[0].imageUrl}" class="card-img-top" alt="${product.nameProduct}">
-                        <div class="card-body">
-                            <h5 class="card-title">${product.nameProduct}</h5>
-                            <p class="card-text">
-                                <strong>Giá:</strong> 
-                                <fmt:formatNumber value="${product.calPrice()}" type="number" groupingUsed="true" /> ₫
-                                <c:if test="${product.discount > 0}">
-                                    <del class="text-muted">
-                                        <fmt:formatNumber value="${product.originalPrice}" type="number" groupingUsed="true" /> ₫
-                                    </del>
-                                </c:if>
-                            </p>
-                            <a href="${pageContext.request.contextPath}/product/${product.idProduct}" class="btn btn-primary btn-sm">
-                                Xem chi tiết
-                            </a>
+            <c:forEach var="product" items="${relatedProducts}">
+                <div class="col-md-3 col-xs-6">
+                    <div class="product">
+                        <div class="product-img">
+                            <img src="${product.image}" alt="${product.nameProduct}">
+                        </div>
+                        <div class="product-body">
+                            <p class="product-category">${product.categoryName}</p>
+                            <h3 class="product-name">
+                                <a href="product-detail/${product.idProduct}">${product.nameProduct}</a>
+                            </h3>
+                            <h4 class="product-price">
+                                <fmt:formatNumber value="${product.salePrice}" type="number" groupingUsed="true"/> ₫
+                                <del class="product-old-price">
+                                    <fmt:formatNumber value="${product.originalPrice}" type="number" groupingUsed="true"/> ₫
+                                </del>
+                            </h4>
                         </div>
                     </div>
                 </div>
-                <!-- /product -->
             </c:forEach>
-        </c:if>
-
-        <c:if test="${empty productsByBrand}">
-            <p class="text-center">Không có sản phẩm nào thuộc thương hiệu này.</p>
-        </c:if>
+             <!-- Nút "Xem tất cả sản phẩm liên quan" -->
+            <div class="col-md-12 text-center">
+                <a href="/related-products/${product.brand.idBrand}" class="btn btn-primary">Xem tất cả</a>
+        </div>
     </div>
 </div>
+
+   
 </div>
 
 <%@ include file="/WEB-INF/views/layouts/user-footer.jsp" %>

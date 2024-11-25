@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 import LapFarm.DAO.ProductDAO;
+import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.ProductEntity;
 
 @Controller
@@ -24,20 +26,26 @@ public class ProductController {
 	}
 	@Autowired
     private ProductDAO productDAO;
-
-    @RequestMapping(value = "/product-detail/{idProduct}")
+	
+    
+    @RequestMapping(value = "/product-detail/{idProduct}", method = RequestMethod.GET)
     public String productDetail(@PathVariable("idProduct") int idProduct, Model model) {
-        // Lấy thông tin sản phẩm từ DAO
         ProductEntity product = productDAO.getProductById(idProduct);
 
-        // Kiểm tra nếu sản phẩm không tồn tại
         if (product == null) {
             model.addAttribute("errorMessage", "Không tìm thấy sản phẩm.");
-            return "error"; // Điều hướng tới trang lỗi
+            return "error";
         }
 
-        // Truyền thông tin sản phẩm vào model để hiển thị ở JSP
+        // Lấy danh sách sản phẩm liên quan theo brand
+        int brandId = product.getBrand().getIdBrand();
+        List<ProductDTO> relatedProducts = productDAO.getRelatedProductsByBrand(brandId, idProduct, 4);
+
         model.addAttribute("product", product);
+        model.addAttribute("relatedProducts", relatedProducts);
+
         return "product";
     }
+
 }
+
