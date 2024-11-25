@@ -22,6 +22,7 @@ import LapFarm.Entity.ProductEntity;
 import LapFarm.Service.BrandServiceImp;
 import LapFarm.Service.CategoryServiceImp;
 import LapFarm.Service.PaginatesServiceImp;
+import LapFarm.Service.ProductServiceImp;
 import jakarta.transaction.Transactional;
 
 @Controller
@@ -30,6 +31,8 @@ public class BrandController extends BaseController {
 
 	@Autowired
 	private BrandServiceImp brandService;
+	@Autowired
+	ProductServiceImp productService;
 	@Autowired
 	private PaginatesServiceImp paginateService;
 	private int totalProductPage = 9;
@@ -65,6 +68,9 @@ public class BrandController extends BaseController {
 		_mvShare.addObject("paginateInfo", paginateInfo);
 		_mvShare.addObject("ProductsPaginate",
 				brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, ""));
+		Map<String, Double> price = productService.getMinMaxPrices();
+		_mvShare.addObject("priceMin", price.get("min"));
+		_mvShare.addObject("priceMax", price.get("max"));
 		_mvShare.setViewName("productsByBrand");
 		return _mvShare; // The view name
 	}
@@ -102,7 +108,9 @@ public class BrandController extends BaseController {
 		_mvShare.addObject("ProductsPaginate",
 				brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, ""));
 		_mvShare.setViewName("productsByCategory");
-
+		Map<String, Double> price = productService.getMinMaxPrices();
+		_mvShare.addObject("priceMin", price.get("min"));
+		_mvShare.addObject("priceMax", price.get("max"));
 		_mvShare.setViewName("productsByBrand");
 		return _mvShare; // View name
 	}

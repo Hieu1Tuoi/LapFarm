@@ -21,6 +21,7 @@ import LapFarm.Entity.CategoryEntity;
 import LapFarm.Entity.ProductEntity;
 import LapFarm.Service.CategoryServiceImp;
 import LapFarm.Service.PaginatesServiceImp;
+import LapFarm.Service.ProductServiceImp;
 import jakarta.transaction.Transactional;
 
 @Controller
@@ -29,6 +30,8 @@ public class CategoryController extends BaseController {
 
 	@Autowired
 	private CategoryServiceImp categoryService;
+	@Autowired
+	ProductServiceImp productService;
 	@Autowired
 	private PaginatesServiceImp paginateService;
 	private int totalProductPage = 9;
@@ -64,6 +67,9 @@ public class CategoryController extends BaseController {
 		_mvShare.addObject("paginateInfo", paginateInfo);
 		_mvShare.addObject("ProductsPaginate",
 				categoryService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, ""));
+		Map<String, Double> price = productService.getMinMaxPrices();
+		_mvShare.addObject("priceMin", price.get("min"));
+		_mvShare.addObject("priceMax", price.get("max"));
 		_mvShare.setViewName("productsByCategory");
 		return _mvShare; // The view name
 	}
@@ -105,6 +111,9 @@ public class CategoryController extends BaseController {
 		// Lấy sản phẩm cho trang hiện tại
 		List<ProductDTO> productsPaginate = categoryService.GetDataProductPaginates(paginateInfo.getStart(),
 				paginateInfo.getEnd(), "", 0, "");
+		Map<String, Double> price = productService.getMinMaxPrices();
+		_mvShare.addObject("priceMin", price.get("min"));
+		_mvShare.addObject("priceMax", price.get("max"));
 		_mvShare.addObject("ProductsPaginate", productsPaginate);
 
 		_mvShare.setViewName("productsByCategory");
