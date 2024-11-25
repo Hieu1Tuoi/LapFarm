@@ -39,23 +39,7 @@ public class CategoryController extends BaseController {
 	@RequestMapping(value = "/products-category", params = "!page")
 	public ModelAndView Index(@RequestParam(value = "idCategory", required = false) int idCategory) {
 
-		_mvShare.addObject("categories", _baseService.getCategoryEntities());
-
-		// Lấy danh sách Brand
-		_mvShare.addObject("brands", _baseService.getBrandEntities());
-
-		_mvShare.addObject("products", _baseService.getAllProducts());
-
-		// Lấy số lượng sản phẩm theo tất cả danh mục
-		_mvShare.addObject("productCounts",
-				_baseService.getProductCountByAllCategories(_baseService.getCategoryEntities())); // Truyền Map vào
-																									// Model
-
-		// Lấy số lượng sản phẩm theo tất cả brand
-		_mvShare.addObject("productCountsByBrand",
-				_baseService.getProductCountByAllBrands(_baseService.getBrandEntities()));
-
-		_mvShare.addObject("products_top_sell", _baseService.getTop5ProductsByLowestQuantity());
+		Init();
 
 		// Lấy toàn bộ thông tin Category
 		_mvShare.addObject("category", categoryService.getCategoryById(idCategory));
@@ -78,23 +62,7 @@ public class CategoryController extends BaseController {
 	public ModelAndView Index(@RequestParam(value = "idCategory", required = false) Integer idCategory,
 			@RequestParam(value = "page", defaultValue = "1") int currentPage) {
 
-		_mvShare.addObject("categories", _baseService.getCategoryEntities());
-
-		// Lấy danh sách Brand
-		_mvShare.addObject("brands", _baseService.getBrandEntities());
-
-		_mvShare.addObject("products", _baseService.getAllProducts());
-
-		// Lấy số lượng sản phẩm theo tất cả danh mục
-		_mvShare.addObject("productCounts",
-				_baseService.getProductCountByAllCategories(_baseService.getCategoryEntities())); // Truyền Map vào
-																									// Model
-
-		// Lấy số lượng sản phẩm theo tất cả brand
-		_mvShare.addObject("productCountsByBrand",
-				_baseService.getProductCountByAllBrands(_baseService.getBrandEntities()));
-
-		_mvShare.addObject("products_top_sell", _baseService.getTop5ProductsByLowestQuantity());
+		Init();
 
 		// Lấy toàn bộ thông tin Category
 		_mvShare.addObject("category", categoryService.getCategoryById(idCategory));
