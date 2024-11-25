@@ -118,7 +118,7 @@
             </c:forEach>
              <!-- Nút "Xem tất cả sản phẩm liên quan" -->
             <div class="col-md-12 text-center">
-                <a href="/related-products/${product.brand.idBrand}" class="btn btn-primary">Xem tất cả</a>
+                <a href="related-products/${product.brand.idBrand}" class="btn btn-primary">Xem tất cả</a>
         </div>
     </div>
 </div>

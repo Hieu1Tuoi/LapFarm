@@ -408,4 +408,30 @@ public class ProductDAO {
 
 	    return query.uniqueResult();
 	}
+	@Transactional
+	public List<ProductDTO> getAllProductsByBrand(int idBrand) {
+	    Session session = factory.getCurrentSession();
+
+	    // HQL query để lấy tất cả sản phẩm thuộc thương hiệu
+	    String hql = "SELECT p FROM ProductEntity p WHERE p.brand.idBrand = :idBrand";
+	    Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+	    query.setParameter("idBrand", idBrand);
+
+	    // Lấy danh sách sản phẩm từ query
+	    List<ProductEntity> products = query.list();
+
+	    // Chuyển đổi từ ProductEntity sang ProductDTO
+	    return products.stream().map(product -> {
+	        String image = product.getImages() != null && !product.getImages().isEmpty()
+	                ? product.getImages().get(0).getImageUrl()
+	                : null;
+
+	        return new ProductDTO(product.getIdProduct(), product.getNameProduct(),
+	                product.getBrand() != null ? product.getBrand().getNameBrand() : null,
+	                product.getCategory() != null ? product.getCategory().getNameCategory() : null,
+	                product.getCategory().getIdCategory(), product.getDescription(), product.getQuantity(),
+	                product.getDiscount(), product.getOriginalPrice(), product.getSalePrice(), product.getState(),
+	                image);
+	    }).toList();
+	}
 }

@@ -46,6 +46,22 @@ public class ProductController {
 
         return "product";
     }
+    @RequestMapping(value = "/related-products/{idBrand}", method = RequestMethod.GET)
+    public String viewAllRelatedProducts(@PathVariable("idBrand") int idBrand, Model model) {
+        // Lấy danh sách tất cả các sản phẩm thuộc thương hiệu
+        List<ProductDTO> relatedProducts = productDAO.getAllProductsByBrand(idBrand);
+
+        // Kiểm tra nếu không có sản phẩm
+        if (relatedProducts.isEmpty()) {
+            model.addAttribute("errorMessage", "Không có sản phẩm nào liên quan.");
+            return "error";
+        }
+
+        // Truyền danh sách sản phẩm liên quan vào model
+        model.addAttribute("relatedProducts", relatedProducts);
+
+        return "related-products"; // Trả về JSP hiển thị danh sách sản phẩm liên quan
+    }
 
 }
 
