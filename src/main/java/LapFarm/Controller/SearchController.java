@@ -38,22 +38,12 @@ public class SearchController extends BaseController {
 
 		priceRange = validatePriceRange(priceRange);
 		// Lấy danh sách Category
-		_mvShare.addObject("categories", _baseService.getCategoryEntities());
-
-		// Lấy danh sách Brand
-		_mvShare.addObject("brands", _baseService.getBrandEntities());
+		Init();
 
 		_mvShare.addObject("products", productService.getAllProductsDTO());
 
 		// Lấy số lượng sản phẩm theo tất cả danh mục
-		_mvShare.addObject("productCounts",
-				_baseService.getProductCountByAllCategories(_baseService.getCategoryEntities())); // Truyền Map vào
-
-		// Lấy số lượng sản phẩm theo tất cả brand
-		_mvShare.addObject("productCountsByBrand",
-				_baseService.getProductCountByAllBrands(_baseService.getBrandEntities()));
-
-		_mvShare.addObject("products_top_sell", _baseService.getTop5ProductsByLowestQuantity());
+		
 
 		// Thêm vào model để hiển thị trên view
 		_mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
@@ -85,24 +75,12 @@ public class SearchController extends BaseController {
 			@RequestParam("priceRange") String priceRange,
 			@RequestParam(value = "page", defaultValue = "1") int currentPage) {
 		priceRange = validatePriceRange(priceRange);
-		// Lấy danh sách Category
-		_mvShare.addObject("categories", _baseService.getCategoryEntities());
-
-		// Lấy danh sách Brand
-		_mvShare.addObject("brands", _baseService.getBrandEntities());
+		Init();
 
 		_mvShare.addObject("products", productService.getAllProductsDTO());
 
 		// Lấy số lượng sản phẩm theo tất cả danh mục
-		_mvShare.addObject("productCounts",
-				_baseService.getProductCountByAllCategories(_baseService.getCategoryEntities())); // Truyền Map vào
-																									// Model
-
-		// Lấy số lượng sản phẩm theo tất cả brand
-		_mvShare.addObject("productCountsByBrand",
-				_baseService.getProductCountByAllBrands(_baseService.getBrandEntities()));
-
-		_mvShare.addObject("products_top_sell", _baseService.getTop5ProductsByLowestQuantity());
+		
 
 		// Thêm vào model để hiển thị trên view
 		_mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
