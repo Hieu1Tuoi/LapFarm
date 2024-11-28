@@ -5,11 +5,10 @@
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1>Quản lý menu trang giao diện</h1>
+		<h1>Quản lý đơn hàng</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li><a href="#">Examples</a></li>
-			<li class="active">Blank page</li>
+			<li><a href="#"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+			<li class="active">Đơn hàng</li>
 		</ol>
 	</section>
 
@@ -20,7 +19,8 @@
 		<div class="col-xs-12">
 			<div class="box">
 				<div class="box-header">
-					<a href="add-menu.html" class="btn btn-success">+ Tạo đơn hàng</a>
+					<div></div>
+					<!-- <a href="add-menu.html" class="btn btn-success">+ Tạo đơn hàng</a> -->
 					<div class="box-tools">
 						<div class="input-group input-group-sm" style="width: 150px;">
 							<input type="text" name="table_search"

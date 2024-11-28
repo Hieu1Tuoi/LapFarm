@@ -8,12 +8,11 @@
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1>
-			Blank page <small>it all starts here</small>
+			Quản lý sản phẩm
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li><a href="#">Examples</a></li>
-			<li class="active">Blank page</li>
+			<li><a href="#"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+			<li class="active">Sản phẩm</li>
 		</ol>
 	</section>
 	<section class="content">
@@ -22,7 +21,9 @@
 		<div class="col-xs-12">
 			<div class="box">
 				<div class="box-header">
-
+					<a href="admin/product/add-category" class="btn btn-success">+ Thêm loại hàng</a>
+					<a href="admin/product/add-brand" class="btn btn-success">+ Thêm hãng</a>
+					<a href="admin/product/add-product" class="btn btn-success">+ Thêm sản phẩm</a>
 					<div class="box-tools">
 						<div class="input-group input-group-sm" style="width: 150px;">
 							<input type="text" name="table_search"

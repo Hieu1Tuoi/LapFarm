@@ -39,7 +39,7 @@ public class AdminController {
 
         // Đưa danh sách vào Model để đẩy sang view
         model.addAttribute("categories", categories);
-		return "/admin/layout";
+		return "/admin/orders";
 	}
 	
 	@RequestMapping(value = { "/orders" }, method = RequestMethod.GET)
@@ -66,6 +66,46 @@ public class AdminController {
 	    // Trả về view cho trang quản lý sản phẩm của danh mục
 	    return "/admin/products/category";
 	}
+	
+	@RequestMapping(value = { "/product/add-category" }, method = RequestMethod.GET)
+	public String showForm(ModelMap model) {
+	    // Lấy danh sách từ DAO
+		List<CategoryEntity> categories = categoryDAO.getAllCategories();
+	    // Đưa danh sách vào Model để đẩy sang view
+	    model.addAttribute("categories", categories);
+
+	    // Trả về view cho trang quản lý sản phẩm của danh mục
+	    return "/admin/products/addCategory";
+	}
+	
+	@RequestMapping(value = "/product/add-category", method = RequestMethod.POST)
+    public String addCategory(@RequestParam("categoryName") String categoryName, ModelMap model) {
+		// Lấy danh sách từ DAO
+				List<CategoryEntity> categories = categoryDAO.getAllCategories();
+				model.addAttribute("categories", categories);
+        try {
+            // Kiểm tra nếu loại hàng đã tồn tại
+            if (categoryDAO.checkCategory(categoryName)) {
+                model.addAttribute("message", "Loại hàng '" + categoryName + "' đã tồn tại!");
+                return "/admin/products/addCategory"; // Quay lại trang thêm loại hàng
+            }
+
+            // Nếu chưa tồn tại, thêm loại hàng mới
+            CategoryEntity category = new CategoryEntity();
+            category.setNameCategory(categoryName);
+            categoryDAO.saveCategory(category);
+
+            // Thêm thông báo thành công
+            model.addAttribute("message", "Loại hàng '" + categoryName + "' đã được thêm thành công!");
+        } catch (Exception e) {
+            // Thêm thông báo lỗi
+            model.addAttribute("message", "Loại hàng '" + categoryName + "' đã tồn tại!");
+        }
+
+        // Quay lại trang thêm loại hàng
+        return "/admin/products/addCategory";
+    }
+
 	
 	@RequestMapping(value = { "/manage-user" }, method = RequestMethod.GET)
 	public String userIndex(ModelMap model) {
