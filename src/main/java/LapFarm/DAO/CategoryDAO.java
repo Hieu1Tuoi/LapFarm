@@ -48,7 +48,7 @@ public class CategoryDAO {
     }
 
     @Transactional
-    public boolean checkCategory(String categoryName) {
+    public boolean checkCategoryByName(String categoryName) {
         Session session = factory.getCurrentSession();
 
         // HQL để kiểm tra sự tồn tại của loại hàng
