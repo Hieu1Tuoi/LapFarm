@@ -69,6 +69,7 @@ public class LoginController {
 	public String logout(HttpSession httpSession) {
 		httpSession.removeAttribute("user");
 		httpSession.removeAttribute("admin");
+		httpSession.removeAttribute("Cart");
 		return "redirect:/login";
 	}
 

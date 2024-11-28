@@ -33,8 +33,6 @@ public class CartController extends BaseController {
 	        session.setAttribute("Cart", cart);
 	        session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
 	        session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
-	    }else {
-	    	session.removeAttribute("Cart");
 	    }
 
 	    // Trả về view giỏ hàng
@@ -58,8 +56,6 @@ public class CartController extends BaseController {
 	    if (user != null) {
 	        // Nếu đã đăng nhập, đồng bộ giỏ hàng với database
 	        cartService.syncCartToDatabase(user.getUserInfo().getUserId(), cart);
-	    }else {
-	    	session.removeAttribute("Cart");
 	    }
 
 	    // Cập nhật lại giỏ hàng trong session
