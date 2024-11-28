@@ -8,7 +8,7 @@
         <h1>Thêm sản phẩm mới</h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
-			<li><a href="#">Sản phẩm</a></li>
+			<li><a href="#">Loại hàng</a></li>
 			<li class="active"> Thêm loại hàng</li>
         </ol>
     </section>
@@ -18,7 +18,7 @@
 				<h3 class="box-title">Thông tin loại hàng</h3>
 			</div>
 			<form
-				action="${pageContext.request.contextPath}/admin/product/add-category"
+				action="${pageContext.request.contextPath}/admin/categories/add-category"
 				method="post">
 				<div class="box-body">
 					<c:if test="${not empty message}">

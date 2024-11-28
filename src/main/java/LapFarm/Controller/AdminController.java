@@ -36,6 +36,23 @@ public class AdminController {
 	@Autowired
 	private BrandDAO brandDAO;
 	
+	public static String normalizeString(String input) {
+        if (input == null || input.isEmpty()) {
+            return input; // Nếu chuỗi null hoặc rỗng thì trả về ngay
+        }
+
+        // Bước 1: Xóa khoảng trắng dư thừa ở đầu và cuối
+        input = input.trim();
+
+        // Bước 2: Xóa khoảng trắng dư thừa ở giữa các từ
+        input = input.replaceAll("\\s+", " ");
+
+        // Bước 3: Viết hoa chữ cái đầu tiên của chuỗi, các ký tự còn lại viết thường
+        input = Character.toUpperCase(input.charAt(0)) + input.substring(1).toLowerCase();
+
+        return input;
+    }
+	
 	@RequestMapping(value = "/home" , method = RequestMethod.GET)
 	public String index(ModelMap model) {
 		// Lấy danh sách categories từ DAO
@@ -71,27 +88,39 @@ public class AdminController {
 	    return "/admin/products/category";
 	}
 	
-	@RequestMapping(value = { "/product/add-category" }, method = RequestMethod.GET)
-	public String showForm(ModelMap model) {
+	@RequestMapping(value = { "/categories" }, method = RequestMethod.GET)
+	public String showListCatogory(ModelMap model) {
 	    // Lấy danh sách từ DAO
 		List<CategoryEntity> categories = categoryDAO.getAllCategories();
 	    // Đưa danh sách vào Model để đẩy sang view
 	    model.addAttribute("categories", categories);
 
 	    // Trả về view cho trang quản lý sản phẩm của danh mục
-	    return "/admin/products/addCategory";
+	    return "/admin/categories/index";
 	}
 	
-	@RequestMapping(value = "/product/add-category", method = RequestMethod.POST)
+	@RequestMapping(value = { "/categories/add-category" }, method = RequestMethod.GET)
+	public String showFormAddCategory(ModelMap model) {
+	    // Lấy danh sách từ DAO
+		List<CategoryEntity> categories = categoryDAO.getAllCategories();
+	    // Đưa danh sách vào Model để đẩy sang view
+	    model.addAttribute("categories", categories);
+
+	    // Trả về view cho trang quản lý sản phẩm của danh mục
+	    return "/admin/categories/addCategory";
+	}
+	
+	@RequestMapping(value = "/categories/add-category", method = RequestMethod.POST)
     public String addCategory(@RequestParam("categoryName") String categoryName, ModelMap model) {
 		// Lấy danh sách từ DAO
 				List<CategoryEntity> categories = categoryDAO.getAllCategories();
 				model.addAttribute("categories", categories);
         try {
+        	categoryName = normalizeString(categoryName);
             // Kiểm tra nếu loại hàng đã tồn tại
             if (categoryDAO.checkCategoryByName(categoryName)) {
                 model.addAttribute("message", "Loại hàng '" + categoryName + "' đã tồn tại!");
-                return "/admin/products/addCategory"; // Quay lại trang thêm loại hàng
+                return "/admin/categories/addCategory"; // Quay lại trang thêm loại hàng
             }
 
             // Nếu chưa tồn tại, thêm loại hàng mới
@@ -107,30 +136,46 @@ public class AdminController {
         }
 
         // Quay lại trang thêm loại hàng
-        return "/admin/products/addCategory";
+        return "/admin/categories/addCategory";
     }
+	
+	@RequestMapping(value = { "/brands" }, method = RequestMethod.GET)
+	public String brandsIndex(ModelMap model) {
+		// Lấy danh sách categories từ DAO
+        List<CategoryEntity> categories = categoryDAO.getAllCategories();
+        List<BrandEntity> brands = brandDAO.getAllBrands();
+
+        // Đưa danh sách vào Model để đẩy sang view
+        model.addAttribute("categories", categories);
+        model.addAttribute("brands", brands);
+		return "/admin/orders/index";
+	}
 	
 	@RequestMapping(value = { "/product/add-brand" }, method = RequestMethod.GET)
 	public String showFormAddBrand(ModelMap model) {
 	    // Lấy danh sách từ DAO
 		List<CategoryEntity> categories = categoryDAO.getAllCategories();
+        List<BrandEntity> brands = brandDAO.getAllBrands();
 	    // Đưa danh sách vào Model để đẩy sang view
 	    model.addAttribute("categories", categories);
+        model.addAttribute("brands", brands);
 
 	    // Trả về view cho trang quản lý sản phẩm của danh mục
-	    return "/admin/products/addBrand";
+	    return "/admin/brands/addBrand";
 	}
 	
 	@RequestMapping(value = "/product/add-brand", method = RequestMethod.POST)
     public String addBrand(@RequestParam("brandName") String brandName, ModelMap model) {
 		// Lấy danh sách từ DAO
 				List<CategoryEntity> categories = categoryDAO.getAllCategories();
+		        List<BrandEntity> brands = brandDAO.getAllBrands();
 				model.addAttribute("categories", categories);
+		        model.addAttribute("brands", brands);
         try {
             // Kiểm tra nếu loại hàng đã tồn tại
             if (brandDAO.checkBrandByName(brandName)) {
                 model.addAttribute("message", "Hãng '" + brandName + "' đã tồn tại!");
-                return "/admin/products/addBrand"; // Quay lại trang thêm loại hàng
+                return "/admin/brands/addBrand"; // Quay lại trang thêm loại hàng
             }
 
             // Nếu chưa tồn tại, thêm loại hàng mới
@@ -146,7 +191,7 @@ public class AdminController {
         }
 
         // Quay lại trang thêm loại hàng
-        return "/admin/products/addBrand";
+        return "/admin/brands/addBrand";
     }
 	
 	@RequestMapping(value = { "/manage-user" }, method = RequestMethod.GET)

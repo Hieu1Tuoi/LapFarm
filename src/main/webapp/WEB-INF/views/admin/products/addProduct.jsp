@@ -16,7 +16,7 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Thông tin sản phẩm</h3>
             </div>
-            <form action="${pageContext.request.contextPath}/admin/products/add-product" method="post">
+            <form>
                 <div class="box-body">
                     <!-- Tên sản phẩm -->
                     <div class="form-group">
