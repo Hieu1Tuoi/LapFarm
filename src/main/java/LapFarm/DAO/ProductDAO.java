@@ -478,4 +478,29 @@ public class ProductDAO {
 	    );
 	}
 
+	// Phương thức chuyển đổi từ ProductEntity sang ProductDTO
+	private ProductDTO mapToProductDTO(ProductEntity product) {
+	    // Kiểm tra và lấy ảnh đầu tiên (nếu có)
+	    String image = product.getImages() != null && !product.getImages().isEmpty()
+	            ? product.getImages().get(0).getImageUrl()
+	            : null;
+
+	    // Trả về một đối tượng ProductDTO đã được tạo từ ProductEntity
+	    return new ProductDTO(
+	            product.getIdProduct(),
+	            product.getNameProduct(),
+	            product.getBrand() != null ? product.getBrand().getNameBrand() : null,
+	            product.getCategory() != null ? product.getCategory().getNameCategory() : null,
+	            product.getCategory() != null ? product.getCategory().getIdCategory() : null,
+	            product.getDescription(),
+	            product.getQuantity(),
+	            product.getDiscount(),
+	            product.getOriginalPrice(),
+	            product.getSalePrice(),
+	            product.getState(),
+	            image
+	    );
+	}
+
+
 }

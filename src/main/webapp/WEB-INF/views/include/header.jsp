@@ -124,6 +124,7 @@
 								<div class="qty">${Cart.size()}</div>
 							</a>
 						</div>
+
 						<!-- /Cart -->
 
 						<!-- Menu Toggle -->

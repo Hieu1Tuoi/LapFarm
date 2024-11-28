@@ -1,6 +1,7 @@
 package LapFarm.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,4 +52,38 @@ public class CartServiceImp implements ICartService {
 	public void saveCartToDatabase(AccountEntity user, HashMap<Integer, CartDTO> cart) {
 		cartDao.saveCartToDatabase(user, cart);
 	}
+
+
+
+	@Override
+	public List<CartEntity> getCartByUserEmail(String email) {
+		// TODO Auto-generated method stub
+		return cartDao.getCartByUserEmail(email);
+	}
+
+	@Override
+	public HashMap<Integer, CartDTO> getCartFromDatabase(int userId) {
+		// TODO Auto-generated method stub
+		return cartDao.getCartFromDatabase(userId);
+	}
+
+	@Override
+	public void syncCartToDatabase(int userId, HashMap<Integer, CartDTO> cart) {
+		// TODO Auto-generated method stub
+		cartDao.syncCartToDatabase(userId, cart);
+	}
+
+	@Override
+	public void deleteCartFromDatabase(int userId, int productId) {
+		// TODO Auto-generated method stub
+		cartDao.deleteCartFromDatabase(userId, productId);
+	}
+
+	@Override
+	public void updateProductQuantityInDatabase(int userId, int productId, int quantity) {
+		// TODO Auto-generated method stub
+		cartDao.updateProductQuantityInDatabase(userId, productId, quantity);
+	}
+
+	
 }

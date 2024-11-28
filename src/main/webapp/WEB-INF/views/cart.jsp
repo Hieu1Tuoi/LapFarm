@@ -185,10 +185,8 @@ Body Section
 			</ul>
 
 			<div class="well well-small">
-				<h1>
-					Giỏ hàng<small class="pull-right"> ${TotalQuantyCart } sản
-						phẩm trong giỏ hàng </small>
-				</h1>
+			
+				<h1>Giỏ hàng<small class="pull-right"> ${TotalQuantyCart} sản phẩm </small></h1>
 				<hr class="soften" />
 
 				<table class="table table-bordered table-condensed">
@@ -214,8 +212,8 @@ Body Section
 								<td>${ item.value.product.brandName }</td>
 								<td><fmt:formatNumber type="number" groupingUsed="true"
 										value="${ item.value.product.calPrice() }" /> ₫</td>
-								<td><input type="number" min="0" max="1000" class="span1"
-									style="max-width: 34px" placeholder="1"
+								<td><input type="number" min="1" max="100" class="span1"
+									style="max-width: 60px" placeholder="1"
 									id="quanty-cart-${ item.key }" size="16" type="text"
 									value="${ item.value.quantity }"></td>
 								<td><a data-id="${item.key}"
