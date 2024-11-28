@@ -17,6 +17,7 @@ public class BrandDAO {
     @Autowired
     private SessionFactory factory;
 
+    @Transactional
     public List<BrandEntity> getAllBrands() {
         Session session = factory.getCurrentSession();
         String hql = "FROM BrandEntity";

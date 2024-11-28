@@ -34,7 +34,13 @@
 						</c:forEach>
 					</ul></li>
 					
-				<li><a href="admin/categories"> <i class="fa fa-user"></i> <span>Quản lý loại hàng</span>
+				<li><a href="admin/categories"> <i class="fa fa-server"></i> <span>Quản lý loại hàng</span>
+						<span class="pull-right-container"> <small
+							class="label pull-right bg-green">Hot</small>
+					</span>
+				</a></li>
+				
+				<li><a href="admin/brands"> <i class="fa fa-building"></i> <span>Quản lý nhãn hàng</span>
 						<span class="pull-right-container"> <small
 							class="label pull-right bg-green">Hot</small>
 					</span>

@@ -148,10 +148,10 @@ public class AdminController {
         // Đưa danh sách vào Model để đẩy sang view
         model.addAttribute("categories", categories);
         model.addAttribute("brands", brands);
-		return "/admin/orders/index";
+		return "/admin/brands/index";
 	}
 	
-	@RequestMapping(value = { "/product/add-brand" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/brands/add-brand" }, method = RequestMethod.GET)
 	public String showFormAddBrand(ModelMap model) {
 	    // Lấy danh sách từ DAO
 		List<CategoryEntity> categories = categoryDAO.getAllCategories();
@@ -164,7 +164,7 @@ public class AdminController {
 	    return "/admin/brands/addBrand";
 	}
 	
-	@RequestMapping(value = "/product/add-brand", method = RequestMethod.POST)
+	@RequestMapping(value = "/brands/add-brand", method = RequestMethod.POST)
     public String addBrand(@RequestParam("brandName") String brandName, ModelMap model) {
 		// Lấy danh sách từ DAO
 				List<CategoryEntity> categories = categoryDAO.getAllCategories();
@@ -172,6 +172,7 @@ public class AdminController {
 				model.addAttribute("categories", categories);
 		        model.addAttribute("brands", brands);
         try {
+        	brandName = normalizeString(brandName);
             // Kiểm tra nếu loại hàng đã tồn tại
             if (brandDAO.checkBrandByName(brandName)) {
                 model.addAttribute("message", "Hãng '" + brandName + "' đã tồn tại!");

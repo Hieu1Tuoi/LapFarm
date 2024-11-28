@@ -8,7 +8,7 @@
         <h1>Thêm hãng mới</h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
-			<li><a href="#">Sản phẩm</a></li>
+			<li><a href="#">Hãng</a></li>
 			<li class="active"> Thêm hãng</li>
         </ol>
     </section>
@@ -18,7 +18,7 @@
 				<h3 class="box-title">Thông tin hãng</h3>
 			</div>
 			<form
-				action="${pageContext.request.contextPath}/admin/product/add-brand" method="post">
+				action="${pageContext.request.contextPath}/admin/brands/add-brand" method="post">
 				<div class="box-body">
 					<c:if test="${not empty message}">
 						<h2 style="color: #800923; text-align: center;">${message}</h2>
