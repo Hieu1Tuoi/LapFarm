@@ -59,6 +59,19 @@ public class CategoryDAO {
         // Trả về true nếu có ít nhất một bản ghi
         return query.uniqueResult() > 0;
     }
-
-
+    
+		@Transactional
+	    public boolean updateCategory(CategoryEntity category) {
+	        Session session = factory.getCurrentSession();
+	
+	        try {
+	            // Sử dụng phương thức update để cập nhật đối tượng vào database
+	            session.merge(category);
+	            return true; // Cập nhật thành công
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return false; // Có lỗi xảy ra trong quá trình cập nhật
+	        }
+	    }
+	
 }

@@ -51,7 +51,7 @@
 									<td>${c.idCategory}</td>
 									<td>${c.nameCategory}</td>
 									<td><a
-										href="${pageContext.request.contextPath}/admin/edit-category/${c.idCategory}"
+										href="${pageContext.request.contextPath}/admin/categories/edit-category/${c.idCategory}"
 										class="btn btn-success">Sửa</a></td>
 								</tr>
 							</c:forEach>

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -138,6 +139,58 @@ public class AdminController {
         // Quay lại trang thêm loại hàng
         return "/admin/categories/addCategory";
     }
+	
+	 @RequestMapping(value = "/categories/edit-category/{idCategory}", method = RequestMethod.GET)
+	    public String showEditCategoryForm(@PathVariable("idCategory") int idCategory, ModelMap model) {
+	        // Lấy thông tin loại hàng từ database
+	        CategoryEntity category = categoryDAO.getCategoryById(idCategory);
+	        if (category == null) {
+	            model.addAttribute("message", "Loại hàng không tồn tại!");
+	            return "/admin/categories/editCategory";
+	        }
+	        model.addAttribute("category", category);
+	        return "/admin/categories/editCategory"; // Tên file JSP để hiển thị form
+	    }
+	 
+		 @RequestMapping(value = "/categories/edit-category/{idCategory}", method = RequestMethod.POST)
+		 public String updateCategory(
+		         @PathVariable("idCategory") int idCategory,
+		         @RequestParam("categoryName") String categoryName,
+		         ModelMap model) {
+	
+		     // Chuẩn hóa tên loại hàng
+		     String normalizedCategoryName = normalizeString(categoryName);
+	
+		     // Kiểm tra nếu loại hàng không tồn tại
+		     CategoryEntity category = categoryDAO.getCategoryById(idCategory);
+		     if (category == null) {
+		         model.addAttribute("message", "Loại hàng không tồn tại!");
+		         return "/admin/categories/editCategory";
+		     }
+	
+		     // Kiểm tra tên loại hàng đã tồn tại chưa
+		     boolean nameExists = categoryDAO.checkCategoryByName(normalizedCategoryName);
+		     if (nameExists) {
+		    	 model.addAttribute("category", category);
+		         model.addAttribute("message", "Tên loại hàng đã tồn tại!");
+		         return "/admin/categories/editCategory";
+		     }
+	
+		     // Cập nhật tên loại hàng
+		     category.setNameCategory(normalizedCategoryName);
+		     boolean isUpdated = categoryDAO.updateCategory(category);
+	
+		     if (isUpdated) {
+		    	 model.addAttribute("category", category);
+		         model.addAttribute("message", "Cập nhật loại hàng thành công!");
+		     } else {
+		    	 model.addAttribute("category", category);
+		         model.addAttribute("message", "Cập nhật loại hàng thất bại!");
+		     }
+	
+		     return "/admin/categories/editCategory";
+		 }
+
 	
 	@RequestMapping(value = { "/brands" }, method = RequestMethod.GET)
 	public String brandsIndex(ModelMap model) {
