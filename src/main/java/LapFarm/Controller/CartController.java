@@ -1,48 +1,68 @@
 package LapFarm.Controller;
 
-import LapFarm.Model.CartItem;
+import java.util.HashMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import LapFarm.DTO.CartDTO;
+import LapFarm.DTO.UserInfoDTO;
+import LapFarm.Entity.AccountEntity;
+import LapFarm.Service.CartServiceImp;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
-@SessionAttributes("cartItems")
-public class CartController {
+public class CartController extends BaseController {
 
-    @ModelAttribute("cartItems")
-    public List<CartItem> initializeCart() {
-        return new ArrayList<>();
+	@Autowired
+	CartServiceImp cartService = new CartServiceImp();
+
+	@RequestMapping("cart")
+	public String showCart() {
+		return "cart";
     }
 
-    @GetMapping("/ViewCart")
-    public String showCart(@ModelAttribute("cartItems") List<CartItem> cartItems, Model model) {
-        double totalAmount = cartItems.stream().mapToDouble(CartItem::getTotal).sum();
-        model.addAttribute("totalAmount", totalAmount);
-        return "ViewCart";
-    }
-
-    @PostMapping("/cart/add")
-    public String addToCart(
-            @ModelAttribute("cartItems") List<CartItem> cartItems,
-            @RequestParam String name,
-            @RequestParam double price,
-            @RequestParam int quantity) {
-
-        Optional<CartItem> existingItem = cartItems.stream()
-                .filter(item -> item.getName().equals(name))
-                .findFirst();
-
-        if (existingItem.isPresent()) {
-            CartItem item = existingItem.get();
-            item.setQuantity(item.getQuantity() + quantity);
-            item.setTotal(item.getPrice() * item.getQuantity());
-        } else {
-            CartItem newItem = new CartItem(name, price, quantity);
-            cartItems.add(newItem);
+	
+	@RequestMapping(value = "addCart/{id}", method = RequestMethod.GET)
+	public String addCart(HttpServletRequest request, HttpSession session, @PathVariable("id") Integer id) {
+        HashMap<Integer, CartDTO> cart = (HashMap<Integer, CartDTO>) session.getAttribute("Cart");
+        if (cart == null) {
+            cart = new HashMap<>();
         }
-
-        return "redirect:/ViewCart";
+        cart = cartService.AddCart(id, cart);
+        session.setAttribute("Cart", cart);
+        session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
+        session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
+        return "redirect:" + request.getHeader("Referer");
     }
+
+	@RequestMapping(value = "checkout", method = RequestMethod.GET)
+	public String checkout(HttpSession session) {
+	    AccountEntity user = (AccountEntity) session.getAttribute("user");
+	    if (user == null) {
+	        _mvShare.addObject("warning", "Bạn cần đăng nhập để thanh toán!");
+	        return "redirect:/login";
+	    }
+
+	    HashMap<Integer, CartDTO> cart = (HashMap<Integer, CartDTO>) session.getAttribute("Cart");
+	    if (cart != null && !cart.isEmpty()) {
+	        try {
+	            cartService.saveCartToDatabase(user, cart);
+	            session.removeAttribute("Cart");
+	            session.removeAttribute("TotalQuantyCart");
+	            session.removeAttribute("TotalPriceCart");
+	        } catch (Exception e) {
+	            // Log lỗi và chuyển hướng đến trang lỗi nếu có vấn đề
+	            System.err.println("Lỗi khi lưu giỏ hàng: " + e.getMessage());
+	            return "redirect:/error";
+	        }
+	    }
+
+	    return "redirect:/order-success";
+	}
+
+
+
 }

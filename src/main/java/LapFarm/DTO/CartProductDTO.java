@@ -12,8 +12,13 @@ public class CartProductDTO {
         this.formattedPrice = formattedPrice;
         this.totalPrice = totalPrice;
     }
+    
 
-    // Getters and Setters
+    public CartProductDTO() {
+	}
+
+
+	// Getters and Setters
     public String getProductName() {
         return productName;
     }
