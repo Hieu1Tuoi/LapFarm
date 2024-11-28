@@ -9,29 +9,28 @@
 	left: 0;
 	z-index: 1000;
 	float: left;
-	min-width: 15rem; /* Tăng chiều rộng tối thiểu */
+	min-width: 12rem; /* Tăng chiều rộng tối thiểu */
 	padding: 1rem 0; /* Tăng khoảng cách trên dưới của menu */
 	margin: 0;
-	font-size: 16px; /* Tăng kích thước chữ */
+	font-size: 17px; /* Tăng kích thước chữ */
 	background-color: #fff;
 	border: 1px solid rgba(0, 0, 0, 0.15);
 	border-radius: 0.25rem;
 	box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
 	/* Thêm hiệu ứng bóng mờ */
 }
-
+.dropdown.active .dropdown-menu {
+    display: block; /* Hiển thị menu khi dropdown ở trạng thái active */
+}
 .dropdown-item {
-	padding: 12px 20px; /* Tăng khoảng cách bên trong của các item */
+	padding: 5px 12px; /* Tăng khoảng cách bên trong của các item */
 	font-size: 16px; /* Kích thước chữ của item */
 	color: #212529;
 	text-decoration: none;
 	display: block;
 }
 
-.dropdown-item:hover {
-	background-color: #f1f1f1; /* Hiệu ứng hover */
-	color: #000;
-}
+
 </style>
 
 <!-- HEADER -->
