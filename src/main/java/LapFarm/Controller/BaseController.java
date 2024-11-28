@@ -40,6 +40,7 @@ public class BaseController {
 				_baseService.getProductCountByAllBrands(_baseService.getBrandEntities()));
 
 		_mvShare.addObject("products_top_sell", _baseService.getTop5ProductsByLowestQuantity());
+		
 		return _mvShare;
 	}
 

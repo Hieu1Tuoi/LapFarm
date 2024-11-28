@@ -8,12 +8,11 @@
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1>
-			Quản lý người dùng
+			Quản lý loại hàng
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li><a href="#">Examples</a></li>
-			<li class="active">Blank page</li>
+			<li><a href="#"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+			<li class="active">Loại hàng</li>
 		</ol>
 	</section>
 	<section class="content">
@@ -22,7 +21,7 @@
 		<div class="col-xs-12">
 			<div class="box">
 				<div class="box-header">
-
+					<a href="admin/brands/add-brand" class="btn btn-success">+ Thêm hãng</a>
 					<div class="box-tools">
 						<div class="input-group input-group-sm" style="width: 150px;">
 							<input type="text" name="table_search"
@@ -42,42 +41,18 @@
 						<thead>
 							<tr>
 								<th>ID</th>
-								<th>Họ và tên</th>
-								<th>Giới tính</th>
-								<th>Ngày sinh</th>
-								<th>Số điện thoại</th>
-								<th>Email</th>
-								<th>Số đơn hàng</th>
-								<th>Trạng thái</th>
+								<th>Tên hãng</th>
 								<th>Tùy chọn</th>
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="u" items="${userInfoDTO}">
+							<c:forEach var="b" items="${brands}">
 								<tr>
-									<td>${u.userId}</td>
-									<td>${u.fullName}</td>
-									<td>${u.sex}</td>
-									<td>${u.dob}</td>
-									<td>${u.phone}</td>
-									<td>${u.email}</td>
-									<td>${u.numberOfOrders}</td>
-									<td>${u.state}</td>
+									<td>${b.idBrand}</td>
+									<td>${b.nameBrand}</td>
 									<td><a
-										href="${pageContext.request.contextPath}/admin/view-user-listOrders/${u.userId}"
-										class="btn btn-success">Xem</a> <c:choose>
-											<c:when test="${u.state == 'Hoạt động'}">
-												<a
-													href="${pageContext.request.contextPath}/admin/lock-user/${u.userId}"
-													class="btn btn-warning">Khóa TK</a>
-											</c:when>
-											<c:otherwise>
-												<a
-													href="${pageContext.request.contextPath}/admin/unlock-user/${u.userId}"
-													class="btn btn-primary">Mở khóa</a>
-											</c:otherwise>
-										</c:choose></td>
-
+										href="${pageContext.request.contextPath}/admin/edit-brand/${b.idBrand}"
+										class="btn btn-success">Sửa</a></td>
 								</tr>
 							</c:forEach>
 						</tbody>

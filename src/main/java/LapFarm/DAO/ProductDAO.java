@@ -396,6 +396,7 @@ public class ProductDAO {
 	    }).toList();
 	}
 
+	//Đếm ản phẩm theo idBrand( THANH NHẬT)
 	@Transactional
 	public Long countProductsByBrand(int brandId) {
 	    Session session = factory.getCurrentSession();
@@ -408,6 +409,7 @@ public class ProductDAO {
 
 	    return query.uniqueResult();
 	}
+	//Lấy tất cả Products theo idBrand(Thanh Nhật)
 	@Transactional
 	public List<ProductDTO> getAllProductsByBrand(int idBrand) {
 	    Session session = factory.getCurrentSession();
@@ -434,4 +436,71 @@ public class ProductDAO {
 	                image);
 	    }).toList();
 	}
+	
+	//Tìm sản phẩm theo idProduct để thêm giỏ hàng (Thanh Nhật)
+	@Transactional
+	public ProductDTO findProductDTOById(int idProduct) {
+	    // Lấy session từ factory
+	    Session session = factory.getCurrentSession();
+
+	    // HQL để truy vấn sản phẩm theo idProduct
+	    String hql = "SELECT p FROM ProductEntity p LEFT JOIN FETCH p.images LEFT JOIN FETCH p.brand LEFT JOIN FETCH p.category WHERE p.idProduct = :idProduct";
+	    Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+	    query.setParameter("idProduct", idProduct);
+
+	    // Lấy sản phẩm từ cơ sở dữ liệu
+	    ProductEntity product = query.uniqueResult();
+
+	    // Kiểm tra nếu sản phẩm không tồn tại, trả về null
+	    if (product == null) {
+	        return null;
+	    }
+
+	    // Lấy ảnh đầu tiên nếu có
+	    String image = product.getImages() != null && !product.getImages().isEmpty()
+	            ? product.getImages().get(0).getImageUrl()
+	            : null;
+
+	    // Chuyển đổi từ ProductEntity sang ProductDTO
+	    return new ProductDTO(
+	            product.getIdProduct(),
+	            product.getNameProduct(),
+	            product.getBrand() != null ? product.getBrand().getNameBrand() : null,
+	            product.getCategory() != null ? product.getCategory().getNameCategory() : null,
+	            product.getCategory() != null ? product.getCategory().getIdCategory() : null,
+	            product.getDescription(),
+	            product.getQuantity(),
+	            product.getDiscount(),
+	            product.getOriginalPrice(),
+	            product.getSalePrice(),
+	            product.getState(),
+	            image
+	    );
+	}
+
+	// Phương thức chuyển đổi từ ProductEntity sang ProductDTO
+	private ProductDTO mapToProductDTO(ProductEntity product) {
+	    // Kiểm tra và lấy ảnh đầu tiên (nếu có)
+	    String image = product.getImages() != null && !product.getImages().isEmpty()
+	            ? product.getImages().get(0).getImageUrl()
+	            : null;
+
+	    // Trả về một đối tượng ProductDTO đã được tạo từ ProductEntity
+	    return new ProductDTO(
+	            product.getIdProduct(),
+	            product.getNameProduct(),
+	            product.getBrand() != null ? product.getBrand().getNameBrand() : null,
+	            product.getCategory() != null ? product.getCategory().getNameCategory() : null,
+	            product.getCategory() != null ? product.getCategory().getIdCategory() : null,
+	            product.getDescription(),
+	            product.getQuantity(),
+	            product.getDiscount(),
+	            product.getOriginalPrice(),
+	            product.getSalePrice(),
+	            product.getState(),
+	            image
+	    );
+	}
+
+
 }

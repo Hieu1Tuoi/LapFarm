@@ -1,48 +1,138 @@
 package LapFarm.Controller;
 
-import LapFarm.Model.CartItem;
+import java.util.HashMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import LapFarm.DTO.CartDTO;
+import LapFarm.Entity.AccountEntity;
+import LapFarm.Service.CartServiceImp;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
-@SessionAttributes("cartItems")
-public class CartController {
+public class CartController extends BaseController {
 
-    @ModelAttribute("cartItems")
-    public List<CartItem> initializeCart() {
-        return new ArrayList<>();
-    }
+	@Autowired
+	CartServiceImp cartService = new CartServiceImp();
 
-    @GetMapping("/ViewCart")
-    public String showCart(@ModelAttribute("cartItems") List<CartItem> cartItems, Model model) {
-        double totalAmount = cartItems.stream().mapToDouble(CartItem::getTotal).sum();
-        model.addAttribute("totalAmount", totalAmount);
-        return "ViewCart";
-    }
+	@RequestMapping("cart")
+	public String showCart(HttpSession session) {
+	    // Lấy thông tin người dùng từ session
+	    AccountEntity user = (AccountEntity) session.getAttribute("user");
 
-    @PostMapping("/cart/add")
-    public String addToCart(
-            @ModelAttribute("cartItems") List<CartItem> cartItems,
-            @RequestParam String name,
-            @RequestParam double price,
-            @RequestParam int quantity) {
+	    // Kiểm tra xem người dùng có đăng nhập không
+	    if (user != null) {
+	        // Nếu người dùng đã đăng nhập, đồng bộ giỏ hàng từ database vào session
+	        HashMap<Integer, CartDTO> cart = cartService.getCartFromDatabase(user.getUserInfo().getUserId());
 
-        Optional<CartItem> existingItem = cartItems.stream()
-                .filter(item -> item.getName().equals(name))
-                .findFirst();
+	        // Cập nhật lại giỏ hàng trong session
+	        session.setAttribute("Cart", cart);
+	        session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
+	        session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
+	    }
 
-        if (existingItem.isPresent()) {
-            CartItem item = existingItem.get();
-            item.setQuantity(item.getQuantity() + quantity);
-            item.setTotal(item.getPrice() * item.getQuantity());
-        } else {
-            CartItem newItem = new CartItem(name, price, quantity);
-            cartItems.add(newItem);
-        }
+	    // Trả về view giỏ hàng
+	    return "cart";
+	}
 
-        return "redirect:/ViewCart";
-    }
+	
+	@RequestMapping(value = "addCart/{id}", method = RequestMethod.GET)
+	public String addCart(HttpServletRequest request, HttpSession session, @PathVariable("id") Integer id) {
+	    // Lấy giỏ hàng từ session
+	    HashMap<Integer, CartDTO> cart = (HashMap<Integer, CartDTO>) session.getAttribute("Cart");
+	    if (cart == null) {
+	        cart = new HashMap<>();
+	    }
+
+	    // Thêm sản phẩm vào giỏ hàng
+	    cart = cartService.AddCart(id, cart);
+
+	    // Kiểm tra xem người dùng đã đăng nhập hay chưa
+	    AccountEntity user = (AccountEntity) session.getAttribute("user");
+	    if (user != null) {
+	        // Nếu đã đăng nhập, đồng bộ giỏ hàng với database
+	        cartService.syncCartToDatabase(user.getUserInfo().getUserId(), cart);
+	    }
+
+	    // Cập nhật lại giỏ hàng trong session
+	    session.setAttribute("Cart", cart);
+	    session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
+	    session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
+
+	    // Chuyển hướng về trang trước đó
+	    return "redirect:" + request.getHeader("Referer");
+	}
+
+
+
+	@Transactional
+	@RequestMapping(value = "/DeleteCart/{id}")
+	public String DeleteCart(HttpServletRequest request, HttpSession session, @PathVariable("id") int id) {
+	    // Lấy giỏ hàng từ session
+	    HashMap<Integer, CartDTO> cart = (HashMap<Integer, CartDTO>) session.getAttribute("Cart");
+	    if (cart == null) {
+	        cart = new HashMap<>();
+	    }
+
+	    // Xóa sản phẩm khỏi giỏ hàng trong session
+	    cart = cartService.DeleteCart(id, cart);
+
+	    // Kiểm tra nếu người dùng đã đăng nhập
+	    AccountEntity user = (AccountEntity) session.getAttribute("user");
+	    if (user != null) {
+	        // Nếu đăng nhập, xóa sản phẩm khỏi cơ sở dữ liệu
+	        cartService.deleteCartFromDatabase(user.getUserInfo().getUserId(), id);
+	    }
+
+	    // Cập nhật session sau khi xóa
+	    session.setAttribute("Cart", cart);
+	    session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
+	    session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
+
+	    return "redirect:" + request.getHeader("Referer");
+	}
+
+
+
+	@Transactional
+	@RequestMapping(value = "/EditCart/{id}/{quanty}")
+	public String EditCart(HttpServletRequest request, HttpSession session, @PathVariable("id") int id, @PathVariable("quanty") int quanty) {
+	    // Kiểm tra và cập nhật số lượng trong cơ sở dữ liệu
+	    AccountEntity user = (AccountEntity) session.getAttribute("user");
+	    if (user != null) {
+	        cartService.updateProductQuantityInDatabase(user.getUserInfo().getUserId(), id, quanty);
+	    }
+
+	    // Cập nhật lại giỏ hàng trong session để đồng bộ
+	    HashMap<Integer, CartDTO> cart = (HashMap<Integer, CartDTO>) session.getAttribute("Cart");
+	    if (cart == null) {
+	        cart = new HashMap<>();
+	    }
+
+	    // Cập nhật session giỏ hàng
+	    cart = cartService.EditCart(id, quanty, cart);
+
+	    session.setAttribute("Cart", cart);
+	    session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
+	    session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
+
+	    return "redirect:" + request.getHeader("Referer");
+	}
+
+
+	    @RequestMapping("checkout")
+	    public String checkout(HttpSession session) {
+	        // Nếu người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
+	        AccountEntity user = (AccountEntity) session.getAttribute("user");
+	        if (user == null) {
+	            return "redirect:/login";
+	        }
+
+	        // Thực hiện thanh toán, chuyển sang trang thanh toán
+	        return "checkout";
+	    }
 }

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<base href="${pageContext.servletContext.contextPath}/">
 <style>
 .dropdown-menu {
 	display: none; /* Ẩn menu theo mặc định */
@@ -96,8 +97,8 @@
 								<option value="2" ${searchCategory == 2 ? 'selected' : ''}>Category
 									02</option>
 							</select> <input value="${searchText}" id="searchInput" class="input"
-								name="searchtext" placeholder="Search here">
-								<input value="${priceRange}" name="priceRange" style="display: none;">
+								name="searchtext" placeholder="Search here"> <input
+								value="${priceRange}" name="priceRange" style="display: none;">
 							<button type="submit" class="search-btn">Tìm Kiếm</button>
 						</form>
 					</div>
@@ -117,51 +118,12 @@
 
 						<!-- Cart -->
 						<div class="dropdown">
-							<a href="#" class="dropdown-toggle"> <i
+							<a href="<c:url value='/cart' />" class="cart-link"> <i
 								class="fa fa-shopping-cart"></i> <span>Giỏ hàng</span>
-								<div class="qty">${cart.totalQuantity}</div>
+								<div class="qty">${Cart != null ? Cart.size() : 0}</div>
 							</a>
-							<div class="cart-dropdown">
-								<c:choose>
-									<c:when test="${not empty cart.items}">
-										<div class="cart-list">
-											<c:forEach var="item" items="${cart.items}">
-												<div class="product-widget">
-													<div class="product-img">
-														<img src="${item.imageUrl}" alt="">
-													</div>
-													<div class="product-body">
-														<h3 class="product-name">
-															<a href="${item.productUrl}">${item.name}</a>
-														</h3>
-														<h4 class="product-price">
-															<span class="qty">${item.quantity}x</span>${item.price}
-														</h4>
-													</div>
-													<button class="delete">
-														<i class="fa fa-close"></i>
-													</button>
-												</div>
-											</c:forEach>
-										</div>
-										<div class="cart-summary">
-											<small>${cart.totalQuantity} Item(s) selected</small>
-											<h5>SUBTOTAL: ${cart.totalPrice}</h5>
-										</div>
-										<div class="cart-btns">
-											<a href="<c:url value='/cart/view' />">View Cart</a> <a
-												href="<c:url value='/checkout' />">Checkout <i
-												class="fa fa-arrow-circle-right"></i></a>
-										</div>
-									</c:when>
-									<c:otherwise>
-										<div class="empty-cart">
-											<p>Your cart is currently empty.</p>
-										</div>
-									</c:otherwise>
-								</c:choose>
-							</div>
 						</div>
+
 						<!-- /Cart -->
 
 						<!-- Menu Toggle -->

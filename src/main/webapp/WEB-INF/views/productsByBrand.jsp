@@ -76,9 +76,11 @@
 								</div>
 							</div>
 							<div class="add-to-cart">
-								<button class="add-to-cart-btn">
-									<i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
-								</button>
+								<form action="addCart/${p.idProduct}" method="GET">
+									<button type="submit" class="add-to-cart-btn">
+										<i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
+									</button>
+								</form>
 							</div>
 						</div>
 					</div>

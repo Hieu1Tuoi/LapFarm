@@ -33,6 +33,12 @@ public class ProductDTO {
 		this.image = image;
 	}
 
+	
+	public ProductDTO() {
+		super();
+	}
+
+
 	// Getter và Setter
 	public int getIdProduct() {
 		return idProduct;

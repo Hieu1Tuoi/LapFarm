@@ -45,6 +45,10 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
+	<session-config>
+		<session-timeout>30</session-timeout> <!-- Đơn vị: phút -->
+	</session-config>
+
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.jsp</welcome-file>

@@ -39,5 +39,39 @@ public class CategoryDAO {
         return query.uniqueResult();
     }
 
+    @Transactional
+    public void saveCategory(CategoryEntity category) {
+        Session session = factory.getCurrentSession();
+
+        // Sử dụng phương thức persist để lưu đối tượng vào database
+        session.persist(category);
+    }
+
+    @Transactional
+    public boolean checkCategoryByName(String categoryName) {
+        Session session = factory.getCurrentSession();
+
+        // HQL để kiểm tra sự tồn tại của loại hàng
+        String hql = "SELECT count(c) FROM CategoryEntity c WHERE c.nameCategory = :categoryName";
+        Query<Long> query = session.createQuery(hql, Long.class);
+        query.setParameter("categoryName", categoryName);
+
+        // Trả về true nếu có ít nhất một bản ghi
+        return query.uniqueResult() > 0;
+    }
     
+		@Transactional
+	    public boolean updateCategory(CategoryEntity category) {
+	        Session session = factory.getCurrentSession();
+	
+	        try {
+	            // Sử dụng phương thức update để cập nhật đối tượng vào database
+	            session.merge(category);
+	            return true; // Cập nhật thành công
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return false; // Có lỗi xảy ra trong quá trình cập nhật
+	        }
+	    }
+	
 }

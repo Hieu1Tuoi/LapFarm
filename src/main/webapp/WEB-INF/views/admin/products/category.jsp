@@ -8,12 +8,11 @@
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1>
-			Blank page <small>it all starts here</small>
+			Quản lý sản phẩm
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li><a href="#">Examples</a></li>
-			<li class="active">Blank page</li>
+			<li><a href="#"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+			<li class="active">Sản phẩm</li>
 		</ol>
 	</section>
 	<section class="content">
@@ -22,7 +21,7 @@
 		<div class="col-xs-12">
 			<div class="box">
 				<div class="box-header">
-
+					<a href="admin/product/add-product" class="btn btn-success">+ Thêm sản phẩm</a>
 					<div class="box-tools">
 						<div class="input-group input-group-sm" style="width: 150px;">
 							<input type="text" name="table_search"
@@ -57,7 +56,9 @@
 								<tr>
 									<td>${p.idProduct}</td>
 									<td>${p.brandName}</td>
-									<td>${p.nameProduct}</td>
+									<td><a
+										href="${pageContext.request.contextPath}/product-detail/${p.idProduct}"style="color: black;"
+										>${p.nameProduct}</a></td>
 									<td>${p.quantity}</td>
 									<td><fmt:formatNumber value="${p.calOriginalPrice()}"
 											type="number" groupingUsed="true" /> VNĐ</td>
@@ -67,7 +68,7 @@
 											type="number" groupingUsed="true" /> VNĐ</td>
 									<td>${p.state}</td>
 									<td><a
-										href="${pageContext.request.contextPath}/admin/view-order/${p.idProduct}"
+										href="${pageContext.request.contextPath}/product-detail/${p.idProduct}"
 										class="btn btn-success">Xem</a> <a
 										href="${pageContext.request.contextPath}/admin/edit-order/${p.idProduct}"
 										class="btn btn-success">Sửa</a> <a

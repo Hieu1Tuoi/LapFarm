@@ -5,14 +5,25 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-class CartId implements Serializable {
+public class CartId implements Serializable {
     @Column(name = "UserId")
     private int userId;
 
     @Column(name = "ProductId")
     private int productId;
 
-    // Getters và Setters
+    
+    public CartId() {
+		super();
+	}
+
+	public CartId(int userId, int productId) {
+		super();
+		this.userId = userId;
+		this.productId = productId;
+	}
+
+	// Getters và Setters
     public int getUserId() {
         return userId;
     }

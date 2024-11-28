@@ -18,12 +18,7 @@
 			<!-- sidebar menu: : style can be found in sidebar.less -->
 
 			<ul class="sidebar-menu" data-widget="tree">
-				<li><a href="javascript:void(0);" onclick="linkToOrders()">
-						<i class="fa fa-th"></i> <span>Quản lý đơn hàng</span> <span
-						class="pull-right-container"> <small
-							class="label pull-right bg-green">FE</small>
-					</span>
-				</a></li>
+				
 				<li class="treeview"><a href="#"> <i
 						class="fa fa-dashboard"></i> <span>Quản lý sản phẩm</span> <span
 						class="pull-right-container"> <i
@@ -38,8 +33,25 @@
 							</a></li>
 						</c:forEach>
 					</ul></li>
+					
+				<li><a href="admin/categories"> <i class="fa fa-server"></i> <span>Quản lý loại hàng</span>
+						<span class="pull-right-container"> <small
+							class="label pull-right bg-green">Hot</small>
+					</span>
+				</a></li>
+				
+				<li><a href="admin/brands"> <i class="fa fa-building"></i> <span>Quản lý nhãn hàng</span>
+						<span class="pull-right-container"> <small
+							class="label pull-right bg-green">Hot</small>
+					</span>
+				</a></li>
 
-
+				<li><a href="javascript:void(0);" onclick="linkToOrders()">
+						<i class="fa fa-th"></i> <span>Quản lý đơn hàng</span> <span
+						class="pull-right-container"> <small
+							class="label pull-right bg-green">FE</small>
+					</span>
+				</a></li>
 				<script>
 					function linkToOrders() {
 						var form = document.createElement('form');
