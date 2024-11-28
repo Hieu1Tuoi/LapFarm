@@ -51,7 +51,7 @@
 									<td>${b.idBrand}</td>
 									<td>${b.nameBrand}</td>
 									<td><a
-										href="${pageContext.request.contextPath}/admin/edit-brand/${b.idBrand}"
+										href="${pageContext.request.contextPath}/admin/brands/edit-brand/${b.idBrand}"
 										class="btn btn-success">Sửa</a></td>
 								</tr>
 							</c:forEach>

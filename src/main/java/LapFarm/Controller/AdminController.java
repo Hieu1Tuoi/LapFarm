@@ -54,6 +54,33 @@ public class AdminController {
         return input;
     }
 	
+	public static String normalizeStringEachWord(String input) {
+	    if (input == null || input.isEmpty()) {
+	        return input; // Nếu chuỗi null hoặc rỗng thì trả về ngay
+	    }
+
+	    // Bước 1: Xóa khoảng trắng dư thừa ở đầu và cuối
+	    input = input.trim();
+
+	    // Bước 2: Xóa khoảng trắng dư thừa ở giữa các từ
+	    input = input.replaceAll("\\s+", " ");
+
+	    // Bước 3: Viết hoa chữ cái đầu tiên của mỗi từ, các ký tự còn lại viết thường
+	    String[] words = input.split(" ");
+	    StringBuilder normalizedString = new StringBuilder();
+
+	    for (String word : words) {
+	        // Viết hoa chữ cái đầu và các chữ cái còn lại viết thường
+	        normalizedString.append(Character.toUpperCase(word.charAt(0)))
+	                         .append(word.substring(1).toLowerCase())
+	                         .append(" ");
+	    }
+
+	    // Xóa khoảng trắng cuối cùng
+	    return normalizedString.toString().trim();
+	}
+
+	
 	@RequestMapping(value = "/home" , method = RequestMethod.GET)
 	public String index(ModelMap model) {
 		// Lấy danh sách categories từ DAO
@@ -192,73 +219,124 @@ public class AdminController {
 		 }
 
 	
-	@RequestMapping(value = { "/brands" }, method = RequestMethod.GET)
-	public String brandsIndex(ModelMap model) {
-		// Lấy danh sách categories từ DAO
-        List<CategoryEntity> categories = categoryDAO.getAllCategories();
-        List<BrandEntity> brands = brandDAO.getAllBrands();
-
-        // Đưa danh sách vào Model để đẩy sang view
-        model.addAttribute("categories", categories);
-        model.addAttribute("brands", brands);
-		return "/admin/brands/index";
-	}
+		@RequestMapping(value = { "/brands" }, method = RequestMethod.GET)
+		public String brandsIndex(ModelMap model) {
+			// Lấy danh sách categories từ DAO
+	        List<CategoryEntity> categories = categoryDAO.getAllCategories();
+	        List<BrandEntity> brands = brandDAO.getAllBrands();
 	
-	@RequestMapping(value = { "/brands/add-brand" }, method = RequestMethod.GET)
-	public String showFormAddBrand(ModelMap model) {
-	    // Lấy danh sách từ DAO
-		List<CategoryEntity> categories = categoryDAO.getAllCategories();
-        List<BrandEntity> brands = brandDAO.getAllBrands();
-	    // Đưa danh sách vào Model để đẩy sang view
-	    model.addAttribute("categories", categories);
-        model.addAttribute("brands", brands);
-
-	    // Trả về view cho trang quản lý sản phẩm của danh mục
-	    return "/admin/brands/addBrand";
-	}
-	
-	@RequestMapping(value = "/brands/add-brand", method = RequestMethod.POST)
-    public String addBrand(@RequestParam("brandName") String brandName, ModelMap model) {
-		// Lấy danh sách từ DAO
-				List<CategoryEntity> categories = categoryDAO.getAllCategories();
-		        List<BrandEntity> brands = brandDAO.getAllBrands();
-				model.addAttribute("categories", categories);
-		        model.addAttribute("brands", brands);
-        try {
-        	brandName = normalizeString(brandName);
-            // Kiểm tra nếu loại hàng đã tồn tại
-            if (brandDAO.checkBrandByName(brandName)) {
-                model.addAttribute("message", "Hãng '" + brandName + "' đã tồn tại!");
-                return "/admin/brands/addBrand"; // Quay lại trang thêm loại hàng
-            }
-
-            // Nếu chưa tồn tại, thêm loại hàng mới
-            BrandEntity brand = new BrandEntity();
-            brand.setNameBrand(brandName);
-            brandDAO.saveBrand(brand);
-
-            // Thêm thông báo thành công
-            model.addAttribute("message", "Hãng '" + brandName + "' đã được thêm thành công!");
-        } catch (Exception e) {
-            // Thêm thông báo lỗi
-            model.addAttribute("message", "Thêm hãng '" + brandName + "' thất bại!");
-        }
-
-        // Quay lại trang thêm loại hàng
-        return "/admin/brands/addBrand";
-    }
-	
-	@RequestMapping(value = { "/manage-user" }, method = RequestMethod.GET)
-	public String userIndex(ModelMap model) {
-	    // Lấy danh sách từ DAO
-		List<CategoryEntity> categories = categoryDAO.getAllCategories();
-		List<UserInfoDTO> userInfoDTO = userDAO.getAllUserInfoWithOrderCount();
-	    // Đưa danh sách vào Model để đẩy sang view
+	        // Đưa danh sách vào Model để đẩy sang view
+	        model.addAttribute("categories", categories);
+	        model.addAttribute("brands", brands);
+			return "/admin/brands/index";
+		}
 		
-	    model.addAttribute("categories", categories);
-	    model.addAttribute("userInfoDTO", userInfoDTO);
-
-	    // Trả về view cho trang quản lý sản phẩm của danh mục
-	    return "/admin/user/index";
-	}
+		@RequestMapping(value = { "/brands/add-brand" }, method = RequestMethod.GET)
+		public String showFormAddBrand(ModelMap model) {
+		    // Lấy danh sách từ DAO
+			List<CategoryEntity> categories = categoryDAO.getAllCategories();
+	        List<BrandEntity> brands = brandDAO.getAllBrands();
+		    // Đưa danh sách vào Model để đẩy sang view
+		    model.addAttribute("categories", categories);
+	        model.addAttribute("brands", brands);
+	
+		    // Trả về view cho trang quản lý sản phẩm của danh mục
+		    return "/admin/brands/addBrand";
+		}
+		
+		@RequestMapping(value = "/brands/add-brand", method = RequestMethod.POST)
+	    public String addBrand(@RequestParam("brandName") String brandName, ModelMap model) {
+			// Lấy danh sách từ DAO
+					List<CategoryEntity> categories = categoryDAO.getAllCategories();
+			        List<BrandEntity> brands = brandDAO.getAllBrands();
+					model.addAttribute("categories", categories);
+			        model.addAttribute("brands", brands);
+	        try {
+	        	brandName = normalizeString(brandName);
+	            // Kiểm tra nếu loại hàng đã tồn tại
+	            if (brandDAO.checkBrandByName(brandName)) {
+	                model.addAttribute("message", "Hãng '" + brandName + "' đã tồn tại!");
+	                return "/admin/brands/addBrand"; // Quay lại trang thêm loại hàng
+	            }
+	
+	            // Nếu chưa tồn tại, thêm loại hàng mới
+	            BrandEntity brand = new BrandEntity();
+	            brand.setNameBrand(brandName);
+	            brandDAO.saveBrand(brand);
+	
+	            // Thêm thông báo thành công
+	            model.addAttribute("message", "Hãng '" + brandName + "' đã được thêm thành công!");
+	        } catch (Exception e) {
+	            // Thêm thông báo lỗi
+	            model.addAttribute("message", "Thêm hãng '" + brandName + "' thất bại!");
+	        }
+	
+	        // Quay lại trang thêm loại hàng
+	        return "/admin/brands/addBrand";
+	    }
+		
+		@RequestMapping(value = "/brands/edit-brand/{idBrand}", method = RequestMethod.GET)
+	    public String showEditBrandForm(@PathVariable("idBrand") int idBrand, ModelMap model) {
+	        // Lấy thông tin loại hàng từ database
+	        BrandEntity brand = brandDAO.getBrandById(idBrand);
+	        if (brand == null) {
+	            model.addAttribute("message", "Hãng không tồn tại!");
+	            return "/admin/brands/editBrand";
+	        }
+	        model.addAttribute("brand", brand);
+	        return "/admin/brands/editBrand"; // Tên file JSP để hiển thị form
+	    }
+	 
+		 @RequestMapping(value = "/brands/edit-brand/{idBrand}", method = RequestMethod.POST)
+		 public String updateBrand(
+		         @PathVariable("idBrand") int idBrand,
+		         @RequestParam("brandName") String brandName,
+		         ModelMap model) {
+	
+		     // Chuẩn hóa tên loại hàng
+		     String normalizedCategoryName = normalizeStringEachWord(brandName);
+	
+		     // Kiểm tra nếu loại hàng không tồn tại
+		     BrandEntity brand = brandDAO.getBrandById(idBrand);
+		     if (brand == null) {
+		         model.addAttribute("message", "Hãng không tồn tại!");
+		         return "/admin/brands/editBrand";
+		     }
+	
+		     // Kiểm tra tên loại hàng đã tồn tại chưa
+		     boolean nameExists = brandDAO.checkBrandByName(normalizedCategoryName);
+		     if (nameExists) {
+		    	 model.addAttribute("brand", brand);
+		         model.addAttribute("message", "Tên hãng đã tồn tại!");
+		         return "/admin/brands/editBrand";
+		     }
+	
+		     // Cập nhật tên loại hàng
+		     brand.setNameBrand(normalizedCategoryName);
+		     boolean isUpdated = brandDAO.updateBrand(brand);
+	
+		     if (isUpdated) {
+		    	 model.addAttribute("brand", brand);
+		         model.addAttribute("message", "Cập nhật hãng thành công!");
+		     } else {
+		    	 model.addAttribute("brand", brand);
+		         model.addAttribute("message", "Cập nhật hãng thất bại!");
+		     }
+	
+		     return "/admin/brands/editBrand";
+		 }
+		
+		@RequestMapping(value = { "/manage-user" }, method = RequestMethod.GET)
+		public String userIndex(ModelMap model) {
+		    // Lấy danh sách từ DAO
+			List<CategoryEntity> categories = categoryDAO.getAllCategories();
+			List<UserInfoDTO> userInfoDTO = userDAO.getAllUserInfoWithOrderCount();
+		    // Đưa danh sách vào Model để đẩy sang view
+			
+		    model.addAttribute("categories", categories);
+		    model.addAttribute("userInfoDTO", userInfoDTO);
+	
+		    // Trả về view cho trang quản lý sản phẩm của danh mục
+		    return "/admin/user/index";
+		}
 }
