@@ -15,6 +15,7 @@ import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.BrandEntity;
 import LapFarm.Entity.CategoryEntity;
 import LapFarm.Entity.ProductEntity;
+import LapFarm.Entity.ReviewEntity;
 import jakarta.transaction.Transactional;
 
 @Repository
@@ -501,6 +502,35 @@ public class ProductDAO {
 	            image
 	    );
 	}
+	@Transactional
+	public Map<String, Object> getRatingSummary(int productId) {
+	    Session session = factory.getCurrentSession();
+
+	    // Tính điểm trung bình và số lượng đánh giá cho từng mức rating
+	    String hql = "SELECT AVG(r.rating), " +
+	                 "SUM(CASE WHEN r.rating = 5 THEN 1 ELSE 0 END), " +
+	                 "SUM(CASE WHEN r.rating = 4 THEN 1 ELSE 0 END), " +
+	                 "SUM(CASE WHEN r.rating = 3 THEN 1 ELSE 0 END), " +
+	                 "SUM(CASE WHEN r.rating = 2 THEN 1 ELSE 0 END), " +
+	                 "SUM(CASE WHEN r.rating = 1 THEN 1 ELSE 0 END) " +
+	                 "FROM ReviewEntity r WHERE r.product.idProduct = :productId";
+
+	    Object[] result = session.createQuery(hql, Object[].class)
+	                              .setParameter("productId", productId)
+	                              .uniqueResult();
+
+	    // Kết quả
+	    Map<String, Object> ratingSummary = new HashMap<>();
+	    ratingSummary.put("average", result[0] != null ? Math.round((Double) result[0] * 10.0) / 10.0 : 0);
+	    ratingSummary.put("fiveStar", result[1] != null ? ((Long) result[1]) : 0L);
+	    ratingSummary.put("fourStar", result[2] != null ? ((Long) result[2]) : 0L);
+	    ratingSummary.put("threeStar", result[3] != null ? ((Long) result[3]) : 0L);
+	    ratingSummary.put("twoStar", result[4] != null ? ((Long) result[4]) : 0L);
+	    ratingSummary.put("oneStar", result[5] != null ? ((Long) result[5]) : 0L);
+
+	    return ratingSummary;
+	}
+
 
 
 }
