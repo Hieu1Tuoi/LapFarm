@@ -221,18 +221,21 @@ Body Section
 									href="products-brand?nameBrand=${item.value.product.brandName}" />${ item.value.product.brandName }</td>
 								<td><fmt:formatNumber type="number" groupingUsed="true"
 										value="${ item.value.product.calPrice() }" /> ₫</td>
-								<td><input type="number" min="1" max="100" class="span1"
-									style="max-width: 60px" placeholder="1"
-									id="quanty-cart-${ item.key }" size="16" type="text"
-									value="${ item.value.quantity }"></td>
+								<td><input type="number" min="1"
+									max="${item.value.product.quantity}" class="span1"
+									style="max-width: 60px" id="quanty-cart-${item.key}"
+									value="${item.value.quantity}"
+									onchange="validateQuantity(this, ${item.value.product.quantity});">
+								</td>
 								<td><a data-id="${item.key}"
 									class="btn btn-mini btn-danger edit-cart" type="button"> <i
 										class="fa fa-edit"></i>
 								</a></td>
 								<td><a href="<c:url value='/DeleteCart/${item.key}'/>"
-									class="btn btn-mini btn-danger" type="button"> <i
-										class="fa fa-trash"></i>
+									class="btn btn-mini btn-danger"
+									onclick="return confirmDelete();"> <i class="fa fa-trash"></i>
 								</a></td>
+
 								<td><fmt:formatNumber type="number" groupingUsed="true"
 										value="${ item.value.totalPrice }" /> ₫</td>
 							</tr>
@@ -249,6 +252,30 @@ Body Section
 		</div>
 	</div>
 	<content tag="script"> <script>
+	
+	/**
+	 * Hiển thị hộp thoại xác nhận xóa.
+	 * @returns {boolean} - True nếu người dùng chọn OK, ngược lại là false.
+	 */
+	function confirmDelete() {
+	    return confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?");
+	}
+
+	
+	  /**
+     * Hàm kiểm tra giá trị input và tự động điều chỉnh nếu không hợp lệ
+     * @param {HTMLElement} input - Thẻ input cần kiểm tra
+     * @param {number} max - Giá trị lớn nhất được phép
+     */
+    function validateQuantity(input, max) {
+        let value = parseInt(input.value, 10);
+        if (isNaN(value) || value < 1) {
+            input.value = 1;
+        } else if (value > max) {
+            input.value = max;
+        }
+    }
+	
 		$(".edit-cart").on("click", function() {
 			var id = $(this).data("id");
 			var quanty = $("#quanty-cart-" + id).val();
