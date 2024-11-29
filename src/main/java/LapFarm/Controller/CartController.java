@@ -21,6 +21,7 @@ public class CartController extends BaseController {
 
 	@RequestMapping("cart")
 	public String showCart(HttpSession session) {
+		addCartToSession(session);
 	    // Lấy thông tin người dùng từ session
 	    AccountEntity user = (AccountEntity) session.getAttribute("user");
 
@@ -48,22 +49,18 @@ public class CartController extends BaseController {
 	        cart = new HashMap<>();
 	    }
 
-	    // Thêm sản phẩm vào giỏ hàng
-	    cart = cartService.AddCart(id, cart);
-
-	    // Kiểm tra xem người dùng đã đăng nhập hay chưa
+	    // Lấy thông tin người dùng
 	    AccountEntity user = (AccountEntity) session.getAttribute("user");
-	    if (user != null) {
-	        // Nếu đã đăng nhập, đồng bộ giỏ hàng với database
-	        cartService.syncCartToDatabase(user.getUserInfo().getUserId(), cart);
-	    }
+	    int userId = (user != null) ? user.getUserInfo().getUserId() : 0;
 
-	    // Cập nhật lại giỏ hàng trong session
+	    // Thêm sản phẩm vào giỏ
+	    cart = cartService.AddCart(id, cart, userId);
+
+	    // Cập nhật lại session
 	    session.setAttribute("Cart", cart);
 	    session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
 	    session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
 
-	    // Chuyển hướng về trang trước đó
 	    return "redirect:" + request.getHeader("Referer");
 	}
 

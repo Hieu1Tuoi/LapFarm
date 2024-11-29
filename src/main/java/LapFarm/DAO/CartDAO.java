@@ -49,32 +49,63 @@ public class CartDAO {
 
 	// Them gio hang
 	@Transactional
-	public HashMap<Integer, CartDTO> addCart(int id, HashMap<Integer, CartDTO> cart) {
-	    // Lấy sản phẩm từ database
+	public HashMap<Integer, CartDTO> AddCart(int id, HashMap<Integer, CartDTO> cart, int userId) {
+	    Session session = factory.getCurrentSession();
+
+	    // Lấy thông tin sản phẩm từ database
 	    ProductDTO product = productDAO.findProductDTOById(id);
 
 	    if (product != null) {
-	        // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
 	        CartDTO itemCart = cart.get(id);
-	        
+
 	        if (itemCart != null) {
-	            // Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng
+	            // Nếu sản phẩm đã có trong session, tăng số lượng
 	            itemCart.setQuantity(itemCart.getQuantity() + 1);
+	            itemCart.setTotalPrice(itemCart.getQuantity() * product.calPrice());
 	        } else {
-	            // Nếu sản phẩm chưa có trong giỏ hàng, tạo mới CartDTO và thêm vào giỏ hàng
+	            // Nếu chưa có trong session, thêm mới sản phẩm
 	            itemCart = new CartDTO();
 	            itemCart.setProduct(product);
 	            itemCart.setQuantity(1);
+	            itemCart.setTotalPrice(product.calPrice());
+	            cart.put(id, itemCart);
 	        }
 
-	        // Tính lại giá trị tổng cho sản phẩm trong giỏ
-	        itemCart.setTotalPrice(itemCart.getQuantity() * product.calPrice());
-
-	        // Cập nhật giỏ hàng
-	        cart.put(id, itemCart);
+	        // Đồng bộ với database nếu người dùng đã đăng nhập
+	        if (userId > 0) {
+	            syncProductQuantityToDatabase(userId, id, 1); // Tăng thêm 1
+	        }
 	    }
 
 	    return cart;
+	}
+	@Transactional
+	public void syncProductQuantityToDatabase(int userId, int productId, int increment) {
+	    Session session = factory.getCurrentSession();
+
+	    // Kiểm tra sản phẩm đã tồn tại trong database chưa
+	    String hql = "FROM CartEntity c WHERE c.userInfo.userId = :userId AND c.product.idProduct = :productId";
+	    Query<CartEntity> query = session.createQuery(hql, CartEntity.class);
+	    query.setParameter("userId", userId);
+	    query.setParameter("productId", productId);
+
+	    List<CartEntity> cartList = query.getResultList();
+
+	    if (!cartList.isEmpty()) {
+	        // Nếu tồn tại, tăng số lượng
+	        CartEntity existingCart = cartList.get(0);
+	        existingCart.setQuantity(existingCart.getQuantity() + increment);
+	        session.update(existingCart);
+	    } else {
+	        // Nếu chưa có, thêm mới sản phẩm với số lượng là `increment`
+	        CartEntity newCartEntity = new CartEntity();
+	        newCartEntity.setId(new CartId(userId, productId));
+	        newCartEntity.setUserInfo(session.get(UserInfoEntity.class, userId));
+	        newCartEntity.setProduct(session.get(ProductEntity.class, productId));
+	        newCartEntity.setQuantity(increment);
+
+	        session.save(newCartEntity);
+	    }
 	}
 
 

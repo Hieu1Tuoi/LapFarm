@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 
 import LapFarm.Bean.Mailer;
 import LapFarm.DAO.BrandDAO;
+import LapFarm.DAO.CartDAO;
 import LapFarm.DAO.CategoryDAO;
 import LapFarm.DAO.ProductDAO;
 import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.BrandEntity;
+import LapFarm.Entity.CartEntity;
 import LapFarm.Entity.CategoryEntity;
 import LapFarm.Entity.ProductEntity;
 import jakarta.servlet.ServletContext;
@@ -28,6 +30,9 @@ public class BaseServiceImp implements IBaseService {
 
 	@Autowired
 	private ProductDAO productDAO;
+	
+	@Autowired
+	private CartDAO cartDAO;
 
 	@Override
 	public List<CategoryEntity> getCategoryEntities() {	
@@ -61,7 +66,7 @@ public class BaseServiceImp implements IBaseService {
 		return productDAO.getTop5ProductsByLowestQuantity();
 	}
 	
-	
+
 
 
 }

@@ -11,7 +11,7 @@ import LapFarm.Entity.CartEntity;
 
 @Service
 public interface ICartService {
-	public HashMap<Integer, CartDTO> AddCart(int id, HashMap<Integer, CartDTO> cart);
+	public HashMap<Integer, CartDTO> AddCart(int id, HashMap<Integer, CartDTO> cart, int userId);
 	public HashMap<Integer, CartDTO> EditCart(int id, int quanty, HashMap<Integer, CartDTO> cart);
 	public HashMap<Integer, CartDTO> DeleteCart(int id, HashMap<Integer, CartDTO> cart);
 	public int TotalQuanty(HashMap<Integer, CartDTO> cart);

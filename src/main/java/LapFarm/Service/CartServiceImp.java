@@ -18,11 +18,7 @@ public class CartServiceImp implements ICartService {
 	@Autowired
 	private CartDAO cartDao;
 
-	@Override
-	public HashMap<Integer, CartDTO> AddCart(int id, HashMap<Integer, CartDTO> cart) {
-		// TODO Auto-generated method stub
-		return cartDao.addCart(id, cart);
-	}
+	
 
 	@Override
 	public HashMap<Integer, CartDTO> EditCart(int id, int quanty, HashMap<Integer, CartDTO> cart) {
@@ -83,6 +79,12 @@ public class CartServiceImp implements ICartService {
 	public void updateProductQuantityInDatabase(int userId, int productId, int quantity) {
 		// TODO Auto-generated method stub
 		cartDao.updateProductQuantityInDatabase(userId, productId, quantity);
+	}
+
+	@Override
+	public HashMap<Integer, CartDTO> AddCart(int id, HashMap<Integer, CartDTO> cart, int userId) {
+		// TODO Auto-generated method stub
+		return cartDao.AddCart(id, cart, userId);
 	}
 
 	

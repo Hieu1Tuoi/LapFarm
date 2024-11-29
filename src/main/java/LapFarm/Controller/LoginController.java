@@ -19,7 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-public class LoginController {
+public class LoginController extends BaseController {
 
 	@Autowired
 	SessionFactory factory;

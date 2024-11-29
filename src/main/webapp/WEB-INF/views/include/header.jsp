@@ -121,7 +121,7 @@
 						<div class="dropdown">
 							<a href="<c:url value='/cart' />" class="cart-link"> <i
 								class="fa fa-shopping-cart"></i> <span>Giỏ hàng</span>
-								<div class="qty">${Cart != null ? Cart.size() : 0}</div>
+								<div class="qty">${CartSession != null ? CartSession.size() : 0}</div>
 							</a>
 						</div>
 
