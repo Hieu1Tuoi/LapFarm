@@ -23,4 +23,5 @@ public interface ICartService {
 	 public void syncCartToDatabase(int userId, HashMap<Integer, CartDTO> cart) ;
 	 public void deleteCartFromDatabase(int userId, int productId);
 	 public void updateProductQuantityInDatabase(int userId, int productId, int quantity) ;
+	 
 }

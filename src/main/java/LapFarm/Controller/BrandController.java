@@ -37,47 +37,115 @@ public class BrandController extends BaseController {
 	private PaginatesServiceImp paginateService;
 	private int totalProductPage = 9;
 
+//	@RequestMapping(value = "/products-brand", params = "!page")
+//	public ModelAndView Index(@RequestParam(value = "idBrand", required = false) int idBrand) {
+//
+//		Init();
+//		// Lấy toàn bộ thông tin Category
+//		_mvShare.addObject("brand", brandService.getBrandById(idBrand));
+//
+//		_mvShare.addObject("AllProductByID", brandService.getProductsByBrand(idBrand));
+//
+//		int totalData = brandService.getProductsByBrand(idBrand).size();
+//		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
+//		_mvShare.addObject("paginateInfo", paginateInfo);
+//		_mvShare.addObject("ProductsPaginate",
+//				brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, ""));
+//		Map<String, Double> price = productService.getMinMaxPrices();
+//		_mvShare.addObject("priceMin", price.get("min"));
+//		_mvShare.addObject("priceMax", price.get("max"));
+//		_mvShare.setViewName("productsByBrand");
+//		return _mvShare; // The view name
+//	}
 	@RequestMapping(value = "/products-brand", params = "!page")
-	public ModelAndView Index(@RequestParam(value = "idBrand", required = false) int idBrand) {
+	public ModelAndView Index(@RequestParam(value = "idBrand", required = false) Integer idBrand,
+	                          @RequestParam(value = "nameBrand", required = false) String nameBrand) {
+	    Init();
 
-		Init();
-		// Lấy toàn bộ thông tin Category
-		_mvShare.addObject("brand", brandService.getBrandById(idBrand));
+	    if (idBrand != null) {
+	        _mvShare.addObject("brand", brandService.getBrandById(idBrand));
+	        _mvShare.addObject("AllProductByID", brandService.getProductsByBrand(idBrand));
+	        int totalData = brandService.getProductsByBrand(idBrand).size();
+	        PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
+	        _mvShare.addObject("paginateInfo", paginateInfo);
+	        _mvShare.addObject("ProductsPaginate",
+	            brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, ""));
+	    } else if (nameBrand != null) {
+	        _mvShare.addObject("brand", brandService.getBrandByName(nameBrand));
+	        _mvShare.addObject("AllProductByName", brandService.getProductsByBrandName(nameBrand));
+	        int totalData = brandService.getProductsByBrandName(nameBrand).size();
+	        PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
+	        _mvShare.addObject("paginateInfo", paginateInfo);
+	        _mvShare.addObject("ProductsPaginate",
+	            brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, ""));
+	    }
 
-		_mvShare.addObject("AllProductByID", brandService.getProductsByBrand(idBrand));
+	    Map<String, Double> price = productService.getMinMaxPrices();
+	    _mvShare.addObject("priceMin", price.get("min"));
+	    _mvShare.addObject("priceMax", price.get("max"));
+	    _mvShare.setViewName("productsByBrand");
 
-		int totalData = brandService.getProductsByBrand(idBrand).size();
-		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
-		_mvShare.addObject("paginateInfo", paginateInfo);
-		_mvShare.addObject("ProductsPaginate",
-				brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, ""));
-		Map<String, Double> price = productService.getMinMaxPrices();
-		_mvShare.addObject("priceMin", price.get("min"));
-		_mvShare.addObject("priceMax", price.get("max"));
-		_mvShare.setViewName("productsByBrand");
-		return _mvShare; // The view name
+	    return _mvShare;
 	}
 
 	@RequestMapping(value = "/products-brand", params = "page")
-	public ModelAndView Index(@RequestParam(value = "idBrand", required = false) int idBrand,
-			@RequestParam(value = "page", defaultValue = "1") int currentPage) {
+	public ModelAndView Index(@RequestParam(value = "idBrand", required = false) Integer idBrand,
+	                          @RequestParam(value = "nameBrand", required = false) String nameBrand,
+	                          @RequestParam(value = "page", defaultValue = "1") int currentPage) {
+	    Init();
 
-		Init();
-		// Lấy toàn bộ thông tin Category
-		_mvShare.addObject("brand", brandService.getBrandById(idBrand));
+	    if (idBrand != null) {
+	        _mvShare.addObject("brand", brandService.getBrandById(idBrand));
+	        _mvShare.addObject("AllProductByID", brandService.getProductsByBrand(idBrand));
+	        int totalData = brandService.getProductsByBrand(idBrand).size();
+	        PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
+	        _mvShare.addObject("paginateInfo", paginateInfo);
+	        _mvShare.addObject("ProductsPaginate",
+	            brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, ""));
+	    } else if (nameBrand != null) {
+	        _mvShare.addObject("brand", brandService.getBrandByName(nameBrand));
+	        _mvShare.addObject("AllProductByName", brandService.getProductsByBrandName(nameBrand));
+	        int totalData = brandService.getProductsByBrandName(nameBrand).size();
+	        PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
+	        _mvShare.addObject("paginateInfo", paginateInfo);
+	        _mvShare.addObject("ProductsPaginate",
+	            brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, ""));
+	    }
 
-		_mvShare.addObject("AllProductByID", brandService.getProductsByBrand(idBrand));
+	    Map<String, Double> price = productService.getMinMaxPrices();
+	    _mvShare.addObject("priceMin", price.get("min"));
+	    _mvShare.addObject("priceMax", price.get("max"));
+	    _mvShare.setViewName("productsByBrand");
 
-		int totalData = brandService.getProductsByBrand(idBrand).size();
-		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
-		_mvShare.addObject("paginateInfo", paginateInfo);
-		_mvShare.addObject("ProductsPaginate",
-				brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, ""));
-		_mvShare.setViewName("productsByCategory");
-		Map<String, Double> price = productService.getMinMaxPrices();
-		_mvShare.addObject("priceMin", price.get("min"));
-		_mvShare.addObject("priceMax", price.get("max"));
-		_mvShare.setViewName("productsByBrand");
-		return _mvShare; // View name
+	    return _mvShare;
 	}
+
+
+//	@RequestMapping(value = "/products-brand", params = "page")
+//	public ModelAndView Index(@RequestParam(value = "idBrand", required = false) int idBrand,
+//			@RequestParam(value = "page", defaultValue = "1") int currentPage) {
+//
+//		Init();
+//		// Lấy toàn bộ thông tin Category
+//		_mvShare.addObject("brand", brandService.getBrandById(idBrand));
+//
+//		_mvShare.addObject("AllProductByID", brandService.getProductsByBrand(idBrand));
+//
+//		int totalData = brandService.getProductsByBrand(idBrand).size();
+//		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
+//		_mvShare.addObject("paginateInfo", paginateInfo);
+//		_mvShare.addObject("ProductsPaginate",
+//				brandService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, ""));
+//		_mvShare.setViewName("productsByCategory");
+//		Map<String, Double> price = productService.getMinMaxPrices();
+//		_mvShare.addObject("priceMin", price.get("min"));
+//		_mvShare.addObject("priceMax", price.get("max"));
+//		_mvShare.setViewName("productsByBrand");
+//		return _mvShare; // View name
+//	}
+	
+	
+	
+
+
 }

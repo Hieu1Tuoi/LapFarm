@@ -206,10 +206,10 @@ Body Section
 					<tbody>
 						<c:forEach var="item" items="${Cart}">
 							<tr>
-								<td><img width="100"
+								<td><a href="product-detail/${item.value.product.idProduct}"/><img width="100"
 									src="<c:url value="${ item.value.product.image }"/>" alt=""></td>
-								<td>${ item.value.product.nameProduct }</td>
-								<td>${ item.value.product.brandName }</td>
+								<td> <a href="product-detail/${item.value.product.idProduct}"/>${ item.value.product.nameProduct }</td>
+								<td><a href="products-brand?nameBrand=${item.value.product.brandName}"/>${ item.value.product.brandName }</td>
 								<td><fmt:formatNumber type="number" groupingUsed="true"
 										value="${ item.value.product.calPrice() }" /> ₫</td>
 								<td><input type="number" min="1" max="100" class="span1"

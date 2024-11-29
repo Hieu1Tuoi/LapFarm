@@ -239,6 +239,42 @@ public class ProductDAO {
 					image);
 		}).toList();
 	}
+	//lấy product theo tên bran
+	@Transactional
+	public List<ProductDTO> getProductsByBrandName(String nameBrand) {
+	    Session session = factory.getCurrentSession();
+
+	    // HQL query để lấy danh sách sản phẩm theo nameBrand
+	    String hql = "SELECT p FROM ProductEntity p WHERE p.brand.nameBrand = :nameBrand";
+	    Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+	    query.setParameter("nameBrand", nameBrand);
+
+	    // Lấy danh sách sản phẩm từ kết quả query
+	    List<ProductEntity> products = query.list();
+
+	    // Chuyển đổi từ ProductEntity sang ProductDTO
+	    return products.stream().map(product -> {
+	        String image = product.getImages() != null && !product.getImages().isEmpty()
+	                ? product.getImages().get(0).getImageUrl()
+	                : null;
+
+	        return new ProductDTO(
+	                product.getIdProduct(),
+	                product.getNameProduct(),
+	                product.getBrand() != null ? product.getBrand().getNameBrand() : null,
+	                product.getCategory() != null ? product.getCategory().getNameCategory() : null,
+	                product.getCategory() != null ? product.getCategory().getIdCategory() : 0, // Lưu ý kiểm tra category null
+	                product.getDescription(),
+	                product.getQuantity(),
+	                product.getDiscount(),
+	                product.getOriginalPrice(),
+	                product.getSalePrice(),
+	                product.getState(),
+	                image
+	        );
+	    }).toList();
+	}
+
 
 	@Transactional
 	public List<ProductDTO> getDataProductPaginates(int start, int end, String searchText, Integer category, String priceRange) { 

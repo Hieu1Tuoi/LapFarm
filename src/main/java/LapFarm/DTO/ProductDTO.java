@@ -135,6 +135,8 @@ public class ProductDTO {
 	public void setState(String state) {
 		this.state = state;
 	}
+	
+	
 
 	// Các phương thức bổ sung nếu cần (ví dụ như tính toán giá đã giảm, định dạng
 	// tiền tệ...)

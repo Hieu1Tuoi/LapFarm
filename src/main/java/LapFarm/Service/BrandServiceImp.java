@@ -34,4 +34,16 @@ public class BrandServiceImp implements IBrandService {
 		return brandDAO.getBrandById(idBrand);
 	}
 
+	@Override
+	public List<ProductDTO> getProductsByBrandName(String nameBrand) {
+		// TODO Auto-generated method stub
+		return productDAO.getProductsByBrandName(nameBrand);
+	}
+
+	@Override
+	public BrandEntity getBrandByName(String brandName) {
+		// TODO Auto-generated method stub
+		return brandDAO.getBrandByName(brandName);
+	}
+
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import LapFarm.DTO.CartDTO;
 import LapFarm.Entity.AccountEntity;
@@ -34,7 +35,7 @@ public class CartController extends BaseController {
 	        session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
 	        session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
 	    }
-
+	   
 	    // Trả về view giỏ hàng
 	    return "cart";
 	}

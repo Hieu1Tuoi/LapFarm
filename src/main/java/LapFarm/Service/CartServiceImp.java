@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import LapFarm.DAO.BrandDAO;
 import LapFarm.DAO.CartDAO;
 import LapFarm.DTO.CartDTO;
 import LapFarm.DTO.UserInfoDTO;
@@ -18,7 +19,9 @@ public class CartServiceImp implements ICartService {
 	@Autowired
 	private CartDAO cartDao;
 
-	
+	@Autowired
+	private BrandDAO brandtDAO;
+
 
 	@Override
 	public HashMap<Integer, CartDTO> EditCart(int id, int quanty, HashMap<Integer, CartDTO> cart) {
@@ -86,6 +89,8 @@ public class CartServiceImp implements ICartService {
 		// TODO Auto-generated method stub
 		return cartDao.AddCart(id, cart, userId);
 	}
+
+	
 
 	
 }
