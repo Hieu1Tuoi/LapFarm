@@ -11,6 +11,8 @@ import LapFarm.Entity.OrderDetailsEntity;
 import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.ProductEntity;
 import LapFarm.Entity.UserInfoEntity;
+import LapFarm.Service.Config;
+import LapFarm.Service.PaymentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,15 +21,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.google.gson.JsonObject;
+
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping(value = "/payment")
 public class PaymentController {
 
 	@Autowired
@@ -39,9 +51,10 @@ public class PaymentController {
 	@Autowired
 	private OrdersDAO ordersDAO;
 
-	@RequestMapping(value = "/payment", method = RequestMethod.GET)
+	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String index(HttpSession httpSession, Model model) {
 		AccountEntity account = (AccountEntity) httpSession.getAttribute("user");
+		List<Integer> cartIdSelecteds = (List<Integer>) httpSession.getAttribute("cartIdSelecteds");
 
 		if (account == null) {
 			return "redirect:/login"; // Redirect to login page if the user is not logged in
@@ -50,14 +63,14 @@ public class PaymentController {
 		// Retrieve the user info and cart products
 		UserInfoEntity userInfo = account.getUserInfo(); // Get the user's info
 		List<CartEntity> cartEntities = cartDAO.getCartByUserEmail(account.getEmail());
-		if (cartEntities == null || cartEntities.isEmpty()) {
-			return "redirect:/home";
+		if (cartIdSelecteds == null) {
+			return "redirect:/cart";
 		}
 		List<CartProductDTO> cartProductDTOList = new ArrayList<>();
-		System.out.println(cartProductDTOList);
+
 		double totalAmount = 0.0;
-		
-		for (CartEntity cartEntity : cartEntities) {
+		for (Integer cartId : cartIdSelecteds) {
+			CartEntity cartEntity = cartDAO.getCartById(cartId);
 			ProductEntity product = cartEntity.getProduct();
 			String formattedPrice = new DecimalFormat("#,###").format(product.getSalePrice());
 
@@ -71,14 +84,60 @@ public class PaymentController {
 		// Add the cart products and total amount to the model
 		model.addAttribute("cartProducts", cartProductDTOList);
 		model.addAttribute("totalAmount", new DecimalFormat("#,###").format(totalAmount));
+		long totalAmountLong = (long) totalAmount;
+		model.addAttribute("totalAmountDefaut", totalAmountLong);
 
 		model.addAttribute("userInfo", userInfo);
 
 		return "payment"; // Return the payment view
 	}
 
-	@RequestMapping(value = "/payment", method = RequestMethod.POST)
-	public String perform(@RequestParam("payment") byte paymentMethod, @RequestParam("fullName") String fullName,
+	@Autowired
+	PaymentService paymentService;
+	@Autowired
+	Config config;
+
+	@RequestMapping(value = "/vnpay", method = RequestMethod.GET)
+	public String vnpay(@RequestParam("totalAmount") long totalAmount, @RequestParam("fullName") String fullName,
+			@RequestParam("address") String address, @RequestParam("tel") String tel,
+			@RequestParam(value = "note", required = false) String note, HttpSession httpSession, Model model,
+			HttpServletRequest request) {
+		String language = "vn";
+		System.out.println(totalAmount);
+		Map<String, Object> OrderInfo = new HashMap<String, Object>();
+		OrderInfo.put("totalAmount", totalAmount);
+		OrderInfo.put("address", address);
+		OrderInfo.put("note", note);
+		OrderInfo.put("tel", tel);
+		OrderInfo.put("fullName", fullName);
+		httpSession.setAttribute("OrderInfo", OrderInfo);
+
+		try {
+			// Gọi service tạo URL thanh toán
+			JsonObject paymentResponse = paymentService.createPayment(request, totalAmount, "", language);
+
+			// Kiểm tra kết quả trả về
+			if (paymentResponse != null && "00".equals(paymentResponse.get("code").getAsString())) {
+				// Lấy URL thanh toán
+				String paymentUrl = paymentResponse.get("data").getAsString();
+
+				// Chuyển hướng người dùng tới trang thanh toán
+				return "redirect:" + paymentUrl;
+			} else {
+				// Xử lý lỗi nếu có
+				model.addAttribute("error", "Không thể tạo thanh toán. Vui lòng thử lại!");
+				return "error"; // Trang hiển thị lỗi
+			}
+		} catch (Exception e) {
+			// Log lỗi và hiển thị thông báo lỗi
+			e.printStackTrace();
+			model.addAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
+			return "error"; // Trang hiển thị lỗi
+		}
+	}
+
+	@RequestMapping(value = "/success", method = RequestMethod.GET)
+	public String perform(@RequestParam("totalAmount") int totalAmount, @RequestParam("fullName") String fullName,
 			@RequestParam("address") String address, @RequestParam("tel") String tel,
 			@RequestParam(value = "note", required = false) String note, HttpSession httpSession, Model model) {
 
@@ -89,18 +148,16 @@ public class PaymentController {
 			note = note.replaceAll("^(,\\s*|\\s*,)|((\\s*,\\s*)$)", "").trim();
 			model.addAttribute("note", note);
 		}
+
 		// Lấy tài khoản từ session
 		AccountEntity account = (AccountEntity) httpSession.getAttribute("user");
 
 		if (account != null) {
 
-			// Lấy thông tin giỏ hàng từ session (giả sử email người dùng đã có trong
-			// session)
-			String email = account.getEmail(); // Email của người dùng đã được lưu trong session
-			List<CartEntity> cartItems = cartDAO.getCartByUserEmail(email);
+			List<Integer> cartIds = (List<Integer>) httpSession.getAttribute("cartIdSelecteds");
 
-			if (cartItems.isEmpty()) {
-				model.addAttribute("error", "Giỏ hàng của bạn đang trống.");
+			if (cartIds.isEmpty()) {
+				model.addAttribute("error", "Bạn chưa chọn sản phẩm.");
 				return "cart"; // Quay lại trang giỏ hàng nếu không có sản phẩm
 			}
 
@@ -108,9 +165,9 @@ public class PaymentController {
 			OrdersEntity order = new OrdersEntity();
 			order.setUserInfo(account.getUserInfo());
 			order.setState("Chờ lấy hàng"); // Trạng thái ban đầu là "Chờ lấy hàng"
-			order.setPaymentMethod(paymentMethod);
-			order.setTotalPrice((int) calculateTotalPrice(cartItems)); // Tính tổng giá trị đơn hàng từ các sản phẩm
-																		// trong giỏ hàng
+			order.setPaymentMethod((byte) 0);
+			order.setTotalPrice(totalAmount);
+
 			order.setTime(new Timestamp(System.currentTimeMillis())); // Thời gian hiện tại
 			order.getUserInfo().setAddress(address);
 			order.getUserInfo().setPhone(tel);
@@ -120,7 +177,8 @@ public class PaymentController {
 			ordersDAO.saveOrder(order);
 
 			// Lưu chi tiết đơn hàng (OrderDetails) cho từng sản phẩm trong giỏ hàng
-			for (CartEntity cartItem : cartItems) {
+			for (int cartId : cartIds) {
+				CartEntity cartItem = cartDAO.getCartById(cartId);
 				OrderDetailsEntity orderDetails = new OrderDetailsEntity();
 				OrderDetailId orderDetailId = new OrderDetailId();
 				orderDetailId.setOrder(order.getIdOrder());
@@ -134,12 +192,14 @@ public class PaymentController {
 
 				// Lưu chi tiết đơn hàng
 				ordersDAO.saveOrderDetail(orderDetails);
+				cartDAO.deleteCartById(cartId);
 			}
 
 			// Xóa giỏ hàng sau khi thanh toán
-			cartDAO.clearCart(account.getUserInfo().getUserId());
 			userDAO.updateUserinfo(account.getEmail(), fullName, account.getUserInfo().getDob(), tel, address,
 					account.getUserInfo().getSex());
+			httpSession.removeAttribute("cartIdSelecteds");
+			httpSession.removeAttribute("OrderInfo");
 
 			// Sau khi lưu đơn hàng và chi tiết, chuyển hướng tới trang thanh toán thành
 			// công
@@ -151,13 +211,123 @@ public class PaymentController {
 		}
 	}
 
-	// Phương thức tính tổng giá trị đơn hàng từ các sản phẩm trong giỏ hàng
-	private double calculateTotalPrice(List<CartEntity> cartItems) {
-		double totalPrice = 0;
-		for (CartEntity cartItem : cartItems) {
-			totalPrice += cartItem.getProduct().getSalePrice() * cartItem.getQuantity();
-		}
-		return totalPrice;
-	}
+	@RequestMapping(value = "/result", method = RequestMethod.GET)
+	public String result(@RequestParam("vnp_Amount") double vnp_Amount,
+			@RequestParam("vnp_TransactionStatus") String vnp_TransactionStatus, HttpServletRequest request,
+			Model model, HttpSession httpSession) {
 
+		Map<String, String> fields = new HashMap<>();
+		try {
+			// Lấy tất cả các tham số từ request và mã hóa chúng
+			for (Enumeration<?> params = request.getParameterNames(); params.hasMoreElements();) {
+				String fieldName = URLEncoder.encode((String) params.nextElement(),
+						StandardCharsets.US_ASCII.toString());
+				String fieldValue = URLEncoder.encode(request.getParameter(fieldName),
+						StandardCharsets.US_ASCII.toString());
+				if ((fieldValue != null) && (fieldValue.length() > 0)) {
+					fields.put(fieldName, fieldValue);
+				}
+			}
+		} catch (UnsupportedEncodingException e) {
+			// Xử lý ngoại lệ nếu có
+			model.addAttribute("message", "Lỗi mã hóa: " + e.getMessage());
+			return "result"; // Trả về trang lỗi nếu có lỗi mã hóa
+		}
+
+		// Lấy giá trị vnp_SecureHash từ request
+		String vnp_SecureHash = request.getParameter("vnp_SecureHash");
+
+		// Xóa các tham số không cần thiết khỏi Map
+		fields.remove("vnp_SecureHashType");
+		fields.remove("vnp_SecureHash");
+
+		// Tạo chữ ký từ các tham số
+		String signValue = Config.hashAllFields(fields);
+
+		// So sánh chữ ký đã tạo với vnp_SecureHash nhận được
+		if (signValue.equals(vnp_SecureHash)) {
+			// Kiểm tra trạng thái giao dịch
+			if ("00".equals(vnp_TransactionStatus)) {
+
+				Map<String, Object> orderInfo = (Map<String, Object>) httpSession.getAttribute("OrderInfo");
+				String fullName = (String) orderInfo.get("fullName");
+				String address = (String) orderInfo.get("address");
+				String tel = (String) orderInfo.get("tel");
+				String note = (String) orderInfo.get("note");
+
+				fullName = fullName.replaceAll("^(,\\s*|\\s*,)|((\\s*,\\s*)$)", "").trim();
+				address = address.replaceAll("^(,\\s*|\\s*,)|((\\s*,\\s*)$)", "").trim();
+				tel = tel.replaceAll("^(,\\s*|\\s*,)|((\\s*,\\s*)$)", "").trim();
+				if (note != null) {
+					note = note.replaceAll("^(,\\s*|\\s*,)|((\\s*,\\s*)$)", "").trim();
+					model.addAttribute("note", note);
+				}
+
+				// Lấy tài khoản từ session
+				AccountEntity account = (AccountEntity) httpSession.getAttribute("user");
+
+				if (account != null) {
+
+					List<Integer> cartIds = (List<Integer>) httpSession.getAttribute("cartIdSelecteds");
+
+					if (cartIds.isEmpty()) {
+						model.addAttribute("error", "Bạn chưa chọn sản phẩm.");
+						return "cart"; // Quay lại trang giỏ hàng nếu không có sản phẩm
+					}
+
+					// Tạo đơn hàng mới
+					OrdersEntity order = new OrdersEntity();
+					order.setUserInfo(account.getUserInfo());
+					order.setState("Chờ lấy hàng"); // Trạng thái ban đầu là "Chờ lấy hàng"
+					order.setPaymentMethod((byte) 1);
+					order.setTotalPrice((int) (vnp_Amount/100)); // Tính tổng giá trị đơn hàng từ các sản
+															// phẩm
+															// trong giỏ hàng
+					order.setTime(new Timestamp(System.currentTimeMillis())); // Thời gian hiện tại
+					order.getUserInfo().setAddress(address);
+					order.getUserInfo().setPhone(tel);
+					order.setNote(note);
+
+					// Lưu đơn hàng vào database
+					ordersDAO.saveOrder(order);
+
+					// Lưu chi tiết đơn hàng (OrderDetails) cho từng sản phẩm trong giỏ hàng
+					for (int cartId : cartIds) {
+						CartEntity cartItem = cartDAO.getCartById(cartId);
+						OrderDetailsEntity orderDetails = new OrderDetailsEntity();
+						OrderDetailId orderDetailId = new OrderDetailId();
+						orderDetailId.setOrder(order.getIdOrder());
+						orderDetailId.setProduct(cartItem.getProduct().getIdProduct());
+
+						orderDetails.setId(orderDetailId);
+						orderDetails.setOrder(order);
+						orderDetails.setProduct(cartItem.getProduct());
+						orderDetails.setQuantity(cartItem.getQuantity());
+						orderDetails.setPrice((int) Math.round(cartItem.getProduct().getSalePrice()));
+
+						// Lưu chi tiết đơn hàng
+						ordersDAO.saveOrderDetail(orderDetails);
+						cartDAO.deleteCartById(cartId);
+					}
+
+					// Xóa giỏ hàng sau khi thanh toán
+					userDAO.updateUserinfo(account.getEmail(), fullName, account.getUserInfo().getDob(), tel, address,
+							account.getUserInfo().getSex());
+					httpSession.removeAttribute("cartIdSelecteds");
+					httpSession.removeAttribute("OrderInfo");
+
+					model.addAttribute("message", "Thanh toán thành công!");
+				} else {
+					// Giao dịch không thành công
+					model.addAttribute("message", "Thanh toán không thành công!");
+				}
+			} else {
+				// Nếu chữ ký không khớp
+				model.addAttribute("message", "Lỗi xác thực chữ ký!");
+			}
+
+			return "result"; // Trả về trang kết quả
+		}
+		return "result";
+	}
 }

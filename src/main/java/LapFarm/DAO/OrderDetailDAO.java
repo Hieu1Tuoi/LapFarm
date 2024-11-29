@@ -42,6 +42,7 @@ public class OrderDetailDAO {
 	        ProductDTO productDTO = new ProductDTO(
 	            product.getIdProduct(), 
 	            product.getNameProduct(),
+				product.getBrand() != null ? product.getBrand().getIdBrand() : null,
 	            product.getBrand() != null ? product.getBrand().getNameBrand() : null,
 	            product.getCategory() != null ? product.getCategory().getNameCategory() : null,
 	            product.getCategory() != null ? product.getCategory().getIdCategory() : 0,  // Lấy idCategory nếu có

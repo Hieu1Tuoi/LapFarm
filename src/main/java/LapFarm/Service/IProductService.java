@@ -11,13 +11,11 @@ import LapFarm.DTO.ProductDTO;
 public interface IProductService {
 	public Long getTotalProductQuantity();
 
-
 	public List<ProductDTO> getAllProductsDTO();
-
 
 	public Map<String, Double> getMinMaxPrices();
 
-
-	List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText, int category, String priceRange);
+	List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText, int idCategory, String priceRange,
+			int idBrand);
 
 }

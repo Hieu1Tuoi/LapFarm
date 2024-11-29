@@ -15,13 +15,14 @@
 	margin: 0;
 	font-size: 17px;
 	background-color: #000; /* Đổi nền sang màu đen */
-	border: 1px solid rgba(255, 255, 255, 0.15); /* Đường viền nhẹ màu trắng */
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	/* Đường viền nhẹ màu trắng */
 	border-radius: 0.25rem;
 	box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
 }
 
 .dropdown.active .dropdown-menu {
-    display: block;
+	display: block;
 }
 
 .dropdown-item {
@@ -35,7 +36,8 @@
 
 .dropdown-item:hover {
 	background-color: #333; /* Nền màu xám khi hover */
-	color: #fff; /* Giữ chữ màu trắng khi hover */
+	color: #fff;
+} /* Giữ chữ màu trắng khi hover */
 </style>
 
 <!-- HEADER -->
@@ -93,7 +95,7 @@
 				<div class="col-md-6">
 					<div class="header-search">
 						<form action="search" method="get">
-							<select class="input-select" name="category">
+							<select class="input-select" name="idCategory">
 								<option value="0" ${searchCategory == 0 ? 'selected' : ''}>All
 									Categories</option>
 								<option value="1" ${searchCategory == 1 ? 'selected' : ''}>Category
@@ -102,7 +104,10 @@
 									02</option>
 							</select> <input value="${searchText}" id="searchInput" class="input"
 								name="searchtext" placeholder="Search here"> <input
-								value="${priceRange}" name="priceRange" style="display: none;">
+								value="${priceRange}" name="priceRange" type="hidden">
+							<c:if test="${not empty idBrand}">
+								<input id="idBrandInput" type="hidden" name="idBrand" value="${idBrand}" />
+							</c:if>
 							<button type="submit" class="search-btn">Tìm Kiếm</button>
 						</form>
 					</div>

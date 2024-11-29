@@ -199,18 +199,25 @@ Body Section
 							<th>Hình ảnh</th>
 							<th>Tên sản phẩm</th>
 							<th>Thương hiệu</th>
-							<th>Giá bán</th>
+							<th>Đơn giá</th>
 							<th>Số lượng</th>
 							<th>Chỉnh sửa</th>
 							<th>Xóa</th>
-							<th>Tổng tiền</th>
+							<th>Tổng</th>
 						</tr>
 					</thead>
 
 					<tbody>
 						<c:forEach var="item" items="${Cart}">
-							<tr>
-								<td><input id="checkbox" type="checkbox" class="u-checkbox"></td>
+							<tr id="${item.value.id}">
+							    <td>
+							        <input 
+							            id="checkbox${item.value.id}" 
+							            type="checkbox" 
+							            class="u-checkbox" 
+							            <c:if test="${cartIdSelecteds != null && cartIdSelecteds.contains(item.value.id)}">checked</c:if>
+							        >
+							    </td>
 								<td><a
 									href="product-detail/${item.value.product.idProduct}" /><img
 									width="100"
@@ -236,15 +243,20 @@ Body Section
 									onclick="return confirmDelete();"> <i class="fa fa-trash"></i>
 								</a></td>
 
-								<td><fmt:formatNumber type="number" groupingUsed="true"
+								<td id="totalPrice${item.value.id}"><fmt:formatNumber
+										type="number" groupingUsed="true"
 										value="${ item.value.totalPrice }" /> ₫</td>
 							</tr>
 						</c:forEach>
+						<tr>
+							<td colspan="8" style="text-align: right; font-weight: bold;">Tổng
+								tiền:</td>
+							<td id="grandTotal">0 ₫</td>
+						</tr>
 					</tbody>
 				</table>
 				<br /> <a href="<c:url value="/"/>" class="shopBtn btn-large"><span
 					class="icon-arrow-left"></span> Tiếp tục mua sắm</a> <a
-					href="<c:url value="checkout"/>"
 					class="shopBtn btn-large pull-right">Thanh toán <span
 					class="icon-arrow-right"></span></a>
 
@@ -282,7 +294,7 @@ Body Section
 			window.location = "EditCart/" + id + "/" + quanty;
 		});
 	</script> </content>
-
+	<script src="<c:url value='/resources/js/cart.js' />"></script>
 </body>
 
 
