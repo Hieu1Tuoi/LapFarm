@@ -46,8 +46,9 @@ public class SignupController {
 		return "signup";
 	}
 
-	@PostMapping("/sendVerifyCode")
+	
 	@ResponseBody
+	@PostMapping("/sendVerifyCode")
 	public String sendVerifyCode(@RequestParam("email") String email, HttpSession session) {
 
 		String code = mailer.VerifyCode(email);
