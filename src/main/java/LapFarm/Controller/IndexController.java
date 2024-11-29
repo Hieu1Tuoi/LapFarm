@@ -23,6 +23,7 @@ import LapFarm.Entity.ProductEntity;
 import LapFarm.Service.PaginatesServiceImp;
 import LapFarm.Service.ProductServiceImp;
 import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 
 @Controller
@@ -42,8 +43,9 @@ public class IndexController extends BaseController {
 	private int totalProductPage = 9;
 
 	@RequestMapping(value = { "", "/", "/home" }, method = RequestMethod.GET, params = "!page")
-	public ModelAndView Index() {
+	public ModelAndView Index(HttpSession session) {
 		Init();
+		addCartToSession(session);
 		_mvShare.addObject("products", productService.getAllProductsDTO());
 		// Thêm vào model để hiển thị trên view
 		_mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
@@ -52,7 +54,7 @@ public class IndexController extends BaseController {
 		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
 		_mvShare.addObject("paginateInfo", paginateInfo);
 		_mvShare.addObject("ProductsPaginate",
-				productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, ""));
+				productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, "", 0));
 		Map<String, Double> price = productService.getMinMaxPrices();
 		_mvShare.addObject("priceMin", price.get("min"));
 		_mvShare.addObject("priceMax", price.get("max"));
@@ -72,7 +74,7 @@ public class IndexController extends BaseController {
 		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
 		_mvShare.addObject("paginateInfo", paginateInfo);
 		_mvShare.addObject("ProductsPaginate",
-				productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, ""));
+				productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, "", 0));
 		Map<String, Double> price = productService.getMinMaxPrices();
 		_mvShare.addObject("priceMin", price.get("min"));
 		_mvShare.addObject("priceMax", price.get("max"));

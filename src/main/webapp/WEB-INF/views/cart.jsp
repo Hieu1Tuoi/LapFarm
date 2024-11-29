@@ -185,54 +185,78 @@ Body Section
 			</ul>
 
 			<div class="well well-small">
-			
-				<h1>Giỏ hàng<small class="pull-right"> ${TotalQuantyCart} sản phẩm </small></h1>
+
+				<h1>
+					Giỏ hàng<small class="pull-right"> ${TotalQuantyCart} sản
+						phẩm </small>
+				</h1>
 				<hr class="soften" />
 
 				<table class="table table-bordered table-condensed">
 					<thead>
 						<tr>
+							<th></th>
 							<th>Hình ảnh</th>
 							<th>Tên sản phẩm</th>
 							<th>Thương hiệu</th>
-							<th>Giá bán</th>
+							<th>Đơn giá</th>
 							<th>Số lượng</th>
 							<th>Chỉnh sửa</th>
 							<th>Xóa</th>
-							<th>Tổng tiền</th>
+							<th>Tổng</th>
 						</tr>
 					</thead>
 
 					<tbody>
 						<c:forEach var="item" items="${Cart}">
-							<tr>
-								<td><img width="100"
+							<tr id="${item.value.id}">
+							    <td>
+							        <input 
+							            id="checkbox${item.value.id}" 
+							            type="checkbox" 
+							            class="u-checkbox" 
+							            <c:if test="${cartIdSelecteds != null && cartIdSelecteds.contains(item.value.id)}">checked</c:if>
+							        >
+							    </td>
+								<td><a
+									href="product-detail/${item.value.product.idProduct}" /><img
+									width="100"
 									src="<c:url value="${ item.value.product.image }"/>" alt=""></td>
-								<td>${ item.value.product.nameProduct }</td>
-								<td>${ item.value.product.brandName }</td>
+								<td><a
+									href="product-detail/${item.value.product.idProduct}" />${ item.value.product.nameProduct }</td>
+								<td><a
+									href="products-brand?nameBrand=${item.value.product.brandName}" />${ item.value.product.brandName }</td>
 								<td><fmt:formatNumber type="number" groupingUsed="true"
 										value="${ item.value.product.calPrice() }" /> ₫</td>
-								<td><input type="number" min="1" max="100" class="span1"
-									style="max-width: 60px" placeholder="1"
-									id="quanty-cart-${ item.key }" size="16" type="text"
-									value="${ item.value.quantity }"></td>
+								<td><input type="number" min="1"
+									max="${item.value.product.quantity}" class="span1"
+									style="max-width: 60px" id="quanty-cart-${item.key}"
+									value="${item.value.quantity}"
+									onchange="validateQuantity(this, ${item.value.product.quantity});">
+								</td>
 								<td><a data-id="${item.key}"
 									class="btn btn-mini btn-danger edit-cart" type="button"> <i
 										class="fa fa-edit"></i>
 								</a></td>
 								<td><a href="<c:url value='/DeleteCart/${item.key}'/>"
-									class="btn btn-mini btn-danger" type="button"> <i
-										class="fa fa-trash"></i>
+									class="btn btn-mini btn-danger"
+									onclick="return confirmDelete();"> <i class="fa fa-trash"></i>
 								</a></td>
-								<td><fmt:formatNumber type="number" groupingUsed="true"
+
+								<td id="totalPrice${item.value.id}"><fmt:formatNumber
+										type="number" groupingUsed="true"
 										value="${ item.value.totalPrice }" /> ₫</td>
 							</tr>
 						</c:forEach>
+						<tr>
+							<td colspan="8" style="text-align: right; font-weight: bold;">Tổng
+								tiền:</td>
+							<td id="grandTotal">0 ₫</td>
+						</tr>
 					</tbody>
 				</table>
 				<br /> <a href="<c:url value="/"/>" class="shopBtn btn-large"><span
 					class="icon-arrow-left"></span> Tiếp tục mua sắm</a> <a
-					href="<c:url value="checkout"/>"
 					class="shopBtn btn-large pull-right">Thanh toán <span
 					class="icon-arrow-right"></span></a>
 
@@ -240,13 +264,37 @@ Body Section
 		</div>
 	</div>
 	<content tag="script"> <script>
+	
+	/**
+	 * Hiển thị hộp thoại xác nhận xóa.
+	 * @returns {boolean} - True nếu người dùng chọn OK, ngược lại là false.
+	 */
+	function confirmDelete() {
+	    return confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?");
+	}
+
+	
+	  /**
+     * Hàm kiểm tra giá trị input và tự động điều chỉnh nếu không hợp lệ
+     * @param {HTMLElement} input - Thẻ input cần kiểm tra
+     * @param {number} max - Giá trị lớn nhất được phép
+     */
+    function validateQuantity(input, max) {
+        let value = parseInt(input.value, 10);
+        if (isNaN(value) || value < 1) {
+            input.value = 1;
+        } else if (value > max) {
+            input.value = max;
+        }
+    }
+	
 		$(".edit-cart").on("click", function() {
 			var id = $(this).data("id");
 			var quanty = $("#quanty-cart-" + id).val();
 			window.location = "EditCart/" + id + "/" + quanty;
 		});
 	</script> </content>
-
+	<script src="<c:url value='/resources/js/cart.js' />"></script>
 </body>
 
 

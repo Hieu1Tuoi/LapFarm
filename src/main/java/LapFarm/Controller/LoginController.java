@@ -19,7 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-public class LoginController {
+public class LoginController extends BaseController {
 
 	@Autowired
 	SessionFactory factory;
@@ -70,6 +70,7 @@ public class LoginController {
 		httpSession.removeAttribute("user");
 		httpSession.removeAttribute("admin");
 		httpSession.removeAttribute("Cart");
+		httpSession.removeAttribute("viewedItems");
 		return "redirect:/login";
 	}
 

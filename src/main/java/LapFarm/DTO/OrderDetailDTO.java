@@ -1,49 +1,46 @@
 package LapFarm.DTO;
 
+
 public class OrderDetailDTO {
-    private int productId;
-    private String productName;
+    ProductDTO product;
     private int quantity;
-    private double price;
+    private int price;
 
     // Constructor
-    public OrderDetailDTO(int productId, String productName, int quantity, double price) {
-        this.productId = productId;
-        this.productName = productName;
+    public OrderDetailDTO(ProductDTO product, int quantity, int price) {
+    	super();
+        this.product = product;
         this.quantity = quantity;
         this.price = price;
     }
+    
+    public OrderDetailDTO() {
+    	super();
+    }
 
     // Getters and Setters
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
+    
     public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public ProductDTO getProduct() {
+		return product;
+	}
+
+	public void setProduct(ProductDTO product) {
+		this.product = product;
+	}
+
+	public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
@@ -51,8 +48,7 @@ public class OrderDetailDTO {
     @Override
     public String toString() {
         return "OrderDetailDTO{" +
-                "productId=" + productId +
-                ", productName='" + productName + '\'' +
+        		"ProductDTO=" + product +
                 ", quantity=" + quantity +
                 ", price=" + price +
                 '}';

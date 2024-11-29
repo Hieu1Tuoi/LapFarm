@@ -114,7 +114,7 @@
 	</div>
 	<!-- /BREADCRUMB -->
 
-	<form action="payment" method="post">
+	<form action="" method="GET">
 		<!-- SECTION -->
 		<div class="section">
 			<!-- container -->
@@ -275,12 +275,12 @@
 							<div class="input-radio">
 								<input type="radio" name="payment" value="0" id="payment-1"
 									value="bank-transfer"> <label for="payment-1"><span></span>
-									Chuyển khoản ngân hàng</label>
+									Thanh toán tiền mặt</label>
 							</div>
 							<div class="input-radio">
 								<input type="radio" name="payment" value="1" id="payment-2"
 									value="cash"> <label for="payment-2"><span></span>
-									Thanh toán tiền mặt</label>
+									Thanh toán qua VNPAY</label>
 							</div>
 							<span class="error-message" id="error-payment"></span>
 						</div>
@@ -292,6 +292,7 @@
 									khoản và điều kiện</a>
 							</label> <span class="error-message" id="error-terms"></span>
 						</div>
+						<input type="hidden" name="totalAmount" value="${totalAmountDefaut}">
 						<button style="width: 425px;" type="submit"
 							class="primary-btn order-submit">Thanh toán</button>
 					</div>
@@ -349,60 +350,70 @@
 	<script src="<c:url value='/resources/js/main.js' />"></script>
 
 	<script>
-function validateForm(event) {
-    // Lấy giá trị của các input
-    const fullName = document.querySelector("input[name='fullName']").value.trim();
-    const email = document.querySelector("input[name='email']").value.trim();
-    const address = document.querySelector("input[name='address']").value.trim();
-    const tel = document.querySelector("input[name='tel']").value.trim();
-    const paymentMethod = document.querySelector("input[name='payment']:checked");
-    const termsAccepted = document.querySelector("#terms").checked;
+	function validateForm(event) {
+	    // Lấy giá trị của các input
+	    const fullName = document.querySelector("input[name='fullName']").value.trim();
+	    const email = document.querySelector("input[name='email']").value.trim();
+	    const address = document.querySelector("input[name='address']").value.trim();
+	    const tel = document.querySelector("input[name='tel']").value.trim();
+	    const paymentMethod = document.querySelector("input[name='payment']:checked");
+	    const termsAccepted = document.querySelector("#terms").checked;
 
-    // Đặt lại thông báo lỗi
-    document.querySelectorAll(".error-message").forEach(span => span.innerText = "");
+	    // Đặt lại thông báo lỗi
+	    document.querySelectorAll(".error-message").forEach(span => span.innerText = "");
 
-    // Kiểm tra và hiển thị lỗi
-    let isValid = true;
+	    // Kiểm tra và hiển thị lỗi
+	    let isValid = true;
 
-    if (!fullName) {
-        document.getElementById("error-fullname").innerText = "Tên không được để trống.";
-        isValid = false;
-    }
+	    if (!fullName) {
+	        document.getElementById("error-fullname").innerText = "Tên không được để trống.";
+	        isValid = false;
+	    }
 
-    if (!address) {
-        document.getElementById("error-address").innerText = "Địa chỉ không được để trống.";
-        isValid = false;
-    }
+	    if (!address) {
+	        document.getElementById("error-address").innerText = "Địa chỉ không được để trống.";
+	        isValid = false;
+	    }
 
-    if (!tel) {
-        document.getElementById("error-tel").innerText = "Số điện thoại không được để trống.";
-        isValid = false;
-    } else if (!/^\d{10}$/.test(tel)) {
-        document.getElementById("error-tel").innerText = "Số điện thoại phải đúng 10 chữ số.";
-        isValid = false;
-    }
+	    if (!tel) {
+	        document.getElementById("error-tel").innerText = "Số điện thoại không được để trống.";
+	        isValid = false;
+	    } else if (!/^\d{10}$/.test(tel)) {
+	        document.getElementById("error-tel").innerText = "Số điện thoại phải đúng 10 chữ số.";
+	        isValid = false;
+	    }
 
-    if (!paymentMethod) {
-        document.getElementById("error-payment").innerText = "Vui lòng chọn phương thức thanh toán.";
-        isValid = false;
-    }
+	    if (!paymentMethod) {
+	        document.getElementById("error-payment").innerText = "Vui lòng chọn phương thức thanh toán.";
+	        isValid = false;
+	    }
 
-    if (!termsAccepted) {
-        document.getElementById("error-terms").innerText = "Bạn phải chấp nhận các điều khoản.";
-        isValid = false;
-    }
+	    if (!termsAccepted) {
+	        document.getElementById("error-terms").innerText = "Bạn phải chấp nhận các điều khoản.";
+	        isValid = false;
+	    }
 
-    // Ngăn form submit nếu có lỗi
-    if (!isValid) {
-        event.preventDefault();
-    }
-}
+	    // Thay đổi action của form dựa trên phương thức thanh toán
+	    if (paymentMethod) {
+	        const form = document.querySelector("form");
+	        if (paymentMethod.value === "0") {
+	            form.action = "payment/success"; // Thanh toán tiền mặt
+	        } else if (paymentMethod.value === "1") {
+	            form.action = "payment/vnpay"; // Thanh toán qua VNPAY
+	        }
+	    }
 
-// Gắn sự kiện click vào nút thanh toán
-document.addEventListener("DOMContentLoaded", function () {
-    const submitButton = document.querySelector(".order-submit");
-    submitButton.addEventListener("click", validateForm);
-});
+	    // Ngăn form submit nếu có lỗi
+	    if (!isValid) {
+	        event.preventDefault();
+	    }
+	}
+
+	// Gắn sự kiện click vào nút thanh toán
+	document.addEventListener("DOMContentLoaded", function () {
+	    const submitButton = document.querySelector(".order-submit");
+	    submitButton.addEventListener("click", validateForm);
+	});
 </script>
 
 </body>

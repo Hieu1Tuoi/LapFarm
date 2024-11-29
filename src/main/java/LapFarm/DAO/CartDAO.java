@@ -12,7 +12,6 @@ import LapFarm.DTO.CartProductDTO;
 import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.AccountEntity;
 import LapFarm.Entity.CartEntity;
-import LapFarm.Entity.CartId;
 import LapFarm.Entity.ProductEntity;
 import LapFarm.Entity.UserInfoEntity;
 
@@ -25,8 +24,7 @@ public class CartDAO {
 
 	@Autowired
 	private SessionFactory factory;
-	
-	
+
 	@Autowired
 	ProductDAO productDAO = new ProductDAO();
 
@@ -40,44 +38,87 @@ public class CartDAO {
 	}
 
 	@Transactional
-	public void clearCart(int userId) {
+	public CartEntity getCartById(int id) {
 		Session session = factory.getCurrentSession();
-		String hql = "DELETE FROM CartEntity c WHERE c.id.userId = :userId";
-		session.createQuery(hql).setParameter("userId", userId).executeUpdate();
+		String hql = "FROM CartEntity ce WHERE ce.id = :id";
+		Query<CartEntity> query = session.createQuery(hql, CartEntity.class);
+		query.setParameter("id", id);
+		return query.uniqueResult(); // Trả về duy nhất một đối tượng
 	}
-	
+
+	@Transactional
+	public void deleteCartById(int cartId) {
+		Session session = factory.getCurrentSession();
+		String hql = "DELETE FROM CartEntity c WHERE c.id = :cartId";
+		session.createQuery(hql).setParameter("cartId", cartId).executeUpdate();
+	}
 
 	// Them gio hang
 	@Transactional
-	public HashMap<Integer, CartDTO> addCart(int id, HashMap<Integer, CartDTO> cart) {
-	    // Lấy sản phẩm từ database
-	    ProductDTO product = productDAO.findProductDTOById(id);
+	public HashMap<Integer, CartDTO> AddCart(int id, HashMap<Integer, CartDTO> cart, int userId) {
+		Session session = factory.getCurrentSession();
 
-	    if (product != null) {
-	        // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-	        CartDTO itemCart = cart.get(id);
-	        
-	        if (itemCart != null) {
-	            // Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng
-	            itemCart.setQuantity(itemCart.getQuantity() + 1);
-	        } else {
-	            // Nếu sản phẩm chưa có trong giỏ hàng, tạo mới CartDTO và thêm vào giỏ hàng
-	            itemCart = new CartDTO();
-	            itemCart.setProduct(product);
-	            itemCart.setQuantity(1);
-	        }
+		// Lấy thông tin sản phẩm từ database
+		ProductDTO product = productDAO.findProductDTOById(id);
 
-	        // Tính lại giá trị tổng cho sản phẩm trong giỏ
-	        itemCart.setTotalPrice(itemCart.getQuantity() * product.calPrice());
+		if (product != null) {
+			CartDTO itemCart = cart.get(id);
 
-	        // Cập nhật giỏ hàng
-	        cart.put(id, itemCart);
-	    }
+			if (itemCart != null) {
+				// Nếu sản phẩm đã có trong session, tăng số lượng
+				itemCart.setQuantity(itemCart.getQuantity() + 1);
+				itemCart.setTotalPrice(itemCart.getQuantity() * product.calPrice());
+			} else {
+				// Nếu chưa có trong session, thêm mới sản phẩm
+				itemCart = new CartDTO();
+				itemCart.setProduct(product);
+				itemCart.setQuantity(1);
+				itemCart.setTotalPrice(product.calPrice());
+				cart.put(id, itemCart);
+			}
 
-	    return cart;
+			// Đồng bộ với database nếu người dùng đã đăng nhập
+			if (userId > 0) {
+				syncProductQuantityToDatabase(userId, id, 1); // Tăng thêm 1
+			}
+		}
+
+		return cart;
 	}
 
+	@Transactional
+	public void syncProductQuantityToDatabase(int userId, int productId, int increment) {
+		Session session = factory.getCurrentSession();
 
+		// Kiểm tra sản phẩm đã tồn tại trong giỏ hàng chưa
+		String hql = "FROM CartEntity c WHERE c.userInfo.userId = :userId AND c.product.idProduct = :productId";
+		Query<CartEntity> query = session.createQuery(hql, CartEntity.class);
+		query.setParameter("userId", userId);
+		query.setParameter("productId", productId);
+
+		List<CartEntity> cartList = query.getResultList();
+
+		if (!cartList.isEmpty()) {
+			// Nếu tồn tại, tăng số lượng
+			CartEntity existingCart = cartList.get(0);
+			existingCart.setQuantity(existingCart.getQuantity() + increment);
+			session.update(existingCart);
+		} else {
+			// Nếu chưa có, thêm mới sản phẩm
+			CartEntity newCartEntity = new CartEntity();
+			UserInfoEntity userInfo = session.get(UserInfoEntity.class, userId);
+			ProductEntity product = session.get(ProductEntity.class, productId);
+
+			if (userInfo != null && product != null) {
+				newCartEntity.setUserInfo(userInfo);
+				newCartEntity.setProduct(product);
+				newCartEntity.setQuantity(increment);
+				session.save(newCartEntity);
+			} else {
+				throw new IllegalArgumentException("User hoặc Product không tồn tại");
+			}
+		}
+	}
 
 	// Chỉnh sửa giỏ hàng
 	@Transactional
@@ -95,152 +136,146 @@ public class CartDAO {
 		cart.put(id, itemCart);
 		return cart;
 	}
-	//Xóa khỏi giỏ hàng
+
+	// Xóa khỏi giỏ hàng
 	@Transactional
 	public HashMap<Integer, CartDTO> DeleteCart(int id, HashMap<Integer, CartDTO> cart) {
-	    if (cart == null) {
-	        return cart;
-	    }
-	    if (cart.containsKey(id)) {
-	        cart.remove(id); // Xóa sản phẩm khỏi giỏ hàng
-	    }
-	    return cart;
+		if (cart == null) {
+			return cart;
+		}
+		if (cart.containsKey(id)) {
+			cart.remove(id); // Xóa sản phẩm khỏi giỏ hàng
+		}
+		return cart;
 	}
 
-	
-	//Tính tổng số lượng trong giỏ
+	// Tính tổng số lượng trong giỏ
 	@Transactional
 	public int TotalQuanty(HashMap<Integer, CartDTO> cart) {
-		int totalQuanty=0;
-		for(Map.Entry<Integer, CartDTO> itemCart:cart.entrySet()) {
-			totalQuanty+=itemCart.getValue().getQuantity();
+		int totalQuanty = 0;
+		for (Map.Entry<Integer, CartDTO> itemCart : cart.entrySet()) {
+			totalQuanty += itemCart.getValue().getQuantity();
 		}
 		return totalQuanty;
 	}
-	
-	//Tính tổng giá tiền trong giỏ
+
+	// Tính tổng giá tiền trong giỏ
 	@Transactional
 	public double TotalPrice(HashMap<Integer, CartDTO> cart) {
-		int totalPrice=0;
-		for(Map.Entry<Integer, CartDTO> itemCart:cart.entrySet()) {
-			totalPrice+=itemCart.getValue().getTotalPrice();
+		int totalPrice = 0;
+		for (Map.Entry<Integer, CartDTO> itemCart : cart.entrySet()) {
+			totalPrice += itemCart.getValue().getTotalPrice();
 		}
 		return totalPrice;
 	}
-	
-	//Lưu product cart với có user đăng nhập
+
+	// Lưu product cart với có user đăng nhập
 	@Transactional
 	public void saveCartToDatabase(AccountEntity user, HashMap<Integer, CartDTO> cartSession) {
-	    Session session = factory.getCurrentSession();
-	    HashMap<Integer, CartDTO> cartDatabase = getCartFromDatabase(user.getUserInfo().getUserId());
+		Session session = factory.getCurrentSession();
+		HashMap<Integer, CartDTO> cartDatabase = getCartFromDatabase(user.getUserInfo().getUserId());
 
-	    for (Map.Entry<Integer, CartDTO> entry : cartSession.entrySet()) {
-	        int productId = entry.getKey();
-	        CartDTO cartDTO = entry.getValue();
+		for (Map.Entry<Integer, CartDTO> entry : cartSession.entrySet()) {
+			int productId = entry.getKey();
+			CartDTO cartDTO = entry.getValue();
 
-	        if (cartDatabase.containsKey(productId)) {
-	            // Nếu sản phẩm đã tồn tại, cập nhật số lượng
-	            CartDTO existingCart = cartDatabase.get(productId);
-	            existingCart.setQuantity(existingCart.getQuantity() + cartDTO.getQuantity());
-	            existingCart.setTotalPrice(existingCart.getQuantity() * existingCart.getProduct().calPrice());
-	        } else {
-	            // Nếu không tồn tại, thêm mới
-	            CartEntity newCartEntity = new CartEntity();
-	            newCartEntity.setId(new CartId(user.getUserInfo().getUserId(), productId));
-	            newCartEntity.setUserInfo(user.getUserInfo());
-	            newCartEntity.setProduct(productDAO.getProductById(productId));
-	            newCartEntity.setQuantity(cartDTO.getQuantity());
-	            session.save(newCartEntity);
-	        }
-	    }
+			if (cartDatabase.containsKey(productId)) {
+				// Nếu sản phẩm đã tồn tại, cập nhật số lượng
+				CartDTO existingCart = cartDatabase.get(productId);
+				existingCart.setQuantity(existingCart.getQuantity() + cartDTO.getQuantity());
+				existingCart.setTotalPrice(existingCart.getQuantity() * existingCart.getProduct().calPrice());
+			} else {
+				// Nếu không tồn tại, thêm mới
+				CartEntity newCartEntity = new CartEntity();
+				newCartEntity.setUserInfo(user.getUserInfo());
+				newCartEntity.setProduct(productDAO.getProductById(productId));
+				newCartEntity.setQuantity(cartDTO.getQuantity());
+				session.save(newCartEntity);
+			}
+		}
 	}
 
+	@Transactional
+	public HashMap<Integer, CartDTO> getCartFromDatabase(int userId) {
+		Session session = factory.getCurrentSession();
+		String hql = "FROM CartEntity c WHERE c.userInfo.userId = :userId";
+		Query<CartEntity> query = session.createQuery(hql, CartEntity.class);
+		query.setParameter("userId", userId);
 
-	
-	 @Transactional
-	    public HashMap<Integer, CartDTO> getCartFromDatabase(int userId) {
-	        Session session = factory.getCurrentSession();
-	        String hql = "FROM CartEntity c WHERE c.userInfo.userId = :userId";
-	        Query<CartEntity> query = session.createQuery(hql, CartEntity.class);
-	        query.setParameter("userId", userId);
+		List<CartEntity> cartEntities = query.list();
+		HashMap<Integer, CartDTO> cart = new HashMap<>();
 
-	        List<CartEntity> cartEntities = query.list();
-	        HashMap<Integer, CartDTO> cart = new HashMap<>();
+		for (CartEntity entity : cartEntities) {
+			CartDTO cartDTO = new CartDTO();
+			cartDTO.setId(entity.getId());
+			cartDTO.setProduct(productDAO.findProductDTOById(entity.getProduct().getIdProduct()));
+			cartDTO.setQuantity(entity.getQuantity());
+			cartDTO.setTotalPrice(cartDTO.getQuantity() * cartDTO.getProduct().calPrice());
+			cart.put(entity.getProduct().getIdProduct(), cartDTO);
+		}
+		return cart;
+	}
 
-	        for (CartEntity entity : cartEntities) {
-	            CartDTO cartDTO = new CartDTO();
-	            cartDTO.setProduct(productDAO.findProductDTOById(entity.getProduct().getIdProduct()));
-	            cartDTO.setQuantity(entity.getQuantity());
-	            cartDTO.setTotalPrice(cartDTO.getQuantity() * cartDTO.getProduct().calPrice());
-	            cart.put(entity.getProduct().getIdProduct(), cartDTO);
-	        }
-	        return cart;
-	    }
+	@Transactional
+	public void syncCartToDatabase(int userId, HashMap<Integer, CartDTO> cart) {
+		Session session = factory.getCurrentSession();
 
-	 @Transactional
-	 public void syncCartToDatabase(int userId, HashMap<Integer, CartDTO> cart) {
-	     Session session = factory.getCurrentSession();
+		// Duyệt qua tất cả các sản phẩm trong giỏ hàng (cart)
+		for (CartDTO cartDTO : cart.values()) {
+			// Truy vấn để tìm CartEntity theo userId và productId
+			String hql = "FROM CartEntity c WHERE c.userInfo.userId = :userId AND c.product.idProduct = :productId";
+			Query<CartEntity> query = session.createQuery(hql, CartEntity.class);
+			query.setParameter("userId", userId);
+			query.setParameter("productId", cartDTO.getProduct().getIdProduct());
 
-	     // Duyệt qua tất cả các sản phẩm trong giỏ hàng (cart)
-	     for (CartDTO cartDTO : cart.values()) {
-	         // Truy vấn để tìm CartEntity theo userId và productId
-	         String hql = "FROM CartEntity c WHERE c.userInfo.userId = :userId AND c.product.idProduct = :productId";
-	         Query<CartEntity> query = session.createQuery(hql, CartEntity.class);
-	         query.setParameter("userId", userId);
-	         query.setParameter("productId", cartDTO.getProduct().getIdProduct());
+			List<CartEntity> existingCartList = query.getResultList();
 
-	         List<CartEntity> existingCartList = query.getResultList();
+			if (!existingCartList.isEmpty()) {
+				// Nếu sản phẩm đã tồn tại trong giỏ hàng, cập nhật số lượng
+				CartEntity existingCart = existingCartList.get(0);
+				existingCart.setQuantity(existingCart.getQuantity() + cartDTO.getQuantity());
+				session.update(existingCart);
+			} else {
+				// Nếu sản phẩm chưa có trong giỏ hàng, tạo mới với số lượng là 1
+				CartEntity newCartEntity = new CartEntity();
+				newCartEntity.setUserInfo(session.get(UserInfoEntity.class, userId));
+				newCartEntity.setProduct(session.get(ProductEntity.class, cartDTO.getProduct().getIdProduct()));
+				newCartEntity.setQuantity(cartDTO.getQuantity());
 
-	         if (!existingCartList.isEmpty()) {
-	             // Nếu sản phẩm đã tồn tại trong giỏ hàng, cập nhật số lượng
-	             CartEntity existingCart = existingCartList.get(0);
-	             existingCart.setQuantity(existingCart.getQuantity() + cartDTO.getQuantity());
-	             session.update(existingCart);
-	         } else {
-	             // Nếu sản phẩm chưa có trong giỏ hàng, tạo mới với số lượng là 1
-	             CartEntity newCartEntity = new CartEntity();
-	             newCartEntity.setId(new CartId(userId, cartDTO.getProduct().getIdProduct()));
-	             newCartEntity.setUserInfo(session.get(UserInfoEntity.class, userId));
-	             newCartEntity.setProduct(session.get(ProductEntity.class, cartDTO.getProduct().getIdProduct()));
-	             newCartEntity.setQuantity(cartDTO.getQuantity());
+				// Lưu sản phẩm mới vào giỏ hàng
+				session.save(newCartEntity);
+			}
+		}
+	}
 
-	             // Lưu sản phẩm mới vào giỏ hàng
-	             session.save(newCartEntity);
-	         }
-	     }
-	 }
+	@Transactional
+	public void deleteCartFromDatabase(int userId, int productId) {
+		Session session = factory.getCurrentSession();
+		String hql = "DELETE FROM CartEntity c WHERE c.userInfo.userId = :userId AND c.product.idProduct = :productId";
+		Query query = session.createQuery(hql);
+		query.setParameter("userId", userId);
+		query.setParameter("productId", productId);
+		query.executeUpdate();
+	}
 
-	 @Transactional
-	 public void deleteCartFromDatabase(int userId, int productId) {
-	     Session session = factory.getCurrentSession();
-	     String hql = "DELETE FROM CartEntity c WHERE c.userInfo.userId = :userId AND c.product.idProduct = :productId";
-	     Query query = session.createQuery(hql);
-	     query.setParameter("userId", userId);
-	     query.setParameter("productId", productId);
-	     query.executeUpdate();
-	 }
+	@Transactional
+	public void updateProductQuantityInDatabase(int userId, int productId, int quantity) {
+		Session session = factory.getCurrentSession();
 
-	 
-	 @Transactional
-	 public void updateProductQuantityInDatabase(int userId, int productId, int quantity) {
-	     Session session = factory.getCurrentSession();
+		// Tìm sản phẩm trong giỏ hàng của người dùng
+		String hql = "FROM CartEntity c WHERE c.userInfo.userId = :userId AND c.product.idProduct = :productId";
+		Query<CartEntity> query = session.createQuery(hql, CartEntity.class);
+		query.setParameter("userId", userId);
+		query.setParameter("productId", productId);
 
-	     // Tìm sản phẩm trong giỏ hàng của người dùng
-	     String hql = "FROM CartEntity c WHERE c.userInfo.userId = :userId AND c.product.idProduct = :productId";
-	     Query<CartEntity> query = session.createQuery(hql, CartEntity.class);
-	     query.setParameter("userId", userId);
-	     query.setParameter("productId", productId);
+		List<CartEntity> cartList = query.getResultList();
 
-	     List<CartEntity> cartList = query.getResultList();
-
-	     if (!cartList.isEmpty()) {
-	         // Nếu tìm thấy sản phẩm, cập nhật số lượng và tổng giá
-	         CartEntity cartEntity = cartList.get(0);
-	         cartEntity.setQuantity(quantity);
-	         session.update(cartEntity);  // Cập nhật vào cơ sở dữ liệu
-	     }
-	 }
-
-
+		if (!cartList.isEmpty()) {
+			// Nếu tìm thấy sản phẩm, cập nhật số lượng và tổng giá
+			CartEntity cartEntity = cartList.get(0);
+			cartEntity.setQuantity(quantity);
+			session.update(cartEntity); // Cập nhật vào cơ sở dữ liệu
+		}
+	}
 
 }

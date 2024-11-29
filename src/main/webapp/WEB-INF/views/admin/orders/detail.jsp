@@ -8,7 +8,8 @@
 		<h1>Quản lý đơn hàng</h1>
 		<ol class="breadcrumb">
 			<li><a href="#"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
-			<li class="active">Đơn hàng</li>
+			<li><a>Đơn hàng</a></li>
+			<li class="active">Chi tiết đơn hàng</li>
 		</ol>
 	</section>
 
@@ -35,51 +36,45 @@
 					</div>
 				</div>
 				<!-- /.box-header -->
-				<div class="box-body table-responsive no-padding">
+				<div class="box-body table-responsive no-padding"
+					style="margin-top: 30px ">
 					<table class="table table-hover">
 						<thead>
 							<tr>
-								<th>ID Đơn Hàng</th>
-								<th>Người Đặt Hàng</th>
-								<th>Thời Gian</th>
-								<th>Trạng Thái</th>
-								<th>Tổng Giá</th>
-								<th>Hình thức</th>
-								<th>Tùy Chọn</th>
+								<th>Hình Ảnh</th>
+								<th>Tên Sản Phẩm</th>
+								<th>Thương Hiệu</th>
+								<th>Giá Bán</th>
+								<th>Số Lượng</th>
+								<th>Thành tiền</th>
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="order" items="${orders}">
+							<c:forEach var="d" items="${detail}">
 								<tr>
-									<td>${order.orderId}</td>
-									<td>${order.userFullname}</td>
-									<td>${order.time}</td>
-									<td>${order.state}</td>
-									<td><fmt:formatNumber value="${order.totalPrice}"
+									<td><a href="product-detail/${d.product.idProduct}"><img
+											width="100" src="<c:url value='${ d.product.image }'/>"
+											alt=""></a></td>
+									<td><a href="product-detail/${d.product.idProduct}"
+										style="color: black;">${d.product.nameProduct}</a></td>
+									<td>${d.product.brandName}</td>
+									<td><fmt:formatNumber value="${d.product.salePrice}"
 											type="number" groupingUsed="true" /> VNĐ</td>
-									<td><c:choose>
-											<c:when test="${order.paymentMethod == 0}">
-            									Tiền mặt
-        									</c:when>
-											<c:when test="${order.paymentMethod == 1}">
-            									Chuyển khoản
-        									</c:when>
-											<c:otherwise>
-            									Không xác định
-        									</c:otherwise>
-										</c:choose></td>
-									<td><a
-										href="${pageContext.request.contextPath}/admin/orders/detail-order/${order.orderId}"
-										class="btn btn-success">Xem</a> <a
-										href="${pageContext.request.contextPath}/admin/edit-order/${order.orderId}"
-										class="btn btn-success">Sửa</a> <a
-										href="${pageContext.request.contextPath}/admin/delete-order/${order.orderId}"
-										class="btn btn-danger">Xóa</a></td>
+									<td>${d.quantity}</td>
+									<td><fmt:formatNumber
+											value="${d.product.salePrice * d.quantity}" type="number"
+											groupingUsed="true" /> VNĐ</td>
 								</tr>
 							</c:forEach>
 						</tbody>
 					</table>
+					<!-- Thêm button "Sửa Trạng Thái" -->
+					<a
+						href="${pageContext.request.contextPath}/admin/orders/change-status/${order.orderId}"
+						class="btn btn-primary" style="margin: 20px 20px;"> Sửa Trạng
+						Thái </a>
 				</div>
+
 
 				<!-- /.box-body -->
 			</div>

@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import LapFarm.DAO.BrandDAO;
 import LapFarm.DAO.CategoryDAO;
+import LapFarm.DAO.OrderDetailDAO;
 import LapFarm.DAO.OrdersDAO;
 import LapFarm.DAO.ProductDAO;
 import LapFarm.DAO.UserDAO;
+import LapFarm.DTO.OrderDetailDTO;
 import LapFarm.DTO.OrdersDTO;
 import LapFarm.DTO.ProductDTO;
 import LapFarm.DTO.UserInfoDTO;
@@ -36,6 +38,8 @@ public class AdminController {
 	private UserDAO userDAO;
 	@Autowired
 	private BrandDAO brandDAO;
+	@Autowired
+	private OrderDetailDAO orderDetailDAO;
 	
 	public static String normalizeString(String input) {
         if (input == null || input.isEmpty()) {
@@ -101,6 +105,18 @@ public class AdminController {
         model.addAttribute("categories", categories);
         model.addAttribute("orders", orders);
 		return "/admin/orders/index";
+	}
+	
+	@RequestMapping(value="/orders/detail-order/{id}", method = RequestMethod.GET)
+	public String orderDetailIndex(@PathVariable("id") int id, ModelMap model) {
+		// Lấy danh sách categories từ DAO
+        List<CategoryEntity> categories = categoryDAO.getAllCategories();
+        List<OrderDetailDTO> detail = orderDetailDAO.getOrderDetailById(id);
+
+        // Đưa danh sách vào Model để đẩy sang view
+        model.addAttribute("categories", categories);
+        model.addAttribute("detail", detail);
+        return "/admin/orders/detail";
 	}
 	
 	@RequestMapping(value = { "/product" }, method = RequestMethod.GET)

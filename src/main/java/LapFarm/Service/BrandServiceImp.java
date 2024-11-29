@@ -19,9 +19,9 @@ public class BrandServiceImp implements IBrandService {
 	private BrandDAO brandDAO;
 
 	@Override
-	public List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText, int category,
-			String priceRange) {
-		return productDAO.getDataProductPaginates(start, end, searchText, category, priceRange);
+	public List<ProductDTO> GetDataProductPaginates(int start, int end, String searchText, int idCategory,
+			String priceRange, int idBrand) {
+		return productDAO.getDataProductPaginates(start, end, searchText, idCategory, priceRange, idBrand);
 	}
 
 	@Override
@@ -32,6 +32,18 @@ public class BrandServiceImp implements IBrandService {
 	@Override
 	public BrandEntity getBrandById(int idBrand) {
 		return brandDAO.getBrandById(idBrand);
+	}
+
+	@Override
+	public List<ProductDTO> getProductsByBrandName(String nameBrand) {
+		// TODO Auto-generated method stub
+		return productDAO.getProductsByBrandName(nameBrand);
+	}
+
+	@Override
+	public BrandEntity getBrandByName(String brandName) {
+		// TODO Auto-generated method stub
+		return brandDAO.getBrandByName(brandName);
 	}
 
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import LapFarm.DTO.ViewedItem;
 import LapFarm.Entity.AccountEntity;
+import LapFarm.Entity.ImageEntity;
 import LapFarm.Entity.ProductEntity;
 import LapFarm.Entity.UserInfoEntity;
 import jakarta.servlet.http.HttpSession;
@@ -26,31 +27,38 @@ public class AccountController {
 
 	@GetMapping("/account")
 	public String index(HttpSession httpSession, Model model) {
+		// Kiểm tra người dùng đăng nhập
 		AccountEntity user = (AccountEntity) httpSession.getAttribute("user");
 		if (user == null) {
 			return "redirect:/login";
 		}
+
+		// Lấy thông tin tài khoản và người dùng từ cơ sở dữ liệu
 		Session session = factory.openSession();
 		Transaction t = session.beginTransaction();
 		try {
 			AccountEntity account = session.get(AccountEntity.class, user.getEmail());
 			model.addAttribute("userProfile", account);
+
 			UserInfoEntity userInfo = account.getUserInfo();
 			model.addAttribute("userInfo", userInfo);
+
+			// Lấy danh sách sản phẩm đã xem từ HttpSession
 			List<ViewedItem> viewedItems = (List<ViewedItem>) httpSession.getAttribute("viewedItems");
 			if (viewedItems == null) {
 				viewedItems = new ArrayList<>();
 			}
-			t.commit();
+			model.addAttribute("viewedItems", viewedItems);
 
+			t.commit();
 		} catch (Exception e) {
-			// TODO: handle exception
 			t.rollback();
-			model.addAttribute("error", "Could not load account information" + e.getMessage());
+			model.addAttribute("error", "Không thể tải thông tin tài khoản: " + e.getMessage());
 		} finally {
 			session.close();
 		}
-		return "account";
+
+		return "account"; // Trả về trang "account.jsp"
 	}
 
 	@GetMapping("/profile")
@@ -123,46 +131,6 @@ public class AccountController {
 		} finally {
 			session.close();
 		}
-	}
-
-	@GetMapping("/viewProduct")
-	public String viewProduct(@RequestParam("itemId") String itemId, HttpSession httpSession) {
-	    List<ViewedItem> viewedItems = (List<ViewedItem>) httpSession.getAttribute("viewedItems");
-	    if (viewedItems == null) {
-	        viewedItems = new ArrayList<>();
-	    }
-	    ViewedItem item = getProductById(itemId); // Lấy thông tin sản phẩm từ database
-	    if (item != null && viewedItems.stream().noneMatch(v -> v.getItemId() == item.getItemId())) {
-	        viewedItems.add(item);
-	        httpSession.setAttribute("viewedItems", viewedItems); // Lưu lại danh sách
-	    }
-
-	    httpSession.setAttribute("viewedItems", viewedItems);
-	    return "redirect:/account#viewed"; // Điều hướng tới tab đã xem
-	}
-
-	private ViewedItem getProductById(String itemId) {
-	    Session session = factory.openSession();
-	    Transaction t = session.beginTransaction();
-	    try {
-	        // Thay thế bằng lớp sản phẩm của bạn
-	        ProductEntity product = session.get(ProductEntity.class, Integer.parseInt(itemId));
-	        if (product != null) {
-	            return new ViewedItem(
-	                product.getIdProduct(),
-	                product.getNameProduct(),
-	                product.getImages(),
-	                product.getSalePrice()
-	            );
-	        }
-	        t.commit();
-	    } catch (Exception e) {
-	        t.rollback();
-	        e.printStackTrace();
-	    } finally {
-	        session.close();
-	    }
-	    return null;
 	}
 
 

@@ -38,6 +38,16 @@ public class BrandDAO {
     }
     
     @Transactional
+    public BrandEntity getBrandByName(String brandName) {
+        Session session = factory.getCurrentSession();
+        String hql = "FROM BrandEntity b WHERE b.nameBrand = :brandName";
+        Query<BrandEntity> query = session.createQuery(hql, BrandEntity.class);
+        query.setParameter("brandName", brandName);
+        return query.uniqueResult();
+    }
+
+    
+    @Transactional
     public boolean checkBrandByName(String brandName) {
         Session session = factory.getCurrentSession();
 
@@ -71,4 +81,6 @@ public class BrandDAO {
             return false; // Có lỗi xảy ra trong quá trình cập nhật
         }
     }
+    
+   
 }

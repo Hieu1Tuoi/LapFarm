@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.BrandEntity;
+import LapFarm.Entity.CartEntity;
 import LapFarm.Entity.CategoryEntity;
 import LapFarm.Entity.ProductEntity;
 @Service
@@ -24,5 +25,7 @@ public interface IBaseService {
     Map<Integer, Long> getProductCountByAllBrands(List<BrandEntity> brands);
     
     List<ProductDTO> getTop5ProductsByLowestQuantity();
+    
+	
 	
 }

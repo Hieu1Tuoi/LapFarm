@@ -58,16 +58,18 @@
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver"
 		p:prefix="/WEB-INF/views/" p:suffix=".jsp" />
 
-<!-- 	<mvc:interceptors>
+	<!-- <mvc:interceptors> <mvc:interceptor> <mvc:mapping path="/login" /> 
+		<bean class="LapFarm.Interceptor.LoggerInterceptor" /> </mvc:interceptor> 
+		<mvc:interceptor> <mvc:mapping path="/admin/**" /> <bean class="LapFarm.Interceptor.GlobalInterceptor" 
+		/> </mvc:interceptor> </mvc:interceptors> -->
+
+	<mvc:interceptors>
 		<mvc:interceptor>
-			<mvc:mapping path="/login" />
-			<bean class="LapFarm.Interceptor.LoggerInterceptor" />
+			<!-- Áp dụng interceptor cho tất cả các request -->
+			<mvc:mapping path="/**" />
+			<bean class="LapFarm.Interceptor.CartInterceptor" />
 		</mvc:interceptor>
-		<mvc:interceptor>
-			<mvc:mapping path="/admin/**" />
-			<bean class="LapFarm.Interceptor.GlobalInterceptor" />
-		</mvc:interceptor>
-	</mvc:interceptors> -->
+	</mvc:interceptors>
 
 	<context:component-scan base-package="LapFarm.*" />
 </beans>
