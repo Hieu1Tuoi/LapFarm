@@ -70,6 +70,7 @@ public class LoginController extends BaseController {
 		httpSession.removeAttribute("user");
 		httpSession.removeAttribute("admin");
 		httpSession.removeAttribute("Cart");
+		httpSession.removeAttribute("viewedItems");
 		return "redirect:/login";
 	}
 

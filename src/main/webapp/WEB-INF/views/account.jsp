@@ -16,7 +16,7 @@ h1 {
 	font-weight: bold;
 	color: #d10000;
 	margin: 20px;
-	margin-left: 50px;
+	margin-left: 70px;
 }
 
 /* Tab navigation */
@@ -31,7 +31,7 @@ h1 {
 
 .tab-links li {
 	margin: 0;
-	margin-left: 22px;
+	margin-left: 50px;
 }
 
 .tab-links a {
@@ -98,31 +98,58 @@ input[type="radio"] {
 .link:hover {
 	text-decoration: underline;
 }
+#viewed .container {
+    display: flex; /* Sử dụng Flexbox để tạo bố cục linh hoạt */
+    flex-wrap: wrap; /* Cho phép các phần tử tự động xuống dòng khi không đủ chỗ */
+    gap: 20px; /* Khoảng cách giữa các phần tử */
+    justify-content: flex-start; /* Các phần tử sẽ xếp từ trái sang phải */
+    padding: 20px;
+}
+
+#viewed .container div {
+    flex: 0 0 calc(25% - 20px); /* Mỗi sản phẩm chiếm 25% chiều rộng của container, trừ đi khoảng cách */
+    text-align: center; /* Căn giữa nội dung trong mỗi sản phẩm */
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+#viewed img {
+    max-width: 100%; /* Giữ kích thước hình ảnh linh hoạt trong phần tử */
+    height: auto; /* Giữ tỷ lệ khung hình cho hình ảnh */
+}
+
 </style>
 <script>
 function showTab(tabId) {
-    // Ẩn toàn bộ tab
     const tabs = document.querySelectorAll('.tab');
     tabs.forEach(tab => {
         tab.classList.remove('active');
     });
 
-    // Bỏ class "active" khỏi các link
     const links = document.querySelectorAll('.tab-links a');
     links.forEach(link => {
         link.parentNode.classList.remove('active');
     });
 
-    // Hiển thị tab đang được chọn
-    document.getElementById(tabId).classList.add('active');
+    const activeTab = document.getElementById(tabId);
+    activeTab.classList.add('active');
 
-    // Thêm class "active" vào link tương ứng
     const activeLink = document.querySelector(`a[href="#${tabId}"]`);
     activeLink.parentNode.classList.add('active');
 
     // Cập nhật URL hash
-    window.location.hash = tabId; // Cập nhật URL
+    window.location.hash = tabId;
+
+    // Ẩn các phần tử khác nếu không phải tab "viewed"
+    const viewedTab = document.getElementById('viewed');
+    if (tabId !== 'viewed') {
+        viewedTab.style.display = 'none';
+    } else {
+        viewedTab.style.display = 'block';
+    }
 }
+
 
 // Mở tab mặc định
 document.addEventListener('DOMContentLoaded', function () {
@@ -156,10 +183,12 @@ document.addEventListener('DOMContentLoaded', function () {
 				<div class="form-group">
 					<label>Giới tính</label>
 					<div>
-						<input type="radio" id="male" name="sex" value="Nam"> <label
-							for="male" style="display: inline">Nam</label> <input
-							type="radio" id="female" name="sex" value="Nữ"> <label
-							for="female" style="display: inline;">Nữ</label>
+						<input type="radio" id="male" name="sex" value="Nam"
+							${userInfo.sex == 'Nam' ? 'checked' : ''}> <label
+							for="male">Nam</label> <input type="radio" id="female" name="sex"
+							value="Nữ" ${userInfo.sex == 'Nữ' ? 'checked' : ''}> <label
+							for="fermale">Nữ</label>
+
 					</div>
 				</div>
 				<div class="form-group">
@@ -195,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	</div>
 
 	<div id="orders-history" class="tab">
-		<h2>Order History</h2>
+		<h1>Order History</h1>
 		<ul>
 			<c:forEach var="order" items="${orders}">
 				<li>Order ID: ${order.orderId}, Date: ${order.date}, Total:
@@ -205,27 +234,24 @@ document.addEventListener('DOMContentLoaded', function () {
 	</div>
 
 	<div id="viewed" class="tab">
-		<h2>Sản phẩm đã xem</h2>
-		<c:if test="${empty viewedItems }">
-			<p>Bạn chưa xem sản phẩm nào</p>
-		</c:if>
-		<c:if test="${not empty viewedItems}">
-			<div class="viewed-items">
+		<h1>Sản phẩm đã xem</h1>
+		<div class="container">
+			<c:if test="${not empty viewedItems}">
 				<c:forEach var="item" items="${viewedItems}">
-					<div class="viewed-item"
-						style="display: flex; align-items: center; margin-bottom: 15px;">
-						<img src="${item.image}" alt="${item.name}"
-							style="width: 100px; height: 100px; margin-right: 20px;">
-						<div>
-							<h3 style="margin: 0; font-size: 18px;">${item.name}</h3>
-							<p style="margin: 0; color: #555;">Giá: ${item.price} VND</p>
-						</div>
+					<div>
+						<img src="${item.image}" alt="${item.name}" />
+						<p>${item.name}</p>
+						<p>Price: ${item.price}</p>
 					</div>
 				</c:forEach>
-			</div>
-		</c:if>
-	</div>
 
+				</tbody>
+			</c:if>
+			<c:if test="${empty viewedItems}">
+				<p>Bạn chưa xem sản phẩm nào.</p>
+			</c:if>
+
+		</div>
 </body>
 </html>
 

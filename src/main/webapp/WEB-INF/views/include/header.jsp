@@ -4,34 +4,38 @@
 <base href="${pageContext.servletContext.contextPath}/">
 <style>
 .dropdown-menu {
-	display: none; /* Ẩn menu theo mặc định */
+	display: none;
 	position: absolute;
 	top: 100%;
 	left: 0;
 	z-index: 1000;
 	float: left;
-	min-width: 12rem; /* Tăng chiều rộng tối thiểu */
-	padding: 1rem 0; /* Tăng khoảng cách trên dưới của menu */
+	min-width: 12rem;
+	padding: 1rem 0;
 	margin: 0;
-	font-size: 17px; /* Tăng kích thước chữ */
-	background-color: #fff;
-	border: 1px solid rgba(0, 0, 0, 0.15);
+	font-size: 17px;
+	background-color: #000; /* Đổi nền sang màu đen */
+	border: 1px solid rgba(255, 255, 255, 0.15); /* Đường viền nhẹ màu trắng */
 	border-radius: 0.25rem;
 	box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
-	/* Thêm hiệu ứng bóng mờ */
 }
+
 .dropdown.active .dropdown-menu {
-    display: block; /* Hiển thị menu khi dropdown ở trạng thái active */
+    display: block;
 }
+
 .dropdown-item {
-	padding: 5px 12px; /* Tăng khoảng cách bên trong của các item */
-	font-size: 16px; /* Kích thước chữ của item */
-	color: #212529;
+	padding: 5px 12px;
+	font-size: 16px;
+	color: #fff; /* Chữ màu trắng */
 	text-decoration: none;
 	display: block;
+	background-color: transparent; /* Giữ nền trong suốt cho item */
 }
 
-
+.dropdown-item:hover {
+	background-color: #333; /* Nền màu xám khi hover */
+	color: #fff; /* Giữ chữ màu trắng khi hover */
 </style>
 
 <!-- HEADER -->

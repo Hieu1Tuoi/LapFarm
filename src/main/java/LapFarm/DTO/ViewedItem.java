@@ -1,49 +1,44 @@
 package LapFarm.DTO;
 
-import java.util.List;
-
-import LapFarm.Entity.ImageEntity;
-
 public class ViewedItem {
-	private int itemId;
-	private String name;
-	private List<ImageEntity> image;
-	private double price;
-	public ViewedItem() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-	public ViewedItem(int itemId, String name, List<ImageEntity> list, double price) {
-		super();
-		this.itemId = itemId;
-		this.name = name;
-		this.image = list;
-		this.price = price;
-	}
-	public int getItemId() {
-		return itemId;
-	}
-	public void setItemId(int itemId) {
-		this.itemId = itemId;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public List<ImageEntity> getImage() {
-		return image;
-	}
-	public void setImage(List<ImageEntity> image) {
-		this.image = image;
-	}
-	public double getPrice() {
-		return price;
-	}
-	public void setPrice(double price) {
-		this.price = price;
-	}
-	
-	
+    private int id;        // Unique identifier for the product
+    private String name;    // Name of the product
+    private String image;   // URL of the product image
+    private long price;    // Price of the product
+
+    // Default constructor
+    public ViewedItem() {}
+
+    // Getters and Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int i) {
+        this.id = i;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public long getPrice() {
+        return price;
+    }
+
+    public void setPrice(long l) {
+        this.price = l;
+    }
 }
