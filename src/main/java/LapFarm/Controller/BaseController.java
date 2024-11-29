@@ -61,12 +61,12 @@ public class BaseController {
 	    if (account != null) {
 	        // Lấy giỏ hàng từ cơ sở dữ liệu và lưu vào session
 	        HashMap<Integer, CartDTO> cart = cartService.getCartFromDatabase(account.getUserInfo().getUserId());
-	        session.setAttribute("CartSession", cart);
-	    
-	    } else {
-	        // Nếu chưa đăng nhập, khởi tạo giỏ hàng rỗng
-	        session.setAttribute("CartSession", new HashMap<Integer, CartDTO>());
+	        session.setAttribute("Cart", cart);
 	    }
+//	    } else {
+//	        // Nếu chưa đăng nhập, khởi tạo giỏ hàng rỗng
+//	        session.setAttribute("Cart", new HashMap<Integer, CartDTO>());
+//	    }
 	}
 	
 	

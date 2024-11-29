@@ -21,7 +21,6 @@ public class CartController extends BaseController {
 
 	@RequestMapping("cart")
 	public String showCart(HttpSession session) {
-		addCartToSession(session);
 	    // Lấy thông tin người dùng từ session
 	    AccountEntity user = (AccountEntity) session.getAttribute("user");
 
