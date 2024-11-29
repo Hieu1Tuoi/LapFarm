@@ -24,8 +24,22 @@ public class OrderDetailsEntity {
 
     @Column(name = "Price", nullable = false)
     private int price;
+    
+    
 
-    // Getters and Setters
+    public OrderDetailsEntity() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public OrderDetailsEntity(OrderDetailId id, OrdersEntity order, ProductEntity product, int quantity, int price) {
+		super();
+		this.id = id;
+		this.order = order;
+		this.product = product;
+		this.quantity = quantity;
+		this.price = price;
+	}
+	// Getters and Setters
     public OrderDetailId getId() { return id; }
     public void setId(OrderDetailId id) { this.id = id; }
 
