@@ -70,7 +70,15 @@ public class ProductEntity {
 	// Constructors
 	public ProductEntity() {
 	}
+	
 
+	public ProductEntity(int idProduct, String nameProduct, List<ImageEntity> images, Double salePrice) {
+		super();
+		this.idProduct = idProduct;
+		this.nameProduct = nameProduct;
+		this.images = images;
+		this.salePrice = salePrice;
+	}
 
 	public String getNameProduct() {
 		return nameProduct;

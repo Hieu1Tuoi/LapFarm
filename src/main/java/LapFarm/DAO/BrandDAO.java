@@ -57,4 +57,18 @@ public class BrandDAO {
         // Sử dụng phương thức persist để lưu đối tượng vào database
         session.persist(brand);
     }
+    
+    @Transactional
+    public boolean updateBrand(BrandEntity brand) {
+        Session session = factory.getCurrentSession();
+
+        try {
+            // Sử dụng phương thức update để cập nhật đối tượng vào database
+            session.merge(brand);
+            return true; // Cập nhật thành công
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Có lỗi xảy ra trong quá trình cập nhật
+        }
+    }
 }
