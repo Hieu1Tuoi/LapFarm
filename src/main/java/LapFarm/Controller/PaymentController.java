@@ -2,6 +2,7 @@ package LapFarm.Controller;
 
 import LapFarm.DAO.CartDAO;
 import LapFarm.DAO.OrdersDAO;
+import LapFarm.DAO.ProductDAO;
 import LapFarm.DAO.UserDAO;
 import LapFarm.DTO.CartProductDTO;
 import LapFarm.Entity.AccountEntity;
@@ -51,6 +52,9 @@ public class PaymentController {
 	@Autowired
 	private OrdersDAO ordersDAO;
 
+	@Autowired
+	private ProductDAO productDAO;
+	
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String index(HttpSession httpSession, Model model) {
 		AccountEntity account = (AccountEntity) httpSession.getAttribute("user");
@@ -72,13 +76,14 @@ public class PaymentController {
 		for (Integer cartId : cartIdSelecteds) {
 			CartEntity cartEntity = cartDAO.getCartById(cartId);
 			ProductEntity product = cartEntity.getProduct();
-			String formattedPrice = new DecimalFormat("#,###").format(product.getSalePrice());
+			Double price = (1 - product.getDiscount()) * product.getSalePrice();
+			String formattedPrice = new DecimalFormat("#,###").format(price);
 
 			CartProductDTO cartProductDTO = new CartProductDTO(product.getNameProduct(), cartEntity.getQuantity(),
 					formattedPrice, product.getSalePrice() * cartEntity.getQuantity());
 
 			cartProductDTOList.add(cartProductDTO);
-			totalAmount += cartProductDTO.getTotalPrice();
+			totalAmount += price * cartEntity.getQuantity();
 		}
 
 		// Add the cart products and total amount to the model
@@ -188,16 +193,22 @@ public class PaymentController {
 				orderDetails.setOrder(order);
 				orderDetails.setProduct(cartItem.getProduct());
 				orderDetails.setQuantity(cartItem.getQuantity());
-				orderDetails.setPrice((int) Math.round(cartItem.getProduct().getSalePrice()));
+				ProductEntity product = productDAO.getProductById(cartItem.getProduct().getIdProduct());
+				product.setQuantity(product.getQuantity() - cartItem.getQuantity());
+				productDAO.updateProduct(product);
+				orderDetails.setPrice((int) Math.round((1 - cartItem.getProduct().getDiscount()) * cartItem.getProduct().getSalePrice()));
 
 				// Lưu chi tiết đơn hàng
 				ordersDAO.saveOrderDetail(orderDetails);
 				cartDAO.deleteCartById(cartId);
 			}
 
-			// Xóa giỏ hàng sau khi thanh toán
 			userDAO.updateUserinfo(account.getEmail(), fullName, account.getUserInfo().getDob(), tel, address,
 					account.getUserInfo().getSex());
+			account = userDAO.getAccountByEmail(account.getEmail());
+			httpSession.removeAttribute("user");
+			httpSession.setAttribute("user", account);
+			// Xóa giỏ hàng sau khi thanh toán
 			httpSession.removeAttribute("cartIdSelecteds");
 			httpSession.removeAttribute("OrderInfo");
 
@@ -303,16 +314,22 @@ public class PaymentController {
 						orderDetails.setOrder(order);
 						orderDetails.setProduct(cartItem.getProduct());
 						orderDetails.setQuantity(cartItem.getQuantity());
-						orderDetails.setPrice((int) Math.round(cartItem.getProduct().getSalePrice()));
+						ProductEntity product = productDAO.getProductById(cartItem.getProduct().getIdProduct());
+						product.setQuantity(product.getQuantity() - cartItem.getQuantity());
+						productDAO.updateProduct(product);
+						orderDetails.setPrice((int) Math.round((1 - cartItem.getProduct().getDiscount()) * cartItem.getProduct().getSalePrice()));
 
 						// Lưu chi tiết đơn hàng
 						ordersDAO.saveOrderDetail(orderDetails);
 						cartDAO.deleteCartById(cartId);
 					}
 
-					// Xóa giỏ hàng sau khi thanh toán
 					userDAO.updateUserinfo(account.getEmail(), fullName, account.getUserInfo().getDob(), tel, address,
 							account.getUserInfo().getSex());
+					account = userDAO.getAccountByEmail(account.getEmail());
+					httpSession.removeAttribute("user");
+					httpSession.setAttribute("user", account);
+					// Xóa giỏ hàng sau khi thanh toán
 					httpSession.removeAttribute("cartIdSelecteds");
 					httpSession.removeAttribute("OrderInfo");
 

@@ -90,6 +90,16 @@ public class CartServiceImp implements ICartService {
 		return cartDao.AddCart(id, cart, userId);
 	}
 
+	@Override
+	public boolean isProductAvailable(int productId) {
+	       int quantity = cartDao.getProductQuantity(productId);
+	       if (quantity == 0) {
+	            return false; // Nếu sản phẩm không tồn tại
+	        }
+	        return quantity > 0; // Kiểm tra nếu số lượng > 0
+	    
+	}
+
 	
 
 	

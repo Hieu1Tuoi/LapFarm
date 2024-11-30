@@ -19,7 +19,7 @@ public class GlobalInterceptor implements HandlerInterceptor {
 		}
 
 		if (session.getAttribute("admin") == null) {
-			response.sendRedirect(request.getContextPath() + "/error");
+			response.sendRedirect(request.getContextPath() + "/error/403");
 			return false;
 		}
 		return true;

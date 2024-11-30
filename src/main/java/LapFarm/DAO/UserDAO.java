@@ -24,57 +24,48 @@ public class UserDAO {
 	@Autowired
 	private SessionFactory factory;
 	@Autowired
-    private OrdersDAO ordersDAO;
-	
+	private OrdersDAO ordersDAO;
+
 	public List<UserInfoEntity> getAllUserInfo() {
-	    Session session = factory.openSession();
-	    try {
-	        String hql = "FROM UserInfoEntity";
-	        Query<UserInfoEntity> query = session.createQuery(hql, UserInfoEntity.class);
-	        return query.list(); // Trả về danh sách tất cả các bản ghi trong UserInfoEntity
-	    } finally {
-	        session.close();
-	    }
+		Session session = factory.openSession();
+		try {
+			String hql = "FROM UserInfoEntity";
+			Query<UserInfoEntity> query = session.createQuery(hql, UserInfoEntity.class);
+			return query.list(); // Trả về danh sách tất cả các bản ghi trong UserInfoEntity
+		} finally {
+			session.close();
+		}
 	}
-	
+
 	// Phương thức trả về danh sách người dùng với số lượng đơn hàng
-    public List<UserInfoDTO> getAllUserInfoWithOrderCount() {
-        Session session = factory.openSession();
-        try {
-            String hql = "FROM UserInfoEntity";
-            Query<UserInfoEntity> query = session.createQuery(hql, UserInfoEntity.class);
-            List<UserInfoEntity> userInfoList = query.list();
+	public List<UserInfoDTO> getAllUserInfoWithOrderCount() {
+		Session session = factory.openSession();
+		try {
+			String hql = "FROM UserInfoEntity";
+			Query<UserInfoEntity> query = session.createQuery(hql, UserInfoEntity.class);
+			List<UserInfoEntity> userInfoList = query.list();
 
-            // Duyệt qua tất cả người dùng và thêm số lượng đơn hàng
-            List<UserInfoDTO> userInfoDTOList = new ArrayList<>();
-            for (UserInfoEntity userInfo : userInfoList) {
-                // Gọi OrdersDAO để lấy số lượng đơn hàng của người dùng này
-                long numberOfOrders = ordersDAO.countOrdersByUserId(userInfo.getUserId());
-                
-                // Lấy trạng thái (state) từ AccountEntity
-                String state = userInfo.getAccount() != null ? userInfo.getAccount().getState() : null;
+			// Duyệt qua tất cả người dùng và thêm số lượng đơn hàng
+			List<UserInfoDTO> userInfoDTOList = new ArrayList<>();
+			for (UserInfoEntity userInfo : userInfoList) {
+				// Gọi OrdersDAO để lấy số lượng đơn hàng của người dùng này
+				long numberOfOrders = ordersDAO.countOrdersByUserId(userInfo.getUserId());
 
-                // Tạo UserInfoDTO và thêm vào danh sách
-                UserInfoDTO userInfoDTO = new UserInfoDTO(
-                        userInfo.getUserId(),
-                        userInfo.getAccount().getEmail(),
-                        userInfo.getFullName(),
-                        userInfo.getDob(),
-                        userInfo.getSex(),
-                        userInfo.getPhone(),
-                        userInfo.getAvatar(),
-                        userInfo.getAddress(),
-                        numberOfOrders,
-                        state
-                );
-                userInfoDTOList.add(userInfoDTO);
-            }
+				// Lấy trạng thái (state) từ AccountEntity
+				String state = userInfo.getAccount() != null ? userInfo.getAccount().getState() : null;
 
-            return userInfoDTOList; // Trả về danh sách UserInfoDTO
-        } finally {
-            session.close();
-        }
-    }
+				// Tạo UserInfoDTO và thêm vào danh sách
+				UserInfoDTO userInfoDTO = new UserInfoDTO(userInfo.getUserId(), userInfo.getAccount().getEmail(),
+						userInfo.getFullName(), userInfo.getDob(), userInfo.getSex(), userInfo.getPhone(),
+						userInfo.getAvatar(), userInfo.getAddress(), numberOfOrders, state);
+				userInfoDTOList.add(userInfoDTO);
+			}
+
+			return userInfoDTOList; // Trả về danh sách UserInfoDTO
+		} finally {
+			session.close();
+		}
+	}
 
 	public boolean checkEmailExists(String email) {
 		Session session = factory.openSession();
@@ -163,6 +154,26 @@ public class UserDAO {
 			t.rollback();
 			throw e;
 		} finally {
+			session.close();
+		}
+	}
+
+	public AccountEntity getAccountByEmail(String email) {
+		// Mở session từ factory
+		Session session = factory.openSession();
+		try {
+			// Tạo câu lệnh HQL
+			String hql = "FROM AccountEntity WHERE email = :email";
+			// Tạo query từ HQL
+			Query query = session.createQuery(hql);
+			// Đặt giá trị tham số email
+			query.setParameter("email", email);
+			// Lấy kết quả duy nhất (nếu có)
+			AccountEntity existingAccount = (AccountEntity) query.uniqueResult();
+			// Trả về đối tượng nếu tìm thấy, ngược lại trả về null
+			return existingAccount;
+		} finally {
+			// Đóng session sau khi xong
 			session.close();
 		}
 	}

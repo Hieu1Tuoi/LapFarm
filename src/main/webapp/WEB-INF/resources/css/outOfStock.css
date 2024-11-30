@@ -1,0 +1,34 @@
+@charset "UTF-8";
+
+/* Nút "Thêm giỏ hàng" bình thường */
+.add-to-cart-btn {
+    background-color: #ff6f61; /* Màu đỏ */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Hiệu ứng di chuột trên nút "Thêm giỏ hàng" */
+.add-to-cart-btn:hover {
+    background-color: #ff3d30; /* Màu đỏ đậm hơn */
+}
+
+/* Nút "Hết hàng" */
+.add-to-cart-btn.disabled {
+    background-color: #d3d3d3 !important; /* Màu xám nhạt */
+    color: #808080 !important; /* Màu chữ xám đậm */
+    border: 1px solid #a9a9a9 !important; /* Viền xám đậm */
+    cursor: not-allowed; /* Con trỏ không được phép thao tác */
+}
+
+/* Khi di chuột vào nút "Hết hàng", giữ nguyên trạng thái */
+.add-to-cart-btn.disabled:hover {
+    background-color: #d3d3d3 !important;
+    color: #808080 !important;
+    border: 1px solid #a9a9a9 !important;
+}
+

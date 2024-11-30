@@ -4,6 +4,8 @@
 <%@ include file="/WEB-INF/views/layouts/user-breadcumb.jsp"%>
 <%@ include file="/WEB-INF/views/layouts/user-aside.jsp"%>
 <!-- STORE -->
+<link type="text/css" rel="stylesheet"
+	href="<c:url value="/resources/css/outOfStock.css" />">
 <div id="store" class="col-md-9">
 	<h2></h2>
 	<h2>${ProductsPaginate != null ? ProductsPaginate.size() : 0}</h2>
@@ -74,12 +76,21 @@
 								</div>
 							</div>
 							<div class="add-to-cart">
-								<form action="addCart/${p.idProduct}" method="GET">
-									<button type="submit" class="add-to-cart-btn">
-										<i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
-									</button>
-								</form>
-							</div>
+                                <c:choose>
+                                    <c:when test="${p.quantity > 0}">
+                                        <form action="addCart/${p.idProduct}" method="GET">
+                                            <button type="submit" class="add-to-cart-btn">
+                                                <i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
+                                            </button>
+                                        </form>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button type="button" class="add-to-cart-btn disabled" disabled>
+                                            <i class="fa fa-ban"></i> Hết hàng
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
 						</div>
 					</div>
 
@@ -126,3 +137,16 @@
 <!-- /STORE -->
 
 <%@ include file="/WEB-INF/views/layouts/user-footer.jsp"%>
+<script type="text/javascript">
+    // Kiểm tra nếu có lỗi từ tham số URL
+    <c:if test="${not empty param.error}">
+        var error = "${param.error}";
+        
+        // Hiển thị thông báo tương ứng với lỗi
+        if (error === 'product-unavailable') {
+            alert('Sản phẩm đã hết hàng, không thể thêm vào giỏ.');
+        } else if (error === 'invalid-quantity') {
+            alert('Số lượng không hợp lệ, vui lòng kiểm tra lại.');
+        }
+    </c:if>
+</script>
