@@ -526,7 +526,7 @@ public class ProductDAO {
 	}
 
 	// Phương thức chuyển đổi từ ProductEntity sang ProductDTO
-	private ProductDTO mapToProductDTO(ProductEntity product) {
+	public ProductDTO mapToProductDTO(ProductEntity product) {
 		// Kiểm tra và lấy ảnh đầu tiên (nếu có)
 		String image = product.getImages() != null && !product.getImages().isEmpty()
 				? product.getImages().get(0).getImageUrl()
