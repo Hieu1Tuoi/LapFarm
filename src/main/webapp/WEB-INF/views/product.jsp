@@ -6,8 +6,21 @@
 <%@ include file="/WEB-INF/views/layouts/user-header.jsp"%>
 <%@ include file="/WEB-INF/views/layouts/user-breadcumb.jsp"%>
 
+<style>
+/* Định dạng nút "Hết hàng" */
+.add-to-cart-btn.disabled {
+    background-color: #d3d3d3;  /* Màu xám */
+    color: #808080;             /* Màu chữ xám */
+    cursor: not-allowed;        /* Hiển thị con trỏ không cho phép khi hover */
+}
+
+.add-to-cart-btn.disabled i {
+    color: #808080;             /* Màu xám cho biểu tượng */
+}
+
+</style>
 <div class="container">
-<h1>${Cart.size() }</h1>
+	<h1>${Cart.size() }</h1>
 	<!-- Kiểm tra nếu không có sản phẩm -->
 	<c:if test="${not empty errorMessage}">
 		<div class="alert alert-danger text-center">
@@ -101,9 +114,23 @@
 				<div class="product-btns mt-4">
 					<form action="addCart/${product.idProduct}" method="GET"
 						style="display: inline-block;">
-						<button class="btn btn-danger btn-lg">
-							<i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
-						</button>
+						<c:choose>
+							<c:when test="${product.quantity > 0}">
+								<form action="addCart/${product.idProduct}" method="GET">
+									<button class="btn btn-danger btn-lg">
+										<i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
+									</button>
+								</form>
+							</c:when>
+							<c:otherwise>
+								<button type="button"
+									class="add-to-cart-btn btn btn-danger btn-lg disabled" disabled>
+									<i class="fa fa-ban"></i> Hết hàng
+								</button>
+							</c:otherwise>
+						</c:choose>
+
+
 					</form>
 					<button class="btn btn-outline-secondary btn-lg"
 						style="display: inline-block;">
@@ -121,11 +148,9 @@
 			<ul class="tab-nav">
 				<li class="active"><a data-toggle="tab" href="#tab1">Description</a></li>
 				<li><a data-toggle="tab" href="#tab2">Details</a></li>
-				<li>
-				    <a data-toggle="tab" href="#tab3">
-				        Reviews <span class="badge">${totalReviews}</span>
-				    </a>
-				</li>
+				<li><a data-toggle="tab" href="#tab3"> Reviews <span
+						class="badge">${totalReviews}</span>
+				</a></li>
 			</ul>
 			<!-- /product tab nav -->
 
@@ -169,159 +194,171 @@
 				<div id="tab3" class="tab-pane fade in">
 					<div class="row">
 						<!-- Rating -->
-<div class="col-md-3">
-    <div id="rating">
-        <div class="rating-avg">
-            <span>${ratingSummary.average}</span>
-            <div class="rating-stars">
-                <c:forEach var="star" begin="1" end="5">
-                    <c:choose>
-                        <c:when test="${star <= ratingSummary.average}">
-                            <i class="fa fa-star"></i>
-                        </c:when>
-                        <c:otherwise>
-                            <i class="fa fa-star-o"></i>
-                        </c:otherwise>
-                    </c:choose>
-                </c:forEach>
-            </div>
-        </div>
-        <ul class="rating">
-            <li>
-                <div class="rating-stars">
-                    <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
-                    <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                </div>
-                <div class="rating-progress">
-                    <div style="width: ${(ratingSummary.fiveStar / totalReviews) * 100}%;"></div>
-                </div>
-                <span class="sum">${ratingSummary.fiveStar}</span>
-            </li>
-            <li>
-                <div class="rating-stars">
-                    <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
-                    <i class="fa fa-star"></i> <i class="fa fa-star-o"></i>
-                </div>
-                <div class="rating-progress">
-                    <div style="width: ${(ratingSummary.fourStar / totalReviews) * 100}%;"></div>
-                </div>
-                <span class="sum">${ratingSummary.fourStar}</span>
-            </li>
-            <li>
-                <div class="rating-stars">
-                    <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
-                    <i class="fa fa-star-o"></i> <i class="fa fa-star-o"></i>
-                </div>
-                <div class="rating-progress">
-                    <div style="width: ${(ratingSummary.threeStar / totalReviews) * 100}%;"></div>
-                </div>
-                <span class="sum">${ratingSummary.threeStar}</span>
-            </li>
-            <li>
-                <div class="rating-stars">
-                    <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star-o"></i> 
-                    <i class="fa fa-star-o"></i> <i class="fa fa-star-o"></i>
-                </div>
-                <div class="rating-progress">
-                    <div style="width: ${(ratingSummary.twoStar / totalReviews) * 100}%;"></div>
-                </div>
-                <span class="sum">${ratingSummary.twoStar}</span>
-            </li>
-            <li>
-                <div class="rating-stars">
-                    <i class="fa fa-star"></i> <i class="fa fa-star-o"></i> <i class="fa fa-star-o"></i> 
-                    <i class="fa fa-star-o"></i> <i class="fa fa-star-o"></i>
-                </div>
-                <div class="rating-progress">
-                    <div style="width: ${(ratingSummary.oneStar / totalReviews) * 100}%;"></div>
-                </div>
-                <span class="sum">${ratingSummary.oneStar}</span>
-            </li>
-        </ul>
-    </div>
-</div>
-<!-- /Rating -->
+						<div class="col-md-3">
+							<div id="rating">
+								<div class="rating-avg">
+									<span>${ratingSummary.average}</span>
+									<div class="rating-stars">
+										<c:forEach var="star" begin="1" end="5">
+											<c:choose>
+												<c:when test="${star <= ratingSummary.average}">
+													<i class="fa fa-star"></i>
+												</c:when>
+												<c:otherwise>
+													<i class="fa fa-star-o"></i>
+												</c:otherwise>
+											</c:choose>
+										</c:forEach>
+									</div>
+								</div>
+								<ul class="rating">
+									<li>
+										<div class="rating-stars">
+											<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
+												class="fa fa-star"></i> <i class="fa fa-star"></i> <i
+												class="fa fa-star"></i>
+										</div>
+										<div class="rating-progress">
+											<div
+												style="width: ${(ratingSummary.fiveStar / totalReviews) * 100}%;"></div>
+										</div> <span class="sum">${ratingSummary.fiveStar}</span>
+									</li>
+									<li>
+										<div class="rating-stars">
+											<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
+												class="fa fa-star"></i> <i class="fa fa-star"></i> <i
+												class="fa fa-star-o"></i>
+										</div>
+										<div class="rating-progress">
+											<div
+												style="width: ${(ratingSummary.fourStar / totalReviews) * 100}%;"></div>
+										</div> <span class="sum">${ratingSummary.fourStar}</span>
+									</li>
+									<li>
+										<div class="rating-stars">
+											<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
+												class="fa fa-star"></i> <i class="fa fa-star-o"></i> <i
+												class="fa fa-star-o"></i>
+										</div>
+										<div class="rating-progress">
+											<div
+												style="width: ${(ratingSummary.threeStar / totalReviews) * 100}%;"></div>
+										</div> <span class="sum">${ratingSummary.threeStar}</span>
+									</li>
+									<li>
+										<div class="rating-stars">
+											<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
+												class="fa fa-star-o"></i> <i class="fa fa-star-o"></i> <i
+												class="fa fa-star-o"></i>
+										</div>
+										<div class="rating-progress">
+											<div
+												style="width: ${(ratingSummary.twoStar / totalReviews) * 100}%;"></div>
+										</div> <span class="sum">${ratingSummary.twoStar}</span>
+									</li>
+									<li>
+										<div class="rating-stars">
+											<i class="fa fa-star"></i> <i class="fa fa-star-o"></i> <i
+												class="fa fa-star-o"></i> <i class="fa fa-star-o"></i> <i
+												class="fa fa-star-o"></i>
+										</div>
+										<div class="rating-progress">
+											<div
+												style="width: ${(ratingSummary.oneStar / totalReviews) * 100}%;"></div>
+										</div> <span class="sum">${ratingSummary.oneStar}</span>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<!-- /Rating -->
 
 
 
-<!-- Reviews Section -->
-<div class="col-md-6">
-    <div id="reviews">
-        <ul class="reviews">
-            <c:forEach var="review" items="${reviews}">
-                <li>
-                    <div class="review-heading">
-                        <h5 class="name">${review.user.fullName}</h5>
-                        <p class="date">
-                            <fmt:formatDate value="${review.reviewDate}" pattern="dd MMM yyyy, hh:mm a" />
-                        </p>
-                        <div class="review-rating">
-                            <c:forEach var="star" begin="1" end="5">
-                                <c:choose>
-                                    <c:when test="${star <= review.rating}">
-                                        <i class="fa fa-star"></i>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <i class="fa fa-star-o empty"></i>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:forEach>
-                        </div>
-                    </div>
-                    <div class="review-body">
-                        <p>${review.comment}</p>
-                    </div>
-                </li>
-            </c:forEach>
-            <c:if test="${empty reviews}">
-                <li><p>Chưa có đánh giá nào cho sản phẩm này.</p></li>
-            </c:if>
-        </ul>
+						<!-- Reviews Section -->
+						<div class="col-md-6">
+							<div id="reviews">
+								<ul class="reviews">
+									<c:forEach var="review" items="${reviews}">
+										<li>
+											<div class="review-heading">
+												<h5 class="name">${review.user.fullName}</h5>
+												<p class="date">
+													<fmt:formatDate value="${review.reviewDate}"
+														pattern="dd MMM yyyy, hh:mm a" />
+												</p>
+												<div class="review-rating">
+													<c:forEach var="star" begin="1" end="5">
+														<c:choose>
+															<c:when test="${star <= review.rating}">
+																<i class="fa fa-star"></i>
+															</c:when>
+															<c:otherwise>
+																<i class="fa fa-star-o empty"></i>
+															</c:otherwise>
+														</c:choose>
+													</c:forEach>
+												</div>
+											</div>
+											<div class="review-body">
+												<p>${review.comment}</p>
+											</div>
+										</li>
+									</c:forEach>
+									<c:if test="${empty reviews}">
+										<li><p>Chưa có đánh giá nào cho sản phẩm này.</p></li>
+									</c:if>
+								</ul>
 
-        <!-- Pagination -->
-        <ul class="reviews-pagination">
-            <c:forEach begin="1" end="${totalPages}" var="page">
-                <li class="${page == currentPage ? 'active' : ''}">
-                    <a href="?page=${page}&pageSize=${pageSize}">${page}</a>
-                </li>
-            </c:forEach>
-        </ul>
-    </div>
-</div>
-<!-- /Reviews Section -->
+								<!-- Pagination -->
+								<ul class="reviews-pagination">
+									<c:forEach begin="1" end="${totalPages}" var="page">
+										<li class="${page == currentPage ? 'active' : ''}"><a
+											href="?page=${page}&pageSize=${pageSize}">${page}</a></li>
+									</c:forEach>
+								</ul>
+							</div>
+						</div>
+						<!-- /Reviews Section -->
 
 
 
 
 
 						<!-- Review Form -->
-								<div class="col-md-3">
-								    <div id="review-form">
-								        <!-- Kiểm tra nếu người dùng đã đăng nhập -->
-								        <c:if test="${not empty sessionScope.user}">
-								            <form class="review-form" action="/submit-review" method="post">
+						<div class="col-md-3">
+							<div id="review-form">
+								<!-- Kiểm tra nếu người dùng đã đăng nhập -->
+								<c:if test="${not empty sessionScope.user}">
+									<form class="review-form" action="/submit-review" method="post">
 
-								                <textarea class="input" name="review" placeholder="Your Review" required></textarea>
-								                <div class="input-rating">
-								                    <span>Your Rating: </span>
-								                    <div class="stars">
-								                        <input id="star5" name="rating" value="5" type="radio"><label for="star5"></label>
-								                        <input id="star4" name="rating" value="4" type="radio"><label for="star4"></label>
-								                        <input id="star3" name="rating" value="3" type="radio"><label for="star3"></label>
-								                        <input id="star2" name="rating" value="2" type="radio"><label for="star2"></label>
-								                        <input id="star1" name="rating" value="1" type="radio"><label for="star1"></label>
-								                    </div>
-								                </div>
-								                <button class="primary-btn">Submit</button>
-								            </form>
-								        </c:if>
-								        <!-- Nếu người dùng chưa đăng nhập -->
-								        <c:if test="${empty sessionScope.user}">
-								            <p>Bạn cần <a href="<c:url value='/login' />">đăng nhập</a> để gửi đánh giá.</p>
-								        </c:if>
-								    </div>
-								</div>
-								<!-- /Review Form -->
+										<textarea class="input" name="review"
+											placeholder="Your Review" required></textarea>
+										<div class="input-rating">
+											<span>Your Rating: </span>
+											<div class="stars">
+												<input id="star5" name="rating" value="5" type="radio"><label
+													for="star5"></label> <input id="star4" name="rating"
+													value="4" type="radio"><label for="star4"></label>
+												<input id="star3" name="rating" value="3" type="radio"><label
+													for="star3"></label> <input id="star2" name="rating"
+													value="2" type="radio"><label for="star2"></label>
+												<input id="star1" name="rating" value="1" type="radio"><label
+													for="star1"></label>
+											</div>
+										</div>
+										<button class="primary-btn">Submit</button>
+									</form>
+								</c:if>
+								<!-- Nếu người dùng chưa đăng nhập -->
+								<c:if test="${empty sessionScope.user}">
+									<p>
+										Bạn cần <a href="<c:url value='/login' />">đăng nhập</a> để
+										gửi đánh giá.
+									</p>
+								</c:if>
+							</div>
+						</div>
+						<!-- /Review Form -->
 
 					</div>
 				</div>
@@ -416,3 +453,17 @@
 	<script src="<c:url value='/resources/js/nouislider.min.js' />"></script>
 	<script src="<c:url value='/resources/js/jquery.zoom.min.js' />"></script>
 	<script src="<c:url value='/resources/js/main.js' />"></script>
+
+	<script type="text/javascript">
+		// Kiểm tra nếu có lỗi từ tham số URL
+		<c:if test="${not empty param.error}">
+		var error = "${param.error}";
+
+		// Hiển thị thông báo tương ứng với lỗi
+		if (error === 'product-unavailable') {
+			alert('Sản phẩm đã hết hàng, không thể thêm vào giỏ.');
+		} else if (error === 'invalid-quantity') {
+			alert('Số lượng không hợp lệ, vui lòng kiểm tra lại.');
+		}
+		</c:if>
+	</script>
