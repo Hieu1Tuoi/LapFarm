@@ -24,4 +24,6 @@ public interface ICartService {
 	 public void deleteCartFromDatabase(int userId, int productId);
 	 public void updateProductQuantityInDatabase(int userId, int productId, int quantity) ;
 	 
+	 public boolean isProductAvailable(int productId);
+	 
 }

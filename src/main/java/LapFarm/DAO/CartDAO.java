@@ -277,5 +277,19 @@ public class CartDAO {
 			session.update(cartEntity); // Cập nhật vào cơ sở dữ liệu
 		}
 	}
+	
+	//lấy số luong product theo id (Thanh Nhat)
+	 public int getProductQuantity(int productId) {
+	        Session session = factory.getCurrentSession();
+
+	        // Viết câu truy vấn HQL để lấy quantity của product
+	        String hql = "SELECT p.quantity FROM ProductEntity p WHERE p.id = :productId";
+	        
+	        Query query = session.createQuery(hql);
+	        query.setParameter("productId", productId);
+
+	        // Trả về số lượng sản phẩm
+	        return (int)query.uniqueResult();
+	    }
 
 }
