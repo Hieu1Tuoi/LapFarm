@@ -176,6 +176,19 @@ public class AdminController {
 	    return "/admin/products/category";
 	}
 	
+	@RequestMapping(value = { "/product/add-product" }, method = RequestMethod.GET)
+	public String formAddProduct(ModelMap model) {
+	    // Lấy danh sách từ DAO
+		List<CategoryEntity> categories = categoryDAO.getAllCategories();
+		List<BrandEntity> brands = brandDAO.getAllBrands();
+	    // Đưa danh sách vào Model để đẩy sang view
+	    model.addAttribute("categories", categories);
+	    model.addAttribute("brands", brands);
+
+	    // Trả về view cho trang quản lý sản phẩm của danh mục
+	    return "/admin/products/addProduct";
+	}
+	
 	@RequestMapping(value = { "/categories" }, method = RequestMethod.GET)
 	public String showListCatogory(ModelMap model) {
 	    // Lấy danh sách từ DAO
