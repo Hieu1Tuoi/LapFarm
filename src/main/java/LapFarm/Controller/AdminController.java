@@ -1,6 +1,8 @@
 package LapFarm.Controller;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,16 +101,25 @@ public class AdminController {
 	
 	@RequestMapping(value = { "/orders" }, method = RequestMethod.GET)
 	public String ordersIndex(ModelMap model) {
-		// Lấy danh sách categories từ DAO
-        List<CategoryEntity> categories = categoryDAO.getAllCategories();
-        List<OrdersDTO> orders = ordersDAO.getAllOrdersWithUserFullname();
+	    // Lấy danh sách categories từ DAO
+	    List<CategoryEntity> categories = categoryDAO.getAllCategories();
+	    
+	    // Lấy danh sách orders
+	    List<OrdersDTO> orders = ordersDAO.getAllOrdersWithUserFullname();
 
+	    // Sắp xếp danh sách orders theo orderId giảm dần
+	    Collections.sort(orders, new Comparator<OrdersDTO>() {
+	        public int compare(OrdersDTO o1, OrdersDTO o2) {
+	            return Integer.compare(o2.getOrderId(), o1.getOrderId()); // Sắp xếp giảm dần
+	        }
+	    });
 
-        // Đưa danh sách vào Model để đẩy sang view
-        model.addAttribute("categories", categories);
-        model.addAttribute("orders", orders);
-		return "/admin/orders/index";
+	    // Đưa danh sách vào Model để đẩy sang view
+	    model.addAttribute("categories", categories);
+	    model.addAttribute("orders", orders);
+	    return "/admin/orders/index";
 	}
+
 	
 	@RequestMapping(value="/orders/detail-order/{id}", method = RequestMethod.GET)
 	public String orderDetailIndex(@PathVariable("id") int id, ModelMap model) {
