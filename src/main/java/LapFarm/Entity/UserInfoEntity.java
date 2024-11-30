@@ -1,5 +1,7 @@
 package LapFarm.Entity;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -32,7 +34,17 @@ public class UserInfoEntity {
 	@OneToOne
 	@JoinColumn(name = "Email", referencedColumnName = "Email", nullable = false)
 	private AccountEntity account;
-	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<ReviewEntity> reviews;
+
+	// Getter và Setter cho reviews
+	public List<ReviewEntity> getReviews() {
+	    return reviews;
+	}
+
+	public void setReviews(List<ReviewEntity> reviews) {
+	    this.reviews = reviews;
+	}
 	public AccountEntity getAccount() {
 		return account;
 	}

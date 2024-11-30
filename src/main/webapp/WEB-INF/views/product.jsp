@@ -121,7 +121,11 @@
 			<ul class="tab-nav">
 				<li class="active"><a data-toggle="tab" href="#tab1">Description</a></li>
 				<li><a data-toggle="tab" href="#tab2">Details</a></li>
-				<li><a data-toggle="tab" href="#tab3">Reviews (3)</a></li>
+				<li>
+				    <a data-toggle="tab" href="#tab3">
+				        Reviews <span class="badge">${totalReviews}</span>
+				    </a>
+				</li>
 			</ul>
 			<!-- /product tab nav -->
 
@@ -165,161 +169,160 @@
 				<div id="tab3" class="tab-pane fade in">
 					<div class="row">
 						<!-- Rating -->
-						<div class="col-md-3">
-							<div id="rating">
-								<div class="rating-avg">
-									<span>4.5</span>
-									<div class="rating-stars">
-										<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-											class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-											class="fa fa-star-o"></i>
-									</div>
-								</div>
-								<ul class="rating">
-									<li>
-										<div class="rating-stars">
-											<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-												class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-												class="fa fa-star"></i>
-										</div>
-										<div class="rating-progress">
-											<div style="width: 80%;"></div>
-										</div> <span class="sum">3</span>
-									</li>
-									<li>
-										<div class="rating-stars">
-											<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-												class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-												class="fa fa-star-o"></i>
-										</div>
-										<div class="rating-progress">
-											<div style="width: 60%;"></div>
-										</div> <span class="sum">2</span>
-									</li>
-									<li>
-										<div class="rating-stars">
-											<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-												class="fa fa-star"></i> <i class="fa fa-star-o"></i> <i
-												class="fa fa-star-o"></i>
-										</div>
-										<div class="rating-progress">
-											<div></div>
-										</div> <span class="sum">0</span>
-									</li>
-									<li>
-										<div class="rating-stars">
-											<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-												class="fa fa-star-o"></i> <i class="fa fa-star-o"></i> <i
-												class="fa fa-star-o"></i>
-										</div>
-										<div class="rating-progress">
-											<div></div>
-										</div> <span class="sum">0</span>
-									</li>
-									<li>
-										<div class="rating-stars">
-											<i class="fa fa-star"></i> <i class="fa fa-star-o"></i> <i
-												class="fa fa-star-o"></i> <i class="fa fa-star-o"></i> <i
-												class="fa fa-star-o"></i>
-										</div>
-										<div class="rating-progress">
-											<div></div>
-										</div> <span class="sum">0</span>
-									</li>
-								</ul>
-							</div>
-						</div>
-						<!-- /Rating -->
+<div class="col-md-3">
+    <div id="rating">
+        <div class="rating-avg">
+            <span>${ratingSummary.average}</span>
+            <div class="rating-stars">
+                <c:forEach var="star" begin="1" end="5">
+                    <c:choose>
+                        <c:when test="${star <= ratingSummary.average}">
+                            <i class="fa fa-star"></i>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="fa fa-star-o"></i>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+            </div>
+        </div>
+        <ul class="rating">
+            <li>
+                <div class="rating-stars">
+                    <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
+                    <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                </div>
+                <div class="rating-progress">
+                    <div style="width: ${(ratingSummary.fiveStar / totalReviews) * 100}%;"></div>
+                </div>
+                <span class="sum">${ratingSummary.fiveStar}</span>
+            </li>
+            <li>
+                <div class="rating-stars">
+                    <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
+                    <i class="fa fa-star"></i> <i class="fa fa-star-o"></i>
+                </div>
+                <div class="rating-progress">
+                    <div style="width: ${(ratingSummary.fourStar / totalReviews) * 100}%;"></div>
+                </div>
+                <span class="sum">${ratingSummary.fourStar}</span>
+            </li>
+            <li>
+                <div class="rating-stars">
+                    <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> 
+                    <i class="fa fa-star-o"></i> <i class="fa fa-star-o"></i>
+                </div>
+                <div class="rating-progress">
+                    <div style="width: ${(ratingSummary.threeStar / totalReviews) * 100}%;"></div>
+                </div>
+                <span class="sum">${ratingSummary.threeStar}</span>
+            </li>
+            <li>
+                <div class="rating-stars">
+                    <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star-o"></i> 
+                    <i class="fa fa-star-o"></i> <i class="fa fa-star-o"></i>
+                </div>
+                <div class="rating-progress">
+                    <div style="width: ${(ratingSummary.twoStar / totalReviews) * 100}%;"></div>
+                </div>
+                <span class="sum">${ratingSummary.twoStar}</span>
+            </li>
+            <li>
+                <div class="rating-stars">
+                    <i class="fa fa-star"></i> <i class="fa fa-star-o"></i> <i class="fa fa-star-o"></i> 
+                    <i class="fa fa-star-o"></i> <i class="fa fa-star-o"></i>
+                </div>
+                <div class="rating-progress">
+                    <div style="width: ${(ratingSummary.oneStar / totalReviews) * 100}%;"></div>
+                </div>
+                <span class="sum">${ratingSummary.oneStar}</span>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- /Rating -->
 
-						<!-- Reviews -->
-						<div class="col-md-6">
-							<div id="reviews">
-								<ul class="reviews">
-									<li>
-										<div class="review-heading">
-											<h5 class="name">John</h5>
-											<p class="date">27 DEC 2018, 8:0 PM</p>
-											<div class="review-rating">
-												<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star-o empty"></i>
-											</div>
-										</div>
-										<div class="review-body">
-											<p>Lorem ipsum dolor sit amet, consectetur adipisicing
-												elit, sed do eiusmod tempor incididunt ut labore et dolore
-												magna aliqua</p>
-										</div>
-									</li>
-									<li>
-										<div class="review-heading">
-											<h5 class="name">John</h5>
-											<p class="date">27 DEC 2018, 8:0 PM</p>
-											<div class="review-rating">
-												<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star-o empty"></i>
-											</div>
-										</div>
-										<div class="review-body">
-											<p>Lorem ipsum dolor sit amet, consectetur adipisicing
-												elit, sed do eiusmod tempor incididunt ut labore et dolore
-												magna aliqua</p>
-										</div>
-									</li>
-									<li>
-										<div class="review-heading">
-											<h5 class="name">John</h5>
-											<p class="date">27 DEC 2018, 8:0 PM</p>
-											<div class="review-rating">
-												<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-													class="fa fa-star-o empty"></i>
-											</div>
-										</div>
-										<div class="review-body">
-											<p>Lorem ipsum dolor sit amet, consectetur adipisicing
-												elit, sed do eiusmod tempor incididunt ut labore et dolore
-												magna aliqua</p>
-										</div>
-									</li>
-								</ul>
-								<ul class="reviews-pagination">
-									<li class="active">1</li>
-									<li><a href="#">2</a></li>
-									<li><a href="#">3</a></li>
-									<li><a href="#">4</a></li>
-									<li><a href="#"><i class="fa fa-angle-right"></i></a></li>
-								</ul>
-							</div>
-						</div>
-						<!-- /Reviews -->
+
+
+<!-- Reviews Section -->
+<div class="col-md-6">
+    <div id="reviews">
+        <ul class="reviews">
+            <c:forEach var="review" items="${reviews}">
+                <li>
+                    <div class="review-heading">
+                        <h5 class="name">${review.user.fullName}</h5>
+                        <p class="date">
+                            <fmt:formatDate value="${review.reviewDate}" pattern="dd MMM yyyy, hh:mm a" />
+                        </p>
+                        <div class="review-rating">
+                            <c:forEach var="star" begin="1" end="5">
+                                <c:choose>
+                                    <c:when test="${star <= review.rating}">
+                                        <i class="fa fa-star"></i>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <i class="fa fa-star-o empty"></i>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+                        </div>
+                    </div>
+                    <div class="review-body">
+                        <p>${review.comment}</p>
+                    </div>
+                </li>
+            </c:forEach>
+            <c:if test="${empty reviews}">
+                <li><p>Chưa có đánh giá nào cho sản phẩm này.</p></li>
+            </c:if>
+        </ul>
+
+        <!-- Pagination -->
+        <ul class="reviews-pagination">
+            <c:forEach begin="1" end="${totalPages}" var="page">
+                <li class="${page == currentPage ? 'active' : ''}">
+                    <a href="?page=${page}&pageSize=${pageSize}">${page}</a>
+                </li>
+            </c:forEach>
+        </ul>
+    </div>
+</div>
+<!-- /Reviews Section -->
+
+
+
+
 
 						<!-- Review Form -->
-						<div class="col-md-3">
-							<div id="review-form">
-								<form class="review-form">
-									<input class="input" type="text" placeholder="Your Name">
-									<input class="input" type="email" placeholder="Your Email">
-									<textarea class="input" placeholder="Your Review"></textarea>
-									<div class="input-rating">
-										<span>Your Rating: </span>
-										<div class="stars">
-											<input id="star5" name="rating" value="5" type="radio"><label
-												for="star5"></label> <input id="star4" name="rating"
-												value="4" type="radio"><label for="star4"></label> <input
-												id="star3" name="rating" value="3" type="radio"><label
-												for="star3"></label> <input id="star2" name="rating"
-												value="2" type="radio"><label for="star2"></label> <input
-												id="star1" name="rating" value="1" type="radio"><label
-												for="star1"></label>
-										</div>
-									</div>
-									<button class="primary-btn">Submit</button>
-								</form>
-							</div>
-						</div>
-						<!-- /Review Form -->
+								<div class="col-md-3">
+								    <div id="review-form">
+								        <!-- Kiểm tra nếu người dùng đã đăng nhập -->
+								        <c:if test="${not empty sessionScope.user}">
+								            <form class="review-form" action="/submit-review" method="post">
+
+								                <textarea class="input" name="review" placeholder="Your Review" required></textarea>
+								                <div class="input-rating">
+								                    <span>Your Rating: </span>
+								                    <div class="stars">
+								                        <input id="star5" name="rating" value="5" type="radio"><label for="star5"></label>
+								                        <input id="star4" name="rating" value="4" type="radio"><label for="star4"></label>
+								                        <input id="star3" name="rating" value="3" type="radio"><label for="star3"></label>
+								                        <input id="star2" name="rating" value="2" type="radio"><label for="star2"></label>
+								                        <input id="star1" name="rating" value="1" type="radio"><label for="star1"></label>
+								                    </div>
+								                </div>
+								                <button class="primary-btn">Submit</button>
+								            </form>
+								        </c:if>
+								        <!-- Nếu người dùng chưa đăng nhập -->
+								        <c:if test="${empty sessionScope.user}">
+								            <p>Bạn cần <a href="<c:url value='/login' />">đăng nhập</a> để gửi đánh giá.</p>
+								        </c:if>
+								    </div>
+								</div>
+								<!-- /Review Form -->
+
 					</div>
 				</div>
 				<!-- /tab3  -->
