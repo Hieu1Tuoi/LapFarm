@@ -82,11 +82,6 @@ public class IndexController extends BaseController {
 		return _mvShare;
 	}
 
-	@RequestMapping("error")
-	public String error() {
-		return "error";
-	}
-
 	@RequestMapping(value = "/home/send")
 	public String send(ModelMap model, @RequestParam("email") String email) {
 		try {
