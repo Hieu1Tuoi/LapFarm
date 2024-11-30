@@ -278,101 +278,102 @@ public class ProductDAO {
 
 	@Transactional
 	public List<ProductDTO> getDataProductPaginates(int start, int end, String searchText, Integer idCategory,
-			String priceRange, Integer idBrand) {
-		Session session = factory.getCurrentSession();
+	        String priceRange, Integer idBrand) {
+	    Session session = factory.getCurrentSession();
 
-		// Xử lý giá trị priceMin và priceMax từ priceRange
-		double priceMin = Double.MIN_VALUE;
-		double priceMax = Double.MAX_VALUE;
-		if (priceRange != null && !priceRange.isEmpty()) {
-			String[] parts = priceRange.split("-");
-			if (parts.length == 2) {
-				try {
-					priceMin = Double.parseDouble(parts[0].trim());
-					priceMax = Double.parseDouble(parts[1].trim());
-				} catch (NumberFormatException e) {
-					// Nếu parse không thành công, giữ lại giá trị mặc định
-				}
-			}
-		}
+	    // Xử lý giá trị priceMin và priceMax từ priceRange
+	    double priceMin = Double.MIN_VALUE;
+	    double priceMax = Double.MAX_VALUE;
+	    if (priceRange != null && !priceRange.isEmpty()) {
+	        String[] parts = priceRange.split("-");
+	        if (parts.length == 2) {
+	            try {
+	                priceMin = Double.parseDouble(parts[0].trim()) - 1;
+	                priceMax = Double.parseDouble(parts[1].trim()) + 1;
+	            } catch (NumberFormatException e) {
+	                // Nếu parse không thành công, giữ lại giá trị mặc định
+	            }
+	        }
+	    }
 
-		// Tạo phần đầu của câu truy vấn
-		StringBuilder hql = new StringBuilder(
-				"SELECT p FROM ProductEntity p LEFT JOIN FETCH p.brand b LEFT JOIN FETCH p.category c");
+	    // Tạo phần đầu của câu truy vấn
+	    StringBuilder hql = new StringBuilder(
+	            "SELECT p FROM ProductEntity p LEFT JOIN FETCH p.brand b LEFT JOIN FETCH p.category c");
 
-		// Danh sách điều kiện WHERE
-		List<String> whereConditions = new ArrayList<>();
+	    // Danh sách điều kiện WHERE
+	    List<String> whereConditions = new ArrayList<>();
 
-		// Lọc theo searchText nếu có
-		if (searchText != null && !searchText.trim().isEmpty()) {
-			whereConditions.add("LOWER(p.nameProduct) LIKE :searchText");
-		}
+	    // Lọc theo searchText nếu có
+	    if (searchText != null && !searchText.trim().isEmpty()) {
+	        whereConditions.add("LOWER(p.nameProduct) LIKE :searchText");
+	    }
 
-		// Lọc theo category nếu có
-		if (idCategory != null && idCategory != 0) {
-			whereConditions.add("p.category.idCategory = :category");
-		}
+	    // Lọc theo category nếu có
+	    if (idCategory != null && idCategory != 0) {
+	        whereConditions.add("p.category.idCategory = :category");
+	    }
 
-		// Lọc theo priceRange nếu có
-		if (priceRange != null && !priceRange.isEmpty()) {
-			whereConditions.add("(p.salePrice) BETWEEN :priceMin AND :priceMax");
-		}
+	    // Lọc theo priceRange nếu có
+	    if (priceRange != null && !priceRange.isEmpty()) {
+	        whereConditions.add("(p.salePrice * (1 - p.discount)) BETWEEN :priceMin AND :priceMax");
+	    }
 
-		// Lọc theo brand nếu có
-		if (idBrand != null && idBrand != 0) {
-			whereConditions.add("p.brand.idBrand = :brand");
-		}
+	    // Lọc theo brand nếu có
+	    if (idBrand != null && idBrand != 0) {
+	        whereConditions.add("p.brand.idBrand = :brand");
+	    }
 
-		// Thêm điều kiện WHERE vào câu truy vấn nếu có
-		if (!whereConditions.isEmpty()) {
-			hql.append(" WHERE ").append(String.join(" AND ", whereConditions));
-		}
+	    // Thêm điều kiện WHERE vào câu truy vấn nếu có
+	    if (!whereConditions.isEmpty()) {
+	        hql.append(" WHERE ").append(String.join(" AND ", whereConditions));
+	    }
 
-		// Tạo truy vấn
-		Query<ProductEntity> query = session.createQuery(hql.toString(), ProductEntity.class);
+	    // Tạo truy vấn
+	    Query<ProductEntity> query = session.createQuery(hql.toString(), ProductEntity.class);
 
-		// Thiết lập tham số cho searchText nếu có
-		if (searchText != null && !searchText.trim().isEmpty()) {
-			query.setParameter("searchText", "%" + searchText.toLowerCase() + "%");
-		}
+	    // Thiết lập tham số cho searchText nếu có
+	    if (searchText != null && !searchText.trim().isEmpty()) {
+	        query.setParameter("searchText", "%" + searchText.toLowerCase() + "%");
+	    }
 
-		// Thiết lập tham số cho category nếu có
-		if (idCategory != null && idCategory != 0) {
-			query.setParameter("category", idCategory);
-		}
+	    // Thiết lập tham số cho category nếu có
+	    if (idCategory != null && idCategory != 0) {
+	        query.setParameter("category", idCategory);
+	    }
 
-		// Thiết lập tham số cho priceMin và priceMax
-		if (priceRange != null && !priceRange.isEmpty()) {
-			query.setParameter("priceMin", priceMin);
-			query.setParameter("priceMax", priceMax);
-		}
+	    // Thiết lập tham số cho priceMin và priceMax
+	    if (priceRange != null && !priceRange.isEmpty()) {
+	        query.setParameter("priceMin", priceMin);
+	        query.setParameter("priceMax", priceMax);
+	    }
 
-		// Thiết lập tham số cho brand nếu có
-		if (idBrand != null && idBrand != 0) {
-			query.setParameter("brand", idBrand);
-		}
+	    // Thiết lập tham số cho brand nếu có
+	    if (idBrand != null && idBrand != 0) {
+	        query.setParameter("brand", idBrand);
+	    }
 
-		// Thiết lập phân trang
-		query.setFirstResult(start - 1); // Vị trí bắt đầu (Hibernate tính từ 0)
-		query.setMaxResults(end - start + 1); // Số lượng kết quả cần lấy
+	    // Thiết lập phân trang
+	    query.setFirstResult(start - 1); // Vị trí bắt đầu (Hibernate tính từ 0)
+	    query.setMaxResults(end - start + 1); // Số lượng kết quả cần lấy
 
-		// Lấy danh sách ProductEntity
-		List<ProductEntity> products = query.list();
+	    // Lấy danh sách ProductEntity
+	    List<ProductEntity> products = query.list();
 
-		// Chuyển đổi sang ProductDTO
-		return products.stream().map(product -> {
-			String image = product.getImages() != null && !product.getImages().isEmpty()
-					? product.getImages().get(0).getImageUrl()
-					: null;
+	    // Chuyển đổi sang ProductDTO
+	    return products.stream().map(product -> {
+	        String image = product.getImages() != null && !product.getImages().isEmpty()
+	                ? product.getImages().get(0).getImageUrl()
+	                : null;
 
-			return new ProductDTO(product.getIdProduct(), product.getNameProduct(),
-					product.getBrand() != null ? product.getBrand().getIdBrand() : null,
-					product.getBrand() != null ? product.getBrand().getNameBrand() : null,
-					product.getCategory() != null ? product.getCategory().getNameCategory() : null,
-					product.getCategory().getIdCategory(), product.getDescription(), product.getQuantity(),
-					product.getDiscount(), product.getOriginalPrice(), product.getSalePrice(), product.getState(),
-					image);
-		}).collect(Collectors.toList());
+	        return new ProductDTO(product.getIdProduct(), product.getNameProduct(),
+	                product.getBrand() != null ? product.getBrand().getIdBrand() : null,
+	                product.getBrand() != null ? product.getBrand().getNameBrand() : null,
+	                product.getCategory() != null ? product.getCategory().getNameCategory() : null,
+	                product.getCategory() != null ? product.getCategory().getIdCategory() : null,
+	                product.getDescription(), product.getQuantity(),
+	                product.getDiscount(), product.getOriginalPrice(), product.getSalePrice(),
+	                product.getState(), image);
+	    }).collect(Collectors.toList());
 	}
 
 	@Transactional
