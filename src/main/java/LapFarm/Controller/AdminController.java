@@ -1,5 +1,6 @@
 package LapFarm.Controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import LapFarm.DTO.ProductDTO;
 import LapFarm.DTO.UserInfoDTO;
 import LapFarm.Entity.BrandEntity;
 import LapFarm.Entity.CategoryEntity;
+import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.ProductEntity;
 import LapFarm.Entity.UserInfoEntity;
 
@@ -101,6 +103,7 @@ public class AdminController {
         List<CategoryEntity> categories = categoryDAO.getAllCategories();
         List<OrdersDTO> orders = ordersDAO.getAllOrdersWithUserFullname();
 
+
         // Đưa danh sách vào Model để đẩy sang view
         model.addAttribute("categories", categories);
         model.addAttribute("orders", orders);
@@ -111,13 +114,43 @@ public class AdminController {
 	public String orderDetailIndex(@PathVariable("id") int id, ModelMap model) {
 		// Lấy danh sách categories từ DAO
         List<CategoryEntity> categories = categoryDAO.getAllCategories();
+        OrdersEntity order = ordersDAO.getOrderById(id);
         List<OrderDetailDTO> detail = orderDetailDAO.getOrderDetailById(id);
+        List<String> statuses = Arrays.asList("Chờ thanh toán", "Chờ lấy hàng", "Đang giao hàng", "Hoàn thành");
 
         // Đưa danh sách vào Model để đẩy sang view
         model.addAttribute("categories", categories);
         model.addAttribute("detail", detail);
+        model.addAttribute("statuses", statuses);
+        model.addAttribute("order", order);
+        model.addAttribute("orderId", id);
         return "/admin/orders/detail";
 	}
+	
+	@RequestMapping(value = "/orders/update-status/{id}", method = RequestMethod.POST) 
+	public String updateState(@PathVariable("id") int id, @RequestParam("state") String state, ModelMap model) {
+	    // Gọi DAO để cập nhật trạng thái
+	    boolean updateComplete = ordersDAO.updateStateById(id, state);
+
+	    if (updateComplete) {
+	        // Lấy danh sách categories từ DAO
+	        List<CategoryEntity> categories = categoryDAO.getAllCategories();
+	        List<OrderDetailDTO> detail = orderDetailDAO.getOrderDetailById(id);
+	        List<String> statuses = Arrays.asList("Chờ thanh toán", "Chờ lấy hàng", "Đang giao hàng", "Hoàn thành");
+	        
+	        // Đưa danh sách vào Model để đẩy sang view
+	        model.addAttribute("categories", categories);
+	        model.addAttribute("detail", detail);
+	        model.addAttribute("statuses", statuses);
+
+	        // Redirect đến trang chi tiết đơn hàng
+	        return "redirect:/admin/orders/detail-order/" + id;
+	    }
+
+	    // Nếu cập nhật thất bại, chuyển đến trang lỗi 500
+	    return "redirect:/error/500";
+	}
+
 	
 	@RequestMapping(value = { "/product" }, method = RequestMethod.GET)
 	public String categoryIndex(@RequestParam("category") int id, ModelMap model) {

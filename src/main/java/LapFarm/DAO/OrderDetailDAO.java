@@ -56,7 +56,7 @@ public class OrderDetailDAO {
 	        );
 
 	        // Chuyển đổi thông tin từ OrderDetailsEntity sang OrderDetailDTO
-	        return new OrderDetailDTO(productDTO, orderDetail.getQuantity(), orderDetail.getPrice());
+	        return new OrderDetailDTO( orderDetail.getOrder().getIdOrder(),productDTO, orderDetail.getQuantity(), orderDetail.getPrice());
 	    }).toList();
 
 	    return orderDetailDTOs;

@@ -44,6 +44,7 @@ public class OrdersDAO {
                 .collect(Collectors.toList());
     }
     
+    @Transactional
     public OrdersEntity getOrderById(int orderId) {
         Session session = factory.getCurrentSession();
         OrdersEntity order = session.get(OrdersEntity.class, orderId);
@@ -75,6 +76,27 @@ public class OrdersDAO {
             return (long) -1; // Trả về 0 nếu có lỗi xảy ra
         }
     }
+    
+    @Transactional
+    public boolean updateStateById(int id, String state) {
+        // Lấy session hiện tại từ factory
+        Session session = factory.getCurrentSession();
+        
+        // Tìm đơn hàng theo id
+        OrdersEntity orders = session.get(OrdersEntity.class, id);
+        
+        // Kiểm tra nếu đơn hàng tồn tại
+        if (orders != null) {
+            // Cập nhật trạng thái của đơn hàng
+            orders.setState(state);
+            
+            // Lưu lại trạng thái mới của đơn hàng vào cơ sở dữ liệu
+            session.merge(orders);// Sử dụng `update` thay vì `saveOrUpdate` vì chúng ta chỉ cập nhật trạng thái
+            return true;
+        }
+        return false;
+    }
+
 
 
 }
