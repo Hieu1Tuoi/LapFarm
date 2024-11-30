@@ -203,9 +203,12 @@ public class PaymentController {
 				cartDAO.deleteCartById(cartId);
 			}
 
-			// Xóa giỏ hàng sau khi thanh toán
 			userDAO.updateUserinfo(account.getEmail(), fullName, account.getUserInfo().getDob(), tel, address,
 					account.getUserInfo().getSex());
+			account = userDAO.getAccountByEmail(account.getEmail());
+			httpSession.removeAttribute("user");
+			httpSession.setAttribute("user", account);
+			// Xóa giỏ hàng sau khi thanh toán
 			httpSession.removeAttribute("cartIdSelecteds");
 			httpSession.removeAttribute("OrderInfo");
 
@@ -321,9 +324,12 @@ public class PaymentController {
 						cartDAO.deleteCartById(cartId);
 					}
 
-					// Xóa giỏ hàng sau khi thanh toán
 					userDAO.updateUserinfo(account.getEmail(), fullName, account.getUserInfo().getDob(), tel, address,
 							account.getUserInfo().getSex());
+					account = userDAO.getAccountByEmail(account.getEmail());
+					httpSession.removeAttribute("user");
+					httpSession.setAttribute("user", account);
+					// Xóa giỏ hàng sau khi thanh toán
 					httpSession.removeAttribute("cartIdSelecteds");
 					httpSession.removeAttribute("OrderInfo");
 
