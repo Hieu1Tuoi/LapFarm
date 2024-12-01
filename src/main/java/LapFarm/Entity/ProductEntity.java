@@ -37,7 +37,7 @@ public class ProductEntity {
 		this.images = images;
 	}
 
-	@Column(name = "Description")
+	@Column(name = "Describe")
 	private String description;
 
 	@Column(name = "Quantity", nullable = false)
