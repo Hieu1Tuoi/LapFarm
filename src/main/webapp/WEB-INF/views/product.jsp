@@ -38,7 +38,7 @@
 						<!-- Hiển thị ảnh chính -->
 						<c:forEach var="image" items="${product.images}">
 							<div class="product-preview">
-								<img src="${image.imageUrl}" alt="/LapFarm/resources/img/soicodoc.jpg"
+								<img src="${image.imageUrl}" alt="Ảnh máy tính" onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'"
 									class="img-fluid">
 							</div>
 						</c:forEach>
@@ -47,7 +47,7 @@
 					<c:if test="${empty product.images}">
 						<div class="product-preview">
 							<img src="/LapFarm/resources/img/default-product.jpg"
-								alt="/LapFarm/resources/img/soicodoc.jpg" class="img-fluid">
+								alt="Ảnh máy tính"  onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'" class="img-fluid">
 						</div>
 					</c:if>
 				</div>
@@ -61,7 +61,7 @@
 						<!-- Hiển thị thumbnails -->
 						<c:forEach var="image" items="${product.images}">
 							<div class="product-thumbnail">
-								<img src="${image.imageUrl}" alt="/LapFarm/resources/img/soicodoc.jpg"
+								<img src="${image.imageUrl}" alt="Ảnh máy tính"  onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'"
 									class="img-thumbnail">
 							</div>
 						</c:forEach>
@@ -70,7 +70,7 @@
 					<c:if test="${empty product.images}">
 						<div class="product-thumbnail">
 							<img src="/LapFarm/resources/img/default-thumbnail.jpg"
-								alt="/LapFarm/resources/img/soicodoc.jpg" class="img-thumbnail">
+								alt="Ảnh máy tính"  onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'" class="img-thumbnail">
 						</div>
 					</c:if>
 				</div>

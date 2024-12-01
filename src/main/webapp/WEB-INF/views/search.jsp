@@ -31,7 +31,7 @@
 									</c:when>
 									<c:otherwise>
 										<img src="/LapFarm/resources/img/${p.image}"
-											alt="Default Image">
+											alt="Default Image" onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
 									</c:otherwise>
 								</c:choose>
 
