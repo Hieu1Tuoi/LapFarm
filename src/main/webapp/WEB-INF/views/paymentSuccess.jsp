@@ -8,6 +8,6 @@
 </head>
 <body>
 	<h1>Đặt hàng thành công!!!!!!!!!!!!!!!!!</h1>
-	<a href="">Quay lại trang chủ</a>
+	<a href="order/view">Quay lại trang chủ</a>
 </body>
 </html>

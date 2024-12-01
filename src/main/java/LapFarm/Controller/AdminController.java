@@ -1,5 +1,8 @@
 package LapFarm.Controller;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import LapFarm.DTO.ProductDTO;
 import LapFarm.DTO.UserInfoDTO;
 import LapFarm.Entity.BrandEntity;
 import LapFarm.Entity.CategoryEntity;
+import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.ProductEntity;
 import LapFarm.Entity.UserInfoEntity;
 
@@ -97,27 +101,67 @@ public class AdminController {
 	
 	@RequestMapping(value = { "/orders" }, method = RequestMethod.GET)
 	public String ordersIndex(ModelMap model) {
-		// Lấy danh sách categories từ DAO
-        List<CategoryEntity> categories = categoryDAO.getAllCategories();
-        List<OrdersDTO> orders = ordersDAO.getAllOrdersWithUserFullname();
+	    // Lấy danh sách categories từ DAO
+	    List<CategoryEntity> categories = categoryDAO.getAllCategories();
+	    
+	    // Lấy danh sách orders
+	    List<OrdersDTO> orders = ordersDAO.getAllOrdersWithUserFullname();
 
-        // Đưa danh sách vào Model để đẩy sang view
-        model.addAttribute("categories", categories);
-        model.addAttribute("orders", orders);
-		return "/admin/orders/index";
+	    // Sắp xếp danh sách orders theo orderId giảm dần
+	    Collections.sort(orders, new Comparator<OrdersDTO>() {
+	        public int compare(OrdersDTO o1, OrdersDTO o2) {
+	            return Integer.compare(o2.getOrderId(), o1.getOrderId()); // Sắp xếp giảm dần
+	        }
+	    });
+
+	    // Đưa danh sách vào Model để đẩy sang view
+	    model.addAttribute("categories", categories);
+	    model.addAttribute("orders", orders);
+	    return "/admin/orders/index";
 	}
+
 	
 	@RequestMapping(value="/orders/detail-order/{id}", method = RequestMethod.GET)
 	public String orderDetailIndex(@PathVariable("id") int id, ModelMap model) {
 		// Lấy danh sách categories từ DAO
         List<CategoryEntity> categories = categoryDAO.getAllCategories();
+        OrdersEntity order = ordersDAO.getOrderById(id);
         List<OrderDetailDTO> detail = orderDetailDAO.getOrderDetailById(id);
+        List<String> statuses = Arrays.asList("Chờ thanh toán", "Chờ lấy hàng", "Đang giao hàng", "Hoàn thành");
 
         // Đưa danh sách vào Model để đẩy sang view
         model.addAttribute("categories", categories);
         model.addAttribute("detail", detail);
+        model.addAttribute("statuses", statuses);
+        model.addAttribute("order", order);
+        model.addAttribute("orderId", id);
         return "/admin/orders/detail";
 	}
+	
+	@RequestMapping(value = "/orders/update-status/{id}", method = RequestMethod.POST) 
+	public String updateState(@PathVariable("id") int id, @RequestParam("state") String state, ModelMap model) {
+	    // Gọi DAO để cập nhật trạng thái
+	    boolean updateComplete = ordersDAO.updateStateById(id, state);
+
+	    if (updateComplete) {
+	        // Lấy danh sách categories từ DAO
+	        List<CategoryEntity> categories = categoryDAO.getAllCategories();
+	        List<OrderDetailDTO> detail = orderDetailDAO.getOrderDetailById(id);
+	        List<String> statuses = Arrays.asList("Chờ thanh toán", "Chờ lấy hàng", "Đang giao hàng", "Hoàn thành");
+	        
+	        // Đưa danh sách vào Model để đẩy sang view
+	        model.addAttribute("categories", categories);
+	        model.addAttribute("detail", detail);
+	        model.addAttribute("statuses", statuses);
+
+	        // Redirect đến trang chi tiết đơn hàng
+	        return "redirect:/admin/orders/detail-order/" + id;
+	    }
+
+	    // Nếu cập nhật thất bại, chuyển đến trang lỗi 500
+	    return "redirect:/error/500";
+	}
+
 	
 	@RequestMapping(value = { "/product" }, method = RequestMethod.GET)
 	public String categoryIndex(@RequestParam("category") int id, ModelMap model) {
@@ -130,6 +174,19 @@ public class AdminController {
 
 	    // Trả về view cho trang quản lý sản phẩm của danh mục
 	    return "/admin/products/category";
+	}
+	
+	@RequestMapping(value = { "/product/add-product" }, method = RequestMethod.GET)
+	public String formAddProduct(ModelMap model) {
+	    // Lấy danh sách từ DAO
+		List<CategoryEntity> categories = categoryDAO.getAllCategories();
+		List<BrandEntity> brands = brandDAO.getAllBrands();
+	    // Đưa danh sách vào Model để đẩy sang view
+	    model.addAttribute("categories", categories);
+	    model.addAttribute("brands", brands);
+
+	    // Trả về view cho trang quản lý sản phẩm của danh mục
+	    return "/admin/products/addProduct";
 	}
 	
 	@RequestMapping(value = { "/categories" }, method = RequestMethod.GET)

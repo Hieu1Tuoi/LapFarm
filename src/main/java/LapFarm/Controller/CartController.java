@@ -47,26 +47,34 @@ public class CartController extends BaseController {
 
 	@RequestMapping(value = "addCart/{id}", method = RequestMethod.GET)
 	public String addCart(HttpServletRequest request, HttpSession session, @PathVariable("id") Integer id) {
-		// Lấy giỏ hàng từ session
-		HashMap<Integer, CartDTO> cart = (HashMap<Integer, CartDTO>) session.getAttribute("Cart");
-		if (cart == null) {
-			cart = new HashMap<>();
-		}
+	    // Kiểm tra số lượng sản phẩm
+	    if (!cartService.isProductAvailable(id)) {
+	        // Nếu sản phẩm không còn, chuyển hướng về trang hiện tại và thêm tham số lỗi
+	        String referer = request.getHeader("Referer");
+	        return "redirect:" + referer + (referer.contains("?") ? "&" : "?") + "error=product-unavailable";
+	    }
 
-		// Lấy thông tin người dùng
-		AccountEntity user = (AccountEntity) session.getAttribute("user");
-		int userId = (user != null) ? user.getUserInfo().getUserId() : 0;
+	    // Lấy giỏ hàng từ session
+	    HashMap<Integer, CartDTO> cart = (HashMap<Integer, CartDTO>) session.getAttribute("Cart");
+	    if (cart == null) {
+	        cart = new HashMap<>();
+	    }
 
-		// Thêm sản phẩm vào giỏ
-		cart = cartService.AddCart(id, cart, userId);
+	    // Lấy thông tin người dùng
+	    AccountEntity user = (AccountEntity) session.getAttribute("user");
+	    int userId = (user != null) ? user.getUserInfo().getUserId() : 0;
 
-		// Cập nhật lại session
-		session.setAttribute("Cart", cart);
-		session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
-		session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
+	    // Thêm sản phẩm vào giỏ
+	    cart = cartService.AddCart(id, cart, userId);
 
-		return "redirect:" + request.getHeader("Referer");
+	    // Cập nhật lại session
+	    session.setAttribute("Cart", cart);
+	    session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
+	    session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
+
+	    return "redirect:" + request.getHeader("Referer");
 	}
+
 
 	@Transactional
 	@RequestMapping(value = "/DeleteCart/{id}")
@@ -99,6 +107,14 @@ public class CartController extends BaseController {
 	@RequestMapping(value = "/EditCart/{id}/{quanty}")
 	public String EditCart(HttpServletRequest request, HttpSession session, @PathVariable("id") int id,
 			@PathVariable("quanty") int quanty) {
+		
+		  // Kiểm tra số lượng sản phẩm
+	    if (!cartService.isProductAvailable(id)) {
+	        // Nếu sản phẩm không còn, chuyển hướng về trang hiện tại và thêm tham số lỗi
+	        String referer = request.getHeader("Referer");
+	        return "redirect:" + referer + (referer.contains("?") ? "&" : "?") + "error=product-unavailable";
+	    }
+		
 		// Kiểm tra và cập nhật số lượng trong cơ sở dữ liệu
 		AccountEntity user = (AccountEntity) session.getAttribute("user");
 		if (user != null) {

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -288,8 +289,8 @@ public class ProductDAO {
 			String[] parts = priceRange.split("-");
 			if (parts.length == 2) {
 				try {
-					priceMin = Double.parseDouble(parts[0].trim());
-					priceMax = Double.parseDouble(parts[1].trim());
+					priceMin = Double.parseDouble(parts[0].trim()) - 1;
+					priceMax = Double.parseDouble(parts[1].trim()) + 1;
 				} catch (NumberFormatException e) {
 					// Nếu parse không thành công, giữ lại giá trị mặc định
 				}
@@ -315,7 +316,7 @@ public class ProductDAO {
 
 		// Lọc theo priceRange nếu có
 		if (priceRange != null && !priceRange.isEmpty()) {
-			whereConditions.add("(p.salePrice) BETWEEN :priceMin AND :priceMax");
+			whereConditions.add("(p.salePrice * (1 - p.discount)) BETWEEN :priceMin AND :priceMax");
 		}
 
 		// Lọc theo brand nếu có
@@ -369,9 +370,9 @@ public class ProductDAO {
 					product.getBrand() != null ? product.getBrand().getIdBrand() : null,
 					product.getBrand() != null ? product.getBrand().getNameBrand() : null,
 					product.getCategory() != null ? product.getCategory().getNameCategory() : null,
-					product.getCategory().getIdCategory(), product.getDescription(), product.getQuantity(),
-					product.getDiscount(), product.getOriginalPrice(), product.getSalePrice(), product.getState(),
-					image);
+					product.getCategory() != null ? product.getCategory().getIdCategory() : null,
+					product.getDescription(), product.getQuantity(), product.getDiscount(), product.getOriginalPrice(),
+					product.getSalePrice(), product.getState(), image);
 		}).collect(Collectors.toList());
 	}
 
@@ -525,7 +526,7 @@ public class ProductDAO {
 	}
 
 	// Phương thức chuyển đổi từ ProductEntity sang ProductDTO
-	private ProductDTO mapToProductDTO(ProductEntity product) {
+	public ProductDTO mapToProductDTO(ProductEntity product) {
 		// Kiểm tra và lấy ảnh đầu tiên (nếu có)
 		String image = product.getImages() != null && !product.getImages().isEmpty()
 				? product.getImages().get(0).getImageUrl()
@@ -540,34 +541,62 @@ public class ProductDAO {
 				product.getQuantity(), product.getDiscount(), product.getOriginalPrice(), product.getSalePrice(),
 				product.getState(), image);
 	}
+
 	@Transactional
 	public Map<String, Object> getRatingSummary(int productId) {
-	    Session session = factory.getCurrentSession();
+		Session session = factory.getCurrentSession();
 
-	    // Tính điểm trung bình và số lượng đánh giá cho từng mức rating
-	    String hql = "SELECT AVG(r.rating), " +
-	                 "SUM(CASE WHEN r.rating = 5 THEN 1 ELSE 0 END), " +
-	                 "SUM(CASE WHEN r.rating = 4 THEN 1 ELSE 0 END), " +
-	                 "SUM(CASE WHEN r.rating = 3 THEN 1 ELSE 0 END), " +
-	                 "SUM(CASE WHEN r.rating = 2 THEN 1 ELSE 0 END), " +
-	                 "SUM(CASE WHEN r.rating = 1 THEN 1 ELSE 0 END) " +
-	                 "FROM ReviewEntity r WHERE r.product.idProduct = :productId";
+		// Tính điểm trung bình và số lượng đánh giá cho từng mức rating
+		String hql = "SELECT AVG(r.rating), " + "SUM(CASE WHEN r.rating = 5 THEN 1 ELSE 0 END), "
+				+ "SUM(CASE WHEN r.rating = 4 THEN 1 ELSE 0 END), " + "SUM(CASE WHEN r.rating = 3 THEN 1 ELSE 0 END), "
+				+ "SUM(CASE WHEN r.rating = 2 THEN 1 ELSE 0 END), " + "SUM(CASE WHEN r.rating = 1 THEN 1 ELSE 0 END) "
+				+ "FROM ReviewEntity r WHERE r.product.idProduct = :productId";
 
-	    Object[] result = session.createQuery(hql, Object[].class)
-	                              .setParameter("productId", productId)
-	                              .uniqueResult();
+		Object[] result = session.createQuery(hql, Object[].class).setParameter("productId", productId).uniqueResult();
 
-	    // Kết quả
-	    Map<String, Object> ratingSummary = new HashMap<>();
-	    ratingSummary.put("average", result[0] != null ? Math.round((Double) result[0] * 10.0) / 10.0 : 0);
-	    ratingSummary.put("fiveStar", result[1] != null ? ((Long) result[1]) : 0L);
-	    ratingSummary.put("fourStar", result[2] != null ? ((Long) result[2]) : 0L);
-	    ratingSummary.put("threeStar", result[3] != null ? ((Long) result[3]) : 0L);
-	    ratingSummary.put("twoStar", result[4] != null ? ((Long) result[4]) : 0L);
-	    ratingSummary.put("oneStar", result[5] != null ? ((Long) result[5]) : 0L);
+		// Kết quả
+		Map<String, Object> ratingSummary = new HashMap<>();
+		ratingSummary.put("average", result[0] != null ? Math.round((Double) result[0] * 10.0) / 10.0 : 0);
+		ratingSummary.put("fiveStar", result[1] != null ? ((Long) result[1]) : 0L);
+		ratingSummary.put("fourStar", result[2] != null ? ((Long) result[2]) : 0L);
+		ratingSummary.put("threeStar", result[3] != null ? ((Long) result[3]) : 0L);
+		ratingSummary.put("twoStar", result[4] != null ? ((Long) result[4]) : 0L);
+		ratingSummary.put("oneStar", result[5] != null ? ((Long) result[5]) : 0L);
 
-	    return ratingSummary;
+		return ratingSummary;
 	}
 
+	public boolean updateProduct(ProductEntity product) {
+		// Sử dụng try-with-resources để tự động đóng session khi hoàn thành
+		try (Session session = factory.openSession()) {
+			// Bắt đầu transaction
+			Transaction transaction = session.beginTransaction();
+			try {
+				// Cập nhật sản phẩm
+				session.update(product);
+				// Commit transaction nếu không có lỗi
+				transaction.commit();
+				return true;
+			} catch (Exception e) {
+				// Nếu có lỗi xảy ra, rollback transaction
+				if (transaction != null) {
+					transaction.rollback();
+				}
+				// Ghi lỗi chi tiết vào log
+				logError("Error updating product. Rolling back transaction.", e);
+				return false;
+			}
+		} catch (Exception e) {
+			// Ghi lỗi nếu không thể tạo session
+			logError("Error opening session for updating product.", e);
+			return false;
+		}
+	}
 
+	private void logError(String message, Exception e) {
+		// In lỗi ra log hoặc console, có thể thay thế bằng thư viện logging chuyên
+		// nghiệp (SLF4J, Log4j, v.v.)
+		System.err.println(message);
+		e.printStackTrace();
+	}
 }

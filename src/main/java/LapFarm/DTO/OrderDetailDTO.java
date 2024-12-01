@@ -2,19 +2,35 @@ package LapFarm.DTO;
 
 
 public class OrderDetailDTO {
+	private int orderID;
     ProductDTO product;
     private int quantity;
     private int price;
 
     // Constructor
-    public OrderDetailDTO(ProductDTO product, int quantity, int price) {
+    public OrderDetailDTO(int orderID, ProductDTO product, int quantity, int price) {
     	super();
+    	this.orderID = orderID;
         this.product = product;
         this.quantity = quantity;
         this.price = price;
     }
     
-    public OrderDetailDTO() {
+    
+    
+    public int getOrderID() {
+		return orderID;
+	}
+
+
+
+	public void setOrderID(int orderID) {
+		this.orderID = orderID;
+	}
+
+
+
+	public OrderDetailDTO() {
     	super();
     }
 
@@ -48,6 +64,7 @@ public class OrderDetailDTO {
     @Override
     public String toString() {
         return "OrderDetailDTO{" +
+        		"OrderID=" + orderID +
         		"ProductDTO=" + product +
                 ", quantity=" + quantity +
                 ", price=" + price +

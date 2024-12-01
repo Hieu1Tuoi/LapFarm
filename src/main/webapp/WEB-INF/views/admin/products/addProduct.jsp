@@ -8,15 +8,18 @@
         <h1>Thêm sản phẩm mới</h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+            <li><a href="">Sản phẩm</a></li>
             <li class="active">Thêm sản phẩm</li>
         </ol>
     </section>
+
     <section class="content">
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">Thông tin sản phẩm</h3>
             </div>
-            <form>
+            <!-- Form upload -->
+            <form method="POST" action="${pageContext.request.contextPath}/admin/product/add-product" enctype="multipart/form-data">
                 <div class="box-body">
                     <!-- Tên sản phẩm -->
                     <div class="form-group">
@@ -28,8 +31,8 @@
                     <div class="form-group">
                         <label for="categoryName">Tên loại hàng</label>
                         <select class="form-control" id="categoryName" name="categoryName" required>
-                            <c:forEach var="category" items="${p.categoryName}">
-                                <option value="${category}">${category}</option>
+                            <c:forEach var="c" items="${categories}">
+                                <option value="${c.nameCategory}">${c.nameCategory}</option>
                             </c:forEach>
                         </select>
                     </div>
@@ -38,18 +41,8 @@
                     <div class="form-group">
                         <label for="brand">Nhãn hàng</label>
                         <select class="form-control" id="brand" name="brand" required>
-                            <c:forEach var="brand" items="${p.brand}">
-                                <option value="${brand}">${brand}</option>
-                            </c:forEach>
-                        </select>
-                    </div>
-
-                    <!-- Danh sách sản phẩm -->
-                    <div class="form-group">
-                        <label for="relatedProducts">Sản phẩm liên quan</label>
-                        <select class="form-control" id="relatedProducts" name="relatedProducts" required>
-                            <c:forEach var="product" items="${p.nameProduct}">
-                                <option value="${product}">${product}</option>
+                            <c:forEach var="b" items="${brands}">
+                                <option value="${b.nameBrand}">${b.nameBrand}</option>
                             </c:forEach>
                         </select>
                     </div>
@@ -60,6 +53,12 @@
                         <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
                     </div>
 
+					<!-- Thông số kỹ thuật-->
+                    <div class="form-group">
+                        <label for="moreinfo">Thông số kỹ thuật</label>
+                        <textarea class="form-control" id="moreinfo" name="moreinfo" rows="3" required></textarea>
+                    </div>
+                    
                     <!-- Số lượng -->
                     <div class="form-group">
                         <label for="quantity">Số lượng</label>
@@ -94,11 +93,19 @@
                     <div class="form-group">
                         <label for="state">Trạng thái</label>
                         <select class="form-control" id="state" name="state" required>
-                            <option value="Sắp về hàng">Sắp về hàng</option>
                             <option value="Đang bán">Đang bán</option>
+                            <option value="Sắp về hàng">Sắp về hàng</option>
                             <option value="Ngưng kinh doanh">Ngưng kinh doanh</option>
                             <option value="Hết hàng">Hết hàng</option>
                         </select>
+                    </div>
+
+                    <!-- Ảnh sản phẩm -->
+                    <div class="form-group">
+                        <label for="productImages">Ảnh sản phẩm</label>
+                        <input type="file" class="form-control" id="productImages" name="productImages" 
+                               accept="image/*" multiple required>
+                        <small class="form-text text-muted">Chọn tối đa 10 ảnh. Mỗi ảnh có dung lượng không vượt quá 5MB.</small>
                     </div>
                 </div>
 

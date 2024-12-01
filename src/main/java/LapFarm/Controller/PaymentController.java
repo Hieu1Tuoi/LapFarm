@@ -2,8 +2,10 @@ package LapFarm.Controller;
 
 import LapFarm.DAO.CartDAO;
 import LapFarm.DAO.OrdersDAO;
+import LapFarm.DAO.ProductDAO;
 import LapFarm.DAO.UserDAO;
 import LapFarm.DTO.CartProductDTO;
+import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.AccountEntity;
 import LapFarm.Entity.CartEntity;
 import LapFarm.Entity.OrderDetailId;
@@ -51,6 +53,9 @@ public class PaymentController {
 	@Autowired
 	private OrdersDAO ordersDAO;
 
+	@Autowired
+	private ProductDAO productDAO;
+
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String index(HttpSession httpSession, Model model) {
 		AccountEntity account = (AccountEntity) httpSession.getAttribute("user");
@@ -72,13 +77,14 @@ public class PaymentController {
 		for (Integer cartId : cartIdSelecteds) {
 			CartEntity cartEntity = cartDAO.getCartById(cartId);
 			ProductEntity product = cartEntity.getProduct();
-			String formattedPrice = new DecimalFormat("#,###").format(product.getSalePrice());
+			Double price = (1 - product.getDiscount()) * product.getSalePrice();
+			String formattedPrice = new DecimalFormat("#,###").format(price);
 
 			CartProductDTO cartProductDTO = new CartProductDTO(product.getNameProduct(), cartEntity.getQuantity(),
 					formattedPrice, product.getSalePrice() * cartEntity.getQuantity());
 
 			cartProductDTOList.add(cartProductDTO);
-			totalAmount += cartProductDTO.getTotalPrice();
+			totalAmount += price * cartEntity.getQuantity();
 		}
 
 		// Add the cart products and total amount to the model
@@ -160,6 +166,7 @@ public class PaymentController {
 				model.addAttribute("error", "Bạn chưa chọn sản phẩm.");
 				return "cart"; // Quay lại trang giỏ hàng nếu không có sản phẩm
 			}
+			Map<String, Object> orderMap = new HashMap<String, Object>();
 
 			// Tạo đơn hàng mới
 			OrdersEntity order = new OrdersEntity();
@@ -173,31 +180,49 @@ public class PaymentController {
 			order.getUserInfo().setPhone(tel);
 			order.setNote(note);
 
+			orderMap.put("order", order);
 			// Lưu đơn hàng vào database
 			ordersDAO.saveOrder(order);
+			List<ProductDTO> productsDTO = new ArrayList<ProductDTO>();
 
 			// Lưu chi tiết đơn hàng (OrderDetails) cho từng sản phẩm trong giỏ hàng
 			for (int cartId : cartIds) {
+				ProductDTO productDTO = new ProductDTO();
+
 				CartEntity cartItem = cartDAO.getCartById(cartId);
 				OrderDetailsEntity orderDetails = new OrderDetailsEntity();
 				OrderDetailId orderDetailId = new OrderDetailId();
 				orderDetailId.setOrder(order.getIdOrder());
 				orderDetailId.setProduct(cartItem.getProduct().getIdProduct());
 
+				productDTO = productDAO.findProductDTOById(cartItem.getProduct().getIdProduct());
+				productDTO.setQuantity(cartItem.getQuantity());
+				productsDTO.add(productDTO);
+				
 				orderDetails.setId(orderDetailId);
 				orderDetails.setOrder(order);
 				orderDetails.setProduct(cartItem.getProduct());
 				orderDetails.setQuantity(cartItem.getQuantity());
-				orderDetails.setPrice((int) Math.round(cartItem.getProduct().getSalePrice()));
+				ProductEntity product = productDAO.getProductById(cartItem.getProduct().getIdProduct());
+				product.setQuantity(product.getQuantity() - cartItem.getQuantity());
+				productDAO.updateProduct(product);
+				orderDetails.setPrice((int) Math
+						.round((1 - cartItem.getProduct().getDiscount()) * cartItem.getProduct().getSalePrice()));
 
 				// Lưu chi tiết đơn hàng
 				ordersDAO.saveOrderDetail(orderDetails);
 				cartDAO.deleteCartById(cartId);
 			}
+			orderMap.put("orderdetail", productsDTO);
 
-			// Xóa giỏ hàng sau khi thanh toán
+			httpSession.setAttribute("order", orderMap);
+
 			userDAO.updateUserinfo(account.getEmail(), fullName, account.getUserInfo().getDob(), tel, address,
 					account.getUserInfo().getSex());
+			account = userDAO.getAccountByEmail(account.getEmail());
+			httpSession.removeAttribute("user");
+			httpSession.setAttribute("user", account);
+			// Xóa giỏ hàng sau khi thanh toán
 			httpSession.removeAttribute("cartIdSelecteds");
 			httpSession.removeAttribute("OrderInfo");
 
@@ -280,9 +305,9 @@ public class PaymentController {
 					order.setUserInfo(account.getUserInfo());
 					order.setState("Chờ lấy hàng"); // Trạng thái ban đầu là "Chờ lấy hàng"
 					order.setPaymentMethod((byte) 1);
-					order.setTotalPrice((int) (vnp_Amount/100)); // Tính tổng giá trị đơn hàng từ các sản
-															// phẩm
-															// trong giỏ hàng
+					order.setTotalPrice((int) (vnp_Amount / 100)); // Tính tổng giá trị đơn hàng từ các sản
+					// phẩm
+					// trong giỏ hàng
 					order.setTime(new Timestamp(System.currentTimeMillis())); // Thời gian hiện tại
 					order.getUserInfo().setAddress(address);
 					order.getUserInfo().setPhone(tel);
@@ -303,16 +328,23 @@ public class PaymentController {
 						orderDetails.setOrder(order);
 						orderDetails.setProduct(cartItem.getProduct());
 						orderDetails.setQuantity(cartItem.getQuantity());
-						orderDetails.setPrice((int) Math.round(cartItem.getProduct().getSalePrice()));
+						ProductEntity product = productDAO.getProductById(cartItem.getProduct().getIdProduct());
+						product.setQuantity(product.getQuantity() - cartItem.getQuantity());
+						productDAO.updateProduct(product);
+						orderDetails.setPrice((int) Math.round(
+								(1 - cartItem.getProduct().getDiscount()) * cartItem.getProduct().getSalePrice()));
 
 						// Lưu chi tiết đơn hàng
 						ordersDAO.saveOrderDetail(orderDetails);
 						cartDAO.deleteCartById(cartId);
 					}
 
-					// Xóa giỏ hàng sau khi thanh toán
 					userDAO.updateUserinfo(account.getEmail(), fullName, account.getUserInfo().getDob(), tel, address,
 							account.getUserInfo().getSex());
+					account = userDAO.getAccountByEmail(account.getEmail());
+					httpSession.removeAttribute("user");
+					httpSession.setAttribute("user", account);
+					// Xóa giỏ hàng sau khi thanh toán
 					httpSession.removeAttribute("cartIdSelecteds");
 					httpSession.removeAttribute("OrderInfo");
 

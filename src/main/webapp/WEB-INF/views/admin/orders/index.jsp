@@ -35,7 +35,7 @@
 					</div>
 				</div>
 				<!-- /.box-header -->
-				<div class="box-body table-responsive no-padding">
+				<div class="box-body table-responsive no-padding" style="margin-top: 30px">
 					<table class="table table-hover">
 						<thead>
 							<tr>
@@ -44,7 +44,7 @@
 								<th>Thời Gian</th>
 								<th>Trạng Thái</th>
 								<th>Tổng Giá</th>
-								<th>Hình thức</th>
+								<th>Hình Thức</th>
 								<th>Tùy Chọn</th>
 							</tr>
 						</thead>
@@ -58,27 +58,22 @@
 									<td><fmt:formatNumber value="${order.totalPrice}"
 											type="number" groupingUsed="true" /> VNĐ</td>
 									<td><c:choose>
-											<c:when test="${order.paymentMethod == 0}">
-            									Tiền mặt
-        									</c:when>
-											<c:when test="${order.paymentMethod == 1}">
-            									Chuyển khoản
-        									</c:when>
-											<c:otherwise>
-            									Không xác định
-        									</c:otherwise>
+											<c:when test="${order.paymentMethod == 0}">Tiền mặt</c:when>
+											<c:when test="${order.paymentMethod == 1}">Chuyển khoản</c:when>
+											<c:otherwise>Không xác định</c:otherwise>
 										</c:choose></td>
-									<td><a
+									<!-- Cột tùy chọn: dropdown để thay đổi trạng thái -->
+									<td>
+									<a
 										href="${pageContext.request.contextPath}/admin/orders/detail-order/${order.orderId}"
-										class="btn btn-success">Xem</a> <a
-										href="${pageContext.request.contextPath}/admin/edit-order/${order.orderId}"
-										class="btn btn-success">Sửa</a> <a
-										href="${pageContext.request.contextPath}/admin/delete-order/${order.orderId}"
-										class="btn btn-danger">Xóa</a></td>
+										class="btn btn-success">Xem</a>
+									</td>
 								</tr>
 							</c:forEach>
 						</tbody>
 					</table>
+
+
 				</div>
 
 				<!-- /.box-body -->
