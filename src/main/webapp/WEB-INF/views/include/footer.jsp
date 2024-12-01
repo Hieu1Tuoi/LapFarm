@@ -21,14 +21,13 @@
 
                 <div class="col-md-3 col-xs-6">
                     <div class="footer">
-                        <h3 class="footer-title">Categories</h3>
+                        <h3 class="footer-title">DANH MỤC</h3>
+                        <c:forEach var="cate" items="${categories}">
                         <ul class="footer-links">
-                            <li><a href="#">Hot deals</a></li>
-                            <li><a href="#">Laptops</a></li>
-                            <li><a href="#">Smartphones</a></li>
-                            <li><a href="#">Cameras</a></li>
-                            <li><a href="#">Accessories</a></li>
-                        </ul>
+                            <li><a href="products-category?idCategory=${cate.idCategory}">${cate.nameCategory}</a></li><br>
+                              
+                           </c:forEach>
+                      </ul>
                     </div>
                 </div>
 

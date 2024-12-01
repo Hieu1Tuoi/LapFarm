@@ -5,9 +5,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<base href="${pageContext.servletContext.contextPath}/">
 </head>
 <body>
 	<h1>Đặt hàng thành công!!!!!!!!!!!!!!!!!</h1>
-	<a href="order/view">Quay lại trang chủ</a>
+	<a href="order/view">Xem đơn hàng</a>
 </body>
 </html>

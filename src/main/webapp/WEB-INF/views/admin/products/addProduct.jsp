@@ -14,6 +14,12 @@
     </section>
 
     <section class="content">
+    <!-- Hiển thị thông báo nếu có -->
+        <c:if test="${not empty message}">
+            <div class="alert alert-success">
+                <strong>${message}</strong> 
+            </div>
+        </c:if>
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">Thông tin sản phẩm</h3>
@@ -60,33 +66,35 @@
                     </div>
                     
                     <!-- Số lượng -->
-                    <div class="form-group">
-                        <label for="quantity">Số lượng</label>
-                        <input type="number" class="form-control" id="quantity" name="quantity" required>
-                    </div>
+					<div class="form-group">
+						<label for="quantity">Số lượng</label> <input type="number"
+							class="form-control" id="quantity" name="quantity" required>
+					</div>
 
-                    <!-- Phần trăm giảm giá -->
-                    <div class="form-group">
-                        <label for="discountPercent">Phần trăm giảm giá</label>
-                        <input type="number" class="form-control" id="discountPercent" name="discountPercent" min="0" max="100" required>
-                    </div>
+					<!-- Hệ số giảm giá -->
+					<div class="form-group">
+						<label for="discountPercent">Hệ số giảm giá</label> <input
+							type="number" class="form-control" id="discountPercent"
+							name="discountPercent" min="0" max="1" step="0.01" required>
+					</div>
 
-                    <!-- Giá mua -->
-                    <div class="form-group">
+
+					<!-- Giá mua -->
+					<div class="form-group">
                         <label for="purchasePrice">Giá mua</label>
                         <input type="number" class="form-control" id="purchasePrice" name="purchasePrice" required>
                     </div>
 
                     <!-- Giá niêm yết -->
                     <div class="form-group">
-                        <label for="listPrice">Giá niêm yết</label>
-                        <input type="number" class="form-control" id="listPrice" name="listPrice" required>
+                        <label for="salePrice">Giá niêm yết</label>
+                        <input type="number" class="form-control" id="salePrice" name="salePrice" required>
                     </div>
 
                     <!-- Khuyến mãi -->
                     <div class="form-group">
                         <label for="promotion">Khuyến mãi liên quan</label>
-                        <input type="text" class="form-control" id="promotion" name="promotion" required>
+                        <input type="text" class="form-control" id="promotion" name="promotion">
                     </div>
 
                     <!-- Trạng thái -->

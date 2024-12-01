@@ -48,7 +48,7 @@ public class ProductController {
             ProductEntity product = productDAO.getProductById(productId);
             if (product == null) {
                 model.addAttribute("errorMessage", "Không tìm thấy sản phẩm.");
-                return "error";  // Trả về trang lỗi nếu không tìm thấy sản phẩm
+                return "error/404";  // Trả về trang lỗi nếu không tìm thấy sản phẩm
             }
 
             // Lấy danh sách sản phẩm liên quan theo thương hiệu
@@ -100,7 +100,7 @@ public class ProductController {
 
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Đã xảy ra lỗi trong quá trình xử lý.");
-            return "error";  // Trả về trang lỗi nếu có lỗi trong quá trình xử lý
+            return "error/404";  // Trả về trang lỗi nếu có lỗi trong quá trình xử lý
         }}
     
 
@@ -111,7 +111,7 @@ public class ProductController {
 
         if (relatedProducts.isEmpty()) {
             model.addAttribute("errorMessage", "Không có sản phẩm nào liên quan.");
-            return "error";  // Trả về trang lỗi nếu không có sản phẩm liên quan
+            return "error/404";  // Trả về trang lỗi nếu không có sản phẩm liên quan
         }
 
         model.addAttribute("relatedProducts", relatedProducts);
