@@ -5,10 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,14 +26,14 @@ import LapFarm.DTO.ViewedItem;
 import LapFarm.Entity.ProductEntity;
 
 import LapFarm.Entity.ReviewEntity;
-
+import LapFarm.Entity.UserInfoEntity;
 import jakarta.servlet.http.HttpSession;
-
 
 @Controller
 public class ProductController {
     @Autowired
     private ProductDAO productDAO;
+
     @Autowired
     private ReviewDAO reviewDAO;
 
@@ -48,30 +48,30 @@ public class ProductController {
             ProductEntity product = productDAO.getProductById(productId);
             if (product == null) {
                 model.addAttribute("errorMessage", "Không tìm thấy sản phẩm.");
-                return "error";
+                return "error/404";  // Trả về trang lỗi nếu không tìm thấy sản phẩm
             }
 
-            // Lấy danh sách sản phẩm liên quan theo brand
+            // Lấy danh sách sản phẩm liên quan theo thương hiệu
             int brandId = product.getBrand().getIdBrand();
             List<ProductDTO> relatedProducts = productDAO.getRelatedProductsByBrand(brandId, productId, 4);
 
             // Lấy dữ liệu đánh giá
             List<ReviewEntity> reviews = reviewDAO.getReviewsByProductIdWithPagination(productId, page, pageSize);
 
-            // Tính tổng số trang
+            // Tính tổng số trang phân trang
             int totalReviews = reviewDAO.countReviewsByProductId(productId);
             int totalPages = (int) Math.ceil((double) totalReviews / pageSize);
 
             // Lấy tóm tắt đánh giá
             Map<String, Object> ratingSummary = productDAO.getRatingSummary(productId);
 
-            // Lấy danh sách sản phẩm đã xem
+            // Lấy danh sách sản phẩm đã xem từ session
             List<ViewedItem> viewedItems = (List<ViewedItem>) httpSession.getAttribute("viewedItems");
             if (viewedItems == null) {
                 viewedItems = new ArrayList<>();
             }
 
-            // Kiểm tra nếu sản phẩm đã được xem
+            // Kiểm tra xem sản phẩm đã được xem chưa, nếu chưa thì thêm vào danh sách đã xem
             boolean alreadyViewed = viewedItems.stream().anyMatch(item -> item.getId() == productId);
             if (!alreadyViewed) {
                 ViewedItem viewedItem = new ViewedItem();
@@ -79,10 +79,11 @@ public class ProductController {
                 viewedItem.setName(product.getNameProduct());
                 viewedItem.setImage((product.getImages() != null && !product.getImages().isEmpty())
                     ? product.getImages().get(0).getImageUrl()
-                    : "");
-                viewedItem.setPrice(product.calPrice());
-                viewedItems.add(viewedItem);
+                    : "");  // Nếu không có hình ảnh, để trống
+                viewedItem.setPrice(product.calPrice());  // Tính giá của sản phẩm
+                viewedItems.add(viewedItem);  // Thêm vào danh sách đã xem
             }
+            // Cập nhật lại danh sách đã xem vào session
             httpSession.setAttribute("viewedItems", viewedItems);
 
             // Truyền dữ liệu vào model
@@ -95,24 +96,26 @@ public class ProductController {
             model.addAttribute("pageSize", pageSize);
             model.addAttribute("ratingSummary", ratingSummary);
 
-            return "product";
+            return "product";  // Trả về view "product"
 
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Đã xảy ra lỗi trong quá trình xử lý.");
-            return "error";
-        }
-    }
+            return "error/404";  // Trả về trang lỗi nếu có lỗi trong quá trình xử lý
+        }}
+    
 
     @RequestMapping(value = "/related-products/{idBrand}", method = RequestMethod.GET)
     public String viewAllRelatedProducts(@PathVariable("idBrand") int idBrand, Model model) {
+        // Lấy tất cả sản phẩm theo thương hiệu
         List<ProductDTO> relatedProducts = productDAO.getAllProductsByBrand(idBrand);
 
         if (relatedProducts.isEmpty()) {
             model.addAttribute("errorMessage", "Không có sản phẩm nào liên quan.");
-            return "error";
+            return "error/404";  // Trả về trang lỗi nếu không có sản phẩm liên quan
         }
 
         model.addAttribute("relatedProducts", relatedProducts);
-        return "related-products";
+        return "related-products";  // Trả về trang hiển thị các sản phẩm liên quan
     }
+
 }

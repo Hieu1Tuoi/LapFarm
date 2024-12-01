@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+
 <%@ include file="/WEB-INF/views/layouts/user-header.jsp"%>
 <style>
 /* Đặt CSS cho toàn bộ container */
@@ -14,7 +16,7 @@ body {
 h1 {
 	font-size: 24px;
 	font-weight: bold;
-	color: #d10000;
+	color: #d10024;
 	margin: 20px;
 	margin-left: 70px;
 }
@@ -44,7 +46,7 @@ h1 {
 }
 
 .tab-links a:hover, .tab-links .active a {
-	background-color: #d10000;
+	background-color: #d10024;
 	color: #fff;
 }
 
@@ -98,27 +100,85 @@ input[type="radio"] {
 .link:hover {
 	text-decoration: underline;
 }
+
 #viewed .container {
-    display: flex; /* Sử dụng Flexbox để tạo bố cục linh hoạt */
-    flex-wrap: wrap; /* Cho phép các phần tử tự động xuống dòng khi không đủ chỗ */
-    gap: 20px; /* Khoảng cách giữa các phần tử */
-    justify-content: flex-start; /* Các phần tử sẽ xếp từ trái sang phải */
-    padding: 20px;
+	display: flex; /* Sử dụng Flexbox để tạo bố cục linh hoạt */
+	flex-wrap: wrap;
+	/* Cho phép các phần tử tự động xuống dòng khi không đủ chỗ */
+	gap: 20px; /* Khoảng cách giữa các phần tử */
+	justify-content: flex-start; /* Các phần tử sẽ xếp từ trái sang phải */
+	padding: 20px;
 }
 
 #viewed .container div {
-    flex: 0 0 calc(25% - 20px); /* Mỗi sản phẩm chiếm 25% chiều rộng của container, trừ đi khoảng cách */
-    text-align: center; /* Căn giữa nội dung trong mỗi sản phẩm */
-    padding: 10px;
-    border-radius: 4px;
-    background-color: #fff;
+	flex: 0 0 calc(25% - 20px);
+	/* Mỗi sản phẩm chiếm 25% chiều rộng của container, trừ đi khoảng cách */
+	text-align: center; /* Căn giữa nội dung trong mỗi sản phẩm */
+	padding: 10px;
+	border-radius: 4px;
+	background-color: #fff;
 }
 
 #viewed img {
-    max-width: 100%; /* Giữ kích thước hình ảnh linh hoạt trong phần tử */
-    height: auto; /* Giữ tỷ lệ khung hình cho hình ảnh */
+	max-width: 100%; /* Giữ kích thước hình ảnh linh hoạt trong phần tử */
+	height: auto; /* Giữ tỷ lệ khung hình cho hình ảnh */
 }
 
+/* CSS cho bảng lịch sử đơn hàng */
+.order-history-table {
+	width: 100%;
+	border-collapse: collapse; /* Gộp các đường viền */
+	margin: 20px 0;
+	font-size: 16px;
+	text-align: left;
+	background-color: #fff;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	overflow: hidden; /* Để các góc bo tròn không bị ảnh hưởng */
+}
+
+.order-history-table thead {
+	background-color: #d10024;
+	color: #fff;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+
+.order-history-table th, .order-history-table td {
+	padding: 12px 15px;
+	border-bottom: 1px solid #ddd; /* Đường viền dưới của mỗi ô */
+}
+
+.order-history-table th {
+	text-align: center; /* Căn giữa tiêu đề cột */
+}
+
+.order-history-table tbody tr:hover {
+	background-color: #f9f9f9; /* Đổi màu nền khi di chuột qua hàng */
+}
+
+.order-history-table tbody tr:last-child td {
+	border-bottom: none; /* Loại bỏ đường viền dưới cho hàng cuối */
+}
+
+.order-history-table td {
+	text-align: center; /* Căn giữa nội dung trong các ô */
+}
+
+.order-history-table a.btn-detail {
+	display: inline-block;
+	background-color: #d10024;
+	color: #fff;
+	padding: 8px 12px;
+	border-radius: 4px;
+	text-decoration: none;
+	font-weight: bold;
+	transition: background-color 0.3s;
+}
+
+.order-history-table a.btn-detail:hover {
+	background-color: #a00000; /* Màu đậm hơn khi hover */
+}
 </style>
 <script>
 function showTab(tabId) {
@@ -217,21 +277,54 @@ document.addEventListener('DOMContentLoaded', function () {
 						value="${userInfo.dob}" />
 				</div>
 				<button type="submit" class="save-button profile-save-button"
-					style="background-color: #a00000; background-color: #d10000; color: #fff; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s; margin-left: 12.9%;">LƯU
+					style="background-color: #a00000; background-color: #d10024; color: #fff; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background-color 0.3s; margin-left: 12.9%;">LƯU
 					THAY ĐỔI</button>
 			</form>
 		</div>
 	</div>
 
 	<div id="orders-history" class="tab">
-		<h1>Order History</h1>
-		<ul>
-			<c:forEach var="order" items="${orders}">
-				<li>Order ID: ${order.orderId}, Date: ${order.date}, Total:
-					$${order.total}</li>
-			</c:forEach>
-		</ul>
+		<h1>Lịch sử đơn hàng</h1>
+		<c:if test="${not empty orders}">
+			<table class="order-history-table">
+				<thead>
+					<tr>
+						<th>Mã đơn hàng</th>
+						<th>Ngày đặt</th>
+						<th>Tổng tiền</th>
+						<th>Trạng thái</th>
+						<th>Hình thức thanh toán</th>
+						<th>Chi tiết</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach var="order" items="${orders}">
+						<tr>
+							<td>${order.orderId}</td>
+							<td>${order.time}</td>
+							<td><strong>
+									<fmt:formatNumber value="${order.totalPrice}" type="currency"
+										currencySymbol="₫" />
+							</strong></td>
+
+							<td>${order.state}</td>
+							<td><c:choose>
+									<c:when test="${order.paymentMethod == 0}">Tiền mặt</c:when>
+									<c:when test="${order.paymentMethod == 1}">VNPAY</c:when>
+									<c:otherwise>Khác</c:otherwise>
+								</c:choose></td>
+							<td><a href="/LapFarm/order-detail?orderId=${order.orderId}"
+								class="btn btn-detail">Xem chi tiết</a></td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</c:if>
+		<c:if test="${empty orders}">
+			<p>Bạn chưa có đơn hàng nào.</p>
+		</c:if>
 	</div>
+
 
 	<div id="viewed" class="tab">
 		<h1>Sản phẩm đã xem</h1>

@@ -17,6 +17,16 @@ public class ReviewDAO {
     @Autowired
     private SessionFactory factory;
 
+    // Phương thức lưu đánh giá vào cơ sở dữ liệu
+    @Transactional
+    public void saveReview(ReviewEntity reviewEntity) {
+        if (reviewEntity == null || reviewEntity.getProduct() == null || reviewEntity.getUser() == null) {
+            throw new IllegalArgumentException("Review or related entities are null.");
+        }
+        Session session = factory.getCurrentSession();
+        session.saveOrUpdate(reviewEntity);  // Lưu hoặc cập nhật đánh giá
+    }
+
     @Transactional
     public List<ReviewEntity> getReviewsByProductId(int productId, int page, int pageSize) {
         Session session = factory.getCurrentSession();
@@ -42,6 +52,7 @@ public class ReviewDAO {
         query.setParameter("productId", productId);
         return query.list();
     }
+
     @Transactional
     public List<ReviewEntity> getReviewsByProductIdWithPagination(int productId, int page, int pageSize) {
         Session session = factory.getCurrentSession();

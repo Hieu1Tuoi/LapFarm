@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import LapFarm.DTO.OrdersDTO;
 import LapFarm.DTO.ViewedItem;
 import LapFarm.Entity.AccountEntity;
-import LapFarm.Entity.ImageEntity;
-import LapFarm.Entity.ProductEntity;
+
 import LapFarm.Entity.UserInfoEntity;
+import LapFarm.Service.OrdersServiceImp;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -25,42 +26,43 @@ public class AccountController {
 	@Autowired
 	SessionFactory factory;
 
-	@GetMapping("/account")
-	public String index(HttpSession httpSession, Model model) {
-		// Kiểm tra người dùng đăng nhập
-		AccountEntity user = (AccountEntity) httpSession.getAttribute("user");
-		if (user == null) {
-			return "redirect:/login";
-		}
+	@Autowired
+	private OrdersServiceImp orderService;
+	
 
-		// Lấy thông tin tài khoản và người dùng từ cơ sở dữ liệu
-		Session session = factory.openSession();
-		Transaction t = session.beginTransaction();
-		try {
-			AccountEntity account = session.get(AccountEntity.class, user.getEmail());
-			model.addAttribute("userProfile", account);
+    @GetMapping("/account")
+    public String index(@RequestParam(value = "tab", defaultValue = "profile") String tab,
+                        HttpSession httpSession, Model model) {
+        AccountEntity user = (AccountEntity) httpSession.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
 
-			UserInfoEntity userInfo = account.getUserInfo();
-			model.addAttribute("userInfo", userInfo);
+        // Load thông tin cá nhân
+        loadUserProfile(user.getEmail(), model);
 
-			// Lấy danh sách sản phẩm đã xem từ HttpSession
-			List<ViewedItem> viewedItems = (List<ViewedItem>) httpSession.getAttribute("viewedItems");
-			if (viewedItems == null) {
-				viewedItems = new ArrayList<>();
-			}
-			model.addAttribute("viewedItems", viewedItems);
+        // Load lịch sử đơn hàng
+        try {
+            List<OrdersDTO> ordersList = orderService.getOrdersByUserId(user.getUserInfo().getUserId());
+           System.out.println(ordersList);
+            model.addAttribute("orders", ordersList);
+        } catch (Exception e) {
+        	System.out.println("Không thể tải lịch sử đơn hàng: " + e.getMessage());
+            model.addAttribute("error", "Không thể tải lịch sử đơn hàng: " + e.getMessage());
+        }
 
-			t.commit();
-		} catch (Exception e) {
-			t.rollback();
-			model.addAttribute("error", "Không thể tải thông tin tài khoản: " + e.getMessage());
-		} finally {
-			session.close();
-		}
+        // Lấy sản phẩm đã xem
+        List<ViewedItem> viewedItems = (List<ViewedItem>) httpSession.getAttribute("viewedItems");
+        if (viewedItems == null) {
+            viewedItems = new ArrayList<>();
+        }
+        model.addAttribute("viewedItems", viewedItems);
 
-		return "account"; // Trả về trang "account.jsp"
-	}
+        // Truyền tab đang hoạt động vào Model
+        model.addAttribute("activeTab", tab);
 
+        return "account"; // Trả về view "account.jsp"
+    }
 	@GetMapping("/profile")
 	public String profile(HttpSession httpSession, Model model) {
 		AccountEntity user = (AccountEntity) httpSession.getAttribute("user");
@@ -72,47 +74,55 @@ public class AccountController {
 	}
 
 	@PostMapping("/profile/update")
-	public String updateProfile(@RequestParam("fullname") String fullName, @RequestParam("dob") String dob,
-			@RequestParam("sex") String sex, @RequestParam("phone") String phone,
-			@RequestParam("address") String address, HttpSession httpSession, Model model) {
-		AccountEntity user = (AccountEntity) httpSession.getAttribute("user");
-		if (user == null) {
-			return "redirect:/login";
-		}
+	public String updateProfile(@RequestParam("fullname") String fullName, 
+	                            @RequestParam("dob") String dob,
+	                            @RequestParam("sex") String sex, 
+	                            @RequestParam("phone") String phone,
+	                            @RequestParam("address") String address, 
+	                            HttpSession httpSession, 
+	                            Model model) {
+	    AccountEntity user = (AccountEntity) httpSession.getAttribute("user");
+	    if (user == null) {
+	        return "redirect:/login";
+	    }
 
-		Session session = factory.openSession();
-		Transaction t = session.beginTransaction();
-		try {
-			AccountEntity account = session.get(AccountEntity.class, user.getEmail());
-			UserInfoEntity userInfo = account.getUserInfo();
-			if (userInfo == null) {
-				userInfo = new UserInfoEntity();
-				userInfo.setFullName(fullName);
-				userInfo.setDob(dob);
-				userInfo.setSex(sex);
-				userInfo.setPhone(phone);
-				userInfo.setAddress(address);
-				account.setUserInfo(userInfo);
-				session.save(userInfo);
-			}
-			userInfo.setFullName(fullName);
-			userInfo.setDob(dob);
-			userInfo.setSex(sex);
-			userInfo.setPhone(phone);
-			userInfo.setAddress(address);
-			session.update(account);
-			t.commit();
-			model.addAttribute("success", "Profile updated successfully");
+	    Session session = factory.openSession();
+	    Transaction t = session.beginTransaction();
+	    try {
+	        AccountEntity account = session.get(AccountEntity.class, user.getEmail());
+	        UserInfoEntity userInfo = account.getUserInfo();
+	        
+	        // Nếu userInfo chưa tồn tại, tạo mới
+	        if (userInfo == null) {
+	            userInfo = new UserInfoEntity();
+	            account.setUserInfo(userInfo);
+	        }
 
-		} catch (Exception e) {
-			// TODO: handle exception
-			t.rollback();
-			model.addAttribute("error", "Could not update profile infor" + e.getMessage());
-		} finally {
-			session.close();
-		}
-		return "redirect:/account#profile";
+	        // Cập nhật thông tin
+	        userInfo.setFullName(fullName);
+	        userInfo.setDob(dob);
+	        userInfo.setSex(sex);
+	        userInfo.setPhone(phone);
+	        userInfo.setAddress(address);
+
+	        session.update(account);
+	        t.commit();
+
+	        // Lấy lại dữ liệu mới nhất và cập nhật vào session
+	        AccountEntity updatedAccount = session.get(AccountEntity.class, account.getEmail());
+	        httpSession.setAttribute("user", updatedAccount);
+
+	        model.addAttribute("success", "Cập nhật thông tin thành công!");
+	    } catch (Exception e) {
+	        t.rollback();
+	        model.addAttribute("error", "Không thể cập nhật thông tin: " + e.getMessage());
+	    } finally {
+	        session.close();
+	    }
+
+	    return "redirect:/account#profile";
 	}
+
 
 	private void loadUserProfile(String email, Model model) {
 		Session session = factory.openSession();
@@ -133,7 +143,28 @@ public class AccountController {
 		}
 	}
 
-	
-	
+//	@GetMapping("/account")
+//	public String getOrderHistory(HttpSession httpSession, Model model, @RequestParam(value = "tab", defaultValue = "profile") String tab) {
+//	    // Kiểm tra người dùng đăng nhập
+//	    AccountEntity user = (AccountEntity) httpSession.getAttribute("user");
+//	    if (user == null) {
+//	        return "redirect:/login";
+//	    }
+//
+//	    // Gọi OrdersService để lấy danh sách đơn hàng theo userId
+//	    try {
+//	        List<OrdersDTO> ordersList = orderService.getOrdersByUserId(user.getUserInfo().getUserId());
+//	        model.addAttribute("orders", ordersList);
+//	    } catch (Exception e) {
+//	        model.addAttribute("error", "Không thể tải lịch sử đơn hàng: " + e.getMessage());
+//	    }
+//
+//	    // Thêm tham số tab vào Model
+//	    model.addAttribute("activeTab", tab);
+//	    // Trả về trang account.jsp với tab orders-history được hiển thị
+//	    return "account";
+//	}
+
+
 
 }
