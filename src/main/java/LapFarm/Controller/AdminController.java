@@ -1,10 +1,12 @@
 package LapFarm.Controller;
 
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -12,12 +14,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import LapFarm.DAO.BrandDAO;
 import LapFarm.DAO.CategoryDAO;
 import LapFarm.DAO.OrderDetailDAO;
 import LapFarm.DAO.OrdersDAO;
 import LapFarm.DAO.ProductDAO;
+import LapFarm.DAO.ProductDetailDAO;
 import LapFarm.DAO.UserDAO;
 import LapFarm.DTO.OrderDetailDTO;
 import LapFarm.DTO.OrdersDTO;
@@ -25,13 +29,17 @@ import LapFarm.DTO.ProductDTO;
 import LapFarm.DTO.UserInfoDTO;
 import LapFarm.Entity.BrandEntity;
 import LapFarm.Entity.CategoryEntity;
+import LapFarm.Entity.ImageEntity;
 import LapFarm.Entity.OrdersEntity;
+import LapFarm.Entity.ProductDetailEntity;
 import LapFarm.Entity.ProductEntity;
-import LapFarm.Entity.UserInfoEntity;
+import jakarta.servlet.ServletContext;
 
 @Controller
 @RequestMapping(value = "/admin")
 public class AdminController {
+	@Autowired
+	ServletContext context;
 	@Autowired
     private CategoryDAO categoryDAO;
 	@Autowired
@@ -44,6 +52,8 @@ public class AdminController {
 	private BrandDAO brandDAO;
 	@Autowired
 	private OrderDetailDAO orderDetailDAO;
+	@Autowired
+	private ProductDetailDAO productDetailDAO;
 	
 	public static String normalizeString(String input) {
         if (input == null || input.isEmpty()) {
@@ -87,6 +97,66 @@ public class AdminController {
 	    // Xóa khoảng trắng cuối cùng
 	    return normalizedString.toString().trim();
 	}
+	
+	public static String normalizeStringAllUppercase(String input) {
+	    if (input == null || input.isEmpty()) {
+	        return input; // Nếu chuỗi null hoặc rỗng thì trả về ngay
+	    }
+
+	    // Bước 1: Xóa khoảng trắng dư thừa ở đầu và cuối
+	    input = input.trim();
+
+	    // Bước 2: Xóa khoảng trắng dư thừa ở giữa các từ
+	    input = input.replaceAll("\\s+", " ");
+
+	    // Bước 3: Chuyển tất cả các ký tự trong chuỗi thành chữ hoa
+	    return input.toUpperCase();
+	}
+	
+	public String saveImage(MultipartFile image) {
+	    if (image.isEmpty()) {
+	        return null; // Trả về null nếu file không có nội dung
+	    } else {
+	        try {
+	            // Lấy thư mục lưu ảnh (bạn có thể thay đổi đường dẫn này theo nhu cầu)
+	            String workspacePath = context.getRealPath("/uploads/images/");
+	         // Lùi ra folder lưu ảnh
+	            for (int i = 0; i < 8; i++) {
+	            	workspacePath = Paths.get(workspacePath).getParent().toString(); // Di chuyển lên 1 bậc
+	            }
+	            System.out.println(workspacePath + "/LapFarm/src/main/webapp/WEB-INF/resources/img/");
+	            String uploadDir = workspacePath + "/LapFarm/src/main/webapp/WEB-INF/resources/img/";
+
+	            // Tạo thư mục nếu chưa tồn tại
+	            File directory = new File(uploadDir);
+	            if (!directory.exists()) {
+	                directory.mkdirs();
+	            }
+
+	            // Tạo tên file duy nhất bằng cách thêm thời gian vào tên file gốc để tránh trùng
+	            String originalFileName = image.getOriginalFilename();
+	            String uniqueFileName = System.currentTimeMillis() + "_" + originalFileName;
+
+	            // Đường dẫn lưu ảnh
+	            String imagePath = uploadDir + uniqueFileName;
+
+	            // Lưu file vào thư mục
+	            File dest = new File(imagePath);
+	            image.transferTo(dest);
+
+	            // In ra đường dẫn lưu file (có thể thay bằng logger để ghi log)
+	            System.out.println("Image saved to: " + imagePath);
+
+	            return "/LapFarm/resources/img/" + uniqueFileName; // Trả về đường dẫn của file đã lưu
+	        } catch (Exception e) {
+	            // In thông báo lỗi để tiện gỡ lỗi (có thể thay bằng logger)
+	        	System.out.println("Loi khi luu anh!!!!!!!!!!!!!!!!!");
+	            e.printStackTrace();
+	            return null; // Trả về null nếu có lỗi xảy ra
+	        }
+	    }
+	}
+
 
 	
 	@RequestMapping(value = "/home" , method = RequestMethod.GET)
@@ -188,6 +258,94 @@ public class AdminController {
 	    // Trả về view cho trang quản lý sản phẩm của danh mục
 	    return "/admin/products/addProduct";
 	}
+	
+	@RequestMapping(value = "/product/add-product", method = RequestMethod.POST)
+	public String addProduct(@RequestParam("nameProduct") String nameProduct,
+	                         @RequestParam("categoryName") String categoryName,
+	                         @RequestParam("brand") String brandName,
+	                         @RequestParam("description") String description,
+	                         @RequestParam("moreinfo") String moreInfo,
+	                         @RequestParam("quantity") int quantity,
+	                         @RequestParam("discountPercent") double discountPercent,
+	                         @RequestParam("purchasePrice") double purchasePrice,
+	                         @RequestParam("salePrice") double salePrice,
+	                         @RequestParam("promotion") String promotion,
+	                         @RequestParam("state") String state,
+	                         @RequestParam("productImages") MultipartFile[] productImages,
+	                         ModelMap model) {
+
+	    // Lấy danh sách từ DAO
+		List<CategoryEntity> categories = categoryDAO.getAllCategories();
+		List<BrandEntity> brands = brandDAO.getAllBrands();
+	    // Đưa danh sách vào Model để đẩy sang view
+	    model.addAttribute("categories", categories);
+	    model.addAttribute("brands", brands);
+	    try {
+	        // Kiểm tra sản phẩm đã tồn tại chưa
+	        boolean existingProduct = productDAO.checkProductByName(nameProduct);
+	        if (existingProduct) {
+	            // Nếu sản phẩm đã tồn tại, trả về thông báo lỗi
+	            model.addAttribute("message", "Sản phẩm đã tồn tại!");
+	            return "/admin/products/addProduct"; // Chuyển hướng về trang danh sách sản phẩm
+	        }
+
+	        // Lấy category và brand từ database
+	        CategoryEntity category = categoryDAO.getCategoryByName(categoryName);
+	        BrandEntity brand = brandDAO.getBrandByName(brandName);
+
+	        // Tạo đối tượng sản phẩm mới
+	        ProductEntity newProduct = new ProductEntity();
+	        newProduct.setNameProduct(nameProduct);
+	        newProduct.setCategory(category);
+	        newProduct.setBrand(brand);
+	        newProduct.setDescription(description);
+	        newProduct.setQuantity(quantity);
+	        newProduct.setDiscount(discountPercent);
+	        newProduct.setOriginalPrice(purchasePrice);
+	        newProduct.setSalePrice(salePrice);
+	        newProduct.setRelatedPromotions(promotion);
+	        newProduct.setState(state);
+
+	        // Xử lý ảnh
+	        if (productImages != null && productImages.length > 0) {
+	            List<ImageEntity> imageEntities = new ArrayList<>(); // Danh sách để lưu các đối tượng ImageEntity
+	            for (MultipartFile file : productImages) {
+	                if (!file.isEmpty()) {
+	                    // Lưu ảnh và lấy đường dẫn ảnh
+	                    String filePath = saveImage(file); // Hàm lưu ảnh (cần phải tự triển khai phương thức này để lưu ảnh vào thư mục server hoặc cloud)
+
+	                    // Tạo đối tượng ImageEntity mới
+	                    ImageEntity imageEntity = new ImageEntity();
+	                    imageEntity.setImageUrl(filePath); // Đặt đường dẫn ảnh vào đối tượng ImageEntity
+	                    imageEntity.setProduct(newProduct); // Liên kết ảnh với sản phẩm mới
+
+	                    imageEntities.add(imageEntity); // Thêm ImageEntity vào danh sách
+	                }
+	            }
+
+	            // Liên kết danh sách ImageEntity vào sản phẩm
+	            newProduct.setImages(imageEntities);
+	        }
+	        
+	        ProductDetailEntity newProductDetail = new ProductDetailEntity(newProduct, category, moreInfo);
+
+	        // Gọi service để thêm sản phẩm
+	        productDAO.addProduct(newProduct);
+	        productDetailDAO.addProductDetail(newProductDetail);
+
+	        // Thêm thông báo thành công
+	        model.addAttribute("message", "Sản phẩm đã được thêm thành công!");
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        // Thêm thông báo lỗi
+	        model.addAttribute("message", "Đã xảy ra lỗi khi thêm sản phẩm!");
+	    }
+
+	    // Chuyển hướng về trang danh sách sản phẩm
+	    return "/admin/products/addProduct";
+	}
+
 	
 	@RequestMapping(value = { "/categories" }, method = RequestMethod.GET)
 	public String showListCatogory(ModelMap model) {

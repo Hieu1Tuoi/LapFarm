@@ -16,8 +16,8 @@ import org.springframework.stereotype.Repository;
 import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.BrandEntity;
 import LapFarm.Entity.CategoryEntity;
+import LapFarm.Entity.ImageEntity;
 import LapFarm.Entity.ProductEntity;
-import LapFarm.Entity.ReviewEntity;
 import jakarta.transaction.Transactional;
 
 @Repository
@@ -26,6 +26,7 @@ public class ProductDAO {
 	@Autowired
 	private SessionFactory factory;
 
+	@Transactional
 	// Hàm lấy danh sách tất cả sản phẩm
 	public List<ProductEntity> getAllProducts() {
 		// Lấy session từ factory
@@ -599,4 +600,50 @@ public class ProductDAO {
 		System.err.println(message);
 		e.printStackTrace();
 	}
+	
+	@Transactional
+	public void addProduct(ProductEntity product) {
+		Session session = factory.getCurrentSession();
+        try {
+            // Lưu đối tượng sản phẩm vào bảng "product"
+            session.persist(product); // Sử dụng saveOrUpdate để vừa có thể thêm mới, vừa có thể cập nhật
+
+            // Nếu có ảnh liên quan, lưu các ảnh vào bảng "image"
+            for (ImageEntity image : product.getImages()) {
+                session.persist(image); // Lưu hoặc cập nhật ảnh liên kết với sản phẩm
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+	
+	@Transactional
+	public List<ProductEntity> getProductsByName(String nameProduct) {
+	    Session session = factory.getCurrentSession();
+	    
+	    // HQL để truy vấn sản phẩm theo tên
+	    String hql = "FROM ProductEntity p WHERE p.nameProduct = :nameProduct";
+	    Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+	    query.setParameter("nameProduct", nameProduct);
+	    
+	    // Trả về danh sách sản phẩm
+	    return query.list();
+	}
+	
+	@Transactional
+	public boolean checkProductByName(String nameProduct) {
+	    Session session = factory.getCurrentSession();
+	    
+	    // HQL để kiểm tra sự tồn tại của sản phẩm theo tên
+	    String hql = "SELECT COUNT(p) FROM ProductEntity p WHERE p.nameProduct = :nameProduct";
+	    Query<Long> query = session.createQuery(hql, Long.class);
+	    query.setParameter("nameProduct", nameProduct);
+	    
+	    // Kiểm tra nếu số lượng sản phẩm lớn hơn 0 thì có tồn tại, ngược lại là không
+	    long count = query.uniqueResult();
+	    
+	    return count > 0;
+	}
+
+
 }

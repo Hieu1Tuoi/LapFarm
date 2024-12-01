@@ -38,6 +38,19 @@ public class CategoryDAO {
 
         return query.uniqueResult();
     }
+    
+    @Transactional
+    public CategoryEntity getCategoryByName(String nameCategory) {
+        Session session = factory.getCurrentSession();
+
+        // HQL để lấy thông tin Category theo nameCategory
+        String hql = "FROM CategoryEntity c WHERE c.nameCategory = :nameCategory";
+        Query<CategoryEntity> query = session.createQuery(hql, CategoryEntity.class);
+        query.setParameter("nameCategory", nameCategory);
+
+        return query.uniqueResult();
+    }
+
 
     @Transactional
     public void saveCategory(CategoryEntity category) {
