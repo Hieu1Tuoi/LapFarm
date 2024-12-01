@@ -3,13 +3,17 @@
 <%@ include file="/WEB-INF/views/admin/layout/adminHeader.jsp"%>
 <%@ include file="/WEB-INF/views/admin/layout/adminSidebar.jsp"%>
 
-
+<style>
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td,
+	.table>tbody>tr>td, .table>tfoot>tr>td {
+	border-top: 1px solid #f4f4f4;
+	max-width: 430px;
+}
+</style>
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1>
-			Quản lý sản phẩm
-		</h1>
+		<h1>Quản lý sản phẩm</h1>
 		<ol class="breadcrumb">
 			<li><a href="#"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
 			<li class="active">Sản phẩm</li>
@@ -21,7 +25,8 @@
 		<div class="col-xs-12">
 			<div class="box">
 				<div class="box-header">
-					<a href="admin/product/add-product" class="btn btn-success">+ Thêm sản phẩm</a>
+					<a href="admin/product/add-product" class="btn btn-success">+
+						Thêm sản phẩm</a>
 					<div class="box-tools">
 						<div class="input-group input-group-sm" style="width: 150px;">
 							<input type="text" name="table_search"
@@ -57,8 +62,8 @@
 									<td>${p.idProduct}</td>
 									<td>${p.brandName}</td>
 									<td><a
-										href="${pageContext.request.contextPath}/product-detail/${p.idProduct}"style="color: black;"
-										>${p.nameProduct}</a></td>
+										href="${pageContext.request.contextPath}/product-detail/${p.idProduct}"
+										style="color: black;">${p.nameProduct}</a></td>
 									<td>${p.quantity}</td>
 									<td><fmt:formatNumber value="${p.calOriginalPrice()}"
 											type="number" groupingUsed="true" /> VNĐ</td>
