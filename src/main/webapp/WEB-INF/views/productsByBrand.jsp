@@ -8,9 +8,9 @@
 	href="<c:url value="/resources/css/outOfStock.css" />">
 <!-- STORE -->
 <div id="store" class="col-md-9">
-<h2>${ProductsPaginate != null ? ProductsPaginate.size() : 0}</h2>
+	<h2>${ProductsPaginate != null ? ProductsPaginate.size() : 0}</h2>
 	<h3>
-	
+
 		SẢN PHẨM THEO "${brand.nameBrand}":
 		<fmt:formatNumber value="${productCounts[category.idCategory]}"
 			type="number" groupingUsed="true" />
@@ -38,9 +38,12 @@
 									</c:otherwise>
 								</c:choose>
 
-								<div class="product-label">
-									<span class="sale">${p.discount*100}%</span>
-								</div>
+								<c:if test="${p.discount > 0}">
+									<div class="product-label">
+										<span class="sale">${p.discount * 100}%</span>
+									</div>
+								</c:if>
+
 							</div>
 							<div class="product-body">
 								<p class="product-category">${p.categoryName}</p>
@@ -51,10 +54,13 @@
 								<h6 class="product-price">
 									<td><fmt:formatNumber value="${p.calPrice()}"
 											type="number" groupingUsed="true" /> ₫</td>
-									<del class="product-old-price">
-										<td><fmt:formatNumber value="${p.calSalePrice()}"
-												type="number" groupingUsed="true" /> ₫</td>
-									</del>
+									<c:if test="${p.discount > 0}">
+										<del class="product-old-price">
+											<fmt:formatNumber value="${p.calSalePrice()}" type="number"
+												groupingUsed="true" />
+											₫
+										</del>
+									</c:if>
 								</h6>
 								<div class="product-rating">
 									<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
@@ -77,21 +83,22 @@
 								</div>
 							</div>
 							<div class="add-to-cart">
-                                <c:choose>
-                                    <c:when test="${p.quantity > 0}">
-                                        <form action="addCart/${p.idProduct}" method="GET">
-                                            <button type="submit" class="add-to-cart-btn">
-                                                <i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
-                                            </button>
-                                        </form>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <button type="button" class="add-to-cart-btn disabled" disabled>
-                                            <i class="fa fa-ban"></i> Hết hàng
-                                        </button>
-                                    </c:otherwise>
-                                </c:choose>
-                            </div>
+								<c:choose>
+									<c:when test="${p.quantity > 0}">
+										<form action="addCart/${p.idProduct}" method="GET">
+											<button type="submit" class="add-to-cart-btn">
+												<i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
+											</button>
+										</form>
+									</c:when>
+									<c:otherwise>
+										<button type="button" class="add-to-cart-btn disabled"
+											disabled>
+											<i class="fa fa-ban"></i> Hết hàng
+										</button>
+									</c:otherwise>
+								</c:choose>
+							</div>
 						</div>
 					</div>
 
@@ -109,7 +116,7 @@
 
 	</div>
 	<!-- /store products -->
-					<div class="store-filter clearfix">
+	<div class="store-filter clearfix">
 
 		<c:forEach var="item" begin="1" end="${paginateInfo.totalPage}"
 			varStatus="loop">
@@ -133,21 +140,21 @@
 		</c:if>
 		</ul>
 	</div>
-					<!-- /store bottom filter -->
-				</div>
-				<!-- /STORE -->
-	<%@ include file="/WEB-INF/views/layouts/user-footer.jsp"%>
-	
-	<script type="text/javascript">
-    // Kiểm tra nếu có lỗi từ tham số URL
-    <c:if test="${not empty param.error}">
-        var error = "${param.error}";
-        
-        // Hiển thị thông báo tương ứng với lỗi
-        if (error === 'product-unavailable') {
-            alert('Sản phẩm đã hết hàng, không thể thêm vào giỏ.');
-        } else if (error === 'invalid-quantity') {
-            alert('Số lượng không hợp lệ, vui lòng kiểm tra lại.');
-        }
-    </c:if>
+	<!-- /store bottom filter -->
+</div>
+<!-- /STORE -->
+<%@ include file="/WEB-INF/views/layouts/user-footer.jsp"%>
+
+<script type="text/javascript">
+	// Kiểm tra nếu có lỗi từ tham số URL
+	<c:if test="${not empty param.error}">
+	var error = "${param.error}";
+
+	// Hiển thị thông báo tương ứng với lỗi
+	if (error === 'product-unavailable') {
+		alert('Sản phẩm đã hết hàng, không thể thêm vào giỏ.');
+	} else if (error === 'invalid-quantity') {
+		alert('Số lượng không hợp lệ, vui lòng kiểm tra lại.');
+	}
+	</c:if>
 </script>
