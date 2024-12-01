@@ -102,10 +102,9 @@
 				</thead>
 				<tbody>
 					<c:forEach var="od" items="${orderdetail}">
-						<h1>${od.salePrice}</h1>
 						<tr>
 							<td><a href="product-detail/${od.idProduct}"> <img
-									width="100" src="<c:url value='${od.image}'/>" alt="">
+									width="100" src="${od.image}" alt=""  onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
 							</a></td>
 							<td><a href="product-detail/${od.idProduct}"
 								style="color: black;"> ${od.nameProduct} </a></td>
