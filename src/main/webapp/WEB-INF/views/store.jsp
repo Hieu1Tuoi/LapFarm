@@ -10,7 +10,7 @@
 
 <!-- STORE -->
 <div id="store" class="col-md-9">
-<h1>${user.email}</h1>
+<h1>${user.userInfo.userId}</h1>
 	<h2>${ProductsPaginate != null ? ProductsPaginate.size() : 0}</h2>
 	<h3>
 		TẤT CẢ SẢN PHẨM:
