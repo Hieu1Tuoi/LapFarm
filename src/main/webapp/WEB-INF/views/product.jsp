@@ -294,34 +294,74 @@
 
 
 
-						<!-- Review Form -->
-								<div class="col-md-3">
-								    <div id="review-form">
-								        <!-- Kiểm tra nếu người dùng đã đăng nhập -->
-								        <c:if test="${not empty sessionScope.user}">
-								            <form class="review-form" action="/submit-review" method="post">
+<!-- Review Form -->
+<div class="col-md-3">
+    <div id="review-form">
+        <!-- Kiểm tra nếu người dùng đã đăng nhập -->
+        <c:if test="${not empty sessionScope.user}">
+            <form class="review-form" id="reviewForm" method="post">
+                <input type="hidden" name="productId" value="${product.idProduct}" />
+                <textarea class="input" name="review" placeholder="Your Review" required></textarea>
+                <div class="input-rating">
+                    <span>Your Rating: </span>
+                    <div class="stars">
+                        <input id="star5" name="rating" value="5" type="radio" required><label for="star5"></label>
+                        <input id="star4" name="rating" value="4" type="radio"><label for="star4"></label>
+                        <input id="star3" name="rating" value="3" type="radio"><label for="star3"></label>
+                        <input id="star2" name="rating" value="2" type="radio"><label for="star2"></label>
+                        <input id="star1" name="rating" value="1" type="radio"><label for="star1"></label>
+                    </div>
+                </div>
+                <button class="primary-btn" type="submit">Submit</button>
+            </form>
+            <!-- Thông báo thành công hoặc lỗi -->
+            <div id="successMessage" style="display:none;" class="alert alert-success"></div>
+            <div id="errorMessage" style="display:none;" class="alert alert-danger"></div>
+        </c:if>
 
-								                <textarea class="input" name="review" placeholder="Your Review" required></textarea>
-								                <div class="input-rating">
-								                    <span>Your Rating: </span>
-								                    <div class="stars">
-								                        <input id="star5" name="rating" value="5" type="radio"><label for="star5"></label>
-								                        <input id="star4" name="rating" value="4" type="radio"><label for="star4"></label>
-								                        <input id="star3" name="rating" value="3" type="radio"><label for="star3"></label>
-								                        <input id="star2" name="rating" value="2" type="radio"><label for="star2"></label>
-								                        <input id="star1" name="rating" value="1" type="radio"><label for="star1"></label>
-								                    </div>
-								                </div>
-								                <button class="primary-btn">Submit</button>
-								            </form>
-								        </c:if>
-								        <!-- Nếu người dùng chưa đăng nhập -->
-								        <c:if test="${empty sessionScope.user}">
-								            <p>Bạn cần <a href="<c:url value='/login' />">đăng nhập</a> để gửi đánh giá.</p>
-								        </c:if>
-								    </div>
-								</div>
-								<!-- /Review Form -->
+        <!-- Nếu người dùng chưa đăng nhập -->
+        <c:if test="${empty sessionScope.user}">
+            <p>Bạn cần <a href="<c:url value='/login' />">đăng nhập</a> để gửi đánh giá.</p>
+        </c:if>
+    </div>
+</div>
+<!-- /Review Form -->
+
+<!-- Thêm JavaScript ở cuối trang, trước thẻ </body> -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Khi người dùng submit form
+    $('#reviewForm').submit(function(event) {
+        event.preventDefault();  // Ngăn không cho form gửi theo cách thông thường (reload trang)
+
+        // Lấy dữ liệu từ form
+        var formData = $(this).serialize();  // Serialize tất cả các trường trong form
+
+        // Gửi dữ liệu form bằng AJAX
+        $.ajax({
+            url: '/product-detail/' + $('input[name="productId"]').val(),  // URL gửi tới server
+            method: 'POST',
+            data: formData,  // Dữ liệu gửi lên server
+            success: function(response) {
+                // Kiểm tra phản hồi từ server và hiển thị thông báo thành công
+                if (response.success) {
+                    $('#successMessage').html(response.success).show();  // Hiển thị thông báo thành công
+                    $('#errorMessage').hide();  // Ẩn thông báo lỗi
+                } else {
+                    $('#errorMessage').html(response.error).show();  // Hiển thị thông báo lỗi
+                    $('#successMessage').hide();  // Ẩn thông báo thành công
+                }
+            },
+            error: function(xhr, status, error) {
+                // Nếu có lỗi xảy ra trong quá trình gửi dữ liệu
+                $('#errorMessage').html('Đã xảy ra lỗi trong quá trình gửi đánh giá.').show();
+                $('#successMessage').hide();
+            }
+        });
+    });
+});
+</script>
 
 					</div>
 				</div>
