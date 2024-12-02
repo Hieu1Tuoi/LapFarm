@@ -4,6 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 <%@ include file="/WEB-INF/views/layouts/user-header.jsp"%>
+
 <style>
 /* Đặt CSS cho toàn bộ container */
 body {
@@ -179,6 +180,36 @@ input[type="radio"] {
 .order-history-table a.btn-detail:hover {
 	background-color: #a00000; /* Màu đậm hơn khi hover */
 }
+
+/* Nút Xem chi tiết */
+.btn-detail {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #333;  /* Nền đen */
+    color: #fff;  /* Chữ trắng */
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+    display: flex;
+    align-items: center;  /* Căn giữa biểu tượng và chữ */
+}
+
+.btn-detail:hover {
+    background-color: #555;  /* Khi hover, nền chuyển thành xám */
+    color: #fff;  /* Chữ vẫn giữ màu trắng */
+}
+
+/* Thay đổi màu cho biểu tượng */
+.btn-detail i {
+    margin-right: 5px;  /* Khoảng cách giữa biểu tượng và chữ */
+}
+
+/* Thêm hiệu ứng hover cho biểu tượng */
+.btn-detail:hover i {
+    color: #fff;  /* Khi hover, màu biểu tượng cũng chuyển sang trắng */
+}
+
 </style>
 <script>
 function showTab(tabId) {
@@ -201,21 +232,27 @@ function showTab(tabId) {
     // Cập nhật URL hash
     window.location.hash = tabId;
 
-    // Ẩn các phần tử khác nếu không phải tab "viewed"
+    // Ẩn các phần tử khác nếu không phải tab "viewed" hoặc tab mới
     const viewedTab = document.getElementById('viewed');
-    if (tabId !== 'viewed') {
+    const orderDetailTab = document.getElementById('order-detail');
+    if (tabId !== 'viewed' && tabId !== 'order-detail') {
         viewedTab.style.display = 'none';
+        orderDetailTab.style.display = 'none';
     } else {
-        viewedTab.style.display = 'block';
+        if (tabId === 'viewed') {
+            viewedTab.style.display = 'block';
+        } else {
+            orderDetailTab.style.display = 'block';
+        }
     }
 }
-
 
 // Mở tab mặc định
 document.addEventListener('DOMContentLoaded', function () {
     const currentHash = window.location.hash.substring(1) || 'profile'; // Loại bỏ dấu "#" nếu có
     showTab(currentHash);
 });
+
 </script>
 <body>
 	<h1>Thông tin tài khoản</h1>
@@ -224,6 +261,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				tin cá nhân</a></li>
 		<li><a href="account#orders-history"
 			onclick="showTab('orders-history');">Đơn Hàng</a></li>
+
 		<li><a href="account#viewed" onclick="showTab('viewed');">Sản
 				phẩm đã xem</a></li>
 	</ul>
@@ -302,9 +340,8 @@ document.addEventListener('DOMContentLoaded', function () {
 						<tr>
 							<td>${order.orderId}</td>
 							<td>${order.time}</td>
-							<td><strong>
-									<fmt:formatNumber value="${order.totalPrice}" type="currency"
-										currencySymbol="₫" />
+							<td><strong> <fmt:formatNumber
+										value="${order.totalPrice}" type="currency" currencySymbol="₫" />
 							</strong></td>
 
 							<td>${order.state}</td>
@@ -313,8 +350,9 @@ document.addEventListener('DOMContentLoaded', function () {
 									<c:when test="${order.paymentMethod == 1}">VNPAY</c:when>
 									<c:otherwise>Khác</c:otherwise>
 								</c:choose></td>
-							<td><a href="/LapFarm/order-detail?orderId=${order.orderId}"
-								class="btn btn-detail">Xem chi tiết</a></td>
+							<td><a href="order-detail?orderId=${order.orderId}"
+								class="btn-detail"> <i class="fa fa-eye"></i> Xem chi tiết
+							</a></td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -324,6 +362,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			<p>Bạn chưa có đơn hàng nào.</p>
 		</c:if>
 	</div>
+
 
 
 	<div id="viewed" class="tab">

@@ -103,6 +103,9 @@ public class CartController extends BaseController {
 		return "redirect:" + request.getHeader("Referer");
 	}
 
+
+
+	
 	@Transactional
 	@RequestMapping(value = "/EditCart/{id}/{quanty}")
 	public String EditCart(HttpServletRequest request, HttpSession session, @PathVariable("id") int id,

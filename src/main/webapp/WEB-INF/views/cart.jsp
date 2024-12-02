@@ -171,6 +171,15 @@ a.shopBtn:hover {
 .table-container {
 	overflow-x: auto; /* Thêm thanh cuộn nếu bảng quá lớn */
 }
+
+/* Giới hạn chiều dài tên sản phẩm */
+.table td a {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 500px; /* Giới hạn chiều rộng của tên sản phẩm */
+}
 </style>
 
 <body>
@@ -210,30 +219,28 @@ Body Section
 					<tbody>
 						<c:forEach var="item" items="${Cart}">
 							<tr id="${item.value.id}">
-							    <td>
-							        <input 
-							            id="checkbox${item.value.id}" 
-							            type="checkbox" 
-							            class="u-checkbox" 
-							            <c:if test="${cartIdSelecteds != null && cartIdSelecteds.contains(item.value.id)}">checked</c:if>
-							        >
-							    </td>
+								<td><input id="checkbox${item.value.id}" type="checkbox"
+									class="u-checkbox"
+									<c:if test="${cartIdSelecteds != null && cartIdSelecteds.contains(item.value.id)}">checked</c:if>>
+								</td>
 								<td><a
 									href="product-detail/${item.value.product.idProduct}" /><img
-									width="100"
-									src="<c:url value="${ item.value.product.image }"/>" alt=""></td>
+									width="100" src="${ item.value.product.image }" alt=""></td>
 								<td><a
 									href="product-detail/${item.value.product.idProduct}" />${ item.value.product.nameProduct }</td>
 								<td><a
 									href="products-brand?nameBrand=${item.value.product.brandName}" />${ item.value.product.brandName }</td>
-								<td><fmt:formatNumber type="number" groupingUsed="true"
+
+								<td id="price-cart-${item.value.id}"><fmt:formatNumber
+										type="number" groupingUsed="true"
 										value="${ item.value.product.calPrice() }" /> ₫</td>
 								<td><input type="number" min="1"
 									max="${item.value.product.quantity}" class="span1"
 									style="max-width: 60px" id="quanty-cart-${item.key}"
 									value="${item.value.quantity}"
-									onchange="validateQuantity(this, ${item.value.product.quantity});">
-								</td>
+									data-original-quantity="${item.value.quantity}"
+									onchange="updateQuantity(${item.key}, this.value)"></td>
+
 								<td><a data-id="${item.key}"
 									class="btn btn-mini btn-danger edit-cart" type="button"> <i
 										class="fa fa-edit"></i>
@@ -242,6 +249,7 @@ Body Section
 									class="btn btn-mini btn-danger"
 									onclick="return confirmDelete();"> <i class="fa fa-trash"></i>
 								</a></td>
+
 
 								<td id="totalPrice${item.value.id}"><fmt:formatNumber
 										type="number" groupingUsed="true"
@@ -264,17 +272,63 @@ Body Section
 		</div>
 	</div>
 	<content tag="script"> <script>
-	
-	/**
-	 * Hiển thị hộp thoại xác nhận xóa.
-	 * @returns {boolean} - True nếu người dùng chọn OK, ngược lại là false.
-	 */
-	function confirmDelete() {
-	    return confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?");
-	}
+$(document).ready(function () {
+    let hasUneditedChanges = false; // Biến đánh dấu xem có thay đổi nhưng chưa nhấn chỉnh sửa không
 
-	
-	  /**
+    // Xử lý sự kiện khi nhấn vào checkbox
+    $(".u-checkbox").on("change", function () {
+        const rowId = $(this).closest("tr").attr("id");
+        const editButton = $(`#${rowId} .edit-cart`);
+        if ($(this).is(":checked")) {
+            editButton.addClass("disabled").prop("disabled", true);
+        } else {
+            editButton.removeClass("disabled").prop("disabled", false);
+        }
+    });
+
+    // Cập nhật số lượng và đánh dấu có thay đổi
+    $(".table .span1").on("change", function () {
+        hasUneditedChanges = true; // Đánh dấu có thay đổi
+    });
+
+    // Xử lý sự kiện khi nhấn nút "Chỉnh sửa".
+    $(".edit-cart").on("click", function () {
+        const id = $(this).data("id");
+        const quanty = $(`#quanty-cart-${id}`).val();
+        window.location = `EditCart/${id}/${quanty}`;
+        hasUneditedChanges = false; // Đánh dấu là đã chỉnh sửa
+    });
+
+    // Xử lý sự kiện khi nhấn nút "Thanh toán".
+    $(".shopBtn.pull-right").on("click", function (event) {
+        event.preventDefault(); // Ngăn chặn hành động mặc định
+        if (hasUneditedChanges) {
+            alert("Bạn cần nhấn 'Chỉnh sửa' để lưu thay đổi trước khi thanh toán.");
+        } else {
+            handleCheckout(); // Gọi hàm xử lý thanh toán nếu không có thay đổi chưa lưu
+        }
+    });
+
+    // Hàm xử lý thanh toán (ví dụ)
+    function handleCheckout() {
+        alert("Bạn đã sẵn sàng thanh toán!");
+        // Tiến hành thanh toán ở đây
+    }
+
+    // Hàm xác nhận xóa sản phẩm khỏi giỏ hàng
+    function confirmDelete() {
+        return confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?");
+    }
+
+    /**
+     * Hiển thị hộp thoại xác nhận xóa.
+     * @returns {boolean} - True nếu người dùng chọn OK, ngược lại là false.
+     */
+    function confirmDelete() {
+        return confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?");
+    }
+
+    /**
      * Hàm kiểm tra giá trị input và tự động điều chỉnh nếu không hợp lệ
      * @param {HTMLElement} input - Thẻ input cần kiểm tra
      * @param {number} max - Giá trị lớn nhất được phép
@@ -287,13 +341,14 @@ Body Section
             input.value = max;
         }
     }
-	
-		$(".edit-cart").on("click", function() {
-			var id = $(this).data("id");
-			var quanty = $("#quanty-cart-" + id).val();
-			window.location = "EditCart/" + id + "/" + quanty;
-		});
-	</script> </content>
+
+    $(".edit-cart").on("click", function() {
+        var id = $(this).data("id");
+        var quanty = $("#quanty-cart-" + id).val();
+        window.location = "EditCart/" + id + "/" + quanty;
+    });
+});
+</script> </content>
 	<script src="<c:url value='/resources/js/cart.js' />"></script>
 </body>
 
