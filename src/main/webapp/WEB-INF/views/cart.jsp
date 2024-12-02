@@ -272,82 +272,98 @@ Body Section
 		</div>
 	</div>
 	<content tag="script"> <script>
-$(document).ready(function () {
-    let hasUneditedChanges = false; // Biến đánh dấu xem có thay đổi nhưng chưa nhấn chỉnh sửa không
+	$(document).ready(function () {
+	    let editedItems = {}; // Theo dõi các sản phẩm đã chỉnh sửa
+	    let canCheckout = false; // Đánh dấu trạng thái cho phép thanh toán
 
-    // Xử lý sự kiện khi nhấn vào checkbox
-    $(".u-checkbox").on("change", function () {
-        const rowId = $(this).closest("tr").attr("id");
-        const editButton = $(`#${rowId} .edit-cart`);
-        if ($(this).is(":checked")) {
-            editButton.addClass("disabled").prop("disabled", true);
-        } else {
-            editButton.removeClass("disabled").prop("disabled", false);
-        }
-    });
+	    // Hàm cập nhật tổng tiền của từng sản phẩm
+	    function updateTotalPrice(itemId, newQuantity) {
+	        const unitPrice = parseFloat($("#price-cart-" + itemId).text().replace(/[^\d]/g, ""));
+	        const totalPrice = unitPrice * newQuantity;
+	        $("#totalPrice" + itemId).text(new Intl.NumberFormat('vi-VN').format(totalPrice) + " ₫");
+	    }
 
-    // Cập nhật số lượng và đánh dấu có thay đổi
-    $(".table .span1").on("change", function () {
-        hasUneditedChanges = true; // Đánh dấu có thay đổi
-    });
+	    // Xử lý sự kiện thay đổi số lượng
+	    $(".span1").on("change", function () {
+	        const row = $(this).closest("tr");
+	        const id = row.attr("id");
+	        const newQuantity = $(this).val();
 
-    // Xử lý sự kiện khi nhấn nút "Chỉnh sửa".
-    $(".edit-cart").on("click", function () {
-        const id = $(this).data("id");
-        const quanty = $(`#quanty-cart-${id}`).val();
-        window.location = `EditCart/${id}/${quanty}`;
-        hasUneditedChanges = false; // Đánh dấu là đã chỉnh sửa
-    });
+	        if (newQuantity <= 0) {
+	            alert("Số lượng phải lớn hơn 0.");
+	            return;
+	        }
 
-    // Xử lý sự kiện khi nhấn nút "Thanh toán".
-    $(".shopBtn.pull-right").on("click", function (event) {
-        event.preventDefault(); // Ngăn chặn hành động mặc định
-        if (hasUneditedChanges) {
-            alert("Bạn cần nhấn 'Chỉnh sửa' để lưu thay đổi trước khi thanh toán.");
-        } else {
-            handleCheckout(); // Gọi hàm xử lý thanh toán nếu không có thay đổi chưa lưu
-        }
-    });
+	        editedItems[id] = false; // Đánh dấu chưa chỉnh sửa
+	        updateTotalPrice(id, newQuantity); // Cập nhật tổng tiền
+	        $("#checkbox" + id).prop("checked", false).prop("disabled", true); // Vô hiệu hóa checkbox
+	        $(".shopBtn.pull-right").prop("disabled", true); // Vô hiệu hóa nút thanh toán
+	    });
 
-    // Hàm xử lý thanh toán (ví dụ)
-    function handleCheckout() {
-        alert("Bạn đã sẵn sàng thanh toán!");
-        // Tiến hành thanh toán ở đây
-    }
+	    // Xử lý sự kiện nhấn nút "Chỉnh sửa"
+	    $(".edit-cart").on("click", function () {
+	        const id = $(this).data("id");
+	        const newQuantity = $("#quanty-cart-" + id).val();
 
-    // Hàm xác nhận xóa sản phẩm khỏi giỏ hàng
-    function confirmDelete() {
-        return confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?");
-    }
+	        if (newQuantity <= 0) {
+	            alert("Số lượng phải lớn hơn 0.");
+	            return;
+	        }
 
-    /**
-     * Hiển thị hộp thoại xác nhận xóa.
-     * @returns {boolean} - True nếu người dùng chọn OK, ngược lại là false.
-     */
-    function confirmDelete() {
-        return confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?");
-    }
+	        // Gọi API hoặc xử lý logic để lưu số lượng mới
+	        window.location = "EditCart/" + id + "/" + newQuantity;
 
-    /**
-     * Hàm kiểm tra giá trị input và tự động điều chỉnh nếu không hợp lệ
-     * @param {HTMLElement} input - Thẻ input cần kiểm tra
-     * @param {number} max - Giá trị lớn nhất được phép
-     */
-    function validateQuantity(input, max) {
-        let value = parseInt(input.value, 10);
-        if (isNaN(value) || value < 1) {
-            input.value = 1;
-        } else if (value > max) {
-            input.value = max;
-        }
-    }
+	        // Sau khi chỉnh sửa thành công
+	        editedItems[id] = true; // Đánh dấu đã chỉnh sửa
+	        $("#checkbox" + id).prop("disabled", false).prop("checked", true); // Kích hoạt lại checkbox và đánh dấu đã chọn
+	        checkAllEdited(); // Kiểm tra trạng thái thanh toán
+	    });
 
-    $(".edit-cart").on("click", function() {
-        var id = $(this).data("id");
-        var quanty = $("#quanty-cart-" + id).val();
-        window.location = "EditCart/" + id + "/" + quanty;
-    });
-});
+	    // Hàm kiểm tra trạng thái cho phép thanh toán
+	    function checkAllEdited() {
+	        // Kiểm tra tất cả các checkbox và trạng thái chỉnh sửa
+	        canCheckout = !Object.values(editedItems).includes(false) && $(".u-checkbox:checked").length > 0;
+	        $(".shopBtn.pull-right").prop("disabled", !canCheckout);
+	    }
+
+	    // Xử lý sự kiện nhấn nút "Thanh toán"
+	    $(".shopBtn.pull-right").on("click", function (event) {
+	        event.preventDefault();
+
+	        // Kiểm tra tất cả các sản phẩm xem có tất cả checkbox đã được chọn và đã chỉnh sửa hay chưa
+	        let anyChecked = false;   // Kiểm tra nếu có bất kỳ sản phẩm nào được chọn
+	        let allEdited = true;     // Kiểm tra xem tất cả sản phẩm đã được chỉnh sửa hay chưa
+
+	        $(".u-checkbox").each(function () {
+	            const id = $(this).closest("tr").attr("id");
+
+	            // Kiểm tra nếu sản phẩm chưa được chỉnh sửa
+	            if (!editedItems[id]) {
+	                allEdited = false;
+	            }
+
+	            // Kiểm tra nếu có ít nhất một sản phẩm được chọn
+	            if ($(this).prop("checked")) {
+	                anyChecked = true;
+	            }
+	        });
+
+	        // Nếu có ít nhất một sản phẩm được chọn và tất cả sản phẩm đều đã được chỉnh sửa, hiển thị thông báo thanh toán
+	        if (anyChecked || allEdited) {
+	            alert("Bạn đã sẵn sàng thanh toán!");
+	            // Logic xử lý thanh toán
+	        } else {
+	            alert("Bạn cần chỉnh sửa tất cả các sản phẩm trước khi thanh toán.");
+	        }
+	    });
+
+	    // Hàm xác nhận xóa sản phẩm
+	    window.confirmDelete = function () {
+	        return confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?");
+	    };
+	});
+
+
 </script> </content>
 	<script src="<c:url value='/resources/js/cart.js' />"></script>
 </body>

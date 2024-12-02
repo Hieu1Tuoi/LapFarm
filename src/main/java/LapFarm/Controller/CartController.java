@@ -34,7 +34,7 @@ public class CartController extends BaseController {
 		if (user != null) {
 			// Nếu người dùng đã đăng nhập, đồng bộ giỏ hàng từ database vào session
 			HashMap<Integer, CartDTO> cart = cartService.getCartFromDatabase(user.getUserInfo().getUserId());
-			
+
 			// Cập nhật lại giỏ hàng trong session
 			session.setAttribute("Cart", cart);
 			session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
@@ -47,34 +47,32 @@ public class CartController extends BaseController {
 
 	@RequestMapping(value = "addCart/{id}", method = RequestMethod.GET)
 	public String addCart(HttpServletRequest request, HttpSession session, @PathVariable("id") Integer id) {
-	    // Kiểm tra số lượng sản phẩm
-	    if (!cartService.isProductAvailable(id)) {
-	        // Nếu sản phẩm không còn, chuyển hướng về trang hiện tại và thêm tham số lỗi
-	        String referer = request.getHeader("Referer");
-	        return "redirect:" + referer + (referer.contains("?") ? "&" : "?") + "error=product-unavailable";
-	    }
+		// Kiểm tra số lượng sản phẩm
+		if (!cartService.isProductAvailable(id)) {
+			// Nếu sản phẩm không còn, chuyển hướng về trang hiện tại và thêm tham số lỗi
+			String referer = request.getHeader("Referer");
+			return "redirect:" + referer + (referer.contains("?") ? "&" : "?") + "error=product-unavailable";
+		}
+		// Lấy giỏ hàng từ session
+		HashMap<Integer, CartDTO> cart = (HashMap<Integer, CartDTO>) session.getAttribute("Cart");
+		if (cart == null) {
+			cart = new HashMap<>();
+		}
 
-	    // Lấy giỏ hàng từ session
-	    HashMap<Integer, CartDTO> cart = (HashMap<Integer, CartDTO>) session.getAttribute("Cart");
-	    if (cart == null) {
-	        cart = new HashMap<>();
-	    }
+		// Lấy thông tin người dùng
+		AccountEntity user = (AccountEntity) session.getAttribute("user");
+		int userId = (user != null) ? user.getUserInfo().getUserId() : 0;
 
-	    // Lấy thông tin người dùng
-	    AccountEntity user = (AccountEntity) session.getAttribute("user");
-	    int userId = (user != null) ? user.getUserInfo().getUserId() : 0;
+		// Thêm sản phẩm vào giỏ
+		cart = cartService.AddCart(id, cart, userId);
 
-	    // Thêm sản phẩm vào giỏ
-	    cart = cartService.AddCart(id, cart, userId);
+		// Cập nhật lại session
+		session.setAttribute("Cart", cart);
+		session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
+		session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
 
-	    // Cập nhật lại session
-	    session.setAttribute("Cart", cart);
-	    session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
-	    session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
-
-	    return "redirect:" + request.getHeader("Referer");
+		return "redirect:" + request.getHeader("Referer");
 	}
-
 
 	@Transactional
 	@RequestMapping(value = "/DeleteCart/{id}")
@@ -103,42 +101,38 @@ public class CartController extends BaseController {
 		return "redirect:" + request.getHeader("Referer");
 	}
 
-
-
-	
 	@Transactional
-	@RequestMapping(value = "/EditCart/{id}/{quanty}")
-	public String EditCart(HttpServletRequest request, HttpSession session, @PathVariable("id") int id,
-			@PathVariable("quanty") int quanty) {
-		
-		  // Kiểm tra số lượng sản phẩm
+	@RequestMapping(value = "/EditCart/{id}/{quanty}", method = RequestMethod.GET)
+	public String EditCart(HttpServletRequest request, HttpSession session, 
+	        @PathVariable("id") int id, @PathVariable("quanty") int quanty) {
+	    // Kiểm tra số lượng sản phẩm
 	    if (!cartService.isProductAvailable(id)) {
-	        // Nếu sản phẩm không còn, chuyển hướng về trang hiện tại và thêm tham số lỗi
 	        String referer = request.getHeader("Referer");
 	        return "redirect:" + referer + (referer.contains("?") ? "&" : "?") + "error=product-unavailable";
 	    }
-		
-		// Kiểm tra và cập nhật số lượng trong cơ sở dữ liệu
-		AccountEntity user = (AccountEntity) session.getAttribute("user");
-		if (user != null) {
-			cartService.updateProductQuantityInDatabase(user.getUserInfo().getUserId(), id, quanty);
-		}
 
-		// Cập nhật lại giỏ hàng trong session để đồng bộ
-		HashMap<Integer, CartDTO> cart = (HashMap<Integer, CartDTO>) session.getAttribute("Cart");
-		if (cart == null) {
-			cart = new HashMap<>();
-		}
+	    // Kiểm tra và cập nhật số lượng trong cơ sở dữ liệu
+	    AccountEntity user = (AccountEntity) session.getAttribute("user");
+	    if (user != null) {
+	        cartService.updateProductQuantityInDatabase(user.getUserInfo().getUserId(), id, quanty);
+	    }
 
-		// Cập nhật session giỏ hàng
-		cart = cartService.EditCart(id, quanty, cart);
+	    // Cập nhật lại giỏ hàng trong session để đồng bộ
+	    HashMap<Integer, CartDTO> cart = (HashMap<Integer, CartDTO>) session.getAttribute("Cart");
+	    if (cart == null) {
+	        cart = new HashMap<>();
+	    }
 
-		session.setAttribute("Cart", cart);
-		session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
-		session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
+	    // Cập nhật session giỏ hàng
+	    cart = cartService.EditCart(id, quanty, cart);
 
-		return "redirect:" + request.getHeader("Referer");
+	    session.setAttribute("Cart", cart);
+	    session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
+	    session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
+
+	    return "redirect:" + request.getHeader("Referer");
 	}
+
 
 	@RequestMapping(value = "cart/selected", method = RequestMethod.POST)
 	public ResponseEntity<Void> saveSelectedCartIds(@RequestBody Map<String, List<Integer>> data, HttpSession session) {
