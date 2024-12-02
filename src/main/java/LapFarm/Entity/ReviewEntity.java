@@ -30,8 +30,7 @@ public class ReviewEntity {
     private Timestamp reviewDate;
 
     // Constructors
-    public ReviewEntity() {
-    }
+    public ReviewEntity() {}
 
     public ReviewEntity(ProductEntity product, UserInfoEntity user, int rating, String comment) {
         this.product = product;
@@ -85,10 +84,7 @@ public class ReviewEntity {
         return reviewDate;
     }
 
-    public void setReviewDate(Timestamp reviewDate) {
-        this.reviewDate = reviewDate;
-    }
-
+    // Không cần setter cho reviewDate, vì nó sẽ tự động được gán bởi cơ sở dữ liệu
     @Override
     public String toString() {
         return "ReviewEntity{" +
@@ -99,5 +95,12 @@ public class ReviewEntity {
                 ", comment='" + comment + '\'' +
                 ", reviewDate=" + reviewDate +
                 '}';
+    }
+
+    public void setUser(AccountEntity account) {
+        if (account != null) {
+            // Lấy UserInfoEntity từ AccountEntity và gán vào user
+            this.user = account.getUserInfo();
+        }
     }
 }

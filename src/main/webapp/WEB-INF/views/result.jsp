@@ -153,7 +153,7 @@ footer {
 				</span>
 			</div>
 			<div class="text-center">
-				<a href="order/view" class="btn-primary">Quay lại trang chủ</a>
+				<a class="btn-primary" href="order/view">Xem đơn hàng</a>
 			</div>
 		</div>
 		<footer>
