@@ -2,6 +2,37 @@
 <%@ include file="/WEB-INF/views/admin/layout/adminHeader.jsp"%>
 <%@ include file="/WEB-INF/views/admin/layout/adminSidebar.jsp"%>
 
+<!-- JavaScript để kiểm tra giá trị nhập -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+        form.addEventListener("submit", function (event) {
+            const fieldsToCheck = [
+                "quantity",
+                "discountPercent",
+                "purchasePrice",
+                "salePrice"
+            ];
+
+            let isValid = true;
+            fieldsToCheck.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                const value = parseFloat(field.value);
+                if (value < 0) {
+                    isValid = false;
+                    alert(`Trường ${fieldId} không được nhập giá trị âm.`);
+                    field.focus();
+                }
+            });
+
+            if (!isValid) {
+                event.preventDefault(); // Ngăn form submit
+            }
+        });
+    });
+</script>
+
+
 <div class="content-wrapper">
     <!-- Content Header -->
     <section class="content-header">
@@ -68,7 +99,7 @@
                     <!-- Số lượng -->
 					<div class="form-group">
 						<label for="quantity">Số lượng</label> <input type="number"
-							class="form-control" id="quantity" name="quantity" required>
+							class="form-control" id="quantity" name="quantity" min="0" max="100000" step="1" required>
 					</div>
 
 					<!-- Hệ số giảm giá -->
@@ -82,13 +113,15 @@
 					<!-- Giá mua -->
 					<div class="form-group">
                         <label for="purchasePrice">Giá mua</label>
-                        <input type="number" class="form-control" id="purchasePrice" name="purchasePrice" required>
+                        <input type="number" class="form-control" id="purchasePrice" 
+                        name="purchasePrice"  min="0" max="1000000000" step="1" required>
                     </div>
 
                     <!-- Giá niêm yết -->
                     <div class="form-group">
                         <label for="salePrice">Giá niêm yết</label>
-                        <input type="number" class="form-control" id="salePrice" name="salePrice" required>
+                        <input type="number" class="form-control" id="salePrice" 
+                        name="salePrice" min="0" max="1000000000" step="1" required>
                     </div>
 
                     <!-- Khuyến mãi -->
@@ -104,7 +137,6 @@
                             <option value="Đang bán">Đang bán</option>
                             <option value="Sắp về hàng">Sắp về hàng</option>
                             <option value="Ngưng kinh doanh">Ngưng kinh doanh</option>
-                            <option value="Hết hàng">Hết hàng</option>
                         </select>
                     </div>
 

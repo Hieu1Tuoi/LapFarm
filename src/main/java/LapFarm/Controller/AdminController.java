@@ -281,6 +281,14 @@ public class AdminController {
 	    model.addAttribute("categories", categories);
 	    model.addAttribute("brands", brands);
 	    try {
+	    	// Kiểm tra các trường số
+	        if (quantity < 0 || 
+	            discountPercent < 0 || 
+	            purchasePrice < 0 || 
+	            salePrice < 0) {
+	            model.addAttribute("message", "Giá trị số không được nhỏ hơn 0.");
+	            return "/admin/products/addProduct";
+	        }
 	        // Kiểm tra sản phẩm đã tồn tại chưa
 	        boolean existingProduct = productDAO.checkProductByName(nameProduct);
 	        if (existingProduct) {
