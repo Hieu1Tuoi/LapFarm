@@ -77,7 +77,7 @@ public class AccountController {
 
 	@PostMapping("/profile/update")
 	public String updateProfile(@RequestParam("fullname") String fullName, @RequestParam("dob") String dob,
-			@RequestParam("sex") String sex, @RequestParam("phone") String phone,
+			@RequestParam(value = "sex", required = false) String sex, @RequestParam("phone") String phone,
 			@RequestParam("address") String address, HttpSession httpSession, Model model) {
 		AccountEntity user = (AccountEntity) httpSession.getAttribute("user");
 		if (user == null) {
@@ -99,7 +99,7 @@ public class AccountController {
 			// Cập nhật thông tin
 			userInfo.setFullName(fullName);
 			userInfo.setDob(dob);
-			userInfo.setSex(sex);
+			userInfo.setSex(sex != null && !sex.isEmpty() ? sex : null);
 			userInfo.setPhone(phone);
 			userInfo.setAddress(address);
 

@@ -53,7 +53,7 @@
 						Thiện</a></li>
 			</ul>
 			<ul class="header-links pull-right">
-				<li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
+				<!-- <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li> -->
 				<c:choose>
 					<c:when test="${not empty sessionScope.user}">
 						<li class="dropdown"><a href="#" class="dropdown-toggle">

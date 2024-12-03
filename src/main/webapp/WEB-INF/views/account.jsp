@@ -102,11 +102,12 @@ input[type="radio"] {
 	text-decoration: underline;
 }
 
+
 #viewed .container {
 	display: flex; /* Sử dụng Flexbox để tạo bố cục linh hoạt */
 	flex-wrap: wrap;
 	/* Cho phép các phần tử tự động xuống dòng khi không đủ chỗ */
-	gap: 20px; /* Khoảng cách giữa các phần tử */
+	gap: 10px; /* Khoảng cách giữa các phần tử */
 	justify-content: flex-start; /* Các phần tử sẽ xếp từ trái sang phải */
 	padding: 20px;
 }
@@ -125,6 +126,19 @@ input[type="radio"] {
 	height: auto; /* Giữ tỷ lệ khung hình cho hình ảnh */
 }
 
+#viewed .container div p:nth-child(2) {
+	font-size: 18px; /* Tăng kích thước chữ */
+	font-weight: bold; /* In đậm chữ */
+	margin-top: 10px; /* Tạo khoảng cách phía trên */
+	color: #333; /* Màu chữ */
+}
+
+#viewed .container div p:nth-child(3) {
+	font-size: 16px; /* Tăng kích thước chữ */
+	font-weight: bold; /* In đậm chữ */
+	color: #d10000; /* Đặt màu chữ nổi bật, có thể thay đổi theo ý thích */
+	margin-top: 5px; /* Tạo khoảng cách phía trên */
+}
 /* CSS cho bảng lịch sử đơn hàng */
 .order-history-table {
 	width: 100%;
@@ -210,6 +224,7 @@ input[type="radio"] {
     color: #fff;  /* Khi hover, màu biểu tượng cũng chuyển sang trắng */
 }
 
+
 </style>
 <script>
 function showTab(tabId) {
@@ -286,7 +301,6 @@ document.addEventListener('DOMContentLoaded', function () {
 							for="male">Nam</label> <input type="radio" id="female" name="sex"
 							value="Nữ" ${userInfo.sex == 'Nữ' ? 'checked' : ''}> <label
 							for="fermale">Nữ</label>
-
 					</div>
 				</div>
 				<div class="form-group">
@@ -319,7 +333,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			</form>
 		</div>
 	</div>
-
 	<div id="orders-history" class="tab">
 		<h1>Lịch sử đơn hàng</h1>
 		<c:if test="${not empty orders}">
@@ -361,18 +374,17 @@ document.addEventListener('DOMContentLoaded', function () {
 			<p>Bạn chưa có đơn hàng nào.</p>
 		</c:if>
 	</div>
-
-
-
 	<div id="viewed" class="tab">
 		<h1>Sản phẩm đã xem</h1>
 		<div class="container">
 			<c:if test="${not empty viewedItems}">
 				<c:forEach var="item" items="${viewedItems}">
 					<div>
+						<a href="${pageContext.servletContext.contextPath}/product-detail/${item.id}">
 						<img src="${item.image}" alt="${item.name}" />
-						<p>${item.name}</p>
-						<p>Price: ${item.price}</p>
+						<p>${item.name} </p>
+						<p> <fmt:formatNumber value="${item.price}" type="number"
+									groupingUsed="true"></fmt:formatNumber>đ</p>
 					</div>
 				</c:forEach>
 
@@ -385,7 +397,4 @@ document.addEventListener('DOMContentLoaded', function () {
 		</div>
 </body>
 </html>
-
-
-
 <%@ include file="/WEB-INF/views/layouts/user-footer.jsp"%>
