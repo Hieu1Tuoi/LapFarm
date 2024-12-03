@@ -305,8 +305,7 @@ document.addEventListener('DOMContentLoaded', function () {
 					<label for="email">Email</label> <input type="text" id="email"
 						name="email"
 						style="width: 40%; padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;"
-						value="${ userProfile.email}" readonly> <a href="#"
-						class="link">Thay đổi</a>
+						value="${ userProfile.email}" readonly> 
 				</div>
 				<div class="form-group">
 					<label for="dob">Ngày sinh</label> <input type="date" id="dob"
