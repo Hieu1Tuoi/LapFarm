@@ -24,9 +24,10 @@ public class CartController extends BaseController {
 
 	@Autowired
 	CartServiceImp cartService = new CartServiceImp();
-
+	
 	@RequestMapping("cart")
 	public String showCart(HttpSession session) {
+		
 		// Lấy thông tin người dùng từ session
 		AccountEntity user = (AccountEntity) session.getAttribute("user");
 
