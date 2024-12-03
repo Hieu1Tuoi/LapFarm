@@ -600,6 +600,12 @@ public class ProductDAO {
 		System.err.println(message);
 		e.printStackTrace();
 	}
+
+	public ProductEntity findProductById(int productId) {
+        Session session = factory.getCurrentSession();
+        return session.get(ProductEntity.class, productId);
+    }
+
 	
 	@Transactional
 	public void addProduct(ProductEntity product) {
@@ -632,7 +638,7 @@ public class ProductDAO {
 	
 	@Transactional
 	public boolean checkProductByName(String nameProduct) {
-	    Session session = factory.getCurrentSession();
+		Session session = factory.getCurrentSession();
 	    
 	    // HQL để kiểm tra sự tồn tại của sản phẩm theo tên
 	    String hql = "SELECT COUNT(p) FROM ProductEntity p WHERE p.nameProduct = :nameProduct";
@@ -644,6 +650,7 @@ public class ProductDAO {
 	    
 	    return count > 0;
 	}
+
 
 
 }

@@ -30,7 +30,7 @@ import LapFarm.Entity.UserInfoEntity;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-public class ProductController {
+public class ProductController extends BaseController {
     @Autowired
     private ProductDAO productDAO;
 
@@ -43,6 +43,7 @@ public class ProductController {
                                 @RequestParam(value = "pageSize", defaultValue = "3") int pageSize,
                                 Model model,
                                 HttpSession httpSession) {
+    	Init();
         try {
             // Lấy sản phẩm
             ProductEntity product = productDAO.getProductById(productId);
@@ -106,6 +107,7 @@ public class ProductController {
 
     @RequestMapping(value = "/related-products/{idBrand}", method = RequestMethod.GET)
     public String viewAllRelatedProducts(@PathVariable("idBrand") int idBrand, Model model) {
+    	Init();
         // Lấy tất cả sản phẩm theo thương hiệu
         List<ProductDTO> relatedProducts = productDAO.getAllProductsByBrand(idBrand);
 

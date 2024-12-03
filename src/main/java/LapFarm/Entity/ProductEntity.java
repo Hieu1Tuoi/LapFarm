@@ -1,3 +1,5 @@
+
+
 	package LapFarm.Entity;
 	
 	
@@ -185,5 +187,6 @@
 		public long calSalePrice() {
 			return (long) (this.salePrice * 1);
 		}
+
 	
 	}

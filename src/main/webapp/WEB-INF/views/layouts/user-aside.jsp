@@ -81,7 +81,7 @@
 								<!-- Sử dụng thuộc tính 'image' từ ProductDTO -->
 								<c:choose>
 									<c:when test="${not empty product.image}">
-										<img src="${product.image}" alt="Product Image">
+										<img src="${product.image}" alt="Product Image" onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
 									</c:when>
 									<c:otherwise>
 										<img src="/LapFarm/resources/img/${p.images[0].imageUrl}"
