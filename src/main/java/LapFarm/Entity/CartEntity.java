@@ -22,6 +22,17 @@ public class CartEntity {
 	@Column(name = "Quantity", nullable = false)
 	private int quantity;
 
+	public CartEntity() {
+		super();
+	}
+
+	public CartEntity(UserInfoEntity userInfo, ProductEntity product, int quantity) {
+		super();
+		this.userInfo = userInfo;
+		this.product = product;
+		this.quantity = quantity;
+	}
+
 	// Getter và Setter cho id
 	public int getId() {
 		return id;
