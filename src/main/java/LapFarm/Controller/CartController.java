@@ -127,8 +127,11 @@ public class CartController extends BaseController {
 	@RequestMapping(value = "/EditCart/{id}/{quanty}", method = RequestMethod.GET)
 	public String EditCart(HttpServletRequest request, HttpSession session, @PathVariable("id") int id,
 			@PathVariable("quanty") int quanty) {
+
+		CartEntity cartEntity = cartDAO.getCartById(id);
+		
 		// Kiểm tra số lượng sản phẩm
-		if (!cartService.isProductAvailable(id)) {
+		if (!cartService.isProductAvailable(cartEntity.getProduct().getIdProduct())) {
 			String referer = request.getHeader("Referer");
 			return "redirect:" + referer + (referer.contains("?") ? "&" : "?") + "error=product-unavailable";
 		}
@@ -136,7 +139,6 @@ public class CartController extends BaseController {
 		// Kiểm tra và cập nhật số lượng trong cơ sở dữ liệu
 		AccountEntity user = (AccountEntity) session.getAttribute("user");
 		if (user != null) {
-			CartEntity cartEntity = cartDAO.getCartById(id);
 			cartEntity.setQuantity(quanty);
 			cartDAO.updateCart(cartEntity);
 			HashMap<Integer, CartDTO> cart = cartDAO.getCartFromDatabase(user.getUserInfo().getUserId());
