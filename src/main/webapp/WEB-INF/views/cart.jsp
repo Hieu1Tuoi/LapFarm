@@ -171,6 +171,15 @@ a.shopBtn:hover {
 .table-container {
 	overflow-x: auto; /* Thêm thanh cuộn nếu bảng quá lớn */
 }
+
+/* Giới hạn chiều dài tên sản phẩm */
+.table td a {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 500px; /* Giới hạn chiều rộng của tên sản phẩm */
+}
 </style>
 
 <body>
@@ -210,30 +219,28 @@ Body Section
 					<tbody>
 						<c:forEach var="item" items="${Cart}">
 							<tr id="${item.value.id}">
-							    <td>
-							        <input 
-							            id="checkbox${item.value.id}" 
-							            type="checkbox" 
-							            class="u-checkbox" 
-							            <c:if test="${cartIdSelecteds != null && cartIdSelecteds.contains(item.value.id)}">checked</c:if>
-							        >
-							    </td>
+								<td><input id="checkbox${item.value.id}" type="checkbox"
+									class="u-checkbox"
+									<c:if test="${cartIdSelecteds != null && cartIdSelecteds.contains(item.value.id)}">checked</c:if>>
+								</td>
 								<td><a
 									href="product-detail/${item.value.product.idProduct}" /><img
-									width="100"
-									src="<c:url value="${ item.value.product.image }"/>" alt=""></td>
+									width="100" src="${ item.value.product.image }" alt=""></td>
 								<td><a
 									href="product-detail/${item.value.product.idProduct}" />${ item.value.product.nameProduct }</td>
 								<td><a
 									href="products-brand?nameBrand=${item.value.product.brandName}" />${ item.value.product.brandName }</td>
-								<td><fmt:formatNumber type="number" groupingUsed="true"
+
+								<td id="price-cart-${item.value.id}"><fmt:formatNumber
+										type="number" groupingUsed="true"
 										value="${ item.value.product.calPrice() }" /> ₫</td>
 								<td><input type="number" min="1"
 									max="${item.value.product.quantity}" class="span1"
 									style="max-width: 60px" id="quanty-cart-${item.key}"
 									value="${item.value.quantity}"
-									onchange="validateQuantity(this, ${item.value.product.quantity});">
-								</td>
+									data-original-quantity="${item.value.quantity}"
+									onchange="updateQuantity(${item.key}, this.value)"></td>
+
 								<td><a data-id="${item.key}"
 									class="btn btn-mini btn-danger edit-cart" type="button"> <i
 										class="fa fa-edit"></i>
@@ -242,6 +249,7 @@ Body Section
 									class="btn btn-mini btn-danger"
 									onclick="return confirmDelete();"> <i class="fa fa-trash"></i>
 								</a></td>
+
 
 								<td id="totalPrice${item.value.id}"><fmt:formatNumber
 										type="number" groupingUsed="true"
@@ -264,36 +272,99 @@ Body Section
 		</div>
 	</div>
 	<content tag="script"> <script>
-	
-	/**
-	 * Hiển thị hộp thoại xác nhận xóa.
-	 * @returns {boolean} - True nếu người dùng chọn OK, ngược lại là false.
-	 */
-	function confirmDelete() {
-	    return confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?");
-	}
+	$(document).ready(function () {
+	    let editedItems = {}; // Theo dõi các sản phẩm đã chỉnh sửa
+	    let canCheckout = false; // Đánh dấu trạng thái cho phép thanh toán
 
-	
-	  /**
-     * Hàm kiểm tra giá trị input và tự động điều chỉnh nếu không hợp lệ
-     * @param {HTMLElement} input - Thẻ input cần kiểm tra
-     * @param {number} max - Giá trị lớn nhất được phép
-     */
-    function validateQuantity(input, max) {
-        let value = parseInt(input.value, 10);
-        if (isNaN(value) || value < 1) {
-            input.value = 1;
-        } else if (value > max) {
-            input.value = max;
-        }
-    }
-	
-		$(".edit-cart").on("click", function() {
-			var id = $(this).data("id");
-			var quanty = $("#quanty-cart-" + id).val();
-			window.location = "EditCart/" + id + "/" + quanty;
-		});
-	</script> </content>
+	    // Hàm cập nhật tổng tiền của từng sản phẩm
+	    function updateTotalPrice(itemId, newQuantity) {
+	        const unitPrice = parseFloat($("#price-cart-" + itemId).text().replace(/[^\d]/g, ""));
+	        const totalPrice = unitPrice * newQuantity;
+	        $("#totalPrice" + itemId).text(new Intl.NumberFormat('vi-VN').format(totalPrice) + " ₫");
+	    }
+
+	    // Xử lý sự kiện thay đổi số lượng
+	    $(".span1").on("change", function () {
+	        const row = $(this).closest("tr");
+	        const id = row.attr("id");
+	        const newQuantity = $(this).val();
+
+	        if (newQuantity <= 0) {
+	            alert("Số lượng phải lớn hơn 0.");
+	            return;
+	        }
+
+	        editedItems[id] = false; // Đánh dấu chưa chỉnh sửa
+	        updateTotalPrice(id, newQuantity); // Cập nhật tổng tiền
+	        $("#checkbox" + id).prop("checked", false).prop("disabled", true); // Vô hiệu hóa checkbox
+	        $(".shopBtn.pull-right").prop("disabled", true); // Vô hiệu hóa nút thanh toán
+	    });
+
+	    // Xử lý sự kiện nhấn nút "Chỉnh sửa"
+	    $(".edit-cart").on("click", function () {
+	        const id = $(this).data("id");
+	        const newQuantity = $("#quanty-cart-" + id).val();
+
+	        if (newQuantity <= 0) {
+	            alert("Số lượng phải lớn hơn 0.");
+	            return;
+	        }
+
+	        // Gọi API hoặc xử lý logic để lưu số lượng mới
+	        window.location = "EditCart/" + id + "/" + newQuantity;
+
+	        // Sau khi chỉnh sửa thành công
+	        editedItems[id] = true; // Đánh dấu đã chỉnh sửa
+	        $("#checkbox" + id).prop("disabled", false).prop("checked", true); // Kích hoạt lại checkbox và đánh dấu đã chọn
+	        checkAllEdited(); // Kiểm tra trạng thái thanh toán
+	    });
+
+	    // Hàm kiểm tra trạng thái cho phép thanh toán
+	    function checkAllEdited() {
+	        // Kiểm tra tất cả các checkbox và trạng thái chỉnh sửa
+	        canCheckout = !Object.values(editedItems).includes(false) && $(".u-checkbox:checked").length > 0;
+	        $(".shopBtn.pull-right").prop("disabled", !canCheckout);
+	    }
+
+	    // Xử lý sự kiện nhấn nút "Thanh toán"
+	    $(".shopBtn.pull-right").on("click", function (event) {
+	        event.preventDefault();
+
+	        // Kiểm tra tất cả các sản phẩm xem có tất cả checkbox đã được chọn và đã chỉnh sửa hay chưa
+	        let anyChecked = false;   // Kiểm tra nếu có bất kỳ sản phẩm nào được chọn
+	        let allEdited = true;     // Kiểm tra xem tất cả sản phẩm đã được chỉnh sửa hay chưa
+
+	        $(".u-checkbox").each(function () {
+	            const id = $(this).closest("tr").attr("id");
+
+	            // Kiểm tra nếu sản phẩm chưa được chỉnh sửa
+	            if (!editedItems[id]) {
+	                allEdited = false;
+	            }
+
+	            // Kiểm tra nếu có ít nhất một sản phẩm được chọn
+	            if ($(this).prop("checked")) {
+	                anyChecked = true;
+	            }
+	        });
+
+	        // Nếu có ít nhất một sản phẩm được chọn và tất cả sản phẩm đều đã được chỉnh sửa, hiển thị thông báo thanh toán
+	        if (anyChecked || allEdited) {
+	            alert("Bạn đã sẵn sàng thanh toán!");
+	            // Logic xử lý thanh toán
+	        } else {
+	            alert("Bạn cần chỉnh sửa tất cả các sản phẩm trước khi thanh toán.");
+	        }
+	    });
+
+	    // Hàm xác nhận xóa sản phẩm
+	    window.confirmDelete = function () {
+	        return confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?");
+	    };
+	});
+
+
+</script> </content>
 	<script src="<c:url value='/resources/js/cart.js' />"></script>
 </body>
 

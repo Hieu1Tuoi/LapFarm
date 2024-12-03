@@ -49,7 +49,7 @@
 							<c:forEach var="d" items="${detail}">
 								<tr>
 									<td><a href="product-detail/${d.product.idProduct}"><img
-											width="100" src="<c:url value='${d.product.image}'/>" alt=""></a></td>
+											width="100" src="${d.product.image}" alt=""></a></td>
 									<td><a href="product-detail/${d.product.idProduct}"
 										style="color: black;"> ${d.product.nameProduct}</a></td>
 									<td>${d.product.brandName}</td>

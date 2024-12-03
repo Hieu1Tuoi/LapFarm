@@ -25,5 +25,6 @@ public interface ICartService {
 	 public void updateProductQuantityInDatabase(int userId, int productId, int quantity) ;
 	 
 	 public boolean isProductAvailable(int productId);
+
 	 
 }

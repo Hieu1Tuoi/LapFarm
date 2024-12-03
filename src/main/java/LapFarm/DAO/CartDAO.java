@@ -292,4 +292,7 @@ public class CartDAO {
 	        return (int)query.uniqueResult();
 	    }
 
+
+
+
 }

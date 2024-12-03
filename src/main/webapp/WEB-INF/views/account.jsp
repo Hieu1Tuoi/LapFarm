@@ -4,6 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 <%@ include file="/WEB-INF/views/layouts/user-header.jsp"%>
+
 <style>
 /* Đặt CSS cho toàn bộ container */
 body {
@@ -101,11 +102,12 @@ input[type="radio"] {
 	text-decoration: underline;
 }
 
+
 #viewed .container {
 	display: flex; /* Sử dụng Flexbox để tạo bố cục linh hoạt */
 	flex-wrap: wrap;
 	/* Cho phép các phần tử tự động xuống dòng khi không đủ chỗ */
-	gap: 20px; /* Khoảng cách giữa các phần tử */
+	gap: 10px; /* Khoảng cách giữa các phần tử */
 	justify-content: flex-start; /* Các phần tử sẽ xếp từ trái sang phải */
 	padding: 20px;
 }
@@ -124,6 +126,19 @@ input[type="radio"] {
 	height: auto; /* Giữ tỷ lệ khung hình cho hình ảnh */
 }
 
+#viewed .container div p:nth-child(2) {
+	font-size: 18px; /* Tăng kích thước chữ */
+	font-weight: bold; /* In đậm chữ */
+	margin-top: 10px; /* Tạo khoảng cách phía trên */
+	color: #333; /* Màu chữ */
+}
+
+#viewed .container div p:nth-child(3) {
+	font-size: 16px; /* Tăng kích thước chữ */
+	font-weight: bold; /* In đậm chữ */
+	color: #d10000; /* Đặt màu chữ nổi bật, có thể thay đổi theo ý thích */
+	margin-top: 5px; /* Tạo khoảng cách phía trên */
+}
 /* CSS cho bảng lịch sử đơn hàng */
 .order-history-table {
 	width: 100%;
@@ -179,6 +194,37 @@ input[type="radio"] {
 .order-history-table a.btn-detail:hover {
 	background-color: #a00000; /* Màu đậm hơn khi hover */
 }
+
+/* Nút Xem chi tiết */
+.btn-detail {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #333;  /* Nền đen */
+    color: #fff;  /* Chữ trắng */
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+    display: flex;
+    align-items: center;  /* Căn giữa biểu tượng và chữ */
+}
+
+.btn-detail:hover {
+    background-color: #555;  /* Khi hover, nền chuyển thành xám */
+    color: #fff;  /* Chữ vẫn giữ màu trắng */
+}
+
+/* Thay đổi màu cho biểu tượng */
+.btn-detail i {
+    margin-right: 5px;  /* Khoảng cách giữa biểu tượng và chữ */
+}
+
+/* Thêm hiệu ứng hover cho biểu tượng */
+.btn-detail:hover i {
+    color: #fff;  /* Khi hover, màu biểu tượng cũng chuyển sang trắng */
+}
+
+
 </style>
 <script>
 function showTab(tabId) {
@@ -201,21 +247,27 @@ function showTab(tabId) {
     // Cập nhật URL hash
     window.location.hash = tabId;
 
-    // Ẩn các phần tử khác nếu không phải tab "viewed"
+    // Ẩn các phần tử khác nếu không phải tab "viewed" hoặc tab mới
     const viewedTab = document.getElementById('viewed');
-    if (tabId !== 'viewed') {
+    const orderDetailTab = document.getElementById('order-detail');
+    if (tabId !== 'viewed' && tabId !== 'order-detail') {
         viewedTab.style.display = 'none';
+        orderDetailTab.style.display = 'none';
     } else {
-        viewedTab.style.display = 'block';
+        if (tabId === 'viewed') {
+            viewedTab.style.display = 'block';
+        } else {
+            orderDetailTab.style.display = 'block';
+        }
     }
 }
-
 
 // Mở tab mặc định
 document.addEventListener('DOMContentLoaded', function () {
     const currentHash = window.location.hash.substring(1) || 'profile'; // Loại bỏ dấu "#" nếu có
     showTab(currentHash);
 });
+
 </script>
 <body>
 	<h1>Thông tin tài khoản</h1>
@@ -224,6 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				tin cá nhân</a></li>
 		<li><a href="account#orders-history"
 			onclick="showTab('orders-history');">Đơn Hàng</a></li>
+
 		<li><a href="account#viewed" onclick="showTab('viewed');">Sản
 				phẩm đã xem</a></li>
 	</ul>
@@ -248,7 +301,6 @@ document.addEventListener('DOMContentLoaded', function () {
 							for="male">Nam</label> <input type="radio" id="female" name="sex"
 							value="Nữ" ${userInfo.sex == 'Nữ' ? 'checked' : ''}> <label
 							for="fermale">Nữ</label>
-
 					</div>
 				</div>
 				<div class="form-group">
@@ -267,8 +319,7 @@ document.addEventListener('DOMContentLoaded', function () {
 					<label for="email">Email</label> <input type="text" id="email"
 						name="email"
 						style="width: 40%; padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;"
-						value="${ userProfile.email}" readonly> <a href="#"
-						class="link">Thay đổi</a>
+						value="${ userProfile.email}" readonly> 
 				</div>
 				<div class="form-group">
 					<label for="dob">Ngày sinh</label> <input type="date" id="dob"
@@ -282,7 +333,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			</form>
 		</div>
 	</div>
-
 	<div id="orders-history" class="tab">
 		<h1>Lịch sử đơn hàng</h1>
 		<c:if test="${not empty orders}">
@@ -302,9 +352,8 @@ document.addEventListener('DOMContentLoaded', function () {
 						<tr>
 							<td>${order.orderId}</td>
 							<td>${order.time}</td>
-							<td><strong>
-									<fmt:formatNumber value="${order.totalPrice}" type="currency"
-										currencySymbol="₫" />
+							<td><strong> <fmt:formatNumber
+										value="${order.totalPrice}" type="currency" currencySymbol="₫" />
 							</strong></td>
 
 							<td>${order.state}</td>
@@ -313,8 +362,9 @@ document.addEventListener('DOMContentLoaded', function () {
 									<c:when test="${order.paymentMethod == 1}">VNPAY</c:when>
 									<c:otherwise>Khác</c:otherwise>
 								</c:choose></td>
-							<td><a href="/LapFarm/order-detail?orderId=${order.orderId}"
-								class="btn btn-detail">Xem chi tiết</a></td>
+							<td><a href="order-detail?orderId=${order.orderId}"
+								class="btn-detail"> <i class="fa fa-eye"></i> Xem chi tiết
+							</a></td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -324,17 +374,17 @@ document.addEventListener('DOMContentLoaded', function () {
 			<p>Bạn chưa có đơn hàng nào.</p>
 		</c:if>
 	</div>
-
-
 	<div id="viewed" class="tab">
 		<h1>Sản phẩm đã xem</h1>
 		<div class="container">
 			<c:if test="${not empty viewedItems}">
 				<c:forEach var="item" items="${viewedItems}">
 					<div>
+						<a href="${pageContext.servletContext.contextPath}/product-detail/${item.id}">
 						<img src="${item.image}" alt="${item.name}" />
-						<p>${item.name}</p>
-						<p>Price: ${item.price}</p>
+						<p>${item.name} </p>
+						<p> <fmt:formatNumber value="${item.price}" type="number"
+									groupingUsed="true"></fmt:formatNumber>đ</p>
 					</div>
 				</c:forEach>
 
@@ -347,7 +397,4 @@ document.addEventListener('DOMContentLoaded', function () {
 		</div>
 </body>
 </html>
-
-
-
 <%@ include file="/WEB-INF/views/layouts/user-footer.jsp"%>

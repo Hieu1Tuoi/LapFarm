@@ -12,7 +12,9 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import LapFarm.DTO.OrderDetailDTO;
 import LapFarm.DTO.OrdersDTO;
+import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.OrderDetailsEntity;
 import LapFarm.Entity.OrdersEntity;
 
@@ -119,6 +121,43 @@ public class OrdersDAO {
                         order.getUserInfo().getFullName(),
                         order.getPaymentMethod(),
                         order.getNote()
+                ))
+                .collect(Collectors.toList());
+    }
+
+
+    //Lấy chi tiết đơn hàng
+    @Transactional
+    public List<OrderDetailDTO> getOrderDetail(int orderId) {
+        Session session = factory.getCurrentSession();
+
+        // Truy vấn lấy chi tiết đơn hàng theo orderId
+        String hql = "SELECT od FROM OrderDetailsEntity od JOIN FETCH od.product WHERE od.order.idOrder = :orderId";
+        List<OrderDetailsEntity> orderDetailsList = session.createQuery(hql, OrderDetailsEntity.class)
+                                                           .setParameter("orderId", orderId)
+                                                           .getResultList();
+
+        // Chuyển đổi từ OrderDetailsEntity sang OrderDetailDTO
+        return orderDetailsList.stream()
+                .map(od -> new OrderDetailDTO(
+                        od.getOrder().getIdOrder(),  // ID của đơn hàng
+                        new ProductDTO(
+                                od.getProduct().getIdProduct(),
+                                od.getProduct().getNameProduct(),  // Tên sản phẩm
+                                od.getProduct().getBrand().getIdBrand(),
+                                od.getProduct().getBrand().getNameBrand(),  // Tên thương hiệu
+                                od.getProduct().getCategory().getNameCategory(),  // Tên danh mục
+                                od.getProduct().getCategory().getIdCategory(),
+                                od.getProduct().getDescription(),
+                                od.getProduct().getQuantity(),
+                                od.getProduct().getDiscount(),
+                                od.getProduct().getOriginalPrice(),
+                                od.getProduct().getSalePrice(),
+                                od.getProduct().getState(),
+                                od.getProduct().getImages().get(0).getImageUrl()
+                        ),  // Sản phẩm tương ứng
+                        od.getQuantity(),  // Số lượng
+                        od.getPrice()      // Giá sản phẩm
                 ))
                 .collect(Collectors.toList());
     }

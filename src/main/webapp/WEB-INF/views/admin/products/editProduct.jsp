@@ -2,45 +2,14 @@
 <%@ include file="/WEB-INF/views/admin/layout/adminHeader.jsp"%>
 <%@ include file="/WEB-INF/views/admin/layout/adminSidebar.jsp"%>
 
-<!-- JavaScript để kiểm tra giá trị nhập -->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const form = document.querySelector("form");
-        form.addEventListener("submit", function (event) {
-            const fieldsToCheck = [
-                "quantity",
-                "discountPercent",
-                "purchasePrice",
-                "salePrice"
-            ];
-
-            let isValid = true;
-            fieldsToCheck.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                const value = parseFloat(field.value);
-                if (value < 0) {
-                    isValid = false;
-                    alert(`Trường ${fieldId} không được nhập giá trị âm.`);
-                    field.focus();
-                }
-            });
-
-            if (!isValid) {
-                event.preventDefault(); // Ngăn form submit
-            }
-        });
-    });
-</script>
-
-
 <div class="content-wrapper">
     <!-- Content Header -->
     <section class="content-header">
-        <h1>Thêm sản phẩm mới</h1>
+        <h1>Sửa thông tin sản phẩm</h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
             <li><a href="">Sản phẩm</a></li>
-            <li class="active">Thêm sản phẩm</li>
+            <li class="active">Sửa thông tin</li>
         </ol>
     </section>
 
@@ -56,12 +25,12 @@
                 <h3 class="box-title">Thông tin sản phẩm</h3>
             </div>
             <!-- Form upload -->
-            <form method="POST" action="${pageContext.request.contextPath}/admin/product/add-product" enctype="multipart/form-data">
+            <form method="POST" action="${pageContext.request.contextPath}/admin/product/edit-product/${product.idProduct}" enctype="multipart/form-data">
                 <div class="box-body">
                     <!-- Tên sản phẩm -->
                     <div class="form-group">
                         <label for="nameProduct">Tên sản phẩm</label>
-                        <input type="text" class="form-control" id="nameProduct" name="nameProduct" required>
+                        <input type="text" class="form-control" id="nameProduct" name="nameProduct" value="${product.idProduct }" placeholder="Vui lòng nhập tên sản phẩm" required>
                     </div>
 
                     <!-- Loại hàng -->
@@ -69,7 +38,7 @@
                         <label for="categoryName">Tên loại hàng</label>
                         <select class="form-control" id="categoryName" name="categoryName" required>
                             <c:forEach var="c" items="${categories}">
-                                <option value="${c.nameCategory}">${c.nameCategory}</option>
+                                <option value="${c.nameCategory}">${c.getNameCategory(product.idCategory)}</option>
                             </c:forEach>
                         </select>
                     </div>
@@ -79,7 +48,7 @@
                         <label for="brand">Nhãn hàng</label>
                         <select class="form-control" id="brand" name="brand" required>
                             <c:forEach var="b" items="${brands}">
-                                <option value="${b.nameBrand}">${b.nameBrand}</option>
+                                <option value="${b.nameBrand}">${b.getNameBrand(product.nameBrand)}</option>
                             </c:forEach>
                         </select>
                     </div>
@@ -87,63 +56,62 @@
                     <!-- Mô tả -->
                     <div class="form-group">
                         <label for="description">Mô tả</label>
-                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                        <textarea class="form-control" id="description" name="description" value="${product.description }" placeholder="Vui lòng mô tả sản phẩm" rows="3" required></textarea>
                     </div>
 
 					<!-- Thông số kỹ thuật-->
                     <div class="form-group">
                         <label for="moreinfo">Thông số kỹ thuật</label>
-                        <textarea class="form-control" id="moreinfo" name="moreinfo" rows="3" required></textarea>
+                        <textarea class="form-control" id="moreinfo" name="moreinfo" value="${productDetail.moreInfo }" placeholder="Vui lòng thông số kỹ thuật" rows="3" required></textarea>
                     </div>
                     
                     <!-- Số lượng -->
 					<div class="form-group">
 						<label for="quantity">Số lượng</label> <input type="number"
-							class="form-control" id="quantity" name="quantity" min="0" max="100000" step="1" required>
+							class="form-control" id="quantity" name="quantity" value="${product.quantity }" placeholder="Vui lòng nhập số lượng sản phẩm" required>
 					</div>
 
 					<!-- Hệ số giảm giá -->
 					<div class="form-group">
 						<label for="discountPercent">Hệ số giảm giá</label> <input
 							type="number" class="form-control" id="discountPercent"
-							name="discountPercent" min="0" max="1" step="0.01" required>
+							name="discountPercent" min="0" max="1" step="0.01" value="${product.discount }" placeholder="Vui lòng hệ số giảm giá" required>
 					</div>
 
 
 					<!-- Giá mua -->
 					<div class="form-group">
                         <label for="purchasePrice">Giá mua</label>
-                        <input type="number" class="form-control" id="purchasePrice" 
-                        name="purchasePrice"  min="0" max="1000000000" step="1" required>
+                        <input type="number" class="form-control" id="purchasePrice" name="purchasePrice" value="${product.originalPrice }" placeholder="Vui lòng nhập giá gốc" required>
                     </div>
 
                     <!-- Giá niêm yết -->
                     <div class="form-group">
                         <label for="salePrice">Giá niêm yết</label>
-                        <input type="number" class="form-control" id="salePrice" 
-                        name="salePrice" min="0" max="1000000000" step="1" required>
+                        <input type="number" class="form-control" id="salePrice" name="salePrice" value="${product.salePrice }" placeholder="Vui lòng nhập giá niêm yết (chưa gồm giảm giá)" required>
                     </div>
 
                     <!-- Khuyến mãi -->
                     <div class="form-group">
                         <label for="promotion">Khuyến mãi liên quan</label>
-                        <input type="text" class="form-control" id="promotion" name="promotion">
+                        <input type="text" class="form-control" id="promotion" name="promotion" value="${product.relatedPromotions }" placeholder="Vui lòng nhập khuyến mãi khác (nếu có)">
                     </div>
 
                     <!-- Trạng thái -->
                     <div class="form-group">
                         <label for="state">Trạng thái</label>
-                        <select class="form-control" id="state" name="state" required>
+                        <select class="form-control" id="state" name="state" value="${product.state }" required>
                             <option value="Đang bán">Đang bán</option>
                             <option value="Sắp về hàng">Sắp về hàng</option>
                             <option value="Ngưng kinh doanh">Ngưng kinh doanh</option>
+                            <option value="Hết hàng">Hết hàng</option>
                         </select>
                     </div>
 
                     <!-- Ảnh sản phẩm -->
                     <div class="form-group">
                         <label for="productImages">Ảnh sản phẩm</label>
-                        <input type="file" class="form-control" id="productImages" name="productImages" 
+                        <input type="file" class="form-control" id="productImages" name="productImages"  value="${product.image }"
                                accept="image/*" multiple required>
                         <small class="form-text text-muted">Chọn tối đa 10 ảnh. Mỗi ảnh có dung lượng không vượt quá 5MB.</small>
                     </div>
@@ -151,7 +119,7 @@
 
                 <!-- Submit Button -->
                 <div class="box-footer">
-                    <button type="submit" class="btn btn-primary">Thêm sản phẩm</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                 </div>
             </form>
         </div>

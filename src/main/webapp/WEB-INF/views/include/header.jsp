@@ -10,7 +10,7 @@
 	left: 0;
 	z-index: 1000;
 	float: left;
-	min-width: 12rem;
+	min-width: 16rem;
 	padding: 1rem 0;
 	margin: 0;
 	font-size: 17px;
@@ -53,7 +53,7 @@
 						Thiện</a></li>
 			</ul>
 			<ul class="header-links pull-right">
-				<li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
+				<!-- <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li> -->
 				<c:choose>
 					<c:when test="${not empty sessionScope.user}">
 						<li class="dropdown"><a href="#" class="dropdown-toggle">
@@ -61,10 +61,10 @@
 						</a>
 							<div class="dropdown-menu">
 								<a class="dropdown-item" href="<c:url value='/account' />">Thông
-									tin</a> <a class="dropdown-item"
-									href="<c:url value='/account#orders-history' />">Đơn hàng</a> <a
-									class="dropdown-item" href="<c:url value='/logout' />">Đăng
-									xuất</a>
+									tin</a> 
+								<a class="dropdown-item" href="<c:url value='/account#orders-history' />">Đơn hàng</a>
+								<a class="dropdown-item" href="<c:url value='/account#viewed' />">Đã xem gần đây</a> 
+								<a class="dropdown-item" href="<c:url value='/logout' />">Đăng xuất</a>
 							</div></li>
 					</c:when>
 					<c:otherwise>
