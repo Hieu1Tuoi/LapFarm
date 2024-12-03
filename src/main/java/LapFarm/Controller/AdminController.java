@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import LapFarm.DAO.BrandDAO;
 import LapFarm.DAO.CategoryDAO;
@@ -378,6 +381,108 @@ public class AdminController {
 			    model.addAttribute("imagesProduct", images);
 			    return "/admin/products/editProduct";
 	}
+	
+	@RequestMapping(value = "/product/edit-product/{id}", method = RequestMethod.POST)
+	public String editProduct(
+            @PathVariable("id") int id,
+            @RequestParam("nameProduct") String nameProduct,
+            @RequestParam("categoryName") int categoryId,
+            @RequestParam("brand") int brandId,
+            @RequestParam("description") String description,
+            @RequestParam("moreinfo") String moreInfo,
+            @RequestParam("quantity") int quantity,
+            @RequestParam("discountPercent") double discountPercent,
+            @RequestParam("purchasePrice") double originalPrice,
+            @RequestParam("salePrice") double salePrice,
+            @RequestParam(value = "promotion", required = false) String promotion,
+            @RequestParam("state") String state,
+            @RequestParam(value = "deletedImages", required = false) String deletedImages,
+            @RequestParam(value = "productImages", required = false) MultipartFile[] productImages,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            // Lấy sản phẩm từ database
+            ProductEntity product = productDAO.getProductById(id);
+            if (product == null) {
+            	redirectAttributes.addFlashAttribute("message", "Sản phẩm không tồn tại.");
+                return "redirect:/admin/products?category=1";
+            }
+            BrandEntity brand = brandDAO.getBrandById(brandId);
+            CategoryEntity category = categoryDAO.getCategoryById(categoryId);
+            ProductDetailEntity productDetail = productDetailDAO.getProductDetailById(id);
+
+            // Cập nhật thông tin cơ bản của sản phẩm
+            product.setNameProduct(nameProduct);
+            product.setBrand(brand);
+            product.setCategory(category);
+            product.setBrand(brand);
+            product.setDescription(description);
+            product.setQuantity(quantity);
+            product.setDiscount(discountPercent);
+            product.setOriginalPrice(originalPrice);
+            product.setSalePrice(salePrice);
+            product.setRelatedPromotions(promotion);
+            product.setState(state);
+            
+
+            productDetail.setMoreInfo(moreInfo);
+            // Thêm các ảnh mới
+            if (productImages != null && productImages.length > 0) {
+                List<ImageEntity> imageEntities = new ArrayList<>();
+                
+                // Thêm các ảnh từ productImages
+                for (MultipartFile file : productImages) {
+                    if (!file.isEmpty()) {
+                        String imageUrl = saveImage(file); // Lưu ảnh và trả về URL
+                        ImageEntity newImage = new ImageEntity(imageUrl, product);
+                        imageEntities.add(newImage);
+                    }
+                }
+
+             // Thêm các ảnh sẵn có trong product mà không bị xóa
+                if (product.getImages() != null) {
+                    // Kiểm tra nếu deletedImages không null, nếu null thì gán giá trị mặc định
+                    List<Integer> deletedImageIds = (deletedImages != null && !deletedImages.isEmpty())
+                        ? Arrays.stream(deletedImages.split(","))
+                                .map(Integer::parseInt)
+                                .collect(Collectors.toList())
+                        : new ArrayList<>();
+
+                    for (ImageEntity existingImage : product.getImages()) {
+                        if (!deletedImageIds.contains(existingImage.getIdImage())) {
+                            imageEntities.add(existingImage);
+                        }
+                    }
+                }
+
+
+                // Lưu lại danh sách ảnh vào product
+                product.setImages(imageEntities);
+            }
+
+            // Xóa các ảnh bị xóa
+               if (deletedImages != null && !deletedImages.isEmpty()) {
+                   String[] imageIds = deletedImages.split(",");
+                   for (String imageId : imageIds) {
+                       imageDAO.deleteImageById(Integer.parseInt(imageId));
+                   }
+               }
+
+            // Lưu thay đổi sản phẩm vào database
+            boolean updateCompleted = productDAO.updateProduct(product);
+            productDetailDAO.updateProductDetail(productDetail);
+            if (updateCompleted) {
+            	redirectAttributes.addFlashAttribute("message", "Cập nhật sản phẩm thành công.");
+            } else {
+            	redirectAttributes.addFlashAttribute("error", "Đã xảy ra lỗi khi cập nhật sản phẩm.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Đã xảy ra lỗi khi cập nhật sản phẩm.");
+        }
+
+        return "redirect:/admin/product/edit-product/{id}";
+    }
 	
 	@RequestMapping(value = { "/categories" }, method = RequestMethod.GET)
 	public String showListCatogory(ModelMap model) {

@@ -106,7 +106,7 @@
 					<div class="form-group">
 						<label for="discountPercent">Hệ số giảm giá</label> <input
 							type="number" class="form-control" id="discountPercent"
-							name="discountPercent" min="0" max="1" step="0.01" required>
+							name="discountPercent" min="0" max="1" step="0.001" required>
 					</div>
 
 

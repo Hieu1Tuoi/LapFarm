@@ -42,6 +42,16 @@ public class ProductDetailDAO {
 	    // Thực thi query và trả về kết quả
 	    return query.uniqueResult();
 	}
+	
+	@Transactional
+	public void updateProductDetail(ProductDetailEntity productDetail) {
+	    // Lấy session từ factory
+	    Session session = factory.getCurrentSession();
+
+	    // Cập nhật ProductDetail vào cơ sở dữ liệu
+	    // Sử dụng phương thức merge() thay vì persist() để cập nhật một entity đã tồn tại
+	    session.merge(productDetail);
+	}
 
 
 }
