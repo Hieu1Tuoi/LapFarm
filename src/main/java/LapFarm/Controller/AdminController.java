@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import LapFarm.DAO.BrandDAO;
 import LapFarm.DAO.CategoryDAO;
+import LapFarm.DAO.ImageDAO;
 import LapFarm.DAO.OrderDetailDAO;
 import LapFarm.DAO.OrdersDAO;
 import LapFarm.DAO.ProductDAO;
@@ -54,6 +55,8 @@ public class AdminController {
 	private OrderDetailDAO orderDetailDAO;
 	@Autowired
 	private ProductDetailDAO productDetailDAO;
+	@Autowired
+	private ImageDAO imageDAO;
 	
 	public static String normalizeString(String input) {
         if (input == null || input.isEmpty()) {
@@ -276,7 +279,7 @@ public class AdminController {
 
 	    // Lấy danh sách từ DAO
 		List<CategoryEntity> categories = categoryDAO.getAllCategories();
-		List<BrandEntity> brands = brandDAO.getAllBrands();
+		List<BrandEntity> brands = brandDAO.getAllBrands();	
 	    // Đưa danh sách vào Model để đẩy sang view
 	    model.addAttribute("categories", categories);
 	    model.addAttribute("brands", brands);
@@ -360,12 +363,20 @@ public class AdminController {
 				List<CategoryEntity> categories = categoryDAO.getAllCategories();
 				List<BrandEntity> brands = brandDAO.getAllBrands();
 				ProductEntity product = productDAO.getProductById(id);
+				ProductDetailEntity productDetail = productDetailDAO.getProductDetailById(id);
+				String brandProduct = product.getBrand().getNameBrand();
+				String categoryProduct = product.getCategory().getNameCategory();
+				List<ImageEntity> images = imageDAO.getImagesByProductId(id);
 				//ProductDetailEntity productDetail = productDetailDAO.g
 			    // Đưa danh sách vào Model để đẩy sang view
 			    model.addAttribute("categories", categories);
 			    model.addAttribute("brands", brands);
 			    model.addAttribute("product", product);
-			    return "/admin/product/editProduct";
+			    model.addAttribute("productDetail", productDetail);
+			    model.addAttribute("brandProduct", brandProduct);
+			    model.addAttribute("categoryProduct", categoryProduct);
+			    model.addAttribute("imagesProduct", images);
+			    return "/admin/products/editProduct";
 	}
 	
 	@RequestMapping(value = { "/categories" }, method = RequestMethod.GET)
