@@ -132,20 +132,57 @@
 						</select>
 					</div>
 
-					<!-- Ảnh sản phẩm -->
-                    <div class="form-group">
-                        <label for="productImages">Ảnh sản phẩm</label>
-                        <input type="file" class="form-control" id="productImages" name="productImages"  value="${product.getImages()}"
-                               accept="image/*" multiple required>
-                        <small class="form-text text-muted">Chọn tối đa 10 ảnh. Mỗi ảnh có dung lượng không vượt quá 5MB.</small>
-                    </div>
-                </div>
+					<script>
+						// Hàm xóa ảnh khỏi giao diện
+						function removeImage(button, imageId) {
+							// Xóa thẻ chứa ảnh
+							const imageWrapper = button.parentElement;
+							imageWrapper.remove();
 
-                <!-- Submit Button -->
-                <div class="box-footer">
-                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-                </div>
-            </form>
+							// Thêm ID ảnh vào danh sách ảnh cần xóa để gửi về server
+							const deletedImagesInput = document
+									.getElementById('deletedImages');
+							if (deletedImagesInput) {
+								deletedImagesInput.value += imageId + ",";
+							} else {
+								console
+										.error("Hidden input for deleted images not found.");
+							}
+						}
+					</script>
+
+					<!-- Ảnh sản phẩm -->
+					<div class="form-group">
+						<label for="productImages">Ảnh sản phẩm</label>
+
+						<!-- Hiển thị danh sách ảnh hiện có -->
+						<div id="current-images" class="mb-3">
+							<c:forEach var="image" items="${product.images}">
+								<div class="image-wrapper"
+									style="display: inline-block; position: relative; margin: 5px;">
+									<img src="${image.imageUrl}" alt="Product Image"
+										style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ccc;">
+									<button type="button"
+										class="btn btn-danger btn-sm remove-image"
+										style="position: absolute; top: 0; right: 0; border-radius: 50%;"
+										onclick="removeImage(this, '${image.idImage}')">&times;</button>
+								</div>
+							</c:forEach>
+						</div>
+
+						<!-- Input để thêm ảnh mới -->
+						<input type="file" class="form-control" id="productImages"
+							name="productImages" accept="image/*" multiple> <small
+							class="form-text text-muted">Chọn tối đa 10 ảnh. Mỗi ảnh
+							có dung lượng không vượt quá 5MB.</small>
+					</div>
+
+
+					<!-- Submit Button -->
+					<div class="box-footer">
+						<button type="submit" class="btn btn-primary">Lưu thay
+							đổi</button>
+					</div></form>
         </div>
     </section>
 </div>
