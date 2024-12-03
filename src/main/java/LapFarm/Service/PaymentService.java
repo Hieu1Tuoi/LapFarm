@@ -2,6 +2,7 @@ package LapFarm.Service;
 
 import com.google.gson.JsonObject;
 
+import LapFarm.Model.Config;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;

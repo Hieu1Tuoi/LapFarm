@@ -48,7 +48,8 @@
 					<li><a href="#"><i class="fa fa-phone"></i> 0123456789</a></li>
 					<li><a href="#"><i class="fa fa-envelope-o"></i>
 							nhom8@gmail.com</a></li>
-					<li><a href="#"><i class="fa fa-map-marker"></i> 97 Man Thiện</a></li>
+					<li><a href="#"><i class="fa fa-map-marker"></i> 97 Man
+							Thiện</a></li>
 				</ul>
 			</div>
 		</div>
@@ -88,7 +89,7 @@
 				<div class="col-md-6 col-md-offset-3">
 					<div class="login-form">
 						<h2 class="text-center">Đăng Nhập</h2>
-						<form action="<c:url value="/login" />" method="post">
+						<form action="<c:url value='/login' />" method="post">
 							<div class="form-group">
 								<label for="email">Email:</label> <input type="email"
 									class="form-control" id="email" name="email" value="${email}"
@@ -98,8 +99,7 @@
 								<label for="password">Mật khẩu:</label> <input type="password"
 									class="form-control" id="password" name="password"
 									value="${pw}" placeholder="Nhập mật khẩu của bạn" required>
-								<a href="<c:url value="/forgotpassword" />">Quên mật khẩu?</a>
-
+								<a href="<c:url value='/forgotpassword' />">Quên mật khẩu?</a>
 							</div>
 							<div class="form-group">
 								<strong style="color: red;">${warning}</strong>
@@ -108,8 +108,16 @@
 								<button type="submit" class="btn btn-primary btn-block">Đăng
 									Nhập</button>
 							</div>
+							<div class="text-center">- Hay -</div>
+							<br>
+							<div style="text-align: center;">
+								<a href="<c:url value='/login-google' />" class="google-login">
+									<i class="fa fa-google" style="color: red;"></i> Đăng nhập với Google
+								</a>
+							</div>
+							<br>
 							<div class="text-center">
-								Bạn chưa có tài khoản? <a href="<c:url value="/signup" />">Đăng
+								Bạn chưa có tài khoản? <a href="<c:url value='/signup' />">Đăng
 									ký ngay!</a>
 							</div>
 						</form>
@@ -120,6 +128,6 @@
 	</div>
 	<!-- /Login -->
 
- <jsp:include page="/WEB-INF/views/include/footer.jsp" />
+	<jsp:include page="/WEB-INF/views/include/footer.jsp" />
 </body>
 </html>

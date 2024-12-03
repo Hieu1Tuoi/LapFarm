@@ -1,5 +1,5 @@
 
-package LapFarm.Service;
+package LapFarm.Model;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;

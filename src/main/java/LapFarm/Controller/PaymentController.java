@@ -13,7 +13,7 @@ import LapFarm.Entity.OrderDetailsEntity;
 import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.ProductEntity;
 import LapFarm.Entity.UserInfoEntity;
-import LapFarm.Service.Config;
+import LapFarm.Model.Config;
 import LapFarm.Service.PaymentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
