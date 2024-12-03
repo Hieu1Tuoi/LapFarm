@@ -38,6 +38,53 @@
 	background-color: #333; /* Nền màu xám khi hover */
 	color: #fff;
 } /* Giữ chữ màu trắng khi hover */
+.notification-container {
+	position: relative;
+	display: inline-block;
+}
+
+.notification-box {
+	display: none;
+	position: absolute;
+	top: 40px;
+	right: 0;
+	background: #fff;
+	border: 1px solid #ddd;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	padding: 10px;
+	width: 250px;
+	z-index: 1000;
+	border-radius: 5px;
+}
+
+.notification-box ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.notification-box ul li {
+	padding: 5px 0;
+	border-bottom: 1px solid #eee;
+}
+
+.notification-box ul li:last-child {
+	border-bottom: none;
+}
+
+.notification-container:hover .notification-box {
+	display: block;
+}
+
+.unread {
+	color: red;
+	font-weight: bold;
+}
+
+.read {
+	color: #000;
+	font-weight: normal;
+}
 </style>
 
 <!-- HEADER -->
@@ -61,10 +108,11 @@
 						</a>
 							<div class="dropdown-menu">
 								<a class="dropdown-item" href="<c:url value='/account' />">Thông
-									tin</a> 
-								<a class="dropdown-item" href="<c:url value='/account#orders-history' />">Đơn hàng</a>
-								<a class="dropdown-item" href="<c:url value='/account#viewed' />">Đã xem gần đây</a> 
-								<a class="dropdown-item" href="<c:url value='/logout' />">Đăng xuất</a>
+									tin</a> <a class="dropdown-item"
+									href="<c:url value='/account#orders-history' />">Đơn hàng</a> <a
+									class="dropdown-item" href="<c:url value='/account#viewed' />">Đã
+									xem gần đây</a> <a class="dropdown-item"
+									href="<c:url value='/logout' />">Đăng xuất</a>
 							</div></li>
 					</c:when>
 					<c:otherwise>
@@ -106,7 +154,8 @@
 								name="searchtext" placeholder="Search here"> <input
 								value="${priceRange}" name="priceRange" type="hidden">
 							<c:if test="${not empty idBrand}">
-								<input id="idBrandInput" type="hidden" name="idBrand" value="${idBrand}" />
+								<input id="idBrandInput" type="hidden" name="idBrand"
+									value="${idBrand}" />
 							</c:if>
 							<button type="submit" class="search-btn">Tìm Kiếm</button>
 						</form>
@@ -117,13 +166,37 @@
 				<!-- ACCOUNT -->
 				<div class="col-md-3 clearfix">
 					<div class="header-ctn">
-						<!-- Wishlist -->
-						<div>
-							<a href="#"> <i class="fa fa-heart-o"></i> <span>Wishlish</span>
-								<div class="qty">2</div>
+						<!-- Notifications -->
+						<div class="notification-container">
+							<a> <i class="fa fa-bell-o"></i> <span>Thông báo</span>
+								<div class="qty"
+									style="display: ${unreadNotificationsCount > 0 ? 'block' : 'none'};">
+									<span>${unreadNotificationsCount}</span>
+								</div>
 							</a>
+
+							<!-- Kiểm tra nếu có thông báo mới -->
+							<c:if test="${not empty notifications}">
+								<div class="notification-box">
+									<ul>
+										<!-- Hiển thị danh sách thông báo -->
+										<c:forEach var="notification" items="${notifications}">
+											<li>
+												<!-- Liên kết sẽ đánh dấu thông báo đã đọc và chuyển tới chi tiết thông báo -->
+												<a
+												href="<c:url value='/notification/${notification.notiId}?state=1' />"
+												class="${notification.state == 0 ? 'unread' : 'read'}">
+													<span>${notification.content}</span> <br> <span>${notification.time}</span>
+											</a>
+											</li>
+										</c:forEach>
+									</ul>
+								</div>
+							</c:if>
 						</div>
-						<!-- /Wishlist -->
+
+
+
 
 						<!-- Cart -->
 						<div class="dropdown">
@@ -173,4 +246,49 @@
 			}
 		});
 	});
+
+	document.addEventListener("DOMContentLoaded", function() {
+		const notificationContainer = document
+				.querySelector(".notification-container");
+		const notificationBox = document.querySelector(".notification-box");
+
+		// Đóng hộp thoại khi click ra ngoài
+		document.addEventListener("click", function(event) {
+			if (!notificationContainer.contains(event.target)) {
+				notificationBox.style.display = "none";
+			}
+		});
+
+		// Hiển thị hộp thoại khi di chuột
+		notificationContainer.addEventListener("mouseenter", function() {
+			notificationBox.style.display = "block";
+		});
+
+		// Ẩn hộp thoại khi chuột rời đi
+		notificationContainer.addEventListener("mouseleave", function() {
+			notificationBox.style.display = "none";
+		});
+	});
+	
+	// Hàm để đánh dấu thông báo là đã đọc khi người dùng nhấp vào
+// Hàm để đánh dấu thông báo là đã đọc và mở trang chi tiết
+function markAsRead(notiId) {
+    fetch(`/notification/${notiId}?state=1`, {
+        method: 'GET'
+    })
+    .then(response => {
+        if (response.ok) {
+            // Chuyển hướng tới trang notification.jsp với notiId
+            window.location.href = `/notification/details/${notiId}`;
+        } else {
+            alert("Có lỗi xảy ra khi đánh dấu thông báo.");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+
+	
 </script>
