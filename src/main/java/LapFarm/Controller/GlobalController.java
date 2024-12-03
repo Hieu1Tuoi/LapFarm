@@ -41,7 +41,7 @@ public class GlobalController {
             // Lấy giỏ hàng từ cơ sở dữ liệu nếu đã đăng nhập
             return cartService.getCartFromDatabase(account.getUserInfo().getUserId());
         } else {
-            // Nếu chưa đăng nhập, trả về giỏ hàng rỗng
+            // Nếu chưa đăng nhập, trả về g	iỏ hàng rỗng
             return new HashMap<>();
         }
     }
