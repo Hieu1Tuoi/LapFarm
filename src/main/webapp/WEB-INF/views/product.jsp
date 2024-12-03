@@ -273,51 +273,51 @@
 
 
 
-						<!-- Reviews Section -->
-						<div class="col-md-6">
-							<div id="reviews">
-								<ul class="reviews">
-									<c:forEach var="review" items="${reviews}">
-										<li>
-											<div class="review-heading">
-												<h5 class="name">${review.user.fullName}</h5>
-												<p class="date">
-													<fmt:formatDate value="${review.reviewDate}"
-														pattern="dd MMM yyyy, hh:mm a" />
-												</p>
-												<div class="review-rating">
-													<c:forEach var="star" begin="1" end="5">
-														<c:choose>
-															<c:when test="${star <= review.rating}">
-																<i class="fa fa-star"></i>
-															</c:when>
-															<c:otherwise>
-																<i class="fa fa-star-o empty"></i>
-															</c:otherwise>
-														</c:choose>
-													</c:forEach>
-												</div>
-											</div>
-											<div class="review-body">
-												<p>${review.comment}</p>
-											</div>
-										</li>
-									</c:forEach>
-									<c:if test="${empty reviews}">
-										<li><p>Chưa có đánh giá nào cho sản phẩm này.</p></li>
-									</c:if>
-								</ul>
+<!-- Reviews Section -->
+<div class="col-md-6">
+    <div id="reviews">
+        <ul class="reviews">
+            <c:forEach var="review" items="${reviews}">
+                <li>
+                    <div class="review-heading">
+                        <h5 class="name">${review.user.fullName}</h5>
+                        <p class="date">
+                            <fmt:formatDate value="${review.reviewDate}" pattern="dd MMM yyyy, hh:mm a" />
+                        </p>
+                        <div class="review-rating">
+                            <c:forEach var="star" begin="1" end="5">
+                                <c:choose>
+                                    <c:when test="${star <= review.rating}">
+                                        <i class="fa fa-star"></i>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <i class="fa fa-star-o empty"></i>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+                        </div>
+                    </div>
+                    <div class="review-body">
+                        <p>${review.comment}</p>
+                    </div>
+                </li>
+            </c:forEach>
+            <c:if test="${empty reviews}">
+                <li><p>Chưa có đánh giá nào cho sản phẩm này.</p></li>
+            </c:if>
+        </ul>
 
-								<!-- Pagination -->
-								<ul class="reviews-pagination">
-									<c:forEach begin="1" end="${totalPages}" var="page">
-										<li class="${page == currentPage ? 'active' : ''}"><a
-											href="?page=${page}&pageSize=${pageSize}">${page}</a></li>
-									</c:forEach>
-								</ul>
-							</div>
-						</div>
-						<!-- /Reviews Section -->
+        <!-- Nút Hiện Tất Cả -->
+        <div class="show-all-reviews">
+            <a href="<c:url value='/product-all-reviews/${product.idProduct}' />" class="btn btn-danger btn-lgy">Hiện tất cả đánh giá</a>
+        </div>
+
+    </div>
+</div>
+<!-- /Reviews Section -->
+
+
+
 
 
 

@@ -79,4 +79,13 @@ public class ReviewDAO {
 
         return query.uniqueResult().intValue();
     }
+    @Transactional
+    public List<ReviewEntity> getReviewsByUserId(int userId) {
+        Session session = factory.getCurrentSession();
+        String hql = "FROM ReviewEntity r WHERE r.user.id = :userId ORDER BY r.reviewDate DESC";
+        Query<ReviewEntity> query = session.createQuery(hql, ReviewEntity.class);
+        query.setParameter("userId", userId);
+        return query.list();
+    }
+
 }
