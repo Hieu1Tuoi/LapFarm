@@ -7,7 +7,7 @@
 .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td,
 	.table>tbody>tr>td, .table>tfoot>tr>td {
 	border-top: 1px solid #f4f4f4;
-	max-width: 430px;
+	max-width: 450px;
 }
 </style>
 <div class="content-wrapper">
@@ -75,10 +75,8 @@
 									<td><a
 										href="${pageContext.request.contextPath}/product-detail/${p.idProduct}"
 										class="btn btn-success">Xem</a> <a
-										href="${pageContext.request.contextPath}/admin/edit-order/${p.idProduct}"
-										class="btn btn-success">Sửa</a> <a
-										href="${pageContext.request.contextPath}/admin/delete-order/${p.idProduct}"
-										class="btn btn-danger">Xóa</a></td>
+										href="${pageContext.request.contextPath}/admin/product/edit-product/${p.idProduct}"
+										class="btn btn-success">Sửa</a></td>
 								</tr>
 							</c:forEach>
 						</tbody>
