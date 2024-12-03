@@ -63,13 +63,7 @@
 		<mvc:interceptor> <mvc:mapping path="/admin/**" /> <bean class="LapFarm.Interceptor.GlobalInterceptor" 
 		/> </mvc:interceptor> </mvc:interceptors> -->
 
-	<mvc:interceptors>
-		<mvc:interceptor>
-			<!-- Áp dụng interceptor cho tất cả các request -->
-			<mvc:mapping path="/**" />
-			<bean class="LapFarm.Interceptor.CartInterceptor" />
-		</mvc:interceptor>
-	</mvc:interceptors>
+	
 
 	<context:component-scan base-package="LapFarm.*" />
 </beans>

@@ -119,5 +119,27 @@ public class ProductController extends BaseController {
         model.addAttribute("relatedProducts", relatedProducts);
         return "related-products";  // Trả về trang hiển thị các sản phẩm liên quan
     }
+    @RequestMapping(value = "/product-all-reviews/{idProduct}", method = RequestMethod.GET)
+    public String allReviews(@PathVariable("idProduct") int productId, Model model) {
+        try {
+            // Lấy sản phẩm
+            ProductEntity product = productDAO.getProductById(productId);
+            if (product == null) {
+                model.addAttribute("errorMessage", "Không tìm thấy sản phẩm.");
+                return "error/404";  // Trả về trang lỗi nếu không tìm thấy sản phẩm
+            }
 
+            // Lấy tất cả các đánh giá của sản phẩm
+            List<ReviewEntity> reviews = reviewDAO.getAllReviewsByProductId(productId);
+
+            // Truyền dữ liệu vào model
+            model.addAttribute("product", product);
+            model.addAttribute("reviews", reviews);
+
+            return "product-all-reviews";  // Trả về view "product-all-reviews"
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Đã xảy ra lỗi trong quá trình xử lý.");
+            return "error/404";  // Trả về trang lỗi nếu có lỗi trong quá trình xử lý
+        }
+    }
 }
