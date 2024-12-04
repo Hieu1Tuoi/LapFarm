@@ -2,6 +2,7 @@ package LapFarm.Controller;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -231,13 +232,13 @@ public class AdminController {
 	    String content = "";
 	    switch(state) {
 	    case "Chờ lấy hàng":
-	    	content = "Đơn hàng có mã " + id + " đã đặt thành công. Vui lòng kiểm tra lại thông tin trong phần chi tiết đơn hàng và email (nếu có) từ shop.";
+	    	content = "Đơn hàng có mã " + id + " đã đặt thành công. Vui lòng kiểm tra lại thông tin trong phần chi tiết đơn hàng và email (nếu có) từ LapFarm.";
 	    	break;
 	    case "Đang giao hàng":
 	    	content = "Đơn hàng " + id + " đã được LapFarm giao cho đơn vị vận chuyển và dự kiến được giao trong 3-5 ngày tới!";
 	    	break;
 	    case "Hoàn thành":
-	    	content = "Đơn hàng " + id + " đã được giao thành công đến bạn. Vui lòng kiểm tra và liên hệ lại nếu có vấn đề về sản phẩm!";
+	    	content = "Đơn hàng " + id + " đã được giao thành công đến bạn. Vui lòng kiểm tra và liên hệ với LapFarm nếu có vấn đề về sản phẩm!";
 	    	break;
 	    case "Đã hủy":
 	    	content = "Đơn hàng " + id + " đã bị hủy. Chúc bạn mua sắm vui vẻ!";
@@ -246,6 +247,7 @@ public class AdminController {
 	    	content = "LapFarm đang rất nhớ bạn <3";
 	    }
 	    notification.setContent(content);
+	    notification.setTime(new Timestamp(System.currentTimeMillis()));
 	    notificationDAO.addNotification(notification);
 
 	    if (updateComplete) {
