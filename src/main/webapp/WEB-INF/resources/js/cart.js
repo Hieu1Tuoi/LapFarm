@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Hàm xác nhận và xử lý xóa sản phẩm
 function attachDeleteEvent() {
-	const deleteButtons = document.querySelectorAll("a[id^='delete']");
+	const deleteButtons = document.querySelectorAlquantityCart.innerHTMLl("a[id^='delete']");
 
 	deleteButtons.forEach(button => {
 		button.addEventListener("click", function(event) {
