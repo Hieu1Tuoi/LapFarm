@@ -460,14 +460,6 @@ public class AdminController {
                 product.setImages(imageEntities);
             }
 
-            // Xóa các ảnh bị xóa
-               if (deletedImages != null && !deletedImages.isEmpty()) {
-                   String[] imageIds = deletedImages.split(",");
-                   for (String imageId : imageIds) {
-                       imageDAO.deleteImageById(Integer.parseInt(imageId));
-                   }
-               }
-
             // Lưu thay đổi sản phẩm vào database
             boolean updateCompleted = productDAO.updateProduct(product);
             productDetailDAO.updateProductDetail(productDetail);
@@ -476,6 +468,13 @@ public class AdminController {
             } else {
             	redirectAttributes.addFlashAttribute("error", "Đã xảy ra lỗi khi cập nhật sản phẩm.");
             }
+            // Xóa các ảnh bị xóa
+               if (deletedImages != null && !deletedImages.isEmpty()) {
+                   String[] imageIds = deletedImages.split(",");
+                   for (String imageId : imageIds) {
+                       imageDAO.deleteImageById(Integer.parseInt(imageId));
+                   }
+               }
         } catch (Exception e) {
             e.printStackTrace();
             redirectAttributes.addFlashAttribute("error", "Đã xảy ra lỗi khi cập nhật sản phẩm.");
