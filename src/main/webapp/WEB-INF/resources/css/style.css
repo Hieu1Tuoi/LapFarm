@@ -1683,11 +1683,15 @@ textarea.input {
 }
 
 .rating-avg .rating-stars>i, .rating .rating-stars>i {
-  color: #E4E7ED;
+  color: #E4E7ED;  /* Màu mặc định cho sao rỗng */
 }
 
 .rating-avg .rating-stars>i.fa-star, .rating .rating-stars>i.fa-star {
-  color: #D10024;
+  color: #D10024;  /* Màu cho sao đầy */
+}
+
+.rating-avg .rating-stars>i.fa-star-half-o, .rating .rating-stars>i.fa-star-half-o {
+  color: #D10024;  /* Màu cho sao nửa */
 }
 
 .rating li {
@@ -1761,7 +1765,9 @@ textarea.input {
 .reviews .review-heading .review-rating>i.fa-star {
   color: #D10024;
 }
-
+.reviews .review-heading .review-rating>i.fa-star-half-o {
+  color: #d10024;
+}
 .reviews-pagination {
   text-align: center;
 }
@@ -1836,6 +1842,8 @@ textarea.input {
   content: "\f005";
   color: #D10024;
 }
+
+
 
 /*=========================================================
 	09 -> CHECKOUT PAGE
