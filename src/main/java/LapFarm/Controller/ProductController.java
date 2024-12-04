@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import LapFarm.DAO.OrderDetailDAO;
 import LapFarm.DAO.ProductDAO;
 import LapFarm.DAO.ReviewDAO;
 import LapFarm.DTO.ProductDTO;
@@ -33,6 +34,10 @@ import jakarta.servlet.http.HttpSession;
 public class ProductController extends BaseController {
     @Autowired
     private ProductDAO productDAO;
+    
+    @Autowired
+    private OrderDetailDAO orderDetailDAO;
+
 
     @Autowired
     private ReviewDAO reviewDAO;
@@ -43,7 +48,7 @@ public class ProductController extends BaseController {
                                 @RequestParam(value = "pageSize", defaultValue = "3") int pageSize,
                                 Model model,
                                 HttpSession httpSession) {
-    	Init();
+        Init();
         try {
             // Lấy sản phẩm
             ProductEntity product = productDAO.getProductById(productId);
@@ -51,6 +56,9 @@ public class ProductController extends BaseController {
                 model.addAttribute("errorMessage", "Không tìm thấy sản phẩm.");
                 return "error/404";  // Trả về trang lỗi nếu không tìm thấy sản phẩm
             }
+
+            // Lấy số lượt bán của sản phẩm
+            int salesCount = orderDetailDAO.countSalesByProductId(productId);
 
             // Lấy danh sách sản phẩm liên quan theo thương hiệu
             int brandId = product.getBrand().getIdBrand();
@@ -96,14 +104,16 @@ public class ProductController extends BaseController {
             model.addAttribute("totalPages", totalPages);
             model.addAttribute("pageSize", pageSize);
             model.addAttribute("ratingSummary", ratingSummary);
+            model.addAttribute("salesCount", salesCount);  // Thêm số lượt bán vào model
 
             return "product";  // Trả về view "product"
 
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Đã xảy ra lỗi trong quá trình xử lý.");
             return "error/404";  // Trả về trang lỗi nếu có lỗi trong quá trình xử lý
-        }}
-    
+        }
+    }
+
 
     @RequestMapping(value = "/related-products/{idBrand}", method = RequestMethod.GET)
     public String viewAllRelatedProducts(@PathVariable("idBrand") int idBrand, Model model) {
@@ -142,4 +152,7 @@ public class ProductController extends BaseController {
             return "error/404";  // Trả về trang lỗi nếu có lỗi trong quá trình xử lý
         }
     }
+    
+    
+    
 }

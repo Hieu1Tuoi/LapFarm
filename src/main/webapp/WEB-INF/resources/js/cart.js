@@ -127,6 +127,8 @@ document.addEventListener("DOMContentLoaded", function() {
 // Hàm xác nhận và xử lý xóa sản phẩm
 function attachDeleteEvent() {
 	const deleteButtons = document.querySelectorAll("a[id^='delete']");
+	const oldQuantity = document.querySelector('#totalQuantity').innerHTML;
+	const newQuantity = oldQuantity - 1;
 
 	deleteButtons.forEach(button => {
 		button.addEventListener("click", function(event) {
@@ -146,6 +148,7 @@ function attachDeleteEvent() {
 						const rowElement = document.getElementById(rowId);
 						if (rowElement) {
 							rowElement.remove();
+							document.querySelector('#totalQuantity').innerHTML = newQuantity;
 						}
 
 						console.log(`Sản phẩm ${rowId} đã được xóa thành công.`);

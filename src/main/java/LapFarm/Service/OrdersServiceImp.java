@@ -33,4 +33,10 @@ public class OrdersServiceImp implements IOrdersService {
 		return orderDao.getOrderDetail(orderId);
 	}
 
+	@Override
+	public String getStateById(int orderId) {
+		// TODO Auto-generated method stub
+		return orderDao.getStateById(orderId);
+	}
+
 }

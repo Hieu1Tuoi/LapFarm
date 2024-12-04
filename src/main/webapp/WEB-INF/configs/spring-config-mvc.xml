@@ -1,21 +1,23 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+﻿<beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:security="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context.xsd
-       http://www.springframework.org/schema/tx
-       http://www.springframework.org/schema/tx/spring-tx.xsd
-       http://www.springframework.org/schema/mvc
-       http://www.springframework.org/schema/mvc/spring-mvc.xsd
-       http://www.springframework.org/schema/jdbc
-       http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                           http://www.springframework.org/schema/jdbc
+                           http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+                           http://www.springframework.org/schema/security 
+                           http://www.springframework.org/schema/security/spring-security.xsd">
 
 	<!-- Spring MVC Annotation -->
 	<context:annotation-config />
@@ -62,8 +64,78 @@
 		<bean class="LapFarm.Interceptor.LoggerInterceptor" /> </mvc:interceptor> 
 		<mvc:interceptor> <mvc:mapping path="/admin/**" /> <bean class="LapFarm.Interceptor.GlobalInterceptor" 
 		/> </mvc:interceptor> </mvc:interceptors> -->
-
+	
+	<!-- OAuth2 Authorized Client Service -->
+<!--     <bean id="authorizedClientService" 
+          class="org.springframework.security.oauth2.client.OAuth2AuthorizedClientService">
+        <constructor-arg ref="clientRegistrationRepository"/>
+    </bean>
 	
 
+	OAuth2 Authorized Client Repository
+    <bean id="authorizedClientRepository" 
+          class="org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizedClientRepository"/>
+
+    Security Configuration
+    <security:http auto-config="true" use-expressions="true">
+        <security:form-login login-page="/login" 
+                             default-target-url="/home"
+                             authentication-failure-url="/login?error=true"/>
+        <security:logout logout-success-url="/login"/>
+        <security:intercept-url pattern="/login" access="permitAll()"/>
+        <security:intercept-url pattern="/home" access="isAuthenticated()"/>
+        <security:oauth2-login 
+            client-registration-repository-ref="clientRegistrationRepository"
+            authorized-client-service-ref="authorizedClientService"
+            authorized-client-repository-ref="authorizedClientRepository"/>
+    </security:http>
+
+    Enable method-level security
+    <security:global-method-security pre-post-annotations="enabled"/>
+    
+	OAuth2 Client Configuration
+	<bean id="clientRegistrationRepository"
+		class="org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository">
+		<constructor-arg>
+			<list>
+				<bean
+					class="org.springframework.security.oauth2.client.registration.ClientRegistration"
+					factory-method="withRegistrationId">
+					<constructor-arg value="google" />
+					<property name="clientId"
+						value="223019393610-g9tpov2qhg0bub2k12dml05fo9nfh807.apps.googleusercontent.com" />
+					<property name="clientSecret"
+						value="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" />
+					<property name="redirectUri"
+						value="http://localhost:8080/login/oauth2/code/google" />
+					<property name="authorizationGrantType"
+						value="#{T(org.springframework.security.oauth2.core.AuthorizationGrantType).AUTHORIZATION_CODE}" />
+					<property name="scope">
+						<list>
+							<value>openid</value>
+							<value>profile</value>
+							<value>email</value>
+						</list>
+					</property>
+					<property name="providerDetails">
+						<bean
+							class="org.springframework.security.oauth2.client.registration.ClientRegistration$ProviderDetails">
+							<property name="authorizationUri"
+								value="https://accounts.google.com/o/oauth2/auth" />
+							<property name="tokenUri"
+								value="https://oauth2.googleapis.com/token" />
+							<property name="userInfoUri"
+								value="https://www.googleapis.com/oauth2/v3/userinfo" />
+							<property name="jwkSetUri"
+								value="https://www.googleapis.com/oauth2/v3/certs" />
+							<property name="issuerUri"
+								value="https://accounts.google.com" />
+						</bean>
+					</property>
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+ -->
 	<context:component-scan base-package="LapFarm.*" />
 </beans>

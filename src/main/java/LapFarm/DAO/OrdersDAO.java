@@ -162,6 +162,21 @@ public class OrdersDAO {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public String getStateById(int orderId) {
+        Session session = factory.getCurrentSession();
+
+        // Truy vấn lấy đơn hàng theo orderId
+        OrdersEntity order = session.get(OrdersEntity.class, orderId);
+        
+        // Kiểm tra nếu đơn hàng tồn tại, trả về trạng thái
+        if (order != null) {
+            return order.getState(); // Trả về trạng thái của đơn hàng
+        }
+        
+        // Nếu không tìm thấy đơn hàng, trả về null hoặc bạn có thể ném một ngoại lệ tùy theo yêu cầu
+        return null;
+    }
 
 
 }

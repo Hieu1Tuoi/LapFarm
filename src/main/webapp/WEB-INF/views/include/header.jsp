@@ -216,7 +216,7 @@
 						<form action="search" method="get">
 							<!-- Dropdown cho danh mục -->
 							<select class="input-select" name="idCategory">
-								<option value="0" ${searchCategory == 0 ? 'selected' : ''}>Tất cả danh mục</option>
+								<option value="0" ${searchCategory == 0 ? 'selected' : ''}>Tất cả</option>
 								<c:forEach var="cate" items="${categories}">
 									<option value="${cate.idCategory}"
 										${searchCategory == cate.idCategory ? 'selected' : ''}>
@@ -251,7 +251,7 @@
 						<!-- Notifications -->
 						<div class="notification-container">
 							<a> <i class="fa fa-bell-o"></i> <span>Thông báo</span>
-								<div class="qty"
+								<div class="qty" 
 									style="display: ${unreadNotificationsCount > 0 ? 'block' : 'none'};">
 									<span>${unreadNotificationsCount}</span>
 								</div>
@@ -288,7 +288,7 @@
 						<div class="dropdown">
 							<a href="<c:url value='/cart' />" class="cart-link"> <i
 								class="fa fa-shopping-cart"></i> <span>Giỏ hàng</span>
-								<div class="qty">${Cart != null ? Cart.size() : 0}</div>
+								<div id="totalQuantity" class="qty">${Cart != null ? Cart.size() : 0}</div>
 							</a>
 						</div>
 

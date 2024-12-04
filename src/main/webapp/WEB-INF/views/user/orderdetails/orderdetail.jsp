@@ -199,12 +199,24 @@ input[type="radio"] {
 }
 
 #order-detail {
-	max-width: 1475px; /* Tăng chiều rộng tối đa lên 15% */
+	max-width: 1460px; /* Tăng chiều rộng tối đa lên 15% */
 	margin: 0 auto; /* Căn giữa thẻ */
 	padding: 20px; /* Thêm khoảng cách bên trong */
 	background-color: #fff; /* Màu nền trắng */
 	border-radius: 8px; /* Viền bo tròn */
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Thêm bóng đổ cho thẻ */
+}
+
+.green {
+	color: green;
+}
+
+.Orange {
+	color: orange;
+}
+
+.black {
+	color: black;
 }
 </style>
 <script>
@@ -286,7 +298,21 @@ function showSuccessMessage(event) {
 </script>
 <body>
 	<div id="order-detail">
-		<h1>Chi tiết đơn hàng</h1>
+		<!-- Thẻ h1 cố định màu đỏ cho "Chi tiết đơn hàng" -->
+		<!-- Thẻ h1 cố định màu đỏ cho "Chi tiết đơn hàng" và hiển thị trên cùng dòng -->
+		<h1 style="color: red; display: inline;">Chi tiết đơn hàng </h1>
+
+		<!-- Thẻ h1 thay đổi màu sắc theo trạng thái của đơn hàng và hiển thị trên cùng dòng -->
+		<h1 style="color: black; display: inline;"> - </h1>
+		<h1 style="color: black; display: inline;">Trạng Thái : </h1>
+		<h1
+			class="<c:choose>
+               <c:when test='${stateOrder == "Hoàn thành"}'>green</c:when>
+               <c:when test='${stateOrder == "Đang giao hàng"}'>Orange</c:when>
+               <c:otherwise>black</c:otherwise>
+           </c:choose>"
+			style="display: inline;">${stateOrder}</h1>
+
 		<!-- Thêm nội dung chi tiết đơn hàng tại đây -->
 		<c:if test="${not empty orderDetail}">
 			<table class="order-history-table">
@@ -306,7 +332,7 @@ function showSuccessMessage(event) {
 					<c:forEach var="item" items="${orderDetail}">
 						<tr id="${item.product.idProduct}" class="orderdetail">
 							<td><a href="product-detail/${item.product.idProduct}"><img
-									src="${item.product.image} " " style="width: 40%" /></td>
+									src="${item.product.image} " " style="width: 35%" /></td>
 							<td><a href="product-detail/${item.product.idProduct}">${item.product.nameProduct}</td>
 							<td>${item.product.categoryName}</td>
 							<td>${item.product.brandName}</td>
