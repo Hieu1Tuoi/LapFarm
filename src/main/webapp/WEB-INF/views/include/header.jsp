@@ -147,17 +147,15 @@
 }
 
 .notification-header {
-    font-weight: bold;
-    font-size: 18px;
-    padding: 5px 10px;
-    margin-bottom: 10px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
-    background-color: #f9f9f9;
-    color: green;
+	font-weight: bold;
+	font-size: 18px;
+	padding: 5px 10px;
+	margin-bottom: 10px;
+	text-align: center;
+	border-bottom: 1px solid #ddd;
+	background-color: #f9f9f9;
+	color: green;
 }
-
-
 </style>
 
 <!-- HEADER -->
@@ -216,25 +214,36 @@
 				<div class="col-md-6">
 					<div class="header-search">
 						<form action="search" method="get">
+							<!-- Dropdown cho danh mục -->
 							<select class="input-select" name="idCategory">
-								<option value="0" ${searchCategory == 0 ? 'selected' : ''}>All
-									Categories</option>
-								<option value="1" ${searchCategory == 1 ? 'selected' : ''}>Category
-									01</option>
-								<option value="2" ${searchCategory == 2 ? 'selected' : ''}>Category
-									02</option>
-							</select> <input value="${searchText}" id="searchInput" class="input"
-								name="searchtext" placeholder="Search here"> <input
-								value="${priceRange}" name="priceRange" type="hidden">
+								<option value="0" ${searchCategory == 0 ? 'selected' : ''}>Tất cả danh mục</option>
+								<c:forEach var="cate" items="${categories}">
+									<option value="${cate.idCategory}"
+										${searchCategory == cate.idCategory ? 'selected' : ''}>
+										${cate.nameCategory}</option>
+								</c:forEach>
+							</select>
+
+							<!-- Ô nhập từ khóa tìm kiếm -->
+							<input value="${searchText}" id="searchInput" class="input"
+								name="searchtext" placeholder="Search here..." />
+
+							<!-- Ô nhập giá hoặc các tham số ẩn -->
+							<input type="hidden" value="${priceRange}" name="priceRange" />
+
+							<!-- Ô nhập ẩn cho thương hiệu nếu có -->
 							<c:if test="${not empty idBrand}">
 								<input id="idBrandInput" type="hidden" name="idBrand"
 									value="${idBrand}" />
 							</c:if>
+
+							<!-- Nút tìm kiếm -->
 							<button type="submit" class="search-btn">Tìm Kiếm</button>
 						</form>
 					</div>
 				</div>
 				<!-- /SEARCH BAR -->
+
 
 				<!-- ACCOUNT -->
 				<div class="col-md-3 clearfix">
