@@ -35,7 +35,7 @@ public class AccountEntity {
         this.email = email;
         this.password = password;
         this.role = new RoleEntity(0, "user");
-        this.state = "normal";
+        this.state = "Hoạt động";
     }
     public String getEmail() {
         return email;

@@ -1,21 +1,23 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+﻿<beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:security="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context.xsd
-       http://www.springframework.org/schema/tx
-       http://www.springframework.org/schema/tx/spring-tx.xsd
-       http://www.springframework.org/schema/mvc
-       http://www.springframework.org/schema/mvc/spring-mvc.xsd
-       http://www.springframework.org/schema/jdbc
-       http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                           http://www.springframework.org/schema/jdbc
+                           http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+                           http://www.springframework.org/schema/security 
+                           http://www.springframework.org/schema/security/spring-security.xsd">
 
 	<!-- Spring MVC Annotation -->
 	<context:annotation-config />
@@ -63,7 +65,14 @@
 		<mvc:interceptor> <mvc:mapping path="/admin/**" /> <bean class="LapFarm.Interceptor.GlobalInterceptor" 
 		/> </mvc:interceptor> </mvc:interceptors> -->
 
-	
+	<bean id="googleConfig" class="LapFarm.Model.GoogleConfig">
+		<property name="clientId"
+			value="223019393610-g9tpov2qhg0bub2k12dml05fo9nfh807.apps.googleusercontent.com" />
+		<property name="clientSecret"
+			value="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" />
+		<property name="redirectUri"
+			value="http://localhost:8080/LapFarm/oauth2/callback/google" />
+	</bean>
 
 	<context:component-scan base-package="LapFarm.*" />
 </beans>

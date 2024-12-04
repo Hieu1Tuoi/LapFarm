@@ -45,11 +45,11 @@ public class GlobalController {
             return new HashMap<>();
         }
     }
+    
     // Cung cấp danh sách thông báo cho tất cả các trang
     @ModelAttribute("notifications")
     public List<NotificationDTO> getNotifications(HttpSession session) {
         AccountEntity account = (AccountEntity) session.getAttribute("user");
-
         // Kiểm tra xem account có null không
         if (account != null && account.getUserInfo() != null) {
             int userId = account.getUserInfo().getUserId();

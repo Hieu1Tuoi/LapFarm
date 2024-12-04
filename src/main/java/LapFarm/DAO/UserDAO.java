@@ -12,13 +12,15 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
+import org.springframework.transaction.annotation.Transactional;
 import org.apache.commons.codec.binary.Hex;
 
 import LapFarm.DTO.UserInfoDTO;
 import LapFarm.Entity.AccountEntity;
+import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.UserInfoEntity;
 
+@Transactional
 @Repository
 public class UserDAO {
 	@Autowired
@@ -212,5 +214,24 @@ public class UserDAO {
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException("MD5 algorithm not found", e);
 		}
+	}
+	
+	public boolean updateUserState(int userId, String state) {
+		// Lấy session hiện tại từ factory
+        Session session = factory.getCurrentSession();
+        
+        // Tìm đơn hàng theo id
+        AccountEntity account = session.get(AccountEntity.class, userId);
+        
+        // Kiểm tra nếu đơn hàng tồn tại
+        if (account != null) {
+            // Cập nhật trạng thái của đơn hàng
+            account.setState(state);
+            
+            // Lưu lại trạng thái mới của đơn hàng vào cơ sở dữ liệu
+            session.merge(account);// Sử dụng `update` thay vì `saveOrUpdate` vì chúng ta chỉ cập nhật trạng thái
+            return true;
+        }
+        return false;
 	}
 }

@@ -110,8 +110,8 @@
 							</div>
 							<div class="text-center">- Hay -</div>
 							<br>
-							<div style="text-align: center;">
-								<a href="<c:url value='/login-google' />" class="google-login">
+							<div class="text-center">
+								<a href="<c:url value='${googleAuthUrl}' />" class="google-login">
 									<i class="fa fa-google" style="color: red;"></i> Đăng nhập với Google
 								</a>
 							</div>
