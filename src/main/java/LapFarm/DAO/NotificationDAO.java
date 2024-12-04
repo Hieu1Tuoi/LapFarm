@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import LapFarm.DTO.NotificationDTO;
+import LapFarm.Entity.CategoryEntity;
 import LapFarm.Entity.NotificationEntity;
 import java.time.LocalDateTime;
 import java.sql.Timestamp;
@@ -101,6 +102,13 @@ public class NotificationDAO {
         // Trả về số lượng thông báo chưa đọc
         Long count = query.uniqueResult();
         return count != null ? count.intValue() : 0;
+    }
+    
+    public void addNotification(NotificationEntity note) {
+        Session session = factory.getCurrentSession();
+
+        // Sử dụng phương thức persist để lưu đối tượng vào database
+        session.persist(note);
     }
     
 }
