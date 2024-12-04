@@ -1,6 +1,7 @@
 package LapFarm.Controller;
 
 import LapFarm.DAO.CartDAO;
+import LapFarm.DAO.NotificationDAO;
 import LapFarm.DAO.OrdersDAO;
 import LapFarm.DAO.ProductDAO;
 import LapFarm.DAO.UserDAO;
@@ -8,6 +9,7 @@ import LapFarm.DTO.CartProductDTO;
 import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.AccountEntity;
 import LapFarm.Entity.CartEntity;
+import LapFarm.Entity.NotificationEntity;
 import LapFarm.Entity.OrderDetailId;
 import LapFarm.Entity.OrderDetailsEntity;
 import LapFarm.Entity.OrdersEntity;
@@ -55,6 +57,9 @@ public class PaymentController {
 
 	@Autowired
 	private ProductDAO productDAO;
+	
+	@Autowired
+	private NotificationDAO notificationDAO;
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String index(HttpSession httpSession, Model model) {
@@ -214,6 +219,32 @@ public class PaymentController {
 				cartDAO.deleteCartById(cartId);
 			}
 			orderMap.put("orderdetail", productsDTO);
+			
+			// Tạo thông báo người dùng
+			NotificationEntity notification = new NotificationEntity();
+		    notification.setOrder(order);
+		    notification.setUserNoti(order.getUserInfo());
+		    notification.setState(0);
+		    String content = "";
+		    switch(order.getState()) {
+		    case "Chờ lấy hàng":
+		    	content = "Đơn hàng có mã " + order.getIdOrder() + " đã đặt thành công. Vui lòng kiểm tra lại thông tin trong phần chi tiết đơn hàng và email (nếu có) từ shop.";
+		    	break;
+		    case "Đang giao hàng":
+		    	content = "Đơn hàng " + order.getIdOrder() + " đã được LapFarm giao cho đơn vị vận chuyển và dự kiến được giao trong 3-5 ngày tới!";
+		    	break;
+		    case "Hoàn thành":
+		    	content = "Đơn hàng " + order.getIdOrder() + " đã được giao thành công đến bạn. Vui lòng kiểm tra và liên hệ lại nếu có vấn đề về sản phẩm!";
+		    	break;
+		    case "Đã hủy":
+		    	content = "Đơn hàng " + order.getIdOrder() + " đã bị hủy. Chúc bạn mua sắm vui vẻ!";
+		    	break;
+		    default:
+		    	content = "LapFarm đang rất nhớ bạn <3";
+		    }
+		    notification.setContent(content);
+		    notification.setTime(new Timestamp(System.currentTimeMillis()));
+		    notificationDAO.addNotification(notification);
 
 			httpSession.setAttribute("order", orderMap);
 

@@ -78,7 +78,7 @@
 							method="post">
 							<input type="hidden" name="orderId" value="${order.idOrder}" /> <select
 								class="btn btn-success" name="state"
-								${order.state == 'Hoàn thành' ? 'disabled' : ''}>
+								${order.state == 'Hoàn thành' || order.state == 'Đã hủy' ? 'disabled' : ''}>
 								<c:forEach var="state" items="${statuses}">
 									<option value="${state}"
 										${order.state == state ? 'selected style="color: black;"' : ''}>
@@ -87,7 +87,7 @@
 							</select>
 							<!-- Submit button (optional, if you don't want auto-submit on change) -->
 							<button type="submit" class="btn btn-success"
-								${order.state == 'Hoàn thành' ? 'disabled' : ''}>Lưu</button>
+								${order.state == 'Hoàn thành' || order.state == 'Đã hủy' ? 'disabled' : ''}>Lưu</button>
 						</form>
 
 
