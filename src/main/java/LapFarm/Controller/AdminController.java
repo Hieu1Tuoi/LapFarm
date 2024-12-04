@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -737,6 +738,36 @@ public class AdminController {
 		    // Trả về view cho trang quản lý sản phẩm của danh mục
 		    return "/admin/user/index";
 		}
+		
+		@RequestMapping(value = "/lock-user/{userId}", method = RequestMethod.POST)
+	    public ResponseEntity<String> lockUser(@PathVariable("userId") int userId) {
+	        try {
+	            boolean result = userDAO.updateUserState(userId, "Đã khóa");
+	            if (result) {
+	                return ResponseEntity.ok("Tài khoản đã bị khóa thành công.");
+	            } else {
+	                return ResponseEntity.badRequest().body("Không thể khóa tài khoản.");
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return ResponseEntity.status(500).body("Có lỗi xảy ra khi khóa tài khoản.");
+	        }
+	    }
+
+	    @RequestMapping(value = "/unlock-user/{userId}", method = RequestMethod.POST)
+	    public ResponseEntity<String> unlockUser(@PathVariable("userId") int userId) {
+	        try {
+	            boolean result = userDAO.updateUserState(userId, "Hoạt động");
+	            if (result) {
+	                return ResponseEntity.ok("Tài khoản đã được mở khóa thành công.");
+	            } else {
+	                return ResponseEntity.badRequest().body("Không thể mở khóa tài khoản.");
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return ResponseEntity.status(500).body("Có lỗi xảy ra khi mở khóa tài khoản.");
+	        }
+	    }
 }
 
 
