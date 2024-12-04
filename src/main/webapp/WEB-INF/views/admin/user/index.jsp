@@ -37,7 +37,8 @@
 					</div>
 				</div>
 				<!-- /.box-header -->
-				<div class="box-body table-responsive no-padding">
+				<div class="box-body table-responsive no-padding"
+					style="margin-top: 30px;">
 					<table class="table table-hover">
 						<thead>
 							<tr>
@@ -65,19 +66,7 @@
 									<td>${u.state}</td>
 									<td><a
 										href="${pageContext.request.contextPath}/admin/view-user-listOrders/${u.userId}"
-										class="btn btn-success">Xem</a> <c:choose>
-											<c:when test="${u.state == 'Hoạt động'}">
-												<a
-													href="${pageContext.request.contextPath}/admin/lock-user/${u.userId}"
-													class="btn btn-warning">Khóa TK</a>
-											</c:when>
-											<c:otherwise>
-												<a
-													href="${pageContext.request.contextPath}/admin/unlock-user/${u.userId}"
-													class="btn btn-primary">Mở khóa</a>
-											</c:otherwise>
-										</c:choose></td>
-
+										class="btn btn-success">Xem</a></td>
 								</tr>
 							</c:forEach>
 						</tbody>

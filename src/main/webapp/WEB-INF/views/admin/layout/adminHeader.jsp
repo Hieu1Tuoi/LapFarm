@@ -123,7 +123,7 @@
 							class="dropdown-toggle" data-toggle="dropdown"> <img
 								src="resources/admin/images/user2-160x160.jpg"
 								class="user-image" alt="User Image"> <span
-								class="hidden-xs">Alexander Pierce</span>
+								class="hidden-xs">ADMIN</span>
 						</a>
 							<ul class="dropdown-menu">
 								<!-- User image -->
@@ -133,7 +133,7 @@
 
 									<p>
 										Alexander Pierce - Web Developer <small>Member since
-											Nov. 2012</small>
+											Nov. 2024</small>
 									</p></li>
 								<!-- Menu Body -->
 								<li class="user-body">
