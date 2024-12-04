@@ -1,71 +1,51 @@
 @charset "UTF-8";
+
 #login {
-    padding: 60px 0;
-    background-color: #fff; /* Nền trắng */
+	padding: 60px 0;
+	background-color: #fff; /* Nền trắng */
 }
 
 .login-form {
-    background-color: #f9f9f9; /* Nền sáng cho form */
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	background-color: #f9f9f9; /* Nền sáng cho form */
+	padding: 30px;
+	border-radius: 8px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .login-form h2 {
-    margin-bottom: 20px;
-    color: #D10024; /* Màu đỏ cho tiêu đề */
+	margin-bottom: 20px;
+	color: #D10024; /* Màu đỏ cho tiêu đề */
 }
 
 .login-form .form-control {
-    border: 1px solid #D10024; /* Viền đỏ cho input */
+	border: 1px solid #D10024; /* Viền đỏ cho input */
 }
 
 .login-form .form-control:focus {
-    border-color: #c9302c; /* Viền đỏ đậm khi focus */
-    box-shadow: 0 0 5px rgba(217, 83, 79, 0.5); /* Bóng đổ khi focus */
+	border-color: #c9302c; /* Viền đỏ đậm khi focus */
+	box-shadow: 0 0 5px rgba(217, 83, 79, 0.5); /* Bóng đổ khi focus */
 }
 
 .login-form button {
-    background-color: #D10024; /* Nền nút đỏ */
-    color: #fff; /* Chữ trắng */
-    border: none; /* Không viền */
+	background-color: #D10024; /* Nền nút đỏ */
+	color: #fff; /* Chữ trắng */
+	border: none; /* Không viền */
 }
 
 .login-form button:hover {
-    background-color: #c9302c; /* Đổi màu khi hover */
+	background-color: #c9302c; /* Đổi màu khi hover */
 }
 
 .login-form .text-center a {
-    color: #D10024; /* Màu đỏ cho liên kết */
+	color: #D10024; /* Màu đỏ cho liên kết */
 }
 
 .login-form .text-center a:hover {
-    text-decoration: underline; /* Gạch chân khi hover */
-}
-
-.login-form .google-login {
-    display: inline-block;
-    width: 100%; /* Đầy chiều rộng */
-    padding: 10px;
-    margin-top: 10px;
-    background-color: #db4437; /* Màu đỏ của Google */
-    color: #fff; /* Chữ trắng */
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-    border: none;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-    text-decoration: none; /* Loại bỏ gạch chân */
-}
-
-.login-form .google-login:hover {
-    background-color: #b33627; /* Màu đậm hơn khi hover */
-    text-decoration: none; /* Loại bỏ gạch chân khi hover */
+	text-decoration: underline; /* Gạch chân khi hover */
 }
 
 .login-form .google-login i {
-    margin-right: 8px; /* Khoảng cách giữa biểu tượng và chữ */
-    vertical-align: middle; /* Canh giữa biểu tượng */
-    font-size: 18px; /* Kích thước biểu tượng */
+	margin-right: 8px; /* Khoảng cách giữa biểu tượng và chữ */
+	vertical-align: middle; /* Canh giữa biểu tượng */
+	font-size: 18px; /* Kích thước biểu tượng */
 }
