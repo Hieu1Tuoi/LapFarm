@@ -42,3 +42,30 @@
 .login-form .text-center a:hover {
     text-decoration: underline; /* Gạch chân khi hover */
 }
+
+.login-form .google-login {
+    display: inline-block;
+    width: 100%; /* Đầy chiều rộng */
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #db4437; /* Màu đỏ của Google */
+    color: #fff; /* Chữ trắng */
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    text-decoration: none; /* Loại bỏ gạch chân */
+}
+
+.login-form .google-login:hover {
+    background-color: #b33627; /* Màu đậm hơn khi hover */
+    text-decoration: none; /* Loại bỏ gạch chân khi hover */
+}
+
+.login-form .google-login i {
+    margin-right: 8px; /* Khoảng cách giữa biểu tượng và chữ */
+    vertical-align: middle; /* Canh giữa biểu tượng */
+    font-size: 18px; /* Kích thước biểu tượng */
+}

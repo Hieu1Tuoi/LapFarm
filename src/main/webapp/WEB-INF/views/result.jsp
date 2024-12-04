@@ -8,7 +8,7 @@
 <%@page import="java.util.Enumeration"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.HashMap"%>
-<%@page import="LapFarm.Service.Config"%>
+<%@page import="LapFarm.Model.Config"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>

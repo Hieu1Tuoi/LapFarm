@@ -51,6 +51,12 @@
                 <strong>${message}</strong> 
             </div>
         </c:if>
+        <!-- Hiển thị thông báo lỗi nếu có -->
+		<c:if test="${not empty error}">
+			<div class="alert alert-error">
+				<strong>${error}</strong>
+			</div>
+		</c:if>
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">Thông tin sản phẩm</h3>
@@ -106,7 +112,7 @@
 					<div class="form-group">
 						<label for="discountPercent">Hệ số giảm giá</label> <input
 							type="number" class="form-control" id="discountPercent"
-							name="discountPercent" min="0" max="1" step="0.01" required>
+							name="discountPercent" min="0" max="1" step="0.001" required>
 					</div>
 
 

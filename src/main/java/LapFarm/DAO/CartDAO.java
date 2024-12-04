@@ -5,6 +5,7 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import LapFarm.DTO.CartDTO;
@@ -14,6 +15,7 @@ import LapFarm.Entity.AccountEntity;
 import LapFarm.Entity.CartEntity;
 import LapFarm.Entity.ProductEntity;
 import LapFarm.Entity.UserInfoEntity;
+import jakarta.persistence.NoResultException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +38,28 @@ public class CartDAO {
 		query.setParameter("email", email);
 		return query.getResultList();
 	}
+	
+	@Transactional
+	public CartEntity getCartItem(UserInfoEntity userInfoEntity, ProductEntity productEntity) {
+	    // Lấy session hiện tại
+	    Session session = factory.getCurrentSession();
+
+	    // Tạo câu lệnh HQL
+	    String hql = "FROM CartEntity c WHERE c.userInfo = :userInfo AND c.product = :product";
+
+	    // Thực thi truy vấn
+	    Query<CartEntity> query = session.createQuery(hql, CartEntity.class);
+	    query.setParameter("userInfo", userInfoEntity);
+	    query.setParameter("product", productEntity);
+
+	    // Trả về kết quả (nếu có)
+	    try {
+	        return query.getSingleResult();
+	    } catch (NoResultException e) {
+			System.out.println("Lỗi lấy Cart: " + e);
+	        return null;
+	    }
+	}
 
 	@Transactional
 	public CartEntity getCartById(int id) {
@@ -53,37 +77,50 @@ public class CartDAO {
 		session.createQuery(hql).setParameter("cartId", cartId).executeUpdate();
 	}
 
-	// Them gio hang
-	@Transactional
-	public HashMap<Integer, CartDTO> AddCart(int id, HashMap<Integer, CartDTO> cart, int userId) {
-		Session session = factory.getCurrentSession();
-
-		// Lấy thông tin sản phẩm từ database
-		ProductDTO product = productDAO.findProductDTOById(id);
-
-		if (product != null) {
-			CartDTO itemCart = cart.get(id);
-
-			if (itemCart != null) {
-				// Nếu sản phẩm đã có trong session, tăng số lượng
-				itemCart.setQuantity(itemCart.getQuantity() + 1);
-				itemCart.setTotalPrice(itemCart.getQuantity() * product.calPrice());
-			} else {
-				// Nếu chưa có trong session, thêm mới sản phẩm
-				itemCart = new CartDTO();
-				itemCart.setProduct(product);
-				itemCart.setQuantity(1);
-				itemCart.setTotalPrice(product.calPrice());
-				cart.put(id, itemCart);
+	// Tạo mới Cart
+	public boolean createCart(CartEntity cartEntity) {
+		Session session = null;
+		Transaction transaction = null;
+		
+		CartEntity cartEntity0 = getCartItem(cartEntity.getUserInfo(), cartEntity.getProduct());
+		if(cartEntity0 == null) {
+			try {
+				session = factory.openSession();
+				transaction = session.beginTransaction();
+				session.save(cartEntity); // Sử dụng save để tạo mới
+				transaction.commit();
+				return true;
+			} catch (Exception e) {
+				System.out.println("Lỗi thêm vào giỏ hàng: " + e);
+				return false;
+			} finally {
+				if (session != null)
+					session.close();
 			}
-
-			// Đồng bộ với database nếu người dùng đã đăng nhập
-			if (userId > 0) {
-				syncProductQuantityToDatabase(userId, id, 1); // Tăng thêm 1
-			}
+		}else {
+			cartEntity0.setQuantity(cartEntity0.getQuantity() + 1);
+			updateCart(cartEntity0);
+			return false;
 		}
+	}
 
-		return cart;
+	// Cập nhật Cart
+	public boolean updateCart(CartEntity cartEntity) {
+		Session session = null;
+		Transaction transaction = null;
+		try {
+			session = factory.openSession();
+			transaction = session.beginTransaction();
+			session.update(cartEntity); // Sử dụng update để cập nhật
+			transaction.commit();
+			return true;
+		} catch (Exception e) {
+			System.out.println("Lỗi thêm vào giỏ hàng: " + e);
+			return false;
+		} finally {
+			if (session != null)
+				session.close();
+		}
 	}
 
 	@Transactional
@@ -118,6 +155,40 @@ public class CartDAO {
 				throw new IllegalArgumentException("User hoặc Product không tồn tại");
 			}
 		}
+	}
+
+	// Them gio hang
+	@Transactional
+	public HashMap<Integer, CartDTO> AddCart(int id, HashMap<Integer, CartDTO> cart, int userId) {
+		Session session = factory.getCurrentSession();
+
+		// Lấy thông tin sản phẩm từ database
+		ProductDTO product = productDAO.findProductDTOById(id);
+
+		if (product != null) {
+			CartDTO itemCart = cart.get(id);
+
+			if (itemCart != null) {
+				// Nếu sản phẩm đã có trong session, tăng số lượng
+				itemCart.setQuantity(itemCart.getQuantity() + 1);
+				itemCart.setTotalPrice(itemCart.getQuantity() * product.calPrice());
+			} else {
+				// Nếu chưa có trong session, thêm mới sản phẩm
+				itemCart = new CartDTO();
+				itemCart.setId(cart.size() + 1);
+				itemCart.setProduct(product);
+				itemCart.setQuantity(1);
+				itemCart.setTotalPrice(product.calPrice());
+				cart.put(cart.size() + 1, itemCart);
+			}
+
+			// Đồng bộ với database nếu người dùng đã đăng nhập
+			if (userId > 0) {
+				syncProductQuantityToDatabase(userId, id, 1); // Tăng thêm 1
+			}
+		}
+
+		return cart;
 	}
 
 	// Chỉnh sửa giỏ hàng
@@ -259,14 +330,13 @@ public class CartDAO {
 	}
 
 	@Transactional
-	public void updateProductQuantityInDatabase(int userId, int productId, int quantity) {
+	public void updateProductQuantityInDatabase(int userId, int idCart, int quantity) {
 		Session session = factory.getCurrentSession();
 
 		// Tìm sản phẩm trong giỏ hàng của người dùng
-		String hql = "FROM CartEntity c WHERE c.userInfo.userId = :userId AND c.product.idProduct = :productId";
+		String hql = "FROM CartEntity c WHERE c.id = :idCart";
 		Query<CartEntity> query = session.createQuery(hql, CartEntity.class);
-		query.setParameter("userId", userId);
-		query.setParameter("productId", productId);
+		query.setParameter("idCart", idCart);
 
 		List<CartEntity> cartList = query.getResultList();
 
@@ -277,22 +347,19 @@ public class CartDAO {
 			session.update(cartEntity); // Cập nhật vào cơ sở dữ liệu
 		}
 	}
-	
-	//lấy số luong product theo id (Thanh Nhat)
-	 public int getProductQuantity(int productId) {
-	        Session session = factory.getCurrentSession();
 
-	        // Viết câu truy vấn HQL để lấy quantity của product
-	        String hql = "SELECT p.quantity FROM ProductEntity p WHERE p.id = :productId";
-	        
-	        Query query = session.createQuery(hql);
-	        query.setParameter("productId", productId);
+	// lấy số luong product theo id (Thanh Nhat)
+	public int getProductQuantity(int productId) {
+		Session session = factory.getCurrentSession();
 
-	        // Trả về số lượng sản phẩm
-	        return (int)query.uniqueResult();
-	    }
+		// Viết câu truy vấn HQL để lấy quantity của product
+		String hql = "SELECT p.quantity FROM ProductEntity p WHERE p.id = :productId";
 
+		Query query = session.createQuery(hql);
+		query.setParameter("productId", productId);
 
-
+		// Trả về số lượng sản phẩm
+		return (int) query.uniqueResult();
+	}
 
 }

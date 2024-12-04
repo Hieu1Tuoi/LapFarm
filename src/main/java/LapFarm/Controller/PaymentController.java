@@ -13,7 +13,7 @@ import LapFarm.Entity.OrderDetailsEntity;
 import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.ProductEntity;
 import LapFarm.Entity.UserInfoEntity;
-import LapFarm.Service.Config;
+import LapFarm.Model.Config;
 import LapFarm.Service.PaymentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -198,7 +198,7 @@ public class PaymentController {
 				productDTO = productDAO.findProductDTOById(cartItem.getProduct().getIdProduct());
 				productDTO.setQuantity(cartItem.getQuantity());
 				productsDTO.add(productDTO);
-				
+
 				orderDetails.setId(orderDetailId);
 				orderDetails.setOrder(order);
 				orderDetails.setProduct(cartItem.getProduct());
@@ -241,82 +241,98 @@ public class PaymentController {
 			@RequestParam("vnp_TransactionStatus") String vnp_TransactionStatus, HttpServletRequest request,
 			Model model, HttpSession httpSession) {
 
-		Map<String, String> fields = new HashMap<>();
-		try {
-			// Lấy tất cả các tham số từ request và mã hóa chúng
-			for (Enumeration<?> params = request.getParameterNames(); params.hasMoreElements();) {
-				String fieldName = URLEncoder.encode((String) params.nextElement(),
-						StandardCharsets.US_ASCII.toString());
-				String fieldValue = URLEncoder.encode(request.getParameter(fieldName),
-						StandardCharsets.US_ASCII.toString());
-				if ((fieldValue != null) && (fieldValue.length() > 0)) {
-					fields.put(fieldName, fieldValue);
-				}
-			}
-		} catch (UnsupportedEncodingException e) {
-			// Xử lý ngoại lệ nếu có
-			model.addAttribute("message", "Lỗi mã hóa: " + e.getMessage());
-			return "result"; // Trả về trang lỗi nếu có lỗi mã hóa
+		Map<String, Object> orderInfo = (Map<String, Object>) httpSession.getAttribute("OrderInfo");
+		String fullName = (String) orderInfo.get("fullName");
+		String address = (String) orderInfo.get("address");
+		String tel = (String) orderInfo.get("tel");
+		String note = (String) orderInfo.get("note");
+
+		fullName = fullName.replaceAll("^(,\\s*|\\s*,)|((\\s*,\\s*)$)", "").trim();
+		address = address.replaceAll("^(,\\s*|\\s*,)|((\\s*,\\s*)$)", "").trim();
+		tel = tel.replaceAll("^(,\\s*|\\s*,)|((\\s*,\\s*)$)", "").trim();
+		if (note != null) {
+			note = note.replaceAll("^(,\\s*|\\s*,)|((\\s*,\\s*)$)", "").trim();
+			model.addAttribute("note", note);
 		}
 
-		// Lấy giá trị vnp_SecureHash từ request
-		String vnp_SecureHash = request.getParameter("vnp_SecureHash");
+		// Lấy tài khoản từ session
+		AccountEntity account = (AccountEntity) httpSession.getAttribute("user");
 
-		// Xóa các tham số không cần thiết khỏi Map
-		fields.remove("vnp_SecureHashType");
-		fields.remove("vnp_SecureHash");
+		if (account != null) {
 
-		// Tạo chữ ký từ các tham số
-		String signValue = Config.hashAllFields(fields);
+			List<Integer> cartIds = (List<Integer>) httpSession.getAttribute("cartIdSelecteds");
 
-		// So sánh chữ ký đã tạo với vnp_SecureHash nhận được
-		if (signValue.equals(vnp_SecureHash)) {
-			// Kiểm tra trạng thái giao dịch
-			if ("00".equals(vnp_TransactionStatus)) {
+			if (cartIds.isEmpty()) {
+				model.addAttribute("error", "Bạn chưa chọn sản phẩm.");
+				return "cart"; // Quay lại trang giỏ hàng nếu không có sản phẩm
+			}
+			Map<String, Object> orderMap = new HashMap<String, Object>();
 
-				Map<String, Object> orderInfo = (Map<String, Object>) httpSession.getAttribute("OrderInfo");
-				String fullName = (String) orderInfo.get("fullName");
-				String address = (String) orderInfo.get("address");
-				String tel = (String) orderInfo.get("tel");
-				String note = (String) orderInfo.get("note");
+			// Tạo đơn hàng mới
+			OrdersEntity order = new OrdersEntity();
+			order.setUserInfo(account.getUserInfo());
+			order.setState("Chờ lấy hàng"); // Trạng thái ban đầu là "Chờ lấy hàng"
+			order.setPaymentMethod((byte) 1);
+			order.setTotalPrice((int) (vnp_Amount / 100)); // Tính tổng giá trị đơn hàng từ các sản
+			// phẩm
+			// trong giỏ hàng
+			order.setTime(new Timestamp(System.currentTimeMillis())); // Thời gian hiện tại
+			order.getUserInfo().setAddress(address);
+			order.getUserInfo().setPhone(tel);
+			order.setNote(note);
+			orderMap.put("order", order);
 
-				fullName = fullName.replaceAll("^(,\\s*|\\s*,)|((\\s*,\\s*)$)", "").trim();
-				address = address.replaceAll("^(,\\s*|\\s*,)|((\\s*,\\s*)$)", "").trim();
-				tel = tel.replaceAll("^(,\\s*|\\s*,)|((\\s*,\\s*)$)", "").trim();
-				if (note != null) {
-					note = note.replaceAll("^(,\\s*|\\s*,)|((\\s*,\\s*)$)", "").trim();
-					model.addAttribute("note", note);
-				}
+			List<ProductDTO> productsDTO = new ArrayList<ProductDTO>();
 
-				// Lấy tài khoản từ session
-				AccountEntity account = (AccountEntity) httpSession.getAttribute("user");
+			// Lưu chi tiết đơn hàng (OrderDetails) cho từng sản phẩm trong giỏ hàng
+			for (int cartId : cartIds) {
+				ProductDTO productDTO = new ProductDTO();
 
-				if (account != null) {
+				CartEntity cartItem = cartDAO.getCartById(cartId);
 
-					List<Integer> cartIds = (List<Integer>) httpSession.getAttribute("cartIdSelecteds");
+				productDTO = productDAO.findProductDTOById(cartItem.getProduct().getIdProduct());
+				productDTO.setQuantity(cartItem.getQuantity());
+				productsDTO.add(productDTO);
+			}
+			orderMap.put("orderdetail", productsDTO);
 
-					if (cartIds.isEmpty()) {
-						model.addAttribute("error", "Bạn chưa chọn sản phẩm.");
-						return "cart"; // Quay lại trang giỏ hàng nếu không có sản phẩm
+			httpSession.setAttribute("order", orderMap);
+
+			Map<String, String> fields = new HashMap<>();
+			try {
+				// Lấy tất cả các tham số từ request và mã hóa chúng
+				for (Enumeration<?> params = request.getParameterNames(); params.hasMoreElements();) {
+					String fieldName = URLEncoder.encode((String) params.nextElement(),
+							StandardCharsets.US_ASCII.toString());
+					String fieldValue = URLEncoder.encode(request.getParameter(fieldName),
+							StandardCharsets.US_ASCII.toString());
+					if ((fieldValue != null) && (fieldValue.length() > 0)) {
+						fields.put(fieldName, fieldValue);
 					}
+				}
+			} catch (UnsupportedEncodingException e) {
+				// Xử lý ngoại lệ nếu có
+				model.addAttribute("message", "Lỗi mã hóa: " + e.getMessage());
+				return "result"; // Trả về trang lỗi nếu có lỗi mã hóa
+			}
 
-					// Tạo đơn hàng mới
-					OrdersEntity order = new OrdersEntity();
-					order.setUserInfo(account.getUserInfo());
-					order.setState("Chờ lấy hàng"); // Trạng thái ban đầu là "Chờ lấy hàng"
-					order.setPaymentMethod((byte) 1);
-					order.setTotalPrice((int) (vnp_Amount / 100)); // Tính tổng giá trị đơn hàng từ các sản
-					// phẩm
-					// trong giỏ hàng
-					order.setTime(new Timestamp(System.currentTimeMillis())); // Thời gian hiện tại
-					order.getUserInfo().setAddress(address);
-					order.getUserInfo().setPhone(tel);
-					order.setNote(note);
+			// Lấy giá trị vnp_SecureHash từ request
+			String vnp_SecureHash = request.getParameter("vnp_SecureHash");
+
+			// Xóa các tham số không cần thiết khỏi Map
+			fields.remove("vnp_SecureHashType");
+			fields.remove("vnp_SecureHash");
+
+			// Tạo chữ ký từ các tham số
+			String signValue = Config.hashAllFields(fields);
+
+			// So sánh chữ ký đã tạo với vnp_SecureHash nhận được
+			if (signValue.equals(vnp_SecureHash)) {
+				// Kiểm tra trạng thái giao dịch
+				if ("00".equals(vnp_TransactionStatus)) {
 
 					// Lưu đơn hàng vào database
 					ordersDAO.saveOrder(order);
-
-					// Lưu chi tiết đơn hàng (OrderDetails) cho từng sản phẩm trong giỏ hàng
 					for (int cartId : cartIds) {
 						CartEntity cartItem = cartDAO.getCartById(cartId);
 						OrderDetailsEntity orderDetails = new OrderDetailsEntity();
@@ -352,10 +368,12 @@ public class PaymentController {
 				} else {
 					// Giao dịch không thành công
 					model.addAttribute("message", "Thanh toán không thành công!");
+
 				}
 			} else {
 				// Nếu chữ ký không khớp
 				model.addAttribute("message", "Lỗi xác thực chữ ký!");
+
 			}
 
 			return "result"; // Trả về trang kết quả

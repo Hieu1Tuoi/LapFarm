@@ -38,6 +38,124 @@
 	background-color: #333; /* Nền màu xám khi hover */
 	color: #fff;
 } /* Giữ chữ màu trắng khi hover */
+.notification-container {
+	position: relative;
+	display: inline-block;
+}
+
+.notification-box {
+	display: none;
+	position: absolute;
+	top: 40px;
+	right: 0;
+	background: #fff;
+	border: 1px solid #ddd;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	padding: 10px;
+	width: 250px;
+	z-index: 1000;
+	border-radius: 5px;
+}
+
+.notification-box ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.notification-box ul li {
+	padding: 5px 0;
+	border-bottom: 1px solid #eee;
+}
+
+.notification-box ul li:last-child {
+	border-bottom: none;
+}
+
+.notification-container:hover .notification-box {
+	display: block;
+}
+
+.unread {
+	color: red;
+	font-weight: bold;
+}
+
+.read {
+	color: #000;
+	font-weight: normal;
+}
+
+.notification-box {
+	display: none;
+	position: absolute;
+	top: 40px;
+	right: 0;
+	background: #f9f9f9; /* Nền sáng */
+	border: 1px solid #ddd;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	padding: 10px;
+	width: 300px;
+	max-height: 400px; /* Giới hạn chiều cao */
+	overflow-y: auto; /* Thêm thanh cuộn dọc */
+	z-index: 1000;
+	border-radius: 5px;
+}
+
+/* Thu nhỏ thanh cuộn */
+.notification-box::-webkit-scrollbar {
+	width: 6px; /* Độ rộng của thanh cuộn */
+}
+
+.notification-box::-webkit-scrollbar-thumb {
+	background-color: #888; /* Màu thanh cuộn */
+	border-radius: 10px; /* Làm tròn thanh cuộn */
+}
+
+.notification-box::-webkit-scrollbar-thumb:hover {
+	background-color: #555; /* Màu thanh cuộn khi hover */
+}
+
+.notification-box::-webkit-scrollbar-track {
+	background: #f1f1f1; /* Màu nền phía sau thanh cuộn */
+}
+
+.notification-box ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.notification-box ul li {
+	padding: 5px 0;
+	border-bottom: 1px solid #eee;
+	display: flex; /* Để căn chỉnh icon và nội dung */
+	align-items: center;
+	gap: 10px;
+}
+
+.notification-box ul li:last-child {
+	border-bottom: none;
+}
+
+.unread i {
+	color: red; /* Icon màu đỏ cho thông báo chưa đọc */
+}
+
+.read i {
+	color: green; /* Icon màu xanh cho thông báo đã đọc */
+}
+
+.notification-header {
+	font-weight: bold;
+	font-size: 18px;
+	padding: 5px 10px;
+	margin-bottom: 10px;
+	text-align: center;
+	border-bottom: 1px solid #ddd;
+	background-color: #f9f9f9;
+	color: green;
+}
 </style>
 
 <!-- HEADER -->
@@ -61,10 +179,11 @@
 						</a>
 							<div class="dropdown-menu">
 								<a class="dropdown-item" href="<c:url value='/account' />">Thông
-									tin</a> 
-								<a class="dropdown-item" href="<c:url value='/account#orders-history' />">Đơn hàng</a>
-								<a class="dropdown-item" href="<c:url value='/account#viewed' />">Đã xem gần đây</a> 
-								<a class="dropdown-item" href="<c:url value='/logout' />">Đăng xuất</a>
+									tin</a> <a class="dropdown-item"
+									href="<c:url value='/account#orders-history' />">Đơn hàng</a> <a
+									class="dropdown-item" href="<c:url value='/account#viewed' />">Đã
+									xem gần đây</a> <a class="dropdown-item"
+									href="<c:url value='/logout' />">Đăng xuất</a>
 							</div></li>
 					</c:when>
 					<c:otherwise>
@@ -95,35 +214,75 @@
 				<div class="col-md-6">
 					<div class="header-search">
 						<form action="search" method="get">
+							<!-- Dropdown cho danh mục -->
 							<select class="input-select" name="idCategory">
-								<option value="0" ${searchCategory == 0 ? 'selected' : ''}>All
-									Categories</option>
-								<option value="1" ${searchCategory == 1 ? 'selected' : ''}>Category
-									01</option>
-								<option value="2" ${searchCategory == 2 ? 'selected' : ''}>Category
-									02</option>
-							</select> <input value="${searchText}" id="searchInput" class="input"
-								name="searchtext" placeholder="Search here"> <input
-								value="${priceRange}" name="priceRange" type="hidden">
+								<option value="0" ${searchCategory == 0 ? 'selected' : ''}>Tất cả danh mục</option>
+								<c:forEach var="cate" items="${categories}">
+									<option value="${cate.idCategory}"
+										${searchCategory == cate.idCategory ? 'selected' : ''}>
+										${cate.nameCategory}</option>
+								</c:forEach>
+							</select>
+
+							<!-- Ô nhập từ khóa tìm kiếm -->
+							<input value="${searchText}" id="searchInput" class="input"
+								name="searchtext" placeholder="Search here..." />
+
+							<!-- Ô nhập giá hoặc các tham số ẩn -->
+							<input type="hidden" value="${priceRange}" name="priceRange" />
+
+							<!-- Ô nhập ẩn cho thương hiệu nếu có -->
 							<c:if test="${not empty idBrand}">
-								<input id="idBrandInput" type="hidden" name="idBrand" value="${idBrand}" />
+								<input id="idBrandInput" type="hidden" name="idBrand"
+									value="${idBrand}" />
 							</c:if>
+
+							<!-- Nút tìm kiếm -->
 							<button type="submit" class="search-btn">Tìm Kiếm</button>
 						</form>
 					</div>
 				</div>
 				<!-- /SEARCH BAR -->
 
+
 				<!-- ACCOUNT -->
 				<div class="col-md-3 clearfix">
 					<div class="header-ctn">
-						<!-- Wishlist -->
-						<div>
-							<a href="#"> <i class="fa fa-heart-o"></i> <span>Wishlish</span>
-								<div class="qty">2</div>
+						<!-- Notifications -->
+						<div class="notification-container">
+							<a> <i class="fa fa-bell-o"></i> <span>Thông báo</span>
+								<div class="qty"
+									style="display: ${unreadNotificationsCount > 0 ? 'block' : 'none'};">
+									<span>${unreadNotificationsCount}</span>
+								</div>
 							</a>
+
+							<!-- Kiểm tra nếu có thông báo mới -->
+							<c:if test="${not empty notifications}">
+								<div class="notification-box">
+									<!-- Thêm dòng "Tất cả thông báo" -->
+									<div class="notification-header">Tất cả thông báo</div>
+
+									<ul>
+										<!-- Hiển thị danh sách thông báo -->
+										<c:forEach var="notification" items="${notifications}">
+											<li>
+												<!-- Liên kết sẽ đánh dấu thông báo đã đọc và chuyển tới chi tiết thông báo -->
+												<a
+												href="<c:url value='/notification/${notification.notiId}?state=1' />"
+												class="${notification.state == 0 ? 'unread' : 'read'}">
+													<!-- Icon chú ý bật/tắt --> <i
+													class="fa ${notification.state == 0 ? 'fa-exclamation-circle' : 'fa-check-circle'}"
+													style="color: ${notification.state == 0 ? 'red' : 'green'};">
+												</i> <span>${notification.content}</span> <br> <span>${notification.time}</span>
+											</a>
+											</li>
+										</c:forEach>
+									</ul>
+								</div>
+							</c:if>
 						</div>
-						<!-- /Wishlist -->
+
 
 						<!-- Cart -->
 						<div class="dropdown">
@@ -173,4 +332,70 @@
 			}
 		});
 	});
+
+	document.addEventListener("DOMContentLoaded", function() {
+		const notificationContainer = document
+				.querySelector(".notification-container");
+		const notificationBox = document.querySelector(".notification-box");
+
+		// Đóng hộp thoại khi click ra ngoài
+		document.addEventListener("click", function(event) {
+			if (!notificationContainer.contains(event.target)) {
+				notificationBox.style.display = "none";
+			}
+		});
+
+		// Hiển thị hộp thoại khi di chuột
+		notificationContainer.addEventListener("mouseenter", function() {
+			notificationBox.style.display = "block";
+		});
+
+		// Ẩn hộp thoại khi chuột rời đi
+		notificationContainer.addEventListener("mouseleave", function() {
+			notificationBox.style.display = "none";
+		});
+	});
+	
+	// Hàm để đánh dấu thông báo là đã đọc khi người dùng nhấp vào
+// Hàm để đánh dấu thông báo là đã đọc và mở trang chi tiết
+function markAsRead(notiId) {
+    fetch(`/notification/${notiId}?state=1`, {
+        method: 'GET'
+    })
+    .then(response => {
+        if (response.ok) {
+            // Chuyển hướng tới trang notification.jsp với notiId
+            window.location.href = `/notification/details/${notiId}`;
+        } else {
+            alert("Có lỗi xảy ra khi đánh dấu thông báo.");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const notificationContainer = document.querySelector(".notification-container");
+    const notificationBox = document.querySelector(".notification-box");
+
+    // Đóng hộp thoại khi click ra ngoài
+    document.addEventListener("click", function(event) {
+        if (!notificationContainer.contains(event.target)) {
+            notificationBox.style.display = "none";
+        }
+    });
+
+    // Hiển thị hộp thoại khi di chuột
+    notificationContainer.addEventListener("mouseenter", function() {
+        notificationBox.style.display = "block";
+    });
+
+    // Ẩn hộp thoại khi chuột rời đi
+    notificationContainer.addEventListener("mouseleave", function() {
+        notificationBox.style.display = "none";
+    });
+});
+
+	
 </script>

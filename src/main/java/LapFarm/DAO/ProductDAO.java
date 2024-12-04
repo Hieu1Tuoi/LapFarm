@@ -601,6 +601,7 @@ public class ProductDAO {
 		e.printStackTrace();
 	}
 
+	
 	public ProductEntity findProductById(int productId) {
         Session session = factory.getCurrentSession();
         return session.get(ProductEntity.class, productId);
