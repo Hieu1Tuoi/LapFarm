@@ -85,6 +85,79 @@
 	color: #000;
 	font-weight: normal;
 }
+
+.notification-box {
+	display: none;
+	position: absolute;
+	top: 40px;
+	right: 0;
+	background: #f9f9f9; /* Nền sáng */
+	border: 1px solid #ddd;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	padding: 10px;
+	width: 300px;
+	max-height: 400px; /* Giới hạn chiều cao */
+	overflow-y: auto; /* Thêm thanh cuộn dọc */
+	z-index: 1000;
+	border-radius: 5px;
+}
+
+/* Thu nhỏ thanh cuộn */
+.notification-box::-webkit-scrollbar {
+	width: 6px; /* Độ rộng của thanh cuộn */
+}
+
+.notification-box::-webkit-scrollbar-thumb {
+	background-color: #888; /* Màu thanh cuộn */
+	border-radius: 10px; /* Làm tròn thanh cuộn */
+}
+
+.notification-box::-webkit-scrollbar-thumb:hover {
+	background-color: #555; /* Màu thanh cuộn khi hover */
+}
+
+.notification-box::-webkit-scrollbar-track {
+	background: #f1f1f1; /* Màu nền phía sau thanh cuộn */
+}
+
+.notification-box ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.notification-box ul li {
+	padding: 5px 0;
+	border-bottom: 1px solid #eee;
+	display: flex; /* Để căn chỉnh icon và nội dung */
+	align-items: center;
+	gap: 10px;
+}
+
+.notification-box ul li:last-child {
+	border-bottom: none;
+}
+
+.unread i {
+	color: red; /* Icon màu đỏ cho thông báo chưa đọc */
+}
+
+.read i {
+	color: green; /* Icon màu xanh cho thông báo đã đọc */
+}
+
+.notification-header {
+    font-weight: bold;
+    font-size: 18px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    background-color: #f9f9f9;
+    color: green;
+}
+
+
 </style>
 
 <!-- HEADER -->
@@ -178,6 +251,9 @@
 							<!-- Kiểm tra nếu có thông báo mới -->
 							<c:if test="${not empty notifications}">
 								<div class="notification-box">
+									<!-- Thêm dòng "Tất cả thông báo" -->
+									<div class="notification-header">Tất cả thông báo</div>
+
 									<ul>
 										<!-- Hiển thị danh sách thông báo -->
 										<c:forEach var="notification" items="${notifications}">
@@ -186,7 +262,10 @@
 												<a
 												href="<c:url value='/notification/${notification.notiId}?state=1' />"
 												class="${notification.state == 0 ? 'unread' : 'read'}">
-													<span>${notification.content}</span> <br> <span>${notification.time}</span>
+													<!-- Icon chú ý bật/tắt --> <i
+													class="fa ${notification.state == 0 ? 'fa-exclamation-circle' : 'fa-check-circle'}"
+													style="color: ${notification.state == 0 ? 'red' : 'green'};">
+												</i> <span>${notification.content}</span> <br> <span>${notification.time}</span>
 											</a>
 											</li>
 										</c:forEach>
@@ -194,8 +273,6 @@
 								</div>
 							</c:if>
 						</div>
-
-
 
 
 						<!-- Cart -->
@@ -289,6 +366,27 @@ function markAsRead(notiId) {
     });
 }
 
+document.addEventListener("DOMContentLoaded", function() {
+    const notificationContainer = document.querySelector(".notification-container");
+    const notificationBox = document.querySelector(".notification-box");
+
+    // Đóng hộp thoại khi click ra ngoài
+    document.addEventListener("click", function(event) {
+        if (!notificationContainer.contains(event.target)) {
+            notificationBox.style.display = "none";
+        }
+    });
+
+    // Hiển thị hộp thoại khi di chuột
+    notificationContainer.addEventListener("mouseenter", function() {
+        notificationBox.style.display = "block";
+    });
+
+    // Ẩn hộp thoại khi chuột rời đi
+    notificationContainer.addEventListener("mouseleave", function() {
+        notificationBox.style.display = "none";
+    });
+});
 
 	
 </script>
