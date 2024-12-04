@@ -224,7 +224,7 @@ Body Section
 								</td>
 								<td><a
 									href="product-detail/${item.value.product.idProduct}" /><img
-									width="100" src="${ item.value.product.image }" alt=""></td>
+									width="100" src="${ item.value.product.image }" alt="" onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'"></td>
 								<td><a
 									href="product-detail/${item.value.product.idProduct}" />${ item.value.product.nameProduct }</td>
 								<td><a
