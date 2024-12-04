@@ -173,11 +173,19 @@
 			<ul class="header-links pull-right">
 				<!-- <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li> -->
 				<c:choose>
-					<c:when test="${not empty sessionScope.user}">
+					<c:when
+						test="${not empty sessionScope.user or not empty sessionScope.admin}">
 						<li class="dropdown"><a href="#" class="dropdown-toggle">
 								<i class="fa fa-user-o"></i> Tài khoản
 						</a>
 							<div class="dropdown-menu">
+								<!-- Kiểm tra nếu là admin -->
+								<c:if test="${not empty sessionScope.admin}">
+									<a class="dropdown-item" href="<c:url value='/admin/home' />">Trang
+										quản lý</a>
+								</c:if>
+
+								<!-- Liên kết cho người dùng -->
 								<a class="dropdown-item" href="<c:url value='/account' />">Thông
 									tin</a> <a class="dropdown-item"
 									href="<c:url value='/account#orders-history' />">Đơn hàng</a> <a
@@ -216,7 +224,8 @@
 						<form action="search" method="get">
 							<!-- Dropdown cho danh mục -->
 							<select class="input-select" name="idCategory">
-								<option value="0" ${searchCategory == 0 ? 'selected' : ''}>Tất cả</option>
+								<option value="0" ${searchCategory == 0 ? 'selected' : ''}>Tất
+									cả</option>
 								<c:forEach var="cate" items="${categories}">
 									<option value="${cate.idCategory}"
 										${searchCategory == cate.idCategory ? 'selected' : ''}>
@@ -251,7 +260,7 @@
 						<!-- Notifications -->
 						<div class="notification-container">
 							<a> <i class="fa fa-bell-o"></i> <span>Thông báo</span>
-								<div class="qty" 
+								<div class="qty"
 									style="display: ${unreadNotificationsCount > 0 ? 'block' : 'none'};">
 									<span>${unreadNotificationsCount}</span>
 								</div>

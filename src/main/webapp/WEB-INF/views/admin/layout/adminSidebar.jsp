@@ -19,6 +19,12 @@
 
 			<ul class="sidebar-menu" data-widget="tree">
 				
+				<li><a href="admin/home"> <i class="fa fa-revenue"></i> <span>Doanh thu</span>
+						<span class="pull-right-container"> <small
+							class="label pull-right bg-green">Vãi cả chưởng</small>
+					</span>
+				</a></li>
+					
 				<li class="treeview"><a href="#"> <i
 						class="fa fa-dashboard"></i> <span>Quản lý sản phẩm</span> <span
 						class="pull-right-container"> <i

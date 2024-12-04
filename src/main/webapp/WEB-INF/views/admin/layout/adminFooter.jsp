@@ -4,7 +4,7 @@
 		<div class="pull-right hidden-xs">
 			<b>Version</b> 0.0.1
 		</div>
-		<strong>Copyright &copy; 2024 <a href="https://adminlte.io"> D21CQAT01-N</a>.
+		<strong>Copyright &copy; 2024 <a href="https://www.youtube.com/watch?v=IzSYlr3VI1A"> D21CQAT01-N</a>.
 		</strong>
 	</footer>
 
