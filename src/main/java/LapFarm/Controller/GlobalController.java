@@ -74,6 +74,9 @@ public class GlobalController {
             // Trả về 0 nếu chưa đăng nhập
             return 0;
         }
+    
     }
+    
+    
 
 }

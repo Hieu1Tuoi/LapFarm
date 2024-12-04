@@ -25,8 +25,7 @@
 		<div class="col-xs-12">
 			<div class="box">
 				<div class="box-header">
-					<a href="admin/product/add-product" class="btn btn-success">+
-						Thêm sản phẩm</a>
+					
 					<div class="box-tools">
 						<div class="input-group input-group-sm" style="width: 150px;">
 							<input type="text" name="table_search"
@@ -41,7 +40,7 @@
 					</div>
 				</div>
 				<!-- /.box-header -->
-				<div class="box-body table-responsive no-padding">
+				<div class="box-body table-responsive no-padding" style="margin-top: 30px;">
 					<table class="table table-hover">
 						<thead>
 							<tr>

@@ -216,7 +216,7 @@
 						<form action="search" method="get">
 							<!-- Dropdown cho danh mục -->
 							<select class="input-select" name="idCategory">
-								<option value="0" ${searchCategory == 0 ? 'selected' : ''}>Tất cả danh mục</option>
+								<option value="0" ${searchCategory == 0 ? 'selected' : ''}>Tất cả</option>
 								<c:forEach var="cate" items="${categories}">
 									<option value="${cate.idCategory}"
 										${searchCategory == cate.idCategory ? 'selected' : ''}>

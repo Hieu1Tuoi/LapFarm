@@ -9,15 +9,14 @@
 <style>
 /* Định dạng nút "Hết hàng" */
 .add-to-cart-btn.disabled {
-    background-color: #d3d3d3;  /* Màu xám */
-    color: #808080;             /* Màu chữ xám */
-    cursor: not-allowed;        /* Hiển thị con trỏ không cho phép khi hover */
+	background-color: #d3d3d3; /* Màu xám */
+	color: #808080; /* Màu chữ xám */
+	cursor: not-allowed; /* Hiển thị con trỏ không cho phép khi hover */
 }
 
 .add-to-cart-btn.disabled i {
-    color: #808080;             /* Màu xám cho biểu tượng */
+	color: #808080; /* Màu xám cho biểu tượng */
 }
-
 </style>
 <div class="container">
 	<!-- Kiểm tra nếu không có sản phẩm -->
@@ -37,7 +36,8 @@
 						<!-- Hiển thị ảnh chính -->
 						<c:forEach var="image" items="${product.images}">
 							<div class="product-preview">
-								<img src="${image.imageUrl}" alt="Ảnh máy tính" onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'"
+								<img src="${image.imageUrl}" alt="Ảnh máy tính"
+									onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'"
 									class="img-fluid">
 							</div>
 						</c:forEach>
@@ -46,7 +46,9 @@
 					<c:if test="${empty product.images}">
 						<div class="product-preview">
 							<img src="/LapFarm/resources/img/default-product.jpg"
-								alt="Ảnh máy tính"  onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'" class="img-fluid">
+								alt="Ảnh máy tính"
+								onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'"
+								class="img-fluid">
 						</div>
 					</c:if>
 				</div>
@@ -60,7 +62,8 @@
 						<!-- Hiển thị thumbnails -->
 						<c:forEach var="image" items="${product.images}">
 							<div class="product-thumbnail">
-								<img src="${image.imageUrl}" alt="Ảnh máy tính"  onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'"
+								<img src="${image.imageUrl}" alt="Ảnh máy tính"
+									onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'"
 									class="img-thumbnail">
 							</div>
 						</c:forEach>
@@ -69,7 +72,9 @@
 					<c:if test="${empty product.images}">
 						<div class="product-thumbnail">
 							<img src="/LapFarm/resources/img/default-thumbnail.jpg"
-								alt="Ảnh máy tính"  onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'" class="img-thumbnail">
+								alt="Ảnh máy tính"
+								onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'"
+								class="img-thumbnail">
 						</div>
 					</c:if>
 				</div>
@@ -82,6 +87,10 @@
 					<h1>${product.nameProduct}</h1>
 					<p>
 						<strong>Danh mục:</strong> ${product.category.nameCategory}
+						<!-- Hiển thị số lượt bán -->
+					<div class="sales-count">
+						<strong>Lượt bán:</strong> ${salesCount}
+					</div>
 					</p>
 					<p>
 						<strong>Mô tả:</strong> ${product.description}
@@ -106,9 +115,30 @@
 				</div>
 				<div class="product-rating">
 					<p>
-						<strong>Đánh giá:</strong> <i class="fa fa-star"></i> <i
-							class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-							class="fa fa-star"></i> <i class="fa fa-star"></i>
+						<strong>Đánh giá:
+						<div class="rating-avg">
+    <span>${ratingSummary.average}</span>
+    <div class="rating-stars">
+        <c:forEach var="star" begin="1" end="5">
+            <c:choose>
+              
+                <c:when test="${star <= ratingSummary.average}">
+                    <i class="fa fa-star"></i>
+                </c:when>
+
+              
+                <c:when test="${star - 0.5 <= ratingSummary.average && star > ratingSummary.average}">
+                    <i class="fa fa-star-half-o"></i>
+                </c:when>
+
+                <c:otherwise>
+                    <i class="fa fa-star-o"></i>
+                </c:otherwise>
+            </c:choose>
+        </c:forEach>
+    </div>
+</div>
+
 				</div>
 				<div class="product-btns mt-4">
 					<form action="addCart/${product.idProduct}" method="GET"
@@ -273,93 +303,107 @@
 
 
 
-<!-- Reviews Section -->
-<div class="col-md-6">
-    <div id="reviews">
-        <ul class="reviews">
-            <c:forEach var="review" items="${reviews}">
-                <li>
-                    <div class="review-heading">
-                        <h5 class="name">${review.user.fullName}</h5>
-                        <p class="date">
-                            <fmt:formatDate value="${review.reviewDate}" pattern="dd MMM yyyy, hh:mm a" />
-                        </p>
-                        <div class="review-rating">
-                            <c:forEach var="star" begin="1" end="5">
-                                <c:choose>
-                                    <c:when test="${star <= review.rating}">
-                                        <i class="fa fa-star"></i>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <i class="fa fa-star-o empty"></i>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:forEach>
-                        </div>
-                    </div>
-                    <div class="review-body">
-                        <p>${review.comment}</p>
-                    </div>
-                </li>
-            </c:forEach>
-            <c:if test="${empty reviews}">
-                <li><p>Chưa có đánh giá nào cho sản phẩm này.</p></li>
-            </c:if>
-        </ul>
+						<!-- Reviews Section -->
+						<div class="col-md-6">
+							<div id="reviews">
+								<ul class="reviews">
+									<c:forEach var="review" items="${reviews}">
+										<li>
+											<div class="review-heading">
+												<h5 class="name">${review.user.fullName}</h5>
+												<p class="date">
+													<fmt:formatDate value="${review.reviewDate}"
+														pattern="dd MMM yyyy, hh:mm a" />
+												</p>
+												<div class="review-rating">
+													<c:forEach var="star" begin="1" end="5">
+														<c:choose>
+															<c:when test="${star <= review.rating}">
+																<i class="fa fa-star"></i>
+															</c:when>
+															<c:otherwise>
+																<i class="fa fa-star-o empty"></i>
+															</c:otherwise>
+														</c:choose>
+													</c:forEach>
+												</div>
+											</div>
+											<div class="review-body">
+												<p>${review.comment}</p>
+											</div>
+										</li>
+									</c:forEach>
+									<c:if test="${empty reviews}">
+										<li><p>Chưa có đánh giá nào cho sản phẩm này.</p></li>
+									</c:if>
+								</ul>
 
-        <!-- Nút Hiện Tất Cả -->
-        <div class="show-all-reviews">
-            <a href="<c:url value='/product-all-reviews/${product.idProduct}' />" class="btn btn-danger btn-lgy">Hiện tất cả đánh giá</a>
-        </div>
+								<!-- Nút Hiện Tất Cả -->
+								<div class="show-all-reviews">
+									<a
+										href="<c:url value='/product-all-reviews/${product.idProduct}' />"
+										class="btn btn-danger btn-lgy">Hiện tất cả đánh giá</a>
+								</div>
 
-    </div>
-</div>
-<!-- /Reviews Section -->
-
-
-
-
-
+							</div>
+						</div>
+						<!-- /Reviews Section -->
 
 
-<!-- Review Form -->
-<div class="col-md-3">
-    <div id="review-form">
-        <!-- Kiểm tra nếu người dùng đã đăng nhập -->
-        <c:if test="${not empty sessionScope.user}">
-            <form class="review-form" id="reviewForm" method="post" action="${pageContext.request.contextPath}/submitReview">
-                <input type="hidden" name="productId" value="${product.idProduct}" />
-                <textarea class="input" name="review" placeholder="Your Review" required></textarea>
-                <div class="input-rating">
-                    <span>Your Rating: </span>
-                    <div class="stars">
-                        <input id="star5" name="rating" value="5" type="radio" required><label for="star5"></label>
-                        <input id="star4" name="rating" value="4" type="radio"><label for="star4"></label>
-                        <input id="star3" name="rating" value="3" type="radio"><label for="star3"></label>
-                        <input id="star2" name="rating" value="2" type="radio"><label for="star2"></label>
-                        <input id="star1" name="rating" value="1" type="radio"><label for="star1"></label>
-                    </div>
-                </div>
-                <button class="primary-btn" type="submit">Submit</button>
-            </form>
-            <!-- Thông báo thành công hoặc lỗi -->
-            <div id="successMessage" style="display:none;" class="alert alert-success"></div>
-            <div id="errorMessage" style="display:none;" class="alert alert-danger"></div>
-        </c:if>
-
-        <c:if test="${empty sessionScope.user}">
-            <p>Bạn cần <a href="<c:url value='/login' />">đăng nhập</a> để gửi đánh giá.</p>
-        </c:if>
-    </div>
-</div>
-
-<!-- /Review Form -->
-
-<!-- Thêm JavaScript ở cuối trang, trước thẻ </body> -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
-						
+
+
+
+						<!-- Review Form -->
+						<div class="col-md-3">
+							<div id="review-form">
+								<!-- Kiểm tra nếu người dùng đã đăng nhập -->
+								<c:if test="${not empty sessionScope.user}">
+									<form class="review-form" id="reviewForm" method="post"
+										action="${pageContext.request.contextPath}/submitReview">
+										<input type="hidden" name="productId"
+											value="${product.idProduct}" />
+										<textarea class="input" name="review"
+											placeholder="Your Review" required></textarea>
+										<div class="input-rating">
+											<span>Your Rating: </span>
+											<div class="stars">
+												<input id="star5" name="rating" value="5" type="radio"
+													required><label for="star5"></label> <input
+													id="star4" name="rating" value="4" type="radio"><label
+													for="star4"></label> <input id="star3" name="rating"
+													value="3" type="radio"><label for="star3"></label>
+												<input id="star2" name="rating" value="2" type="radio"><label
+													for="star2"></label> <input id="star1" name="rating"
+													value="1" type="radio"><label for="star1"></label>
+											</div>
+										</div>
+										<button class="primary-btn" type="submit">Submit</button>
+									</form>
+									<!-- Thông báo thành công hoặc lỗi -->
+									<div id="successMessage" style="display: none;"
+										class="alert alert-success"></div>
+									<div id="errorMessage" style="display: none;"
+										class="alert alert-danger"></div>
+								</c:if>
+
+								<c:if test="${empty sessionScope.user}">
+									<p>
+										Bạn cần <a href="<c:url value='/login' />">đăng nhập</a> để
+										gửi đánh giá.
+									</p>
+								</c:if>
+							</div>
+						</div>
+
+						<!-- /Review Form -->
+
+						<!-- Thêm JavaScript ở cuối trang, trước thẻ </body> -->
+						<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
 
 
 					</div>
@@ -383,7 +427,8 @@
 					<div class="col-md-3 col-xs-6">
 						<div class="product">
 							<div class="product-img">
-								<img src="${product.image}" alt="/LapFarm/resources/img/soicodoc.jpg">
+								<img src="${product.image}"
+									alt="/LapFarm/resources/img/soicodoc.jpg">
 							</div>
 							<div class="product-body">
 								<p class="product-category">${product.categoryName}</p>

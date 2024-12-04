@@ -51,6 +51,12 @@
                 <strong>${message}</strong> 
             </div>
         </c:if>
+        <!-- Hiển thị thông báo lỗi nếu có -->
+		<c:if test="${not empty error}">
+			<div class="alert alert-error">
+				<strong>${error}</strong>
+			</div>
+		</c:if>
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">Thông tin sản phẩm</h3>

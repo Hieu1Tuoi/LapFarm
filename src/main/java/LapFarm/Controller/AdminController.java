@@ -2,6 +2,7 @@ package LapFarm.Controller;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import LapFarm.DAO.BrandDAO;
 import LapFarm.DAO.CategoryDAO;
 import LapFarm.DAO.ImageDAO;
+import LapFarm.DAO.NotificationDAO;
 import LapFarm.DAO.OrderDetailDAO;
 import LapFarm.DAO.OrdersDAO;
 import LapFarm.DAO.ProductDAO;
@@ -34,6 +36,7 @@ import LapFarm.DTO.UserInfoDTO;
 import LapFarm.Entity.BrandEntity;
 import LapFarm.Entity.CategoryEntity;
 import LapFarm.Entity.ImageEntity;
+import LapFarm.Entity.NotificationEntity;
 import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.ProductDetailEntity;
 import LapFarm.Entity.ProductEntity;
@@ -60,6 +63,8 @@ public class AdminController {
 	private ProductDetailDAO productDetailDAO;
 	@Autowired
 	private ImageDAO imageDAO;
+	@Autowired
+	private NotificationDAO notificationDAO;
 	
 	public static String normalizeString(String input) {
         if (input == null || input.isEmpty()) {
@@ -203,7 +208,7 @@ public class AdminController {
         List<CategoryEntity> categories = categoryDAO.getAllCategories();
         OrdersEntity order = ordersDAO.getOrderById(id);
         List<OrderDetailDTO> detail = orderDetailDAO.getOrderDetailById(id);
-        List<String> statuses = Arrays.asList("Chờ thanh toán", "Chờ lấy hàng", "Đang giao hàng", "Hoàn thành");
+        List<String> statuses = Arrays.asList("Đã hủy", "Chờ lấy hàng", "Đang giao hàng", "Hoàn thành");
 
         // Đưa danh sách vào Model để đẩy sang view
         model.addAttribute("categories", categories);
@@ -215,15 +220,41 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value = "/orders/update-status/{id}", method = RequestMethod.POST) 
-	public String updateState(@PathVariable("id") int id, @RequestParam("state") String state, ModelMap model) {
+	public String updateOrderState(@PathVariable("id") int id, @RequestParam("state") String state, ModelMap model) {
 	    // Gọi DAO để cập nhật trạng thái
 	    boolean updateComplete = ordersDAO.updateStateById(id, state);
+	    
+	    NotificationEntity notification = new NotificationEntity();
+	    OrdersEntity order = ordersDAO.getOrderById(id);
+	    notification.setOrder(order);
+	    notification.setUserNoti(order.getUserInfo());
+	    notification.setState(0);
+	    String content = "";
+	    switch(state) {
+	    case "Chờ lấy hàng":
+	    	content = "Đơn hàng có mã " + id + " đã đặt thành công. Vui lòng kiểm tra lại thông tin trong phần chi tiết đơn hàng và email (nếu có) từ LapFarm.";
+	    	break;
+	    case "Đang giao hàng":
+	    	content = "Đơn hàng " + id + " đã được LapFarm giao cho đơn vị vận chuyển và dự kiến được giao trong 3-5 ngày tới!";
+	    	break;
+	    case "Hoàn thành":
+	    	content = "Đơn hàng " + id + " đã được giao thành công đến bạn. Vui lòng kiểm tra và liên hệ với LapFarm nếu có vấn đề về sản phẩm!";
+	    	break;
+	    case "Đã hủy":
+	    	content = "Đơn hàng " + id + " đã bị hủy. Chúc bạn mua sắm vui vẻ!";
+	    	break;
+	    default:
+	    	content = "LapFarm đang rất nhớ bạn <3";
+	    }
+	    notification.setContent(content);
+	    notification.setTime(new Timestamp(System.currentTimeMillis()));
+	    notificationDAO.addNotification(notification);
 
 	    if (updateComplete) {
 	        // Lấy danh sách categories từ DAO
 	        List<CategoryEntity> categories = categoryDAO.getAllCategories();
 	        List<OrderDetailDTO> detail = orderDetailDAO.getOrderDetailById(id);
-	        List<String> statuses = Arrays.asList("Chờ thanh toán", "Chờ lấy hàng", "Đang giao hàng", "Hoàn thành");
+	        List<String> statuses = Arrays.asList("Đã hủy", "Chờ lấy hàng", "Đang giao hàng", "Hoàn thành");
 	        
 	        // Đưa danh sách vào Model để đẩy sang view
 	        model.addAttribute("categories", categories);
@@ -707,3 +738,5 @@ public class AdminController {
 		    return "/admin/user/index";
 		}
 }
+
+
