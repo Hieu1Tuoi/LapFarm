@@ -38,7 +38,6 @@ public class GlobalController {
         // Kiểm tra người dùng đã đăng nhập chưa
         AccountEntity account = (AccountEntity) session.getAttribute("user");
         if (account != null) {
-            System.out.println(account.getEmail());
             // Lấy giỏ hàng từ cơ sở dữ liệu nếu đã đăng nhập
             return cartService.getCartFromDatabase(account.getUserInfo().getUserId());
         } else {
