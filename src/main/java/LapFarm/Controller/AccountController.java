@@ -153,6 +153,7 @@ public class AccountController {
 	    // Thêm chi tiết đơn hàng và tổng giá vào model
 	    model.addAttribute("orderDetail", orderDetail);
 	    model.addAttribute("totalPrice", totalPrice);
+	    model.addAttribute("stateOrder", orderService.getStateById(orderId));
 
 	    // Trả về tên của JSP sẽ hiển thị chi tiết đơn hàng
 	    return "user/orderdetails/orderdetail";  // Trang này sẽ hiển thị chi tiết đơn hàng

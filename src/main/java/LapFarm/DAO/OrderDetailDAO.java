@@ -93,6 +93,22 @@ public class OrderDetailDAO {
 	    return orderDetailDTOs;
 	}
 
+	@Transactional
+	public int countSalesByProductId(int productId) {
+	    Session session = factory.getCurrentSession();
+
+	    // Truy vấn các OrderDetailsEntity có trạng thái "Hoàn thành" và idProduct tương ứng
+	    String hql = "SELECT SUM(o.quantity) FROM OrderDetailsEntity o " +
+	                 "WHERE o.product.idProduct = :productId AND o.order.state = 'Hoàn thành'";
+
+	    Query<Long> query = session.createQuery(hql, Long.class);
+	    query.setParameter("productId", productId);
+
+	    // Lấy tổng số lượng bán được của sản phẩm (hoặc trả về 0 nếu không có kết quả)
+	    Long result = query.uniqueResult();
+
+	    return (result != null) ? result.intValue() : 0;
+	}
 
 
 }
