@@ -164,11 +164,12 @@
 	<div id="top-header">
 		<div class="container">
 			<ul class="header-links pull-left">
-				<li><a href="#"><i class="fa fa-phone"></i> 0123456789</a></li>
-				<li><a href="#"><i class="fa fa-envelope-o"></i>
-						nhom8@email.com</a></li>
-				<li><a href="#"><i class="fa fa-map-marker"></i> 97 Man
-						Thiện</a></li>
+				<li><a href="https://www.youtube.com/watch?v=IzSYlr3VI1A"><i
+						class="fa fa-phone"></i> 0123456789</a></li>
+				<li><a href="https://www.youtube.com/watch?v=IzSYlr3VI1A"><i
+						class="fa fa-envelope-o"></i> nhom8@email.com</a></li>
+				<li><a href="https://g.co/kgs/AQVaPDg"><i
+						class="fa fa-map-marker"></i> 97 Man Thiện</a></li>
 			</ul>
 			<ul class="header-links pull-right">
 				<!-- <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li> -->
@@ -187,11 +188,16 @@
 
 								<!-- Liên kết cho người dùng -->
 								<a class="dropdown-item" href="<c:url value='/account' />">Thông
-									tin</a> <a class="dropdown-item"
-									href="<c:url value='/account#orders-history' />">Đơn hàng</a> <a
-									class="dropdown-item" href="<c:url value='/account#viewed' />">Đã
-									xem gần đây</a> <a class="dropdown-item"
-									href="<c:url value='/logout' />">Đăng xuất</a>
+									tin</a>
+								<c:if test="${empty sessionScope.admin}">
+									<a class="dropdown-item"
+										href="<c:url value='/account#orders-history' />">Đơn hàng</a>
+									<a class="dropdown-item"
+										href="<c:url value='/account#viewed' />">Đã xem gần đây</a>
+								</c:if>
+
+								<a class="dropdown-item" href="<c:url value='/logout' />">Đăng
+									xuất</a>
 							</div></li>
 					</c:when>
 					<c:otherwise>
@@ -212,7 +218,8 @@
 				<div class="col-md-3">
 					<div class="header-logo">
 						<a href="<c:url value='/home' />" class="logo"> <img
-							src="<c:url value='/resources/img/logo.png' />" alt="">
+							src="<c:url value='/resources/img/Lapfarm.png' />" alt=""
+							style="max-width: 340px;">
 						</a>
 					</div>
 				</div>

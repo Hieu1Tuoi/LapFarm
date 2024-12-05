@@ -127,6 +127,9 @@ public class CartController extends BaseController {
 	@RequestMapping(value = "/EditCart/{id}/{quanty}", method = RequestMethod.GET)
 	public String EditCart(HttpServletRequest request, HttpSession session, @PathVariable("id") int id,
 			@PathVariable("quanty") int quanty) {
+		if (quanty <= 0) {
+			return "{\"message\": \"Cập nhật giỏ hàng thất bại!\", \"status\": \"fail\"}";
+		}
 
 		// Kiểm tra và cập nhật số lượng trong cơ sở dữ liệu
 		AccountEntity user = (AccountEntity) session.getAttribute("user");

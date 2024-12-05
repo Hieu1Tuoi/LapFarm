@@ -3,18 +3,20 @@
 <%@ include file="/WEB-INF/views/admin/layout/adminSidebar.jsp"%>
 <style>
     /* Đảm bảo các biểu đồ được căn giữa */
-    .chart-container {
-        position: relative;
-        height: 400px;
-        width: 100%;
-        background-color: #f9f9f9; /* Nền sáng cho biểu đồ */
-        border-radius: 10px; /* Bo góc cho khung biểu đồ */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Tạo hiệu ứng đổ bóng nhẹ */
-        margin-top: 20px;
-        display: flex;
-        justify-content: center;  /* Căn giữa theo chiều ngang */
-        align-items: center;  /* Căn giữa theo chiều dọc */
-    }
+		.chart-container {
+		    position: relative;
+		    height: 400px;
+		    max-width: 900px; /* Giới hạn chiều rộng tối đa */
+		    margin: 0 auto; /* Căn giữa biểu đồ */
+		    overflow: hidden; /* Đảm bảo không tràn ra ngoài */
+		    background-color: #f9f9f9;
+		    border-radius: 10px;
+		    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		    margin-top: 20px;
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		}
 
     /* Thêm padding cho tiêu đề biểu đồ */
     .content-header h1 {
@@ -40,8 +42,8 @@
         </select>
     </section>
 
-    <h1>Doanh thu</h1>
     <section class="content">
+    	<h1>Doanh thu</h1>
         <!-- Biểu đồ doanh thu -->
         <div class="chart-container">
             <canvas id="myChart"></canvas>
@@ -127,36 +129,40 @@
 
             // Biểu đồ tròn số lượng máy bán theo danh mục
             function updatePieChartForCategory(year) {
-                if (categoryChartInstance) {
-                    categoryChartInstance.destroy();
-                }
-
-                var categoryLabels = Object.keys(productCountByCategory);
-                var categoryCounts = categoryLabels.map(function(category) {
-                    return productCountByCategory[category][year] || 0;
-                });
-
-                var ctxCategory = document.getElementById('categoryChart').getContext('2d');
-                ctxCategory.width = ctxCategory.offsetWidth;
-                ctxCategory.height = ctxCategory.offsetHeight;
-
-                categoryChartInstance = new Chart(ctxCategory, {
-                    type: 'pie',
-                    data: {
-                        labels: categoryLabels,
-                        datasets: [{
-                            label: 'Số lượng sản phẩm bán theo danh mục',
-                            data: categoryCounts,
-                            backgroundColor: ['#FF6347', '#32CD32', '#4682B4', '#FFD700', '#8A2BE2'],
-                            borderColor: '#ffffff',
-                            borderWidth: 2
-                        }]
-                    },
-                    options: {
-                        responsive: true
-                    }
-                });
-            }
+			    if (categoryChartInstance) {
+			        categoryChartInstance.destroy();
+			    }
+			
+			    // Lấy canvas và reset kích thước
+			    var ctxCategory = document.getElementById('categoryChart');
+			    ctxCategory.width = ctxCategory.offsetWidth;
+			    ctxCategory.height = ctxCategory.offsetHeight;
+			
+			    // Dữ liệu cho biểu đồ
+			    var categoryLabels = Object.keys(productCountByCategory);
+			    var categoryCounts = categoryLabels.map(function(category) {
+			        return productCountByCategory[category][year] || 0;
+			    });
+			
+			    // Khởi tạo biểu đồ
+			    categoryChartInstance = new Chart(ctxCategory.getContext('2d'), {
+			        type: 'pie',
+			        data: {
+			            labels: categoryLabels,
+			            datasets: [{
+			                label: 'Số lượng sản phẩm bán theo danh mục',
+			                data: categoryCounts,
+			                backgroundColor: ['#FF6347', '#32CD32', '#4682B4', '#FFD700', '#8A2BE2'],
+			                borderColor: '#ffffff',
+			                borderWidth: 2
+			            }]
+			        },
+			        options: {
+			            responsive: true,
+			            maintainAspectRatio: false, // Giữ kích thước tỷ lệ cố định
+			        }
+			    });
+			}
 
             // Hàm cập nhật biểu đồ khi thay đổi năm
             function updateChart() {

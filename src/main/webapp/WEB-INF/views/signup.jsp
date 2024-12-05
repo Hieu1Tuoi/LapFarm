@@ -48,7 +48,8 @@
 					<li><a href="#"><i class="fa fa-phone"></i> 0123456789</a></li>
 					<li><a href="#"><i class="fa fa-envelope-o"></i>
 							nhom8@email.com</a></li>
-					<li><a href="#"><i class="fa fa-map-marker"></i> 97 Man Thiện</a></li>
+					<li><a href="#"><i class="fa fa-map-marker"></i> 97 Man
+							Thiện</a></li>
 				</ul>
 			</div>
 		</div>
@@ -63,8 +64,9 @@
 					<!-- LOGO -->
 					<div class="col-md-3">
 						<div class="header-logo">
-							<a href="<c:url value="/home" />" class="logo"> <img
-								src="<c:url value="/resources/img/logo.png" />" alt="">
+							<a href="<c:url value='/home' />" class="logo"> <img
+								src="<c:url value='/resources/img/Lapfarm.png' />" alt=""
+								style="max-width: 340px;">
 							</a>
 						</div>
 					</div>
