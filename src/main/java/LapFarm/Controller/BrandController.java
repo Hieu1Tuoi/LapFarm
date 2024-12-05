@@ -122,7 +122,6 @@ public class BrandController extends BaseController {
 	    Init();
 
 	    if (idBrand != null) {
-	        // Lấy thông tin thương hiệu và tất cả sản phẩm theo idBrand
 	        _mvShare.addObject("brand", brandService.getBrandById(idBrand));
 	        _mvShare.addObject("AllProductByID", brandService.getProductsByBrand(idBrand));
 	        

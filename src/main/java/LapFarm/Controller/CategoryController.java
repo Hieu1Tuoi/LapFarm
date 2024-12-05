@@ -2,6 +2,7 @@ package LapFarm.Controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,55 +39,99 @@ public class CategoryController extends BaseController {
 
 	@RequestMapping(value = "/products-category", params = "!page")
 	public ModelAndView Index(@RequestParam(value = "idCategory", required = false) int idCategory) {
+	    Init();
 
-		Init();
+	    // Lấy thông tin Category
+	    _mvShare.addObject("category", categoryService.getCategoryById(idCategory));
 
-		// Lấy toàn bộ thông tin Category
-		_mvShare.addObject("category", categoryService.getCategoryById(idCategory));
+	    // Lấy danh sách sản phẩm theo idCategory
+	    List<ProductDTO> allProducts = categoryService.getProductsByCategory(idCategory);
+	    _mvShare.addObject("AllProductByID", allProducts);
+	    
+	    // Tính tổng số sản phẩm và phân trang
+	    int totalData = allProducts.size();
+	    PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
+	    _mvShare.addObject("paginateInfo", paginateInfo);
 
-		_mvShare.addObject("AllProductByID", categoryService.getProductsByCategory(idCategory));
-		
-		int totalData = categoryService.getProductsByCategory(idCategory).size();
-		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
-		_mvShare.addObject("paginateInfo", paginateInfo);
-		_mvShare.addObject("ProductsPaginate",
-				categoryService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", idCategory, "", 0));
-		Map<String, Double> price = productService.getMinMaxPrices();
-		_mvShare.addObject("searchCategory", idCategory);
-		_mvShare.addObject("priceMin", price.get("min"));
-		_mvShare.addObject("priceMax", price.get("max"));
-		_mvShare.setViewName("productsByCategory");
-		return _mvShare; // The view name
+	    // Lấy sản phẩm phân trang
+	    List<ProductDTO> productsPaginate = categoryService.GetDataProductPaginates(paginateInfo.getStart(),
+	                                                                                paginateInfo.getEnd(), "", idCategory, "", 0);
+	    
+	    // Lấy rating cho các sản phẩm trong danh mục
+	    List<Integer> productIds = productsPaginate.stream().map(ProductDTO::getIdProduct).collect(Collectors.toList());
+	    List<Map<String, Object>> ratingSummaries = productService.getAllRatingSummaries(productIds);
+
+	    // Gán rating summary vào từng sản phẩm trong danh sách phân trang
+	    for (ProductDTO product : productsPaginate) {
+	        for (Map<String, Object> summary : ratingSummaries) {
+	            if (product.getIdProduct() == (int) summary.get("productId")) {
+	                product.setRatingSummary(summary);
+	            }
+	        }
+	    }
+
+	    // Truyền sản phẩm đã có rating vào model
+	    _mvShare.addObject("ProductsPaginate", productsPaginate);
+
+	    // Truyền các giá trị min, max cho phạm vi giá
+	    Map<String, Double> price = productService.getMinMaxPrices();
+	    _mvShare.addObject("searchCategory", idCategory);
+	    _mvShare.addObject("priceMin", price.get("min"));
+	    _mvShare.addObject("priceMax", price.get("max"));
+
+	    // Đặt view cho ModelAndView
+	    _mvShare.setViewName("productsByCategory");
+	    return _mvShare;
 	}
+
 
 	@RequestMapping(value = "/products-category", params = "page")
 	public ModelAndView Index(@RequestParam(value = "idCategory", required = false) Integer idCategory,
-			@RequestParam(value = "page", defaultValue = "1") int currentPage) {
+	                          @RequestParam(value = "page", defaultValue = "1") int currentPage) {
 
-		Init();
+	    Init();
 
-		// Lấy toàn bộ thông tin Category
-		_mvShare.addObject("category", categoryService.getCategoryById(idCategory));
+	    // Lấy thông tin Category
+	    _mvShare.addObject("category", categoryService.getCategoryById(idCategory));
 
-		// Lấy danh sách sản phẩm của danh mục
-		List<ProductDTO> productsByCategory = categoryService.getProductsByCategory(idCategory);
+	    // Lấy danh sách sản phẩm của danh mục
+	    List<ProductDTO> productsByCategory = categoryService.getProductsByCategory(idCategory);
 
-		// Phân trang
-		// Số sản phẩm trên mỗi trang
-		int totalData = productsByCategory.size(); // Tổng số sản phẩm trong danh mục
-		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
-		_mvShare.addObject("paginateInfo", paginateInfo);
+	    // Phân trang
+	    // Số sản phẩm trên mỗi trang
+	    int totalData = productsByCategory.size(); // Tổng số sản phẩm trong danh mục
+	    PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
+	    _mvShare.addObject("paginateInfo", paginateInfo);
 
-		// Lấy sản phẩm cho trang hiện tại
-		List<ProductDTO> productsPaginate = categoryService.GetDataProductPaginates(paginateInfo.getStart(),
-				paginateInfo.getEnd(), "", idCategory, "", 0);
-		Map<String, Double> price = productService.getMinMaxPrices();
-		_mvShare.addObject("searchCategory", idCategory);
-		_mvShare.addObject("priceMin", price.get("min"));
-		_mvShare.addObject("priceMax", price.get("max"));
-		_mvShare.addObject("ProductsPaginate", productsPaginate);
+	    // Lấy sản phẩm cho trang hiện tại
+	    List<ProductDTO> productsPaginate = categoryService.GetDataProductPaginates(paginateInfo.getStart(),
+	                                                                               paginateInfo.getEnd(), "", idCategory, "", 0);
 
-		_mvShare.setViewName("productsByCategory");
-		return _mvShare; // View name
+	    // Lấy rating summary cho tất cả các sản phẩm trong danh mục
+	    List<Integer> productIds = productsPaginate.stream().map(ProductDTO::getIdProduct).collect(Collectors.toList());
+	    List<Map<String, Object>> ratingSummaries = productService.getAllRatingSummaries(productIds);
+
+	    // Gán rating vào từng sản phẩm
+	    for (ProductDTO product : productsPaginate) {
+	        for (Map<String, Object> summary : ratingSummaries) {
+	            if (product.getIdProduct() == (int) summary.get("productId")) {
+	                product.setRatingSummary(summary);
+	            }
+	        }
+	    }
+
+	    // Truyền sản phẩm đã có rating vào model
+	    _mvShare.addObject("ProductsPaginate", productsPaginate);
+
+	    // Lấy phạm vi giá (min, max)
+	    Map<String, Double> price = productService.getMinMaxPrices();
+	    _mvShare.addObject("searchCategory", idCategory);
+	    _mvShare.addObject("priceMin", price.get("min"));
+	    _mvShare.addObject("priceMax", price.get("max"));
+
+	    // Đặt view cho ModelAndView
+	    _mvShare.setViewName("productsByCategory");
+	    return _mvShare;
 	}
+
 }
