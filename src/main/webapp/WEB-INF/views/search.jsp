@@ -38,7 +38,10 @@
 
 								<c:if test="${p.discount > 0}">
 									<div class="product-label">
-										<span class="sale">${p.discount * 100}%</span>
+										<span class="sale"> <fmt:formatNumber
+												value="${p.discount * 100}" type="number"
+												maxFractionDigits="0" />%
+										</span>
 									</div>
 								</c:if>
 
