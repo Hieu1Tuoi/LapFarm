@@ -30,17 +30,22 @@
 								<!-- Lấy hình ảnh đầu tiên từ danh sách -->
 								<c:choose>
 									<c:when test="${not empty p.image}">
-										<img src="${p.image}" alt="Product Image" onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
+										<img src="${p.image}" alt="Product Image"
+											onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
 									</c:when>
 									<c:otherwise>
 										<img src="/LapFarm/resources/img/${p.image}"
-											alt="Default Image" onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
+											alt="Default Image"
+											onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
 									</c:otherwise>
 								</c:choose>
 
 								<c:if test="${p.discount > 0}">
 									<div class="product-label">
-										<span class="sale">${p.discount * 100}%</span>
+										<span class="sale"> <fmt:formatNumber
+												value="${p.discount * 100}" type="number"
+												maxFractionDigits="0" />%
+										</span>
 									</div>
 								</c:if>
 

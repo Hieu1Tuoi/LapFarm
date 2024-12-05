@@ -7,9 +7,9 @@
 
 <style>
 .product-img img {
-    width: 250px;
-    height: 250px;
-    object-fit: cover; /* Cắt ảnh để vừa khung */
+	width: 250px;
+	height: 250px;
+	object-fit: cover; /* Cắt ảnh để vừa khung */
 }
 </style>
 <!-- SECTION -->
@@ -41,15 +41,21 @@
 								<!-- Lấy hình ảnh đầu tiên từ danh sách -->
 								<c:choose>
 									<c:when test="${not empty p.image}">
-										<img src="${p.image}" alt="Product Image" onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
+										<img src="${p.image}" alt="Product Image"
+											onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
 									</c:when>
 									<c:otherwise>
-										<img src="/LapFarm/resources/img/${p.image}" alt="Default Image" onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
+										<img src="/LapFarm/resources/img/${p.image}"
+											alt="Default Image"
+											onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
 									</c:otherwise>
 								</c:choose>
 								<c:if test="${p.discount > 0}">
 									<div class="product-label">
-										<span class="sale">${p.discount * 100}%</span>
+										<span class="sale"> <fmt:formatNumber
+												value="${p.discount * 100}" type="number"
+												maxFractionDigits="0" />%
+										</span>
 									</div>
 								</c:if>
 
@@ -73,24 +79,25 @@
 								</h6>
 								<div class="product-rating">
 									<div class="rating-stars">
-						        <c:forEach var="star" begin="1" end="5">
-						            <c:choose>
-						              
-						                <c:when test="${star <= ratingSummary.average}">
-						                    <i class="fa fa-star"></i>
-						                </c:when>
-						
-						              
-						                <c:when test="${star - 0.5 <= ratingSummary.average && star > ratingSummary.average}">
-						                    <i class="fa fa-star-half-o"></i>
-						                </c:when>
-						
-						                <c:otherwise>
-						                    <i class="fa fa-star-o"></i>
-						                </c:otherwise>
-						            </c:choose>
-						        </c:forEach>
-						    </div>
+										<c:forEach var="star" begin="1" end="5">
+											<c:choose>
+
+												<c:when test="${star <= ratingSummary.average}">
+													<i class="fa fa-star"></i>
+												</c:when>
+
+
+												<c:when
+													test="${star - 0.5 <= ratingSummary.average && star > ratingSummary.average}">
+													<i class="fa fa-star-half-o"></i>
+												</c:when>
+
+												<c:otherwise>
+													<i class="fa fa-star-o"></i>
+												</c:otherwise>
+											</c:choose>
+										</c:forEach>
+									</div>
 								</div>
 								<div class="product-btns">
 									<button class="add-to-wishlist">
