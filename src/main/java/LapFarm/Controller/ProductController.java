@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import LapFarm.DAO.OrderDetailDAO;
 import LapFarm.DAO.ProductDAO;
+import LapFarm.DAO.ProductDetailDAO;
 import LapFarm.DAO.ReviewDAO;
 import LapFarm.DTO.ProductDTO;
 import LapFarm.DTO.ViewedItem;
+import LapFarm.Entity.ProductDetailEntity;
 import LapFarm.Entity.ProductEntity;
 
 import LapFarm.Entity.ReviewEntity;
@@ -34,6 +36,9 @@ import jakarta.servlet.http.HttpSession;
 public class ProductController extends BaseController {
     @Autowired
     private ProductDAO productDAO;
+    
+    @Autowired
+    private ProductDetailDAO productDetailDAO;
     
     @Autowired
     private OrderDetailDAO orderDetailDAO;
@@ -52,6 +57,7 @@ public class ProductController extends BaseController {
         try {
             // Lấy sản phẩm
             ProductEntity product = productDAO.getProductById(productId);
+            ProductDetailEntity productDetail = productDetailDAO.getProductDetailById(productId);
             if (product == null) {
                 model.addAttribute("errorMessage", "Không tìm thấy sản phẩm.");
                 return "error/404";  // Trả về trang lỗi nếu không tìm thấy sản phẩm
@@ -97,6 +103,7 @@ public class ProductController extends BaseController {
 
             // Truyền dữ liệu vào model
             model.addAttribute("product", product);
+            model.addAttribute("productDetail", productDetail);
             model.addAttribute("relatedProducts", relatedProducts);
             model.addAttribute("reviews", reviews);
             model.addAttribute("totalReviews", totalReviews);
