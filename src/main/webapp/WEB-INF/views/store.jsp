@@ -76,8 +76,11 @@
 										</del>
 									</c:if>
 								</h6>
-
-                                
+	<style>
+		.fa-star {color: red;}
+		.fa-star-half-o {color: red;}
+		.fa-star-o {color: red;}
+	</style>                
     <c:if test="${not empty p.ratingSummary}">
         <div class="product-rating">
             <div class="rating-stars">
