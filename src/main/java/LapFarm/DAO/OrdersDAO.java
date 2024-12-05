@@ -44,6 +44,27 @@ public class OrdersDAO {
 	}
 
 	@Transactional
+	public List<OrdersDTO> getOrdersWithUserFullnameByUserId(int id) {
+		// Lấy phiên làm việc hiện tại
+		Session session = factory.getCurrentSession();
+
+		// Truy vấn lấy danh sách Orders cùng với thông tin User
+		String hql = "SELECT o FROM OrdersEntity o JOIN FETCH o.userInfo u WHERE u.userId = :id";
+		Query<OrdersEntity> query = session.createQuery(hql, OrdersEntity.class);
+		query.setParameter("id", id);
+
+		// Lấy danh sách kết quả
+		List<OrdersEntity> ordersList = query.getResultList();
+
+		// Chuyển đổi từ OrdersEntity sang OrdersDTO
+		return ordersList.stream()
+				.map(order -> new OrdersDTO(order.getIdOrder(), order.getTime(), order.getState(),
+						order.getTotalPrice(), order.getUserInfo().getFullName(), order.getPaymentMethod(),
+						order.getNote()))
+				.collect(Collectors.toList());
+	}
+
+	@Transactional
 	public OrdersEntity getOrderById(int orderId) {
 		Session session = factory.getCurrentSession();
 		OrdersEntity order = session.get(OrdersEntity.class, orderId);

@@ -1,134 +1,169 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%><%@ taglib
-	uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>LapFarm</title>
-<base href="${pageContext.servletContext.contextPath}/">
-<!-- Google font -->
-<link
-	href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700"
-	rel="stylesheet">
 
-<!-- Bootstrap -->
-<link type="text/css" rel="stylesheet"
-	href="<c:url value="/resources/css/bootstrap.min.css" />">
+<%@ include file="/WEB-INF/views/layouts/user-header.jsp"%>
+<<style>
+/* Container chính */
+.order-detail-content {
+    margin: 20px auto;
+    max-width: 1200px;
+    padding: 20px;
+    background-color: #ffffff; /* Nền trắng */
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 2px solid #000; /* Viền đen */
+}
 
-<!-- Login -->
-<link type="text/css" rel="stylesheet"
-	href="<c:url value="/resources/css/login.css" />">
+/* Tiêu đề */
+.order-detail-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #d32f2f; /* Màu đỏ đậm */
+    text-align: center;
+}
 
-<!-- Slick -->
-<link type="text/css" rel="stylesheet"
-	href="<c:url value="/resources/css/slick.css" />">
-<link type="text/css" rel="stylesheet"
-	href="<c:url value="/resources/css/slick-theme.css" />">
+/* Bảng */
+.order-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
 
-<!-- nouislider -->
-<link type="text/css" rel="stylesheet"
-	href="<c:url value="/resources/css/nouislider.min.css" />">
+.order-detail-table th,
+.order-detail-table td {
+    text-align: left;
+    padding: 12px;
+    font-size: 16px;
+    color: #000; /* Chữ đen */
+}
 
-<!-- Font Awesome Icon -->
-<link rel="stylesheet"
-	href="<c:url value="/resources/css/font-awesome.min.css" />">
+.order-detail-table th {
+    background-color: #d32f2f; /* Màu đỏ */
+    color: #ffffff; /* Chữ trắng */
+    font-weight: bold;
+    border: 1px solid #000; /* Viền đen */
+}
 
-<!-- Custom stlylesheet -->
-<link type="text/css" rel="stylesheet"
-	href="<c:url value="/resources/css/style.css" />">
-</head>
+.order-detail-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Màu nền trắng nhạt */
+}
+
+.order-detail-table tbody tr:hover {
+    background-color: #ffe8e8; /* Màu nền đỏ nhạt khi hover */
+}
+
+.order-detail-table tbody tr td {
+    border-bottom: 1px solid #ddd;
+}
+
+/* Hình ảnh */
+.order-detail-img {
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Tên sản phẩm */
+.order-detail-product-name {
+    color: black;
+    text-decoration: none;
+}
+
+/* Nút bấm */
+.order-detail-btn {
+    background-color: #d32f2f; /* Màu đỏ */
+    color: #ffffff; /* Chữ trắng */
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.order-detail-btn-link {
+    color: #fff;
+    text-decoration: none;
+}
+
+.order-detail-btn:hover {
+    background-color: #b71c1c; /* Màu đỏ đậm hơn khi hover */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .order-detail-content {
+        padding: 10px;
+    }
+
+    .order-detail-table th,
+    .order-detail-table td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .order-detail-btn {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+</style>
 <body>
-	<!-- HEADER -->
-	<header>
-		<!-- TOP HEADER -->
-		<div id="top-header">
-			<div class="container">
-				<ul class="header-links pull-left">
-					<li><a href="#"><i class="fa fa-phone"></i> 0123456789</a></li>
-					<li><a href="#"><i class="fa fa-envelope-o"></i>
-							nhom8@gmail.com</a></li>
-					<li><a href="#"><i class="fa fa-map-marker"></i> 97 Man
-							Thiện</a></li>
-				</ul>
-			</div>
-		</div>
-		<!-- /TOP HEADER -->
-
-		<!-- MAIN HEADER -->
-		<div id="header">
-			<!-- container -->
-			<div class="container">
-				<!-- row -->
-				<div class="row">
-					<!-- LOGO -->
-					<div class="col-md-3">
-						<div class="header-logo">
-							<a href="<c:url value="/home" />" class="logo"> <img
-								src="<c:url value="/resources/img/logo.png" />" alt="">
-							</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- NAVIGATION -->
-		<nav id="navigation">
-			<!-- container -->
-			<div class="container"></div>
-			<!-- /container -->
-		</nav>
-		<!-- /NAVIGATION -->
-	</header>
-	<!-- /HEADER -->
-
-	<!-- Main content -->
-	<div class="content">
-		<h1>Mã đơn hàng: ${order.idOrder}</h1>
-		<!-- /.box-header -->
-		<div class="box-body table-responsive no-padding"
-			style="margin-top: 30px">
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th>Hình Ảnh</th>
-						<th>Tên Sản Phẩm</th>
-						<th>Thương Hiệu</th>
-						<th>Giá Bán</th>
-						<th>Số Lượng</th>
-						<th>Thành tiền</th>
-					</tr>
-				</thead>
-				<tbody>
-					<c:forEach var="od" items="${orderdetail}">
-						<tr>
-							<td><a href="product-detail/${od.idProduct}"> <img
-									width="100" src="${od.image}" alt=""  onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
-							</a></td>
-							<td><a href="product-detail/${od.idProduct}"
-								style="color: black;"> ${od.nameProduct} </a></td>
-							<td>${od.brandName}</td>
-							<td>
-								<!-- Định dạng salePrice --> <fmt:formatNumber
-									value="${od.salePrice}" type="number" groupingUsed="true" />
-								VNĐ
-							</td>
-							<td>${od.quantity}</td>
-							<td><fmt:formatNumber value="${od.salePrice * od.quantity}"
-									type="number" groupingUsed="true" /> VNĐ</td>
-						</tr>
-					</c:forEach>
-				</tbody>
-			</table>
-			<!-- Thêm button "Sửa Trạng Thái" -->
-		</div>
-		<button>
-			<a href="">Quay lại trang chủ</a>
-		</button>
-
-		<!-- /.box-body -->
-	</div>
-	<!-- /.box -->
+    <!-- Main content -->
+    <div class="order-detail-content">
+        <h1 class="order-detail-title">Mã đơn hàng: ${order.idOrder}</h1>
+        <div class="order-detail-box">
+            <table class="order-detail-table">
+                <thead>
+                    <tr>
+                        <th>Hình Ảnh</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Thương Hiệu</th>
+                        <th>Giá Bán</th>
+                        <th>Số Lượng</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach var="od" items="${orderdetail}">
+                        <tr>
+                            <td>
+                                <a href="product-detail/${od.idProduct}">
+                                    <img class="order-detail-img" width="100" 
+                                         src="${od.image}" alt="" 
+                                         onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
+                                </a>
+                            </td>
+                            <td>
+                                <a href="product-detail/${od.idProduct}" class="order-detail-product-name">
+                                    ${od.nameProduct}
+                                </a>
+                            </td>
+                            <td>${od.brandName}</td>
+                            <td>
+                                <!-- Định dạng salePrice --> 
+                                <fmt:formatNumber value="${od.salePrice}" 
+                                                  type="number" groupingUsed="true" />
+                                VNĐ
+                            </td>
+                            <td>${od.quantity}</td>
+                            <td>
+                                <fmt:formatNumber value="${od.salePrice * od.quantity}" 
+                                                  type="number" groupingUsed="true" /> VNĐ
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>
+        </div>
+        <button class="order-detail-btn">
+            <a href="" class="order-detail-btn-link">Quay lại trang chủ</a>
+        </button>
+    </div>
 </body>
 </html>
+
+<%@ include file="/WEB-INF/views/layouts/user-footer.jsp"%>

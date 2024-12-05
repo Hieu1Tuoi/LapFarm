@@ -35,7 +35,7 @@
 
 <div class="content-wrapper">
     <section class="content-header">
-        <select id="yearSelector" onchange="updateChart()">
+        <select class="form-control" id="yearSelector" onchange="updateChart()">
             <c:forEach var="year" items="${years}">
                 <option value="${year}" <c:if test="${year == currentYear}">selected</c:if>>${year}</option>
             </c:forEach>
@@ -49,13 +49,13 @@
             <canvas id="myChart"></canvas>
         </div>
 
-        <h1>Số lượng máy bán theo hãng</h1>
+        <h1>Số lượng sản phẩm bán theo hãng</h1>
         <!-- Biểu đồ tròn số lượng máy bán theo hãng -->
         <div class="chart-container">
             <canvas id="brandChart"></canvas>
         </div>
 
-        <h1>Số lượng máy bán theo danh mục</h1>
+        <h1>Số lượng sản phẩm bán theo danh mục</h1>
         <!-- Biểu đồ tròn số lượng máy bán theo danh mục -->
         <div class="chart-container">
             <canvas id="categoryChart"></canvas>

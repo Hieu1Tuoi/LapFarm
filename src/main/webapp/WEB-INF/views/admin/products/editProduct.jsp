@@ -9,8 +9,8 @@
 	<section class="content-header">
 		<h1>Sửa thông tin sản phẩm</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
-			<li><a href="">Sản phẩm</a></li>
+			<li><a href="admin/home"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+			<li><a href="admin/product?category=1">Sản phẩm</a></li>
 			<li class="active">Sửa thông tin</li>
 		</ol>
 	</section>

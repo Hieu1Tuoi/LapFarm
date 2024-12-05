@@ -11,9 +11,8 @@
 			Quản lý người dùng
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-			<li><a href="#">Examples</a></li>
-			<li class="active">Blank page</li>
+			<li><a href="admin/home"><i class="fa fa-dashboard"></i> Home</a></li>
+			<li class="active">Nguời dùng</li>
 		</ol>
 	</section>
 	<section class="content">
@@ -65,7 +64,7 @@
 									<td>${u.numberOfOrders}</td>
 									<td>${u.state}</td>
 									<td><a
-										href="${pageContext.request.contextPath}/admin/view-user-listOrders/${u.userId}"
+										href="${pageContext.request.contextPath}/admin/manage-user/history/${u.userId}"
 										class="btn btn-success">Xem</a></td>
 								</tr>
 							</c:forEach>

@@ -5,10 +5,11 @@
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1>Quản lý đơn hàng</h1>
+		<h1>Lịch sử người dùng</h1>
 		<ol class="breadcrumb">
 			<li><a href="admin/home"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
-			<li class="active">Đơn hàng</li>
+			<li><a href="admin/manage-user">Người dùng</a></li>
+			<li class="active">Lịch sử</li>
 		</ol>
 	</section>
 
