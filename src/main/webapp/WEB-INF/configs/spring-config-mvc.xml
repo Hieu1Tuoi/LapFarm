@@ -62,6 +62,10 @@
 
 	<mvc:interceptors>
 		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean class="LapFarm.Interceptor.CartInterceptor" />
+		</mvc:interceptor>
+		<mvc:interceptor>
 			<mvc:mapping path="/login" />
 			<bean class="LapFarm.Interceptor.LoggerInterceptor" />
 		</mvc:interceptor>

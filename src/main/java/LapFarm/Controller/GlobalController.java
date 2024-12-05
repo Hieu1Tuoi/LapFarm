@@ -33,18 +33,14 @@ public class GlobalController {
         return baseService.getCategoryEntities();
     }
     
-    @ModelAttribute("CartSession")
-    public HashMap<Integer, CartDTO> getCart(HttpSession session) {
-        // Kiểm tra người dùng đã đăng nhập chưa
-        AccountEntity account = (AccountEntity) session.getAttribute("user");
-        if (account != null) {
-            // Lấy giỏ hàng từ cơ sở dữ liệu nếu đã đăng nhập
-            return cartService.getCartFromDatabase(account.getUserInfo().getUserId());
-        } else {
-            // Nếu chưa đăng nhập, trả về g	iỏ hàng rỗng
-            return new HashMap<>();
-        }
-    }
+	/*
+	 * @ModelAttribute("CartSession") public HashMap<Integer, CartDTO>
+	 * getCart(HttpSession session) { // Kiểm tra người dùng đã đăng nhập chưa
+	 * AccountEntity account = (AccountEntity) session.getAttribute("user"); if
+	 * (account != null) { // Lấy giỏ hàng từ cơ sở dữ liệu nếu đã đăng nhập return
+	 * cartService.getCartFromDatabase(account.getUserInfo().getUserId()); } else {
+	 * // Nếu chưa đăng nhập, trả về g iỏ hàng rỗng return new HashMap<>(); } }
+	 */
     
     // Cung cấp danh sách thông báo cho tất cả các trang
     @ModelAttribute("notifications")

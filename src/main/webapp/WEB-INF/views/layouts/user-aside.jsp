@@ -32,10 +32,10 @@
 					<div class="filter-container">
 						<h3>GIÁ</h3>
 						<div class="slider-container">
-							<input type="range" min="${priceMin}" max="${priceMax}" value="${priceMin}"
+							<input type="range" min="${priceMin - 1}" max="${priceMax + 1}" value="${priceMin - 1}"
 								class="price-slider" id="minPriceSlider"> <input
-								type="range" min="${priceMin}" max="${priceMax}"
-								value="${priceMax}" class="price-slider" id="maxPriceSlider">
+								type="range" min="${priceMin - 1}" max="${priceMax + 1}"
+								value="${priceMax + 1}" class="price-slider" id="maxPriceSlider">
 						</div>
 						<div class="price-container">
 							<span id="minPriceLabel">0 ₫</span> <span id="maxPriceLabel">50,000,000

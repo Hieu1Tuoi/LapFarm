@@ -56,7 +56,7 @@ public class CartDAO {
 	    try {
 	        return query.getSingleResult();
 	    } catch (NoResultException e) {
-			System.out.println("Lỗi lấy Cart: " + e);
+			System.out.println("Lỗi getCartItem: " + e);
 	        return null;
 	    }
 	}
@@ -268,23 +268,33 @@ public class CartDAO {
 
 	@Transactional
 	public HashMap<Integer, CartDTO> getCartFromDatabase(int userId) {
-		Session session = factory.getCurrentSession();
-		String hql = "FROM CartEntity c WHERE c.userInfo.userId = :userId";
-		Query<CartEntity> query = session.createQuery(hql, CartEntity.class);
-		query.setParameter("userId", userId);
+	    HashMap<Integer, CartDTO> cart = new HashMap<>();
+	    Session session = null;
+	    
+	    try {
+	        session = factory.getCurrentSession();
+	        String hql = "FROM CartEntity c WHERE c.userInfo.userId = :userId";
+	        Query<CartEntity> query = session.createQuery(hql, CartEntity.class);
+	        query.setParameter("userId", userId);
 
-		List<CartEntity> cartEntities = query.list();
-		HashMap<Integer, CartDTO> cart = new HashMap<>();
+	        List<CartEntity> cartEntities = query.list();
 
-		for (CartEntity entity : cartEntities) {
-			CartDTO cartDTO = new CartDTO();
-			cartDTO.setId(entity.getId());
-			cartDTO.setProduct(productDAO.findProductDTOById(entity.getProduct().getIdProduct()));
-			cartDTO.setQuantity(entity.getQuantity());
-			cartDTO.setTotalPrice(cartDTO.getQuantity() * cartDTO.getProduct().calPrice());
-			cart.put(entity.getProduct().getIdProduct(), cartDTO);
-		}
-		return cart;
+	        // Xử lý dữ liệu giỏ hàng
+	        for (CartEntity entity : cartEntities) {
+	            CartDTO cartDTO = new CartDTO();
+	            cartDTO.setId(entity.getId());
+	            cartDTO.setProduct(productDAO.findProductDTOById(entity.getProduct().getIdProduct()));
+	            cartDTO.setQuantity(entity.getQuantity());
+	            cartDTO.setTotalPrice(cartDTO.getQuantity() * cartDTO.getProduct().calPrice());
+	            cart.put(entity.getProduct().getIdProduct(), cartDTO);
+	        }
+	    } catch (Exception e) {
+	        // Xử lý lỗi và ghi log nếu cần thiết
+	        e.printStackTrace();  // In lỗi ra console (nên thay thế bằng một công cụ log thực tế như SLF4J, Log4j)
+	        throw new RuntimeException("Lỗi khi lấy giỏ hàng từ cơ sở dữ liệu: " + e.getMessage(), e);
+	    }
+	    
+	    return cart;
 	}
 
 	@Transactional

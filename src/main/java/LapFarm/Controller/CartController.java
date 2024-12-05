@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.internal.build.AllowSysOut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +47,7 @@ public class CartController extends BaseController {
 		if (user != null) {
 			// Nếu người dùng đã đăng nhập, đồng bộ giỏ hàng từ database vào session
 			HashMap<Integer, CartDTO> cart = cartService.getCartFromDatabase(user.getUserInfo().getUserId());
-
+			
 			// Cập nhật lại giỏ hàng trong session
 			session.setAttribute("Cart", cart);
 			session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
@@ -68,33 +69,29 @@ public class CartController extends BaseController {
 		int userId = 0;
 		// Lấy thông tin người dùng
 		AccountEntity user = (AccountEntity) session.getAttribute("user");
+		HashMap<Integer, CartDTO> cart;
 		if (user != null) {
 			userId = user.getUserInfo().getUserId();
 			ProductEntity productEntity = productDAO.getProductById(id);
 			CartEntity cartEntity = new CartEntity(user.getUserInfo(), productEntity, 1);
 			cartDAO.createCart(cartEntity);
-			HashMap<Integer, CartDTO> cart = cartDAO.getCartFromDatabase(userId);
-
-			// Cập nhật lại session
-			session.setAttribute("Cart", cart);
-			session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
-			session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
+			cart = cartDAO.getCartFromDatabase(userId);
 
 		} else {
 			// Lấy giỏ hàng từ session
-			HashMap<Integer, CartDTO> cart = (HashMap<Integer, CartDTO>) session.getAttribute("Cart");
+			cart = (HashMap<Integer, CartDTO>) session.getAttribute("Cart");
 			if (cart == null) {
 				cart = new HashMap<>();
 			}
 			// Thêm sản phẩm vào giỏ
 			cart = cartService.AddCart(id, cart, userId);
-
-			// Cập nhật lại session
-			session.setAttribute("Cart", cart);
-			session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
-			session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
 		}
 
+		// Cập nhật lại session
+		session.removeAttribute("Cart");
+		session.setAttribute("Cart", cart);
+		session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
+		session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
 		return "redirect:" + request.getHeader("Referer");
 	}
 
