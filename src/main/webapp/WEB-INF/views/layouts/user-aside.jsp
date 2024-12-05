@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-	
 
+<style>
+</style>
 <div class="section">
 	<!-- container -->
 	<div class="container">
@@ -34,9 +35,9 @@
 					<div class="filter-container">
 						<h3>GIÁ</h3>
 						<div class="slider-container">
-							<input type="range" min="${priceMin - 1}" max="${priceMax + 1}" value="${priceMin - 1}"
-								class="price-slider" id="minPriceSlider"> <input
-								type="range" min="${priceMin - 1}" max="${priceMax + 1}"
+							<input type="range" min="${priceMin - 1}" max="${priceMax + 1}"
+								value="${priceMin - 1}" class="price-slider" id="minPriceSlider">
+							<input type="range" min="${priceMin - 1}" max="${priceMax + 1}"
 								value="${priceMax + 1}" class="price-slider" id="maxPriceSlider">
 						</div>
 						<div class="price-container">
@@ -83,10 +84,12 @@
 								<!-- Sử dụng thuộc tính 'image' từ ProductDTO -->
 								<c:choose>
 									<c:when test="${not empty product.image}">
-										<img src="${product.image}" alt="Product Image" onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
+										<img src="${product.image}" alt="Product Image"
+											style="width: 80px; height: auto;"
+											onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'" />
 									</c:when>
 									<c:otherwise>
-										<img src="/LapFarm/resources/img/${p.images[0].imageUrl}"
+										<img src="/LapFarm/resources/img/${product.image}"
 											alt="Default Image">
 									</c:otherwise>
 								</c:choose>

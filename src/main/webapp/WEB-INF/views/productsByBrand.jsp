@@ -8,7 +8,7 @@
 	href="<c:url value="/resources/css/outOfStock.css" />">
 <!-- STORE -->
 <div id="store" class="col-md-9">
-	<h2>${ProductsPaginate != null ? ProductsPaginate.size() : 0}</h2>
+	<%-- <h2>${ProductsPaginate != null ? ProductsPaginate.size() : 0}</h2> --%>
 	<h3>
 
 		SẢN PHẨM THEO "${brand.nameBrand}":

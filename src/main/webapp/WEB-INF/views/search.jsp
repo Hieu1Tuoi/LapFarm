@@ -5,8 +5,8 @@
 <%@ include file="/WEB-INF/views/layouts/user-aside.jsp"%>
 <!-- STORE -->
 <div id="store" class="col-md-9">
-	<h2></h2>
-	<h2>${ProductsPaginate != null ? ProductsPaginate.size() : 0}</h2>
+	<%-- <h2></h2>
+	<h2>${ProductsPaginate != null ? ProductsPaginate.size() : 0}</h2> --%>
 	<h3>
 		TÌM KIẾM TỪ KHÓA: "${searchText}":
 		<fmt:formatNumber value="${productCounts[category.idCategory]}"
@@ -31,7 +31,8 @@
 									</c:when>
 									<c:otherwise>
 										<img src="/LapFarm/resources/img/${p.image}"
-											alt="Default Image" onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
+											alt="Default Image"
+											onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
 									</c:otherwise>
 								</c:choose>
 
@@ -80,9 +81,21 @@
 								</div>
 							</div>
 							<div class="add-to-cart">
-								<button class="add-to-cart-btn">
-									<i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
-								</button>
+								<c:choose>
+									<c:when test="${p.quantity > 0}">
+										<form action="addCart/${p.idProduct}" method="GET">
+											<button type="submit" class="add-to-cart-btn">
+												<i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
+											</button>
+										</form>
+									</c:when>
+									<c:otherwise>
+										<button type="button" class="add-to-cart-btn disabled"
+											disabled>
+											<i class="fa fa-ban"></i> Hết hàng
+										</button>
+									</c:otherwise>
+								</c:choose>
 							</div>
 						</div>
 					</div>
