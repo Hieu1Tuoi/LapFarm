@@ -23,6 +23,12 @@
 .product-name>a:hover {
 	
 }
+.product-img img {
+    max-width: 100%; /* Đảm bảo ảnh không vượt quá container */
+    max-height: 100%; /* Giữ chiều cao tối đa theo container */
+    object-fit: cover;
+    aspect-ratio: 1 / 1; /* Tạo khung vuông cho ảnh */
+}
 </style>
 <!-- Google font -->
 

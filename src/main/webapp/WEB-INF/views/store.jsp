@@ -72,9 +72,25 @@
 									</c:if>
 								</h6>
 								<div class="product-rating">
-									<i class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-										class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-										class="fa fa-star"></i>
+									<div class="rating-stars">
+						        <c:forEach var="star" begin="1" end="5">
+						            <c:choose>
+						              
+						                <c:when test="${star <= ratingSummary.average}">
+						                    <i class="fa fa-star"></i>
+						                </c:when>
+						
+						              
+						                <c:when test="${star - 0.5 <= ratingSummary.average && star > ratingSummary.average}">
+						                    <i class="fa fa-star-half-o"></i>
+						                </c:when>
+						
+						                <c:otherwise>
+						                    <i class="fa fa-star-o"></i>
+						                </c:otherwise>
+						            </c:choose>
+						        </c:forEach>
+						    </div>
 								</div>
 								<div class="product-btns">
 									<button class="add-to-wishlist">

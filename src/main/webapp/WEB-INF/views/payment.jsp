@@ -76,9 +76,10 @@
 					<!-- LOGO -->
 					<div class="col-md-3">
 						<div class="header-logo">
-							<a href="<c:url value="home" />" class="logo"> <img
-								src="<c:url value="/resources/img/logo.png" />" alt="">
-							</a>
+							<a href="<c:url value='/home' />" class="logo"> <img
+							src="<c:url value='/resources/img/Lapfarm.png' />" alt=""
+							style="max-width: 340px;">
+						</a>
 						</div>
 					</div>
 				</div>

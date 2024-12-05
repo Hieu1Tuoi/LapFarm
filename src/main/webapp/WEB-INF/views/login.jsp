@@ -64,8 +64,9 @@
 					<!-- LOGO -->
 					<div class="col-md-3">
 						<div class="header-logo">
-							<a href="<c:url value="/home" />" class="logo"> <img
-								src="<c:url value="/resources/img/logo.png" />" alt="">
+							<a href="<c:url value='/home' />" class="logo"> <img
+								src="<c:url value='/resources/img/Lapfarm.png' />" alt=""
+								style="max-width: 340px;">
 							</a>
 						</div>
 					</div>
@@ -111,8 +112,9 @@
 							<div class="text-center">- Hay -</div>
 							<br>
 							<div class="text-center">
-								<a href="<c:url value='${googleAuthUrl}' />" class="google-login">
-									<i class="fa fa-google" style="color: red;"></i> Đăng nhập với Google
+								<a href="<c:url value='${googleAuthUrl}' />"
+									class="google-login"> <i class="fa fa-google"
+									style="color: red;"></i> Đăng nhập với Google
 								</a>
 							</div>
 							<br>

@@ -195,10 +195,10 @@ Body Section
 
 			<div class="well well-small">
 
-				<h1>
+				<%-- <h1>
 					Giỏ hàng<small class="pull-right"> ${TotalQuantyCart} sản
 						phẩm </small>
-				</h1>
+				</h1> --%>
 				<hr class="soften" />
 
 				<table class="table table-bordered table-condensed">

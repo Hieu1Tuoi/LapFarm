@@ -36,7 +36,10 @@ public class AccountController {
 			Model model) {
 		AccountEntity user = (AccountEntity) httpSession.getAttribute("user");
 		if (user == null) {
-			return "redirect:/login";
+			user = (AccountEntity) httpSession.getAttribute("admin");
+			if (user == null) {
+				return "redirect:/login";
+			}
 		}
 
 		// Load thông tin cá nhân
@@ -80,8 +83,13 @@ public class AccountController {
 			@RequestParam(value = "sex", required = false) String sex, @RequestParam("phone") String phone,
 			@RequestParam("address") String address, HttpSession httpSession, Model model) {
 		AccountEntity user = (AccountEntity) httpSession.getAttribute("user");
+		int x = 0;
 		if (user == null) {
-			return "redirect:/login";
+			x = 1;
+			user = (AccountEntity) httpSession.getAttribute("admin");
+			if (user == null) {
+				return "redirect:/login";
+			}
 		}
 
 		Session session = factory.openSession();
@@ -108,7 +116,11 @@ public class AccountController {
 
 			// Lấy lại dữ liệu mới nhất và cập nhật vào session
 			AccountEntity updatedAccount = session.get(AccountEntity.class, account.getEmail());
-			httpSession.setAttribute("user", updatedAccount);
+			if (x == 0) {
+				httpSession.setAttribute("user", updatedAccount);
+			} else {
+				httpSession.setAttribute("admin", updatedAccount);
+			}
 
 			model.addAttribute("success", "Cập nhật thông tin thành công!");
 		} catch (Exception e) {
@@ -142,22 +154,19 @@ public class AccountController {
 
 	@RequestMapping("/order-detail")
 	public String showOrderDetail(@RequestParam("orderId") int orderId, Model model) {
-	    // Lấy thông tin chi tiết đơn hàng từ dịch vụ
-	    List<OrderDetailDTO> orderDetail = orderService.getOrderDetail(orderId);
+		// Lấy thông tin chi tiết đơn hàng từ dịch vụ
+		List<OrderDetailDTO> orderDetail = orderService.getOrderDetail(orderId);
 
-	    // Tính tổng giá
-	    double totalPrice = orderDetail.stream()
-	                                   .mapToDouble(item -> item.getPrice() * item.getQuantity())
-	                                   .sum();
+		// Tính tổng giá
+		double totalPrice = orderDetail.stream().mapToDouble(item -> item.getPrice() * item.getQuantity()).sum();
 
-	    // Thêm chi tiết đơn hàng và tổng giá vào model
-	    model.addAttribute("orderDetail", orderDetail);
-	    model.addAttribute("totalPrice", totalPrice);
-	    model.addAttribute("stateOrder", orderService.getStateById(orderId));
+		// Thêm chi tiết đơn hàng và tổng giá vào model
+		model.addAttribute("orderDetail", orderDetail);
+		model.addAttribute("totalPrice", totalPrice);
+		model.addAttribute("stateOrder", orderService.getStateById(orderId));
 
-	    // Trả về tên của JSP sẽ hiển thị chi tiết đơn hàng
-	    return "user/orderdetails/orderdetail";  // Trang này sẽ hiển thị chi tiết đơn hàng
+		// Trả về tên của JSP sẽ hiển thị chi tiết đơn hàng
+		return "user/orderdetails/orderdetail"; // Trang này sẽ hiển thị chi tiết đơn hàng
 	}
-
 
 }

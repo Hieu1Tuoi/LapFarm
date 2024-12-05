@@ -141,11 +141,12 @@ public class ProductController extends BaseController {
 
             // Lấy tất cả các đánh giá của sản phẩm
             List<ReviewEntity> reviews = reviewDAO.getAllReviewsByProductId(productId);
+            Map<String, Object> ratingSummary = productDAO.getRatingSummary(productId);
 
             // Truyền dữ liệu vào model
             model.addAttribute("product", product);
             model.addAttribute("reviews", reviews);
-
+            model.addAttribute("ratingSummary", ratingSummary);
             return "product-all-reviews";  // Trả về view "product-all-reviews"
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Đã xảy ra lỗi trong quá trình xử lý.");

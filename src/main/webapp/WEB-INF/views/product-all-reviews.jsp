@@ -107,9 +107,28 @@
 				</div>
 				<div class="product-rating">
 					<p>
-						<strong>Đánh giá:</strong> <i class="fa fa-star"></i> <i
-							class="fa fa-star"></i> <i class="fa fa-star"></i> <i
-							class="fa fa-star"></i> <i class="fa fa-star"></i>
+						<strong>Đánh giá:
+						<div class="rating-avg">
+								    <span>${ratingSummary.average}</span>
+								    <div class="rating-stars">
+								        <c:forEach var="star" begin="1" end="5">
+								            <c:choose>
+								              
+								                <c:when test="${star <= ratingSummary.average}">
+								                    <i class="fa fa-star"></i>
+								                </c:when>
+								                <c:when test="${star - 0.5 <= ratingSummary.average && star > ratingSummary.average}">
+								                    <i class="fa fa-star-half-o"></i>
+								                </c:when>
+								
+								                <c:otherwise>
+								                    <i class="fa fa-star-o"></i>
+								                </c:otherwise>
+								            </c:choose>
+								        </c:forEach>
+								    </div>
+								</div>
+
 				</div>
 				<div class="product-btns mt-4">
 					<form action="addCart/${product.idProduct}" method="GET"
@@ -132,10 +151,7 @@
 
 
 					</form>
-					<button class="btn btn-outline-secondary btn-lg"
-						style="display: inline-block;">
-						<i class="fa fa-heart-o"></i> Thêm yêu thích
-					</button>
+					
 				</div>
 
 			</div>
@@ -191,5 +207,6 @@
     </footer>
 
     <script src="<c:url value='/resources/js/script.js' />"></script>
+    
 </body>
 </html>

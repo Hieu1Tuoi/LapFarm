@@ -16,7 +16,7 @@ public class LoggerInterceptor implements HandlerInterceptor {
 
 		// Allow access to /login if the user is not logged in (no "admin" or "user" in
 		// session)
-		if (uri.endsWith("/login")) {
+		if (uri.contains("/login")) {
 			if (session.getAttribute("admin") != null || session.getAttribute("user") != null) {
 				// If the user is logged in, redirect them to the home page (or any other page)
 				response.sendRedirect(request.getContextPath() + "/");

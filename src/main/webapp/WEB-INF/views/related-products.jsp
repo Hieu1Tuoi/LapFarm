@@ -45,10 +45,22 @@
                                 </h6>
                             </div>
                             <div class="add-to-cart">
-                                <button class="add-to-cart-btn">
-                                    <i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
-                                </button>
-                            </div>
+								<c:choose>
+									<c:when test="${p.quantity > 0}">
+										<form action="addCart/${p.idProduct}" method="GET">
+											<button type="submit" class="add-to-cart-btn">
+												<i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
+											</button>
+										</form>
+									</c:when>
+									<c:otherwise>
+										<button type="button" class="add-to-cart-btn disabled"
+											disabled>
+											<i class="fa fa-ban"></i> Hết hàng
+										</button>
+									</c:otherwise>
+								</c:choose>
+							</div>
                         </div>
                     </div>
 

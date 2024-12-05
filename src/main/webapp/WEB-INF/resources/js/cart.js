@@ -30,35 +30,51 @@ function calculateTotal() {
 	}
 }
 
-// Hàm cập nhật giá của một hàng và gọi API
+// Hàm cập nhật giá của một hàng
 function updateRowTotal(rowId) {
-	const quantityInput = document.getElementById(`quanty-cart-${rowId}`);
-	const priceElement = document.getElementById(`price-cart-${rowId}`);
-	const totalElement = document.getElementById(`totalPrice${rowId}`);
+    const quantityInput = document.getElementById(`quanty-cart-${rowId}`);
+    const priceElement = document.getElementById(`price-cart-${rowId}`);
+    const totalElement = document.getElementById(`totalPrice${rowId}`);
 
-	if (quantityInput && priceElement && totalElement) {
-		const quantity = parseInt(quantityInput.value, 10) || 1;
-		const priceText = priceElement.innerText.trim().replace(/\./g, '').replace('₫', '');
-		const price = parseInt(priceText, 10) || 0;
-		const total = price * quantity;
+    if (quantityInput && priceElement && totalElement) {
+        let quantity = parseInt(quantityInput.value, 10) || 1; // Giá trị nhập vào
+        const min = parseInt(quantityInput.min, 10); // Giá trị nhỏ nhất
+        const max = parseInt(quantityInput.max, 10); // Giá trị lớn nhất
 
-		totalElement.innerText = formatCurrency(total) + " ₫";
+        // Nếu số lượng không hợp lệ, đặt lại giá trị hợp lệ
+        if (isNaN(quantity) || quantity < min) {
+            quantity = min;
+            alert(`Số lượng không hợp lệ! Tối thiểu là ${min}.`);
+        } else if (quantity > max) {
+            quantity = max;
+            alert(`Số lượng không hợp lệ! Tối đa là ${max}.`);
+        }
 
-		// Fetch API để cập nhật số lượng
-		fetch(`EditCart/${rowId}/${quantity}`, { method: "GET" })
-			.then(response => {
-				if (!response.ok) {
-					throw new Error("Lỗi cập nhật giỏ hàng.");
-				}
-				console.log("Cập nhật thành công:", rowId, quantity);
-			})
-			.catch(error => {
-				console.error("Lỗi khi cập nhật số lượng:", error);
-				alert("Không thể cập nhật số lượng sản phẩm. Vui lòng thử lại.");
-			});
-	}
+        // Cập nhật lại giá trị hợp lệ trong ô nhập liệu
+        quantityInput.value = quantity;
 
-	calculateTotal();
+        // Cập nhật tổng giá của hàng
+        const priceText = priceElement.innerText.trim().replace(/\./g, '').replace('₫', '');
+        const price = parseInt(priceText, 10) || 0;
+        const total = price * quantity;
+
+        totalElement.innerText = formatCurrency(total) + " ₫";
+
+        // Fetch API để cập nhật số lượng
+        fetch(`EditCart/${rowId}/${quantity}`, { method: "GET" })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Lỗi cập nhật giỏ hàng.");
+                }
+                console.log(`Cập nhật thành công: ${rowId} ${quantity}`);
+            })
+            .catch(error => {
+                console.error("Lỗi khi cập nhật số lượng:", error);
+                alert("Không thể cập nhật số lượng sản phẩm. Vui lòng thử lại.");
+            });
+    }
+
+    calculateTotal(); // Cập nhật tổng tiền
 }
 
 // Gắn sự kiện thay đổi cho ô nhập số lượng
@@ -127,8 +143,6 @@ document.addEventListener("DOMContentLoaded", function() {
 // Hàm xác nhận và xử lý xóa sản phẩm
 function attachDeleteEvent() {
 	const deleteButtons = document.querySelectorAll("a[id^='delete']");
-	const oldQuantity = document.querySelector('#totalQuantity').innerHTML;
-	const newQuantity = oldQuantity - 1;
 
 	deleteButtons.forEach(button => {
 		button.addEventListener("click", function(event) {
@@ -136,7 +150,7 @@ function attachDeleteEvent() {
 
 			if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
 				const rowId = this.id.replace("delete", ""); // Lấy ID từ thuộc tính id của thẻ <a>
-
+				
 				// Thực hiện fetch API
 				fetch(`DeleteCart/${rowId}`, { method: "GET" })
 					.then(response => {
@@ -147,6 +161,8 @@ function attachDeleteEvent() {
 						// Xóa hàng có cùng ID khỏi DOM
 						const rowElement = document.getElementById(rowId);
 						if (rowElement) {
+							const oldQuantity = document.querySelector('#totalQuantity').innerHTML;
+							const newQuantity = oldQuantity - 1;
 							rowElement.remove();
 							document.querySelector('#totalQuantity').innerHTML = newQuantity;
 						}

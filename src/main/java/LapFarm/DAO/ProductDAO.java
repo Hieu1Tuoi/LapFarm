@@ -290,8 +290,8 @@ public class ProductDAO {
 			String[] parts = priceRange.split("-");
 			if (parts.length == 2) {
 				try {
-					priceMin = Double.parseDouble(parts[0].trim()) - 1;
-					priceMax = Double.parseDouble(parts[1].trim()) + 1;
+					priceMin = Double.parseDouble(parts[0].trim()) - 100;
+					priceMax = Double.parseDouble(parts[1].trim()) + 100;
 				} catch (NumberFormatException e) {
 					// Nếu parse không thành công, giữ lại giá trị mặc định
 				}
