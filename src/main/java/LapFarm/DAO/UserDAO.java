@@ -43,7 +43,7 @@ public class UserDAO {
 	public List<UserInfoDTO> getAllUserInfoWithOrderCount() {
 		Session session = factory.openSession();
 		try {
-			String hql = "FROM UserInfoEntity";
+			String hql = "FROM UserInfoEntity u WHERE u.account.role.id = 0";
 			Query<UserInfoEntity> query = session.createQuery(hql, UserInfoEntity.class);
 			List<UserInfoEntity> userInfoList = query.list();
 

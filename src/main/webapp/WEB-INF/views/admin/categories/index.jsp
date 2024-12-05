@@ -11,7 +11,7 @@
 			Quản lý loại hàng
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+			<li><a href="admin/home"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
 			<li class="active">Loại hàng</li>
 		</ol>
 	</section>

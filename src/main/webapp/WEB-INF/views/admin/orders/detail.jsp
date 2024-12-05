@@ -7,8 +7,8 @@
     <section class="content-header">
         <h1>Quản lý đơn hàng</h1>
         <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
-            <li><a>Đơn hàng</a></li>
+            <li><a href="admin/home"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
+            <li><a href="admin/orders?">Đơn hàng</a></li>
             <li class="active">Chi tiết đơn hàng</li>
         </ol>
     </section>

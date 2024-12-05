@@ -7,8 +7,8 @@
     <section class="content-header">
         <h1>Thêm sản phẩm mới</h1>
         <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
-			<li><a href="#">Loại hàng</a></li>
+            <li><a href="admin/home"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
+			<li><a href="admin/categories">Loại hàng</a></li>
 			<li class="active"> Thêm loại hàng</li>
         </ol>
     </section>
