@@ -7,11 +7,23 @@
 <div id="store" class="col-md-9">
 	<%-- <h2></h2>
 	<h2>${ProductsPaginate != null ? ProductsPaginate.size() : 0}</h2> --%>
-	<h3>
+	<h3 id="searchTextContainer">
 		TÌM KIẾM TỪ KHÓA: "${searchText}":
 		<fmt:formatNumber value="${productCounts[category.idCategory]}"
 			type="number" groupingUsed="true" />
 	</h3>
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			const searchText = "${searchText}".trim(); // Lấy giá trị của searchText
+			const h3Element = document.getElementById("searchTextContainer");
+
+			if (!searchText) { // Nếu searchText rỗng
+				h3Element.style.display = "none"; // Ẩn thẻ <h3>
+			}
+		});
+	</script>
+
 	<!-- store products -->
 	<div class="row">
 		<!-- product -->
