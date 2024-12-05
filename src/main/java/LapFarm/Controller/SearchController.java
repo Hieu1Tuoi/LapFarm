@@ -34,81 +34,148 @@ public class SearchController extends BaseController {
 
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET, params = "!page")
 	public ModelAndView Index(@RequestParam("idCategory") String idCategory,
-			@RequestParam(value = "idBrand", required = false) Integer idBrand,
-			@RequestParam("searchtext") String searchText, @RequestParam("priceRange") String priceRange) {
-		if (idBrand == null) {
-			idBrand = 0; // Giá trị mặc định nếu không có tham số idBrand
-		}
-		priceRange = validatePriceRange(priceRange);
-		// Lấy danh sách Category
-		Init();
+	                          @RequestParam(value = "idBrand", required = false) Integer idBrand,
+	                          @RequestParam("searchtext") String searchText,
+	                          @RequestParam("priceRange") String priceRange,
+	                          @RequestParam(value = "page", defaultValue = "1") int currentPage) {
+	    
+	    if (idBrand == null) {
+	        idBrand = 0; // Giá trị mặc định nếu không có tham số idBrand
+	    }
+	    
+	    // Kiểm tra và chuẩn hóa giá trị priceRange
+	    priceRange = validatePriceRange(priceRange);
+	    
+	    // Lấy danh sách sản phẩm theo phân trang
+	    Init();
+	    _mvShare.addObject("products", productService.getAllProductsDTO());
 
-		_mvShare.addObject("products", productService.getAllProductsDTO());
+	    // Thêm vào model để hiển thị trên view
+	    _mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
 
-		// Lấy số lượng sản phẩm theo tất cả danh mục
+	    // Lọc sản phẩm theo searchText, idCategory, priceRange, và idBrand
+	    List<ProductDTO> filteredProducts = filter(productService.getAllProductsDTO(), searchText, 
+	                                                Integer.valueOf(idCategory), priceRange, idBrand);
+	    
+	    // Tính toán tổng số dữ liệu sau khi lọc
+	    int totalData = filteredProducts.size();
+	    PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
+	    _mvShare.addObject("paginateInfo", paginateInfo);
 
-		// Thêm vào model để hiển thị trên view
-		_mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
+	    // Lấy danh sách sản phẩm đã phân trang
+	    List<ProductDTO> paginatedProducts = productService.GetDataProductPaginates(paginateInfo.getStart(), 
+	                                                                               paginateInfo.getEnd(), 
+	                                                                               searchText, Integer.valueOf(idCategory), 
+	                                                                               priceRange, idBrand);
+	    
+	    // In ra số lượng sản phẩm sau khi lọc và phân trang
+	    System.out.println(totalData);
+	    System.out.println(paginatedProducts.size());
 
-		int totalData = filter(productService.getAllProductsDTO(), searchText, Integer.valueOf(idCategory), priceRange,
-				idBrand).size();
-		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
-		_mvShare.addObject("paginateInfo", paginateInfo);
+	    // Lấy tất cả ID sản phẩm để lấy rating summary cho mỗi sản phẩm
+	    List<Integer> productIds = paginatedProducts.stream().map(ProductDTO::getIdProduct).collect(Collectors.toList());
 
-		List<ProductDTO> allProducts = productService.GetDataProductPaginates(paginateInfo.getStart(),
-				paginateInfo.getEnd(), searchText, Integer.valueOf(idCategory), priceRange, idBrand);
-		System.out.println(totalData);
-		System.out.println(allProducts.size());
-		// Kiểm tra searchText và lọc danh sách sản phẩm
+	    // Gọi service để lấy rating summary cho tất cả sản phẩm
+	    List<Map<String, Object>> ratingSummaries = productService.getAllRatingSummaries(productIds);
+	    System.out.println("Rating Summaries: " + ratingSummaries);
 
-		_mvShare.addObject("searchText", searchText);
-		_mvShare.addObject("searchCategory", idCategory);
-		_mvShare.addObject("priceRange", priceRange);
-		Map<String, Double> price = productService.getMinMaxPrices();
-		_mvShare.addObject("priceRange", priceRange);
-		_mvShare.addObject("priceMin", price.get("min"));
-		_mvShare.addObject("priceMax", price.get("max"));
-		_mvShare.addObject("ProductsPaginate", allProducts);
-		_mvShare.setViewName("search");
-		return _mvShare;
+	    // Gán rating summary vào từng sản phẩm trong danh sách phân trang
+	    for (ProductDTO product : paginatedProducts) {
+	        for (Map<String, Object> summary : ratingSummaries) {
+	            if (product.getIdProduct() == (int) summary.get("productId")) {
+	                product.setRatingSummary(summary);
+	                System.out.println("Product ID: " + product.getIdProduct() + " - Rating: " + summary.get("average"));
+	            }
+	        }
+	    }
+
+	    // Truyền các tham số vào Model để hiển thị trong view
+	    _mvShare.addObject("searchText", searchText);
+	    _mvShare.addObject("searchCategory", idCategory);
+	    _mvShare.addObject("priceRange", priceRange);
+	    _mvShare.addObject("ProductsPaginate", paginatedProducts);
+	    
+	    // Lấy giá trị min và max cho phạm vi giá
+	    Map<String, Double> price = productService.getMinMaxPrices();
+	    _mvShare.addObject("priceMin", price.get("min"));
+	    _mvShare.addObject("priceMax", price.get("max"));
+
+	    // Đặt view cho ModelAndView
+	    _mvShare.setViewName("search");
+	    return _mvShare;
 	}
+
 
 	@RequestMapping(value = { "", "/" }, method = RequestMethod.GET, params = "page")
 	public ModelAndView Index(@RequestParam("idCategory") String idCategory,
-			@RequestParam("searchtext") String searchText, @RequestParam("priceRange") String priceRange,
-			@RequestParam(value = "idBrand", required = false) Integer idBrand,
-			@RequestParam(value = "page", defaultValue = "1") int currentPage) {
-		priceRange = validatePriceRange(priceRange);
-		Init();
-		if (idBrand == null) {
-			idBrand = 0; // Giá trị mặc định nếu không có tham số idBrand
-		}
-		_mvShare.addObject("products", productService.getAllProductsDTO());
+	                          @RequestParam("searchtext") String searchText,
+	                          @RequestParam("priceRange") String priceRange,
+	                          @RequestParam(value = "idBrand", required = false) Integer idBrand,
+	                          @RequestParam(value = "page", defaultValue = "1") int currentPage) {
+	    
+	    // Chuẩn hóa giá trị priceRange
+	    priceRange = validatePriceRange(priceRange);
+	    
+	    // Khởi tạo các tham số ban đầu
+	    Init();
+	    
+	    // Nếu idBrand không có thì gán giá trị mặc định là 0
+	    if (idBrand == null) {
+	        idBrand = 0;
+	    }
+	    
+	    // Lấy tất cả sản phẩm và truyền vào model
+	    _mvShare.addObject("products", productService.getAllProductsDTO());
+	    
+	    // Lấy tổng số sản phẩm
+	    _mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
 
-		// Lấy số lượng sản phẩm theo tất cả danh mục
+	    // Lọc danh sách sản phẩm theo các tham số tìm kiếm
+	    List<ProductDTO> filteredProducts = filter(productService.getAllProductsDTO(), searchText, 
+	                                                Integer.valueOf(idCategory), priceRange, idBrand);
+	    
+	    // Lấy số lượng sản phẩm sau khi lọc
+	    int totalData = filteredProducts.size();
+	    PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
+	    _mvShare.addObject("paginateInfo", paginateInfo);
 
-		// Thêm vào model để hiển thị trên view
-		_mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
+	    // Lấy sản phẩm phân trang
+	    List<ProductDTO> allProducts = productService.GetDataProductPaginates(paginateInfo.getStart(),
+	                                                                         paginateInfo.getEnd(),
+	                                                                         searchText, Integer.valueOf(idCategory),
+	                                                                         priceRange, idBrand);
 
-		int totalData = filter(productService.getAllProductsDTO(), searchText, Integer.valueOf(idCategory), priceRange,
-				idBrand).size();
-		PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
-		_mvShare.addObject("paginateInfo", paginateInfo);
+	    // Lấy tất cả ID sản phẩm để lấy rating summary cho mỗi sản phẩm
+	    List<Integer> productIds = allProducts.stream().map(ProductDTO::getIdProduct).collect(Collectors.toList());
+	    
+	    // Gọi service để lấy rating summary cho tất cả sản phẩm
+	    List<Map<String, Object>> ratingSummaries = productService.getAllRatingSummaries(productIds);
+	    System.out.println("Rating Summaries: " + ratingSummaries);
+	    
+	    // Gán rating summary vào từng sản phẩm trong danh sách phân trang
+	    for (ProductDTO product : allProducts) {
+	        for (Map<String, Object> summary : ratingSummaries) {
+	            if (product.getIdProduct() == (int) summary.get("productId")) {
+	                product.setRatingSummary(summary);
+	                System.out.println("Product ID: " + product.getIdProduct() + " - Rating: " + summary.get("average"));
+	            }
+	        }
+	    }
 
-		List<ProductDTO> allProducts = productService.GetDataProductPaginates(paginateInfo.getStart(),
-				paginateInfo.getEnd(), searchText, Integer.valueOf(idCategory), priceRange, idBrand);
+	    // Truyền các tham số vào Model để hiển thị trên view
+	    _mvShare.addObject("searchText", searchText);
+	    _mvShare.addObject("searchCategory", idCategory);
+	    _mvShare.addObject("priceRange", priceRange);
+	    _mvShare.addObject("ProductsPaginate", allProducts);
+	    
+	    // Lấy giá trị min và max cho phạm vi giá
+	    Map<String, Double> price = productService.getMinMaxPrices();
+	    _mvShare.addObject("priceMin", price.get("min"));
+	    _mvShare.addObject("priceMax", price.get("max"));
 
-		// Kiểm tra searchText và lọc danh sách sản phẩm
-
-		_mvShare.addObject("searchText", searchText);
-		_mvShare.addObject("searchCategory", idCategory);
-		Map<String, Double> price = productService.getMinMaxPrices();
-		_mvShare.addObject("priceRange", priceRange);
-		_mvShare.addObject("priceMin", price.get("min"));
-		_mvShare.addObject("priceMax", price.get("max"));
-		_mvShare.addObject("ProductsPaginate", allProducts);
-		_mvShare.setViewName("search");
-		return _mvShare;
+	    // Đặt view cho ModelAndView
+	    _mvShare.setViewName("search");
+	    return _mvShare;
 	}
 
 	public List<ProductDTO> filter(List<ProductDTO> list, String searchText, int idCategory, String priceRange,
