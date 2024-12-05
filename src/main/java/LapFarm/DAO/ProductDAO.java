@@ -566,6 +566,17 @@ public class ProductDAO {
 
 		return ratingSummary;
 	}
+	public List<Map<String, Object>> getAllRatingSummaries(List<Integer> productIds) {
+        List<Map<String, Object>> ratingSummaries = new ArrayList<>();
+        
+        for (Integer productId : productIds) {
+            Map<String, Object> ratingSummary = getRatingSummary(productId);
+            ratingSummary.put("productId", productId);  // Thêm productId vào mỗi rating summary
+            ratingSummaries.add(ratingSummary);
+        }
+        
+        return ratingSummaries;
+    }
 
 	public boolean updateProduct(ProductEntity product) {
 		// Sử dụng try-with-resources để tự động đóng session khi hoàn thành

@@ -1,5 +1,7 @@
 package LapFarm.DTO;
 
+import java.util.Map;
+
 public class ProductDTO {
 	private int idProduct;
 	private String nameProduct;
@@ -160,4 +162,14 @@ public class ProductDTO {
 	public long calSalePrice() {
 		return (long) (this.salePrice * 1);
 	}
+	private Map<String, Object> ratingSummary;
+
+    // Getter và Setter cho ratingSummary
+    public Map<String, Object> getRatingSummary() {
+        return ratingSummary;
+    }
+
+    public void setRatingSummary(Map<String, Object> ratingSummary) {
+        this.ratingSummary = ratingSummary;
+    }
 }

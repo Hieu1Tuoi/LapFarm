@@ -34,4 +34,7 @@ public class ProductServiceImp implements IProductService {
 	public Map<String, Double> getMinMaxPrices() {
 		return productDAO.getMinMaxPrices();
 	}
+	public List<Map<String, Object>> getAllRatingSummaries(List<Integer> productIds) {
+        return productDAO.getAllRatingSummaries(productIds);
+    }
 }

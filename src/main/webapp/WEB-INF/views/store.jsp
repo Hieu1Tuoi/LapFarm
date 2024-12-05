@@ -33,7 +33,6 @@
 		<c:if test="${ProductsPaginate.size()>0}">
 			<ul class="thumbnails">
 				<c:forEach var="p" items="${ProductsPaginate}" varStatus="loop">
-
 					<div class="col-md-4 col-xs-6">
 						<div class="product">
 							<div class="product-img">
@@ -77,28 +76,29 @@
 										</del>
 									</c:if>
 								</h6>
-								<div class="product-rating">
-									<div class="rating-stars">
-										<c:forEach var="star" begin="1" end="5">
-											<c:choose>
 
-												<c:when test="${star <= ratingSummary.average}">
-													<i class="fa fa-star"></i>
-												</c:when>
+                                
+    <c:if test="${not empty p.ratingSummary}">
+        <div class="product-rating">
+            <div class="rating-stars">
+                <c:forEach var="star" begin="1" end="5">
+                    <c:choose>
+                        <c:when test="${star <= p.ratingSummary.average}">
+                            <i class="fa fa-star"></i>
+                        </c:when>
+                        <c:when test="${star - 0.5 <= p.ratingSummary.average && star > p.ratingSummary.average}">
+                            <i class="fa fa-star-half-o"></i>
+                        </c:when>
+                        <c:otherwise>
+                            <i class="fa fa-star-o"></i>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+            </div>
+        </div>
+    </c:if>
 
 
-												<c:when
-													test="${star - 0.5 <= ratingSummary.average && star > ratingSummary.average}">
-													<i class="fa fa-star-half-o"></i>
-												</c:when>
-
-												<c:otherwise>
-													<i class="fa fa-star-o"></i>
-												</c:otherwise>
-											</c:choose>
-										</c:forEach>
-									</div>
-								</div>
 								<div class="product-btns">
 									<button class="add-to-wishlist">
 										<i class="fa fa-heart-o"></i><span class="tooltipp">Thêm
@@ -137,12 +137,13 @@
 
 					<c:if
 						test="${(loop.index +1)%3==0 || (loop.index +1)==ProductsPaginate.size() }">
-			</ul>
+			
 			<c:if test="${(loop.index +1)< ProductsPaginate.size() }">
 				<ul class="thumbnails">
 			</c:if>
 		</c:if>
 		</c:forEach>
+		</ul>
 		</c:if>
 
 		<!-- /product -->
