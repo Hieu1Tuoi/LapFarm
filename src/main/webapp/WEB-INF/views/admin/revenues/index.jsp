@@ -33,7 +33,7 @@
 
 <div class="content-wrapper">
     <section class="content-header">
-        <select id="yearSelector" onchange="updateChart()">
+        <select class="form-control" id="yearSelector" onchange="updateChart()">
             <c:forEach var="year" items="${years}">
                 <option value="${year}" <c:if test="${year == currentYear}">selected</c:if>>${year}</option>
             </c:forEach>

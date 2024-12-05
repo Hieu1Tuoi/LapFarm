@@ -19,15 +19,15 @@
 
 			<ul class="sidebar-menu" data-widget="tree">
 				
-				<li><a href="admin/home"> <i class="fa fa-revenue"></i> <span>Doanh thu</span>
+				<li><a href="admin/home"> <i class="fa fa-level-up"></i> <span>Doanh thu</span>
 						<span class="pull-right-container"> <small
-							class="label pull-right bg-green">Vãi cả chưởng</small>
+							class="label pull-right bg-green"></small>
 					</span>
 				</a></li>
 					
 				<li class="treeview"><a href="#"> <i
 						class="fa fa-dashboard"></i> <span>Quản lý sản phẩm</span> <span
-						class="pull-right-container"> <i
+						class="pull-right-container"><i
 							class="fa fa-angle-left pull-right"></i>
 					</span>
 				</a>
@@ -47,20 +47,20 @@
 					
 				<li><a href="admin/categories"> <i class="fa fa-server"></i> <span>Quản lý loại hàng</span>
 						<span class="pull-right-container"> <small
-							class="label pull-right bg-green">Hot</small>
+							class="label pull-right bg-green"></small>
 					</span>
 				</a></li>
 				
 				<li><a href="admin/brands"> <i class="fa fa-building"></i> <span>Quản lý nhãn hàng</span>
 						<span class="pull-right-container"> <small
-							class="label pull-right bg-green">Hot</small>
+							class="label pull-right bg-green"></small>
 					</span>
 				</a></li>
 
 				<li><a href="javascript:void(0);" onclick="linkToOrders()">
 						<i class="fa fa-th"></i> <span>Quản lý đơn hàng</span> <span
 						class="pull-right-container"> <small
-							class="label pull-right bg-green">FE</small>
+							class="label pull-right bg-green"></small>
 					</span>
 				</a></li>
 				<script>
@@ -78,7 +78,7 @@
 
 				<li><a href="admin/manage-user"> <i class="fa fa-user"></i> <span>Quản lý người dùng</span>
 						<span class="pull-right-container"> <small
-							class="label pull-right bg-green">Hot</small>
+							class="label pull-right bg-green"></small>
 					</span>
 				</a></li>
 
