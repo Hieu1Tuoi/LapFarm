@@ -4,6 +4,14 @@
 <%@ include file="/WEB-INF/views/layouts/user-breadcumb.jsp"%>
 <%@ include file="/WEB-INF/views/layouts/user-aside.jsp"%>
 
+
+<style>
+.product-img img {
+    width: 250px;
+    height: 250px;
+    object-fit: cover; /* Cắt ảnh để vừa khung */
+}
+</style>
 <!-- SECTION -->
 <link type="text/css" rel="stylesheet"
 	href="<c:url value="/resources/css/outOfStock.css" />">

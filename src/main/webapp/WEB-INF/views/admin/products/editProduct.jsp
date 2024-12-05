@@ -242,7 +242,7 @@
 				<div class="box-footer">
 					<button type="submit" class="btn btn-primary">Lưu</button>
 					<a
-						href="${pageContext.request.contextPath}/admin/product/list-product"
+						href="${pageContext.request.contextPath}/admin/product?category=1"
 						class="btn btn-default">Hủy bỏ</a>
 				</div>
 			</form>
