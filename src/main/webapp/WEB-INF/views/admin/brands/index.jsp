@@ -8,7 +8,7 @@
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1>
-			Quản lý loại hàng
+			Quản lý nhãn hàng
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="admin/home"><i class="fa fa-dashboard"></i>Trang chủ</a></li>
