@@ -99,7 +99,7 @@
 								<!-- Sử dụng thuộc tính 'category' từ ProductDTO -->
 								<p class="product-category">${product.categoryName}</p>
 								<h3 class="product-name">
-									<a href="product-detail/${product.idProduct}">${product.nameProduct}</a>
+									<a href="product-detail/${product.encryptedId}">${product.nameProduct}</a>
 								</h3>
 								<h4 class="product-price">
 									<td><fmt:formatNumber value="${product.calPrice()}"

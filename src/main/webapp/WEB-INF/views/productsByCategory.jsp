@@ -25,7 +25,7 @@
 					<div class="col-md-4 col-xs-6">
 						<div class="product">
 							<div class="product-img">
-								<a href="product-detail/${p.idProduct}"></a>
+								<a href="product-detail/${p.encryptedId}"></a>
 								<!-- Lấy hình ảnh đầu tiên từ danh sách -->
 								<c:choose>
 									<c:when test="${not empty p.image}">
@@ -52,7 +52,7 @@
 							<div class="product-body">
 								<p class="product-category">${p.categoryName}</p>
 								<h4 class="product-name">
-									<a href="product-detail/${p.idProduct}"
+									<a href="product-detail/${p.encryptedId}"
 										title="${p.nameProduct}">${p.nameProduct}</a>
 								</h4>
 								<h6 class="product-price">

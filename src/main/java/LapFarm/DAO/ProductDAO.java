@@ -113,7 +113,6 @@ public class ProductDAO {
 
 		return countMap;
 	}
-
 	// TOP SELLING
 	@Transactional
 	public List<ProductDTO> getTop5ProductsByLowestQuantity() {
@@ -146,6 +145,8 @@ public class ProductDAO {
 		return productDTOs;
 	}
 
+
+	
 	@Transactional
 	public List<ProductDTO> getProductsByCategory(int idCategory) {
 		Session session = factory.getCurrentSession();
@@ -566,17 +567,18 @@ public class ProductDAO {
 
 		return ratingSummary;
 	}
+
 	public List<Map<String, Object>> getAllRatingSummaries(List<Integer> productIds) {
-        List<Map<String, Object>> ratingSummaries = new ArrayList<>();
-        
-        for (Integer productId : productIds) {
-            Map<String, Object> ratingSummary = getRatingSummary(productId);
-            ratingSummary.put("productId", productId);  // Thêm productId vào mỗi rating summary
-            ratingSummaries.add(ratingSummary);
-        }
-        
-        return ratingSummaries;
-    }
+		List<Map<String, Object>> ratingSummaries = new ArrayList<>();
+
+		for (Integer productId : productIds) {
+			Map<String, Object> ratingSummary = getRatingSummary(productId);
+			ratingSummary.put("productId", productId); // Thêm productId vào mỗi rating summary
+			ratingSummaries.add(ratingSummary);
+		}
+
+		return ratingSummaries;
+	}
 
 	public boolean updateProduct(ProductEntity product) {
 		// Sử dụng try-with-resources để tự động đóng session khi hoàn thành
@@ -612,57 +614,53 @@ public class ProductDAO {
 		e.printStackTrace();
 	}
 
-	
 	public ProductEntity findProductById(int productId) {
-        Session session = factory.getCurrentSession();
-        return session.get(ProductEntity.class, productId);
-    }
+		Session session = factory.getCurrentSession();
+		return session.get(ProductEntity.class, productId);
+	}
 
-	
 	@Transactional
 	public void addProduct(ProductEntity product) {
 		Session session = factory.getCurrentSession();
-        try {
-            // Lưu đối tượng sản phẩm vào bảng "product"
-            session.persist(product); // Sử dụng saveOrUpdate để vừa có thể thêm mới, vừa có thể cập nhật
+		try {
+			// Lưu đối tượng sản phẩm vào bảng "product"
+			session.persist(product); // Sử dụng saveOrUpdate để vừa có thể thêm mới, vừa có thể cập nhật
 
-            // Nếu có ảnh liên quan, lưu các ảnh vào bảng "image"
-            for (ImageEntity image : product.getImages()) {
-                session.persist(image); // Lưu hoặc cập nhật ảnh liên kết với sản phẩm
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-	
+			// Nếu có ảnh liên quan, lưu các ảnh vào bảng "image"
+			for (ImageEntity image : product.getImages()) {
+				session.persist(image); // Lưu hoặc cập nhật ảnh liên kết với sản phẩm
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Transactional
 	public List<ProductEntity> getProductsByName(String nameProduct) {
-	    Session session = factory.getCurrentSession();
-	    
-	    // HQL để truy vấn sản phẩm theo tên
-	    String hql = "FROM ProductEntity p WHERE p.nameProduct = :nameProduct";
-	    Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
-	    query.setParameter("nameProduct", nameProduct);
-	    
-	    // Trả về danh sách sản phẩm
-	    return query.list();
+		Session session = factory.getCurrentSession();
+
+		// HQL để truy vấn sản phẩm theo tên
+		String hql = "FROM ProductEntity p WHERE p.nameProduct = :nameProduct";
+		Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+		query.setParameter("nameProduct", nameProduct);
+
+		// Trả về danh sách sản phẩm
+		return query.list();
 	}
-	
+
 	@Transactional
 	public boolean checkProductByName(String nameProduct) {
 		Session session = factory.getCurrentSession();
-	    
-	    // HQL để kiểm tra sự tồn tại của sản phẩm theo tên
-	    String hql = "SELECT COUNT(p) FROM ProductEntity p WHERE p.nameProduct = :nameProduct";
-	    Query<Long> query = session.createQuery(hql, Long.class);
-	    query.setParameter("nameProduct", nameProduct);
-	    
-	    // Kiểm tra nếu số lượng sản phẩm lớn hơn 0 thì có tồn tại, ngược lại là không
-	    long count = query.uniqueResult();
-	    
-	    return count > 0;
+
+		// HQL để kiểm tra sự tồn tại của sản phẩm theo tên
+		String hql = "SELECT COUNT(p) FROM ProductEntity p WHERE p.nameProduct = :nameProduct";
+		Query<Long> query = session.createQuery(hql, Long.class);
+		query.setParameter("nameProduct", nameProduct);
+
+		// Kiểm tra nếu số lượng sản phẩm lớn hơn 0 thì có tồn tại, ngược lại là không
+		long count = query.uniqueResult();
+
+		return count > 0;
 	}
-
-
 
 }

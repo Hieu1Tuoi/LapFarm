@@ -3,6 +3,7 @@ package LapFarm.Controller;
 
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,9 +11,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.ModelAndView;
 
 import LapFarm.DTO.CartDTO;
+import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.AccountEntity;
 import LapFarm.Service.BaseServiceImp;
 import LapFarm.Service.CartServiceImp;
+import LapFarm.Utils.SecureUrlUtil;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -50,9 +53,19 @@ public class BaseController {
 		_mvShare.addObject("productCountsByBrand",
 				_baseService.getProductCountByAllBrands(_baseService.getBrandEntities()));
 
-		_mvShare.addObject("products_top_sell", _baseService.getTop5ProductsByLowestQuantity());
-		
-		
+		 // Lấy sản phẩm top bán chạy nhất
+	    List<ProductDTO> topSellingProducts = _baseService.getTop5ProductsByLowestQuantity();
+
+	    // Mã hóa ID sản phẩm trong danh sách top selling
+	    topSellingProducts.forEach(product -> {
+	        try {
+	            product.setEncryptedId(SecureUrlUtil.encrypt(String.valueOf(product.getIdProduct())));
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    });
+
+	    _mvShare.addObject("products_top_sell", topSellingProducts);
 		
 		return _mvShare;
 	}

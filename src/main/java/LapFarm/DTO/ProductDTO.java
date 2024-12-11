@@ -16,6 +16,7 @@ public class ProductDTO {
 	private Double salePrice;
 	private String state;
 	private String image; // Đường dẫn ảnh chính (nếu cần)
+	 private String encryptedId; 
 
 	// Constructor
 
@@ -171,5 +172,12 @@ public class ProductDTO {
 
     public void setRatingSummary(Map<String, Object> ratingSummary) {
         this.ratingSummary = ratingSummary;
+    }
+    public String getEncryptedId() {
+        return encryptedId;
+    }
+
+    public void setEncryptedId(String encryptedId) {
+        this.encryptedId = encryptedId;
     }
 }

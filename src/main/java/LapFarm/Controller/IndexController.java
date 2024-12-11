@@ -23,6 +23,7 @@ import LapFarm.Entity.CategoryEntity;
 import LapFarm.Entity.ProductEntity;
 import LapFarm.Service.PaginatesServiceImp;
 import LapFarm.Service.ProductServiceImp;
+import LapFarm.Utils.SecureUrlUtil;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -45,84 +46,55 @@ public class IndexController extends BaseController {
 
 	@RequestMapping(value = { "", "/", "/home" }, method = RequestMethod.GET, params = "!page")
 	public ModelAndView Index(HttpSession session) {
+	    return handlePageRequest(1, session); // Mặc định trang đầu tiên
+	}
+
+	@RequestMapping(value = { "", "/", "/home" }, method = RequestMethod.GET, params = "page")
+	public ModelAndView Index(@RequestParam(value = "page", defaultValue = "1") int currentPage, HttpSession session) {
+	    return handlePageRequest(currentPage, session); // Sử dụng giá trị trang được truyền
+	}
+
+	private ModelAndView handlePageRequest(int currentPage, HttpSession session) {
 	    Init();
 	    addCartToSession(session);
 
 	    // Lấy danh sách sản phẩm
 	    List<ProductDTO> allProducts = productService.getAllProductsDTO();
-	    _mvShare.addObject("products", allProducts);
 
-	    // Lấy tổng số lượng sản phẩm
-	    _mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
-
-	    // Lấy tổng số sản phẩm và thông tin phân trang
-	    int totalData = allProducts.size();
-	    PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, 1);
-	    _mvShare.addObject("paginateInfo", paginateInfo);
-
-	    // Phân trang và lấy danh sách sản phẩm phân trang
-	    List<ProductDTO> paginatedProducts = productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, "", 0);
-
-	    // Lấy tất cả ID sản phẩm để lấy rating summary cho mỗi sản phẩm
-	    List<Integer> productIds = paginatedProducts.stream().map(ProductDTO::getIdProduct).collect(Collectors.toList());
-	    
-	    // Gọi service để lấy rating summary cho tất cả sản phẩm
-	    List<Map<String, Object>> ratingSummaries = productService.getAllRatingSummaries(productIds);
-	    System.out.println("Rating Summaries: " + ratingSummaries);
-
-	    // Gán rating summary vào từng sản phẩm trong danh sách phân trang
-	    for (ProductDTO product : paginatedProducts) {
-	        for (Map<String, Object> summary : ratingSummaries) {
-	            if (product.getIdProduct() == (int) summary.get("productId")) {
-	                product.setRatingSummary(summary);
-	                System.out.println("Product ID: " + product.getIdProduct() + " - Rating: " + summary.get("average"));
-	            }
+	    // Mã hóa ID sản phẩm
+	    allProducts.forEach(product -> {
+	        try {
+	            product.setEncryptedId(SecureUrlUtil.encrypt(String.valueOf(product.getIdProduct())));
+	        } catch (Exception e) {
+	            e.printStackTrace();
 	        }
-	    }
-
-	    // Đưa ProductsPaginate vào model
-	    _mvShare.addObject("ProductsPaginate", paginatedProducts);
-
-	    // Lấy giá min và max
-	    Map<String, Double> price = productService.getMinMaxPrices();
-	    _mvShare.addObject("priceMin", price.get("min"));
-	    _mvShare.addObject("priceMax", price.get("max"));
-
-	    // Đặt view là "store"
-	    _mvShare.setViewName("store");
-	    return _mvShare;
-	}
-
-
-
-
-	@RequestMapping(value = { "", "/", "/home" }, method = RequestMethod.GET, params = "page")
-	public ModelAndView Index(@RequestParam(value = "page", defaultValue = "1") int currentPage) {
-	    Init();
-	    
-	    // Lấy tất cả sản phẩm
-	    List<ProductDTO> allProducts = productService.getAllProductsDTO();
+	    });
 	    _mvShare.addObject("products", allProducts);
 
-	    // Lấy tổng số lượng sản phẩm
-	    _mvShare.addObject("totalQuantity", productService.getTotalProductQuantity());
-
-	    // Tính tổng số dữ liệu và thông tin phân trang
+	    // Tính toán phân trang
 	    int totalData = allProducts.size();
 	    PaginatesDto paginateInfo = paginateService.GetInfoPaginate(totalData, totalProductPage, currentPage);
 	    _mvShare.addObject("paginateInfo", paginateInfo);
 
-	    // Lấy dữ liệu phân trang
-	    List<ProductDTO> paginatedProducts = productService.GetDataProductPaginates(paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, "", 0);
+	    // Lấy sản phẩm phân trang
+	    List<ProductDTO> paginatedProducts = productService.GetDataProductPaginates(
+	        paginateInfo.getStart(), paginateInfo.getEnd(), "", 0, "", 0
+	    );
 
-	    // Lấy tất cả ID sản phẩm trong danh sách phân trang
+	    // Mã hóa ID sản phẩm trong danh sách phân trang
+	    paginatedProducts.forEach(product -> {
+	        try {
+	            product.setEncryptedId(SecureUrlUtil.encrypt(String.valueOf(product.getIdProduct())));
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    });
+
+	    // Lấy rating summary cho từng sản phẩm
 	    List<Integer> productIds = paginatedProducts.stream().map(ProductDTO::getIdProduct).collect(Collectors.toList());
-
-	    // Gọi service để lấy rating summary cho tất cả sản phẩm
 	    List<Map<String, Object>> ratingSummaries = productService.getAllRatingSummaries(productIds);
-	    System.out.println("Rating Summaries: " + ratingSummaries);
 
-	    // Gán rating summary vào từng sản phẩm trong danh sách phân trang
+	    // Gắn rating summary vào sản phẩm
 	    for (ProductDTO product : paginatedProducts) {
 	        for (Map<String, Object> summary : ratingSummaries) {
 	            if (product.getIdProduct() == (int) summary.get("productId")) {
@@ -131,7 +103,6 @@ public class IndexController extends BaseController {
 	        }
 	    }
 
-	    // Đưa ProductsPaginate vào model
 	    _mvShare.addObject("ProductsPaginate", paginatedProducts);
 
 	    // Lấy giá min và max
@@ -139,11 +110,11 @@ public class IndexController extends BaseController {
 	    _mvShare.addObject("priceMin", price.get("min"));
 	    _mvShare.addObject("priceMax", price.get("max"));
 
-	    // Đặt view là "store"
+	    // Đặt view
 	    _mvShare.setViewName("store");
-
 	    return _mvShare;
 	}
+
 
 
 	@RequestMapping(value = "/home/send")

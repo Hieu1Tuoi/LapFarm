@@ -30,6 +30,7 @@ import LapFarm.Entity.ProductEntity;
 
 import LapFarm.Entity.ReviewEntity;
 import LapFarm.Entity.UserInfoEntity;
+import LapFarm.Utils.SecureUrlUtil;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -48,13 +49,28 @@ public class ProductController extends BaseController {
     private ReviewDAO reviewDAO;
 
     @RequestMapping(value = "/product-detail/{idProduct}", method = RequestMethod.GET)
-    public String productDetail(@PathVariable("idProduct") int productId,
+    public String productDetail(@PathVariable("idProduct") String encryptedId,
                                 @RequestParam(value = "page", defaultValue = "1") int page,
                                 @RequestParam(value = "pageSize", defaultValue = "3") int pageSize,
                                 Model model,
                                 HttpSession httpSession) {
         Init();
+        
         try {
+            // Giải mã idProduct từ URL
+            int productId;
+            try {
+                // Giải mã ID sản phẩm
+                String decryptedId = SecureUrlUtil.decrypt(encryptedId);
+                if (decryptedId == null || decryptedId.isEmpty() || !decryptedId.matches("\\d+")) {
+                    throw new IllegalArgumentException("ID sản phẩm không hợp lệ.");
+                }
+                productId = Integer.parseInt(decryptedId);
+            } catch (Exception e) {
+                model.addAttribute("errorMessage", "ID sản phẩm không hợp lệ hoặc bị thay đổi.");
+                return "error/404";  // Trả về trang lỗi nếu ID không hợp lệ
+            }
+
             // Lấy sản phẩm
             ProductEntity product = productDAO.getProductById(productId);
             ProductDetailEntity productDetail = productDetailDAO.getProductDetailById(productId);
@@ -120,6 +136,7 @@ public class ProductController extends BaseController {
             return "error/404";  // Trả về trang lỗi nếu có lỗi trong quá trình xử lý
         }
     }
+
 
 
     @RequestMapping(value = "/related-products/{idBrand}", method = RequestMethod.GET)

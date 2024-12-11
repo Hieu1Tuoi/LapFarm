@@ -26,7 +26,7 @@
 					<div class="col-md-4 col-xs-6">
 						<div class="product">
 							<div class="product-img">
-								<a href="product-detail/${p.idProduct}"></a>
+							<a href="product-detail/${p.encryptedId}"></a>
 								<!-- Lấy hình ảnh đầu tiên từ danh sách -->
 								<c:choose>
 									<c:when test="${not empty p.image}">
@@ -53,8 +53,8 @@
 							<div class="product-body">
 								<p class="product-category">${p.categoryName}</p>
 								<h4 class="product-name">
-									<a href="product-detail/${p.idProduct}"
-										title="${p.nameProduct}">${p.nameProduct}</a>
+									<a href="product-detail/${p.encryptedId}" title="${p.nameProduct}">${p.nameProduct}</a>
+
 								</h4>
 								<h6 class="product-price">
 									<td><fmt:formatNumber value="${p.calPrice()}"
@@ -67,30 +67,39 @@
 										</del>
 									</c:if>
 								</h6>
-									<style>
-		.fa-star {color: red;}
-		.fa-star-half-o {color: red;}
-		.fa-star-o {color: red;}
-	</style>                
-    <c:if test="${not empty p.ratingSummary}">
-        <div class="product-rating">
-            <div class="rating-stars">
-                <c:forEach var="star" begin="1" end="5">
-                    <c:choose>
-                        <c:when test="${star <= p.ratingSummary.average}">
-                            <i class="fa fa-star"></i>
-                        </c:when>
-                        <c:when test="${star - 0.5 <= p.ratingSummary.average && star > p.ratingSummary.average}">
-                            <i class="fa fa-star-half-o"></i>
-                        </c:when>
-                        <c:otherwise>
-                            <i class="fa fa-star-o"></i>
-                        </c:otherwise>
-                    </c:choose>
-                </c:forEach>
-            </div>
-        </div>
-    </c:if>
+								<style>
+.fa-star {
+	color: red;
+}
+
+.fa-star-half-o {
+	color: red;
+}
+
+.fa-star-o {
+	color: red;
+}
+</style>
+								<c:if test="${not empty p.ratingSummary}">
+									<div class="product-rating">
+										<div class="rating-stars">
+											<c:forEach var="star" begin="1" end="5">
+												<c:choose>
+													<c:when test="${star <= p.ratingSummary.average}">
+														<i class="fa fa-star"></i>
+													</c:when>
+													<c:when
+														test="${star - 0.5 <= p.ratingSummary.average && star > p.ratingSummary.average}">
+														<i class="fa fa-star-half-o"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fa fa-star-o"></i>
+													</c:otherwise>
+												</c:choose>
+											</c:forEach>
+										</div>
+									</div>
+								</c:if>
 								<div class="product-btns">
 									<button class="add-to-wishlist">
 										<i class="fa fa-heart-o"></i><span class="tooltipp">Thêm
