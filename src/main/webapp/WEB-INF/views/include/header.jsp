@@ -231,14 +231,16 @@
 						<form action="search" method="get">
 							<!-- Dropdown cho danh mục -->
 							<select class="input-select" name="idCategory">
-								<option value="0" ${searchCategory == 0 ? 'selected' : ''}>Tất
+								<option value="0"
+									${searchCategory == null || searchCategory == 0 ? 'selected' : ''}>Tất
 									cả</option>
 								<c:forEach var="cate" items="${categories}">
-									<option value="${cate.idCategory}"
-										${searchCategory == cate.idCategory ? 'selected' : ''}>
+									<option value="${cate.encryptedId}"
+										${searchCategory != null && searchCategory.equals(cate.encryptedId) ? 'selected' : ''}>
 										${cate.nameCategory}</option>
 								</c:forEach>
 							</select>
+
 
 							<!-- Ô nhập từ khóa tìm kiếm -->
 							<input value="${searchText}" id="searchInput" class="input"

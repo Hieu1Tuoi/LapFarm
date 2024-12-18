@@ -19,12 +19,13 @@
 						<c:forEach var="cate" items="${categories}">
 							<div class="category-item">
 								<!-- Thẻ <a> chứa liên kết động -->
-								<a href="products-category?idCategory=${cate.idCategory}">
-									${cate.nameCategory} <small>(${productCounts[cate.idCategory]})</small>
+								<a href="products-category?idCategory=${cate.encryptedId}">
+									${cate.nameCategory} <small>(${productCounts[cate.idCategory] != null ? productCounts[cate.idCategory] : 0})</small>
 								</a>
 							</div>
 							<br>
 						</c:forEach>
+
 					</div>
 
 				</div>
@@ -61,8 +62,8 @@
 						<c:forEach var="brand" items="${brands}">
 							<div class="brand-item">
 								<!-- Thẻ <a> thay thế checkbox -->
-								<a href="products-brand?idBrand=${brand.idBrand}"
-									class="brand-link" data-brand-id="${brand.idBrand}">
+								<a href="products-brand?idBrand=${brand.encryptedId}"
+									class="brand-link" data-brand-id="${brand.encryptedId}">
 									${brand.nameBrand} <small>(${productCountsByBrand[brand.idBrand]})</small>
 								</a>
 

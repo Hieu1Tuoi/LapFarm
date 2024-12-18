@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "category")
@@ -27,6 +28,9 @@ public class CategoryEntity {
 
 	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<ProductEntity> products;
+	
+	@Transient
+	private String encryptedId; // ID đã mã hóa không lưu trong DB
 	
 	public CategoryEntity() {
 		
@@ -54,6 +58,13 @@ public class CategoryEntity {
 		this.nameCategory = nameCategory;
 	}
 	
-	
+	// Getters và Setters mới
+	public String getEncryptedId() {
+		return encryptedId;
+	}
+
+	public void setEncryptedId(String encryptedId) {
+		this.encryptedId = encryptedId;
+	}
 	
 }

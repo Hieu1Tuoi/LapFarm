@@ -13,6 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 import LapFarm.DTO.CartDTO;
 import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.AccountEntity;
+import LapFarm.Entity.BrandEntity;
+import LapFarm.Entity.CategoryEntity;
 import LapFarm.Service.BaseServiceImp;
 import LapFarm.Service.CartServiceImp;
 import LapFarm.Utils.SecureUrlUtil;
@@ -36,13 +38,37 @@ public class BaseController {
 	
 	
 	public ModelAndView Init() {
-		// Lấy danh sách Category
-		_mvShare.addObject("categories", _baseService.getCategoryEntities());
+		  // Lấy danh sách Category
+	    List<CategoryEntity> categories = _baseService.getCategoryEntities();
 
-		// Lấy danh sách Brand
-		_mvShare.addObject("brands", _baseService.getBrandEntities());
+	    // Mã hóa idCategory cho mỗi CategoryEntity
+	    categories.forEach(category -> {
+	        try {
+	            String encryptedId = SecureUrlUtil.encrypt(String.valueOf(category.getIdCategory()));
+	            category.setEncryptedId(encryptedId); // Thêm setter cho trường này trong CategoryEntity
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    });
 
-	
+	    // Thêm danh sách categories với idCategory đã mã hóa vào ModelAndView
+	    _mvShare.addObject("categories", categories);
+
+		// Lấy danh sách Brand và mã hóa idBrand
+		List<BrandEntity> brands = _baseService.getBrandEntities();
+		brands.forEach(brand -> {
+		    try {
+		        // Mã hóa idBrand và gán vào đối tượng BrandEntity
+		        String encryptedId = SecureUrlUtil.encrypt(String.valueOf(brand.getIdBrand()));
+		        brand.setEncryptedId(encryptedId) ;// Thêm setter cho trường này trong BrandEntity
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+		});
+
+		// Thêm danh sách brands với idBrand đã mã hóa vào ModelAndView
+		_mvShare.addObject("brands", brands);
+
 
 		// Lấy số lượng sản phẩm theo tất cả danh mục
 		_mvShare.addObject("productCounts",

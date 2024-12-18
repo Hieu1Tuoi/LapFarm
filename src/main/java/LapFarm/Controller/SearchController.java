@@ -42,6 +42,17 @@ public class SearchController extends BaseController {
                               @RequestParam(value = "idBrand", required = false) Integer idBrand,
                               @RequestParam(value = "page", defaultValue = "1") int currentPage) {
 
+    	Init();
+        // Giải mã idCategory
+        String decryptedIdCategory;
+        try {
+            decryptedIdCategory = SecureUrlUtil.decrypt(idCategory);
+        } catch (Exception e) {
+            // Xử lý nếu giải mã thất bại
+            decryptedIdCategory = "0"; // Giá trị mặc định nếu giải mã không thành công
+            e.printStackTrace();
+        }
+
         // Kiểm tra và chuẩn hóa các tham số
         if (idBrand == null) {
             idBrand = 0;
@@ -50,7 +61,7 @@ public class SearchController extends BaseController {
 
         // Lấy danh sách tất cả sản phẩm và áp dụng bộ lọc
         List<ProductDTO> allProducts = productService.getAllProductsDTO();
-        List<ProductDTO> filteredProducts = filter(allProducts, searchText, Integer.parseInt(idCategory), priceRange, idBrand);
+        List<ProductDTO> filteredProducts = filter(allProducts, searchText, Integer.parseInt(decryptedIdCategory), priceRange, idBrand);
 
         // Tính toán thông tin phân trang
         int totalData = filteredProducts.size();
@@ -59,7 +70,7 @@ public class SearchController extends BaseController {
         // Lấy sản phẩm phân trang
         List<ProductDTO> paginatedProducts = productService.GetDataProductPaginates(paginateInfo.getStart(), 
                                                                                    paginateInfo.getEnd(), 
-                                                                                   searchText, Integer.parseInt(idCategory), 
+                                                                                   searchText, Integer.parseInt(decryptedIdCategory), 
                                                                                    priceRange, idBrand);
 
         // Lấy tất cả ID sản phẩm để lấy rating summary cho mỗi sản phẩm
@@ -70,7 +81,7 @@ public class SearchController extends BaseController {
         // Gọi service để lấy rating summary cho tất cả sản phẩm
         List<Map<String, Object>> ratingSummaries = productService.getAllRatingSummaries(productIds);
 
-     // Gán rating summary vào từng sản phẩm trong danh sách phân trang
+        // Gán rating summary vào từng sản phẩm trong danh sách phân trang
         for (ProductDTO product : paginatedProducts) {
             ratingSummaries.stream()
                            .filter(summary -> product.getIdProduct() == (int) summary.get("productId"))
@@ -79,25 +90,15 @@ public class SearchController extends BaseController {
 
             // Thêm mã hóa idProduct vào sản phẩm
             try {
-				product.setEncryptedId(SecureUrlUtil.encrypt(String.valueOf(product.getIdProduct())));
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
-
-        
-        // Gán rating summary vào từng sản phẩm trong danh sách phân trang
-        for (ProductDTO product : paginatedProducts) {
-            ratingSummaries.stream()
-                           .filter(summary -> product.getIdProduct() == (int) summary.get("productId"))
-                           .findFirst()
-                           .ifPresent(summary -> product.setRatingSummary(summary));
+                product.setEncryptedId(SecureUrlUtil.encrypt(String.valueOf(product.getIdProduct())));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         // Đưa các giá trị vào ModelAndView
         _mvShare.addObject("searchText", searchText);
-        _mvShare.addObject("searchCategory", idCategory);
+        _mvShare.addObject("searchCategory", decryptedIdCategory);
         _mvShare.addObject("priceRange", priceRange);
         _mvShare.addObject("ProductsPaginate", paginatedProducts);
         _mvShare.addObject("paginateInfo", paginateInfo);
@@ -111,6 +112,7 @@ public class SearchController extends BaseController {
         _mvShare.setViewName("search");
         return _mvShare;
     }
+
 
     // Phương thức lọc sản phẩm
     public List<ProductDTO> filter(List<ProductDTO> list, String searchText, int idCategory, String priceRange,

@@ -408,11 +408,12 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="section-title text-center">
-						<h3 class="title">Related Products</h3>
+						<h3 class="title">Sản phẩm liên quan</h3>
 					</div>
 				</div>
 
 				<c:forEach var="product" items="${relatedProducts}">
+				
 					<div class="col-md-3 col-xs-6">
 						<div class="product">
 							<div class="product-img">
@@ -422,7 +423,7 @@
 							<div class="product-body">
 								<p class="product-category">${product.categoryName}</p>
 								<h3 class="product-name">
-									<a href="product-detail/${product.idProduct}">${product.nameProduct}</a>
+								<a href="product-detail/${product.encryptedId}">${product.nameProduct}</a>
 								</h3>
 								<h4 class="product-price">
 									<fmt:formatNumber value="${product.salePrice}" type="number"
@@ -440,7 +441,7 @@
 				</c:forEach>
 				<!-- Nút "Xem tất cả sản phẩm liên quan" -->
 				<div class="col-md-12 text-center">
-					<a href="products-brand?idBrand=${product.brand.idBrand}"
+					<a href="products-brand?idBrand=${product.brand.encryptedId}"
 						class="btn btn-danger">Xem tất cả</a>
 				</div>
 

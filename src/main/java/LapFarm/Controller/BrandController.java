@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import LapFarm.DTO.PaginatesDto;
 import LapFarm.DTO.ProductDTO;
+import LapFarm.Entity.BrandEntity;
 import LapFarm.Service.BrandServiceImp;
 import LapFarm.Service.PaginatesServiceImp;
 import LapFarm.Service.ProductServiceImp;
@@ -33,21 +34,31 @@ public class BrandController extends BaseController {
 
     @RequestMapping(value = "/products-brand", params = {"!page"})
     public ModelAndView indexWithoutPage(
-            @RequestParam(value = "idBrand", required = false) Integer idBrand,
+            @RequestParam(value = "idBrand", required = false) String encryptedIdBrand,
             @RequestParam(value = "nameBrand", required = false) String nameBrand) {
-        return handleBrandRequest(idBrand, nameBrand, 1);
+        return handleBrandRequest(encryptedIdBrand, nameBrand, 1);
     }
 
     @RequestMapping(value = "/products-brand", params = {"page"})
     public ModelAndView indexWithPage(
-            @RequestParam(value = "idBrand", required = false) Integer idBrand,
+            @RequestParam(value = "idBrand", required = false) String encryptedIdBrand,
             @RequestParam(value = "nameBrand", required = false) String nameBrand,
             @RequestParam(value = "page", defaultValue = "1") int currentPage) {
-        return handleBrandRequest(idBrand, nameBrand, currentPage);
+        return handleBrandRequest(encryptedIdBrand, nameBrand, currentPage);
     }
 
-    private ModelAndView handleBrandRequest(Integer idBrand, String nameBrand, int currentPage) {
+
+    private ModelAndView handleBrandRequest(String encryptedIdBrand, String nameBrand, int currentPage) {
         Init();
+
+        Integer idBrand = null;
+        if (encryptedIdBrand != null) {
+            try {
+                idBrand = Integer.parseInt(SecureUrlUtil.decrypt(encryptedIdBrand));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         if (idBrand != null) {
             setupBrandView(idBrand, null, currentPage);
@@ -66,7 +77,13 @@ public class BrandController extends BaseController {
 
     private void setupBrandView(Integer idBrand, String nameBrand, int currentPage) {
         if (idBrand != null) {
-            _mvShare.addObject("brand", brandService.getBrandById(idBrand));
+            BrandEntity brand = brandService.getBrandById(idBrand);
+            try {
+                brand.setEncryptedId(SecureUrlUtil.encrypt(String.valueOf(brand.getIdBrand())));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            _mvShare.addObject("brand", brand);
             _mvShare.addObject("AllProductByID", brandService.getProductsByBrand(idBrand));
             setupPaginatedProducts(idBrand, null, currentPage);
         } else if (nameBrand != null) {
@@ -75,6 +92,7 @@ public class BrandController extends BaseController {
             setupPaginatedProducts(null, nameBrand, currentPage);
         }
     }
+
 
     private void setupPaginatedProducts(Integer idBrand, String nameBrand, int currentPage) {
         int totalData = (idBrand != null)

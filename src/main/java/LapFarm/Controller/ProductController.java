@@ -60,7 +60,6 @@ public class ProductController extends BaseController {
             // Giải mã idProduct từ URL
             int productId;
             try {
-                // Giải mã ID sản phẩm
                 String decryptedId = SecureUrlUtil.decrypt(encryptedId);
                 if (decryptedId == null || decryptedId.isEmpty() || !decryptedId.matches("\\d+")) {
                     throw new IllegalArgumentException("ID sản phẩm không hợp lệ.");
@@ -71,7 +70,7 @@ public class ProductController extends BaseController {
                 return "error/404";  // Trả về trang lỗi nếu ID không hợp lệ
             }
 
-            // Lấy sản phẩm
+            // Lấy sản phẩm từ cơ sở dữ liệu
             ProductEntity product = productDAO.getProductById(productId);
             ProductDetailEntity productDetail = productDetailDAO.getProductDetailById(productId);
             if (product == null) {
@@ -82,10 +81,16 @@ public class ProductController extends BaseController {
             // Lấy số lượt bán của sản phẩm
             int salesCount = orderDetailDAO.countSalesByProductId(productId);
 
-            // Lấy danh sách sản phẩm liên quan theo thương hiệu
+            // Lấy danh sách sản phẩm liên quan theo thương hiệu (dựa vào productId đã giải mã)
             int brandId = product.getBrand().getIdBrand();
-            List<ProductDTO> relatedProducts = productDAO.getRelatedProductsByBrand(brandId, productId, 4);
+            List<ProductDTO> relatedProducts = productDAO.getRelatedProductsByBrand(brandId, productId, 4); // Sử dụng brandId và productId
 
+
+            // Thêm encryptedId vào từng sản phẩm liên quan
+            for (ProductDTO relatedProduct : relatedProducts) {
+                String encryptedProductId = SecureUrlUtil.encrypt(String.valueOf(relatedProduct.getIdProduct()));
+                relatedProduct.setEncryptedId(encryptedProductId);
+            }
             // Lấy dữ liệu đánh giá
             List<ReviewEntity> reviews = reviewDAO.getReviewsByProductIdWithPagination(productId, page, pageSize);
 
@@ -102,7 +107,7 @@ public class ProductController extends BaseController {
                 viewedItems = new ArrayList<>();
             }
 
-            // Kiểm tra xem sản phẩm đã được xem chưa, nếu chưa thì thêm vào danh sách đã xem
+            // Kiểm tra xem sản phẩm đã được xem chưa
             boolean alreadyViewed = viewedItems.stream().anyMatch(item -> item.getId() == productId);
             if (!alreadyViewed) {
                 ViewedItem viewedItem = new ViewedItem();
@@ -110,49 +115,33 @@ public class ProductController extends BaseController {
                 viewedItem.setName(product.getNameProduct());
                 viewedItem.setImage((product.getImages() != null && !product.getImages().isEmpty())
                     ? product.getImages().get(0).getImageUrl()
-                    : "");  // Nếu không có hình ảnh, để trống
-                viewedItem.setPrice(product.calPrice());  // Tính giá của sản phẩm
-                viewedItems.add(viewedItem);  // Thêm vào danh sách đã xem
+                    : "");
+                viewedItem.setPrice(product.calPrice());
+                viewedItems.add(viewedItem);
             }
-            // Cập nhật lại danh sách đã xem vào session
             httpSession.setAttribute("viewedItems", viewedItems);
 
-            // Truyền dữ liệu vào model
+            // Truyền dữ liệu vào model để view sử dụng
             model.addAttribute("product", product);
             model.addAttribute("productDetail", productDetail);
-            model.addAttribute("relatedProducts", relatedProducts);
+            model.addAttribute("relatedProducts", relatedProducts); // Thêm sản phẩm liên quan vào model
             model.addAttribute("reviews", reviews);
             model.addAttribute("totalReviews", totalReviews);
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", totalPages);
             model.addAttribute("pageSize", pageSize);
             model.addAttribute("ratingSummary", ratingSummary);
-            model.addAttribute("salesCount", salesCount);  // Thêm số lượt bán vào model
+            model.addAttribute("salesCount", salesCount);
 
-            return "product";  // Trả về view "product"
-
+            return "product"; // Trả về view "product"
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Đã xảy ra lỗi trong quá trình xử lý.");
-            return "error/404";  // Trả về trang lỗi nếu có lỗi trong quá trình xử lý
+            return "error/404"; // Trả về trang lỗi nếu có lỗi trong quá trình xử lý
         }
     }
 
 
 
-    @RequestMapping(value = "/related-products/{idBrand}", method = RequestMethod.GET)
-    public String viewAllRelatedProducts(@PathVariable("idBrand") int idBrand, Model model) {
-    	Init();
-        // Lấy tất cả sản phẩm theo thương hiệu
-        List<ProductDTO> relatedProducts = productDAO.getAllProductsByBrand(idBrand);
-
-        if (relatedProducts.isEmpty()) {
-            model.addAttribute("errorMessage", "Không có sản phẩm nào liên quan.");
-            return "error/404";  // Trả về trang lỗi nếu không có sản phẩm liên quan
-        }
-
-        model.addAttribute("relatedProducts", relatedProducts);
-        return "related-products";  // Trả về trang hiển thị các sản phẩm liên quan
-    }
     @RequestMapping(value = "/product-all-reviews/{idProduct}", method = RequestMethod.GET)
     public String allReviews(@PathVariable("idProduct") int productId, Model model) {
         try {
