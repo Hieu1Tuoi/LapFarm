@@ -387,6 +387,48 @@ public class ProductDAO {
 
 		return query.uniqueResult(); // Trả về sản phẩm hoặc null nếu không tìm thấy
 	}
+	
+	@Transactional
+	public ProductDTO getProductById2(int productId) {
+	    // Lấy session từ factory
+	    Session session = factory.getCurrentSession();
+
+	    // Truy vấn lấy sản phẩm theo ID
+	    String hql = "SELECT p FROM ProductEntity p LEFT JOIN FETCH p.images WHERE p.idProduct = :productId";
+	    Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+	    query.setParameter("productId", productId);
+
+	    // Lấy sản phẩm từ cơ sở dữ liệu
+	    ProductEntity product = query.uniqueResult();
+
+	    if (product != null) {
+	        // Chuyển đổi từ ProductEntity sang ProductDTO
+	        String image = product.getImages() != null && !product.getImages().isEmpty()
+	                ? product.getImages().get(0).getImageUrl()
+	                : null;
+
+	        return new ProductDTO(
+	            product.getIdProduct(),
+	            product.getNameProduct(),
+	            product.getBrand() != null ? product.getBrand().getIdBrand() : null,
+	            product.getBrand() != null ? product.getBrand().getNameBrand() : null,
+	            product.getCategory() != null ? product.getCategory().getNameCategory() : null,
+	            product.getCategory() != null ? product.getCategory().getIdCategory() : 0,
+	            product.getDescription(),
+	            product.getQuantity(),
+	            product.getDiscount(),
+	            product.getOriginalPrice(),
+	            product.getSalePrice(),
+	            product.getState(),
+	            image
+	        );
+	    }
+
+	    // Nếu không tìm thấy sản phẩm, trả về null hoặc có thể throw exception tùy vào yêu cầu
+	    return null;
+	}
+
+	
 
 	@Transactional
 	public Map<String, Double> getMinMaxPrices() {

@@ -116,29 +116,29 @@
 				<div class="product-rating">
 					<p>
 						<strong>Đánh giá:
-						<div class="rating-avg">
-						    <span>${ratingSummary.average}</span>
-						    <div class="rating-stars">
-						        <c:forEach var="star" begin="1" end="5">
-						            <c:choose>
-						              
-						                <c:when test="${star <= ratingSummary.average}">
-						                    <i class="fa fa-star"></i>
-						                </c:when>
-						
-						              
-						                <c:when test="${star - 0.5 <= ratingSummary.average && star > ratingSummary.average}">
-						                    <i class="fa fa-star-half-o"></i>
-						                </c:when>
-						
-						                <c:otherwise>
-						                    <i class="fa fa-star-o"></i>
-						                </c:otherwise>
-						            </c:choose>
-						        </c:forEach>
-						    </div>
-						</div>
+							<div class="rating-avg">
+								<span>${ratingSummary.average}</span>
+								<div class="rating-stars">
+									<c:forEach var="star" begin="1" end="5">
+										<c:choose>
 
+											<c:when test="${star <= ratingSummary.average}">
+												<i class="fa fa-star"></i>
+											</c:when>
+
+
+											<c:when
+												test="${star - 0.5 <= ratingSummary.average && star > ratingSummary.average}">
+												<i class="fa fa-star-half-o"></i>
+											</c:when>
+
+											<c:otherwise>
+												<i class="fa fa-star-o"></i>
+											</c:otherwise>
+										</c:choose>
+									</c:forEach>
+								</div>
+							</div>
 				</div>
 				<div class="product-btns mt-4">
 					<form action="addCart/${product.idProduct}" method="GET"
@@ -161,7 +161,7 @@
 
 
 					</form>
-					
+
 				</div>
 
 			</div>
@@ -172,7 +172,8 @@
 		<div id="product-tab">
 			<!-- product tab nav -->
 			<ul class="tab-nav">
-				<li class="active"><a data-toggle="tab" href="#tab1">Chi tiết</a></li>
+				<li class="active"><a data-toggle="tab" href="#tab1">Chi
+						tiết</a></li>
 				<li><a data-toggle="tab" href="#tab2">Thông số kỹ thuật</a></li>
 				<li><a data-toggle="tab" href="#tab3"> Đánh giá <span
 						class="badge">${totalReviews}</span>
@@ -187,7 +188,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<p>${product.description}</p>
-							<p style="text-align:center;"> MORE UPDATE SOON...</p>
+							<p style="text-align: center;">ĐANG CẬP NHẬT...</p>
 						</div>
 					</div>
 				</div>
@@ -197,7 +198,9 @@
 				<div id="tab2" class="tab-pane fade in">
 					<div class="row">
 						<div class="col-md-12">
-							<p><h2 style="text-align:center;">UPDATE SOON...</h2></p>
+							<p>
+							<h2 style="text-align: center;">ĐANG CẬP NHẬT...</h2>
+							</p>
 						</div>
 					</div>
 				</div>
@@ -210,24 +213,25 @@
 						<div class="col-md-3">
 							<div id="rating">
 								<div class="rating-avg">
-								    <span>${ratingSummary.average}</span>
-								    <div class="rating-stars">
-								        <c:forEach var="star" begin="1" end="5">
-								            <c:choose>
-								              
-								                <c:when test="${star <= ratingSummary.average}">
-								                    <i class="fa fa-star"></i>
-								                </c:when>
-								                <c:when test="${star - 0.5 <= ratingSummary.average && star > ratingSummary.average}">
-								                    <i class="fa fa-star-half-o"></i>
-								                </c:when>
-								
-								                <c:otherwise>
-								                    <i class="fa fa-star-o"></i>
-								                </c:otherwise>
-								            </c:choose>
-								        </c:forEach>
-								    </div>
+									<span>${ratingSummary.average}</span>
+									<div class="rating-stars">
+										<c:forEach var="star" begin="1" end="5">
+											<c:choose>
+
+												<c:when test="${star <= ratingSummary.average}">
+													<i class="fa fa-star"></i>
+												</c:when>
+												<c:when
+													test="${star - 0.5 <= ratingSummary.average && star > ratingSummary.average}">
+													<i class="fa fa-star-half-o"></i>
+												</c:when>
+
+												<c:otherwise>
+													<i class="fa fa-star-o"></i>
+												</c:otherwise>
+											</c:choose>
+										</c:forEach>
+									</div>
 								</div>
 								<ul class="rating">
 									<li>
@@ -329,9 +333,11 @@
 
 								<!-- Nút Hiện Tất Cả -->
 								<div class="show-all-reviews">
-									<a
-										href="<c:url value='/product-all-reviews/${product.idProduct}' />"
-										class="btn btn-danger btn-lgy">Hiện tất cả đánh giá</a>
+									<div class="show-all-reviews">
+										<a href="product-all-reviews/${mahoaID}"
+											class="btn btn-danger btn-lgy">Hiện tất cả đánh giá</a>
+									</div>
+
 								</div>
 
 							</div>
@@ -341,52 +347,46 @@
 
 
 
+				<!-- Review Form -->
+<div class="col-md-3">
+    <div id="review-form">
+        <!-- Kiểm tra nếu người dùng đã đăng nhập -->
+        <c:if test="${not empty sessionScope.user}">
+            <form class="review-form" id="reviewForm" method="post"
+                  action="${pageContext.request.contextPath}/submitReview">
+                <!-- Truyền ID sản phẩm đã mã hóa -->
+                <input type="hidden" name="encryptedProductId" value="${mahoaID}" />
+                <textarea class="input" name="review" placeholder="Your Review" required></textarea>
+                <div class="input-rating">
+                    <span>Your Rating: </span>
+                    <div class="stars">
+                        <input id="star5" name="rating" value="5" type="radio" required>
+                        <label for="star5"></label>
+                        <input id="star4" name="rating" value="4" type="radio">
+                        <label for="star4"></label>
+                        <input id="star3" name="rating" value="3" type="radio">
+                        <label for="star3"></label>
+                        <input id="star2" name="rating" value="2" type="radio">
+                        <label for="star2"></label>
+                        <input id="star1" name="rating" value="1" type="radio">
+                        <label for="star1"></label>
+                    </div>
+                </div>
+                <button class="primary-btn" type="submit">Submit</button>
+            </form>
+            <!-- Thông báo thành công hoặc lỗi -->
+            <div id="successMessage" style="display: none;" class="alert alert-success"></div>
+            <div id="errorMessage" style="display: none;" class="alert alert-danger"></div>
+        </c:if>
 
+        <c:if test="${empty sessionScope.user}">
+            <p>
+                Bạn cần <a href="<c:url value='/login' />">đăng nhập</a> để gửi đánh giá.
+            </p>
+        </c:if>
+    </div>
+</div>
 
-
-						<!-- Review Form -->
-						<div class="col-md-3">
-							<div id="review-form">
-								<!-- Kiểm tra nếu người dùng đã đăng nhập -->
-								<c:if test="${not empty sessionScope.user}">
-									<form class="review-form" id="reviewForm" method="post"
-										action="${pageContext.request.contextPath}/submitReview">
-										<input type="hidden" name="productId"
-											value="${product.idProduct}" />
-										<textarea class="input" name="review"
-											placeholder="Your Review" required></textarea>
-										<div class="input-rating">
-											<span>Your Rating: </span>
-											<div class="stars">
-												<input id="star5" name="rating" value="5" type="radio"
-													required><label for="star5"></label> <input
-													id="star4" name="rating" value="4" type="radio"><label
-													for="star4"></label> <input id="star3" name="rating"
-													value="3" type="radio"><label for="star3"></label>
-												<input id="star2" name="rating" value="2" type="radio"><label
-													for="star2"></label> <input id="star1" name="rating"
-													value="1" type="radio"><label for="star1"></label>
-											</div>
-										</div>
-										<button class="primary-btn" type="submit">Submit</button>
-									</form>
-									<!-- Thông báo thành công hoặc lỗi -->
-									<div id="successMessage" style="display: none;"
-										class="alert alert-success"></div>
-									<div id="errorMessage" style="display: none;"
-										class="alert alert-danger"></div>
-								</c:if>
-
-								<c:if test="${empty sessionScope.user}">
-									<p>
-										Bạn cần <a href="<c:url value='/login' />">đăng nhập</a> để
-										gửi đánh giá.
-									</p>
-								</c:if>
-							</div>
-						</div>
-
-						<!-- /Review Form -->
 
 						<!-- Thêm JavaScript ở cuối trang, trước thẻ </body> -->
 						<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -413,7 +413,7 @@
 				</div>
 
 				<c:forEach var="product" items="${relatedProducts}">
-				
+
 					<div class="col-md-3 col-xs-6">
 						<div class="product">
 							<div class="product-img">
@@ -423,7 +423,7 @@
 							<div class="product-body">
 								<p class="product-category">${product.categoryName}</p>
 								<h3 class="product-name">
-								<a href="product-detail/${product.encryptedId}">${product.nameProduct}</a>
+									<a href="product-detail/${product.encryptedId}">${product.nameProduct}</a>
 								</h3>
 								<h4 class="product-price">
 									<fmt:formatNumber value="${product.salePrice}" type="number"
@@ -446,7 +446,7 @@
 				</div>
 
 			</div>
-			
+
 		</div>
 
 

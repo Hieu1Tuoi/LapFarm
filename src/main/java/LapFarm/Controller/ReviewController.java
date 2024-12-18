@@ -5,6 +5,7 @@ import LapFarm.Entity.ProductEntity;
 import LapFarm.Entity.ReviewEntity;
 import LapFarm.Entity.UserInfoEntity;
 import LapFarm.Service.ReviewService;
+import LapFarm.Utils.SecureUrlUtil;
 import LapFarm.Service.ProductService;
 
 import java.security.Timestamp;
@@ -30,20 +31,32 @@ public class ReviewController {
     @Autowired
     private ProductService productService;  // Inject ProductService để tìm sản phẩm
 
-    // Phương thức xử lý submit review
     @RequestMapping(value = "/submitReview", method = RequestMethod.POST)
-    public String submitReview(@RequestParam("productId") int productId, // Chỉ cần Long ID
+    public String submitReview(@RequestParam("encryptedProductId") String encryptedProductId, // ID sản phẩm đã mã hóa
                                @RequestParam("review") String review,
                                @RequestParam("rating") int rating,
                                HttpSession session, Model model) {
         // Kiểm tra xem người dùng đã đăng nhập hay chưa
-    	AccountEntity user = (AccountEntity) session.getAttribute("user");
+        AccountEntity user = (AccountEntity) session.getAttribute("user");
         if (user == null) {
             model.addAttribute("errorMessage", "Bạn cần đăng nhập để gửi đánh giá.");
             return "redirect:/login"; // Chuyển hướng người dùng đến trang đăng nhập
         }
 
         try {
+            // Giải mã encryptedProductId để lấy productId
+            int productId;
+            try {
+                String decryptedId = SecureUrlUtil.decrypt(encryptedProductId);  // Giải mã ID sản phẩm
+                if (decryptedId == null || decryptedId.isEmpty() || !decryptedId.matches("\\d+")) {
+                    throw new IllegalArgumentException("ID sản phẩm không hợp lệ.");
+                }
+                productId = Integer.parseInt(decryptedId);
+            } catch (Exception e) {
+                model.addAttribute("errorMessage", "ID sản phẩm không hợp lệ hoặc bị thay đổi.");
+                return "redirect:/products"; // Chuyển hướng đến trang sản phẩm nếu ID không hợp lệ
+            }
+
             // Tìm sản phẩm từ ID
             ProductEntity product = productService.getProductById(productId);  // Lấy sản phẩm theo ID
             if (product == null) {
@@ -60,10 +73,11 @@ public class ReviewController {
             reviewService.saveReview(newReview); // Lưu đánh giá vào cơ sở dữ liệu
 
             model.addAttribute("successMessage", "Đánh giá của bạn đã được gửi thành công.");
-            return "redirect:/product-detail/" + productId; // Chuyển hướng người dùng về trang sản phẩm sau khi gửi đánh giá
+            return "redirect:/product-detail/" + encryptedProductId; // Chuyển hướng người dùng về trang sản phẩm với ID mã hóa
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Đã có lỗi xảy ra trong quá trình gửi đánh giá.");
-            return "redirect:/product-detail/" + productId; // Chuyển hướng về trang sản phẩm nếu có lỗi
+            return "redirect:/product-detail/" + encryptedProductId; // Chuyển hướng về trang sản phẩm nếu có lỗi
         }
     }
+
 }

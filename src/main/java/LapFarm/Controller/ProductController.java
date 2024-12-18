@@ -132,7 +132,7 @@ public class ProductController extends BaseController {
             model.addAttribute("pageSize", pageSize);
             model.addAttribute("ratingSummary", ratingSummary);
             model.addAttribute("salesCount", salesCount);
-
+            model.addAttribute("mahoaID", encryptedId);
             return "product"; // Trả về view "product"
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Đã xảy ra lỗi trong quá trình xử lý.");
@@ -142,16 +142,29 @@ public class ProductController extends BaseController {
 
 
 
-    @RequestMapping(value = "/product-all-reviews/{idProduct}", method = RequestMethod.GET)
-    public String allReviews(@PathVariable("idProduct") int productId, Model model) {
+    @RequestMapping(value = "/product-all-reviews/{encryptedId}", method = RequestMethod.GET)
+    public String allReviews(@PathVariable("encryptedId") String encryptedId, Model model) {
         try {
-            // Lấy sản phẩm
+            // Giải mã encryptedId để lấy productId
+            int productId;
+            try {
+                String decryptedId = SecureUrlUtil.decrypt(encryptedId);
+                if (decryptedId == null || decryptedId.isEmpty() || !decryptedId.matches("\\d+")) {
+                    throw new IllegalArgumentException("ID sản phẩm không hợp lệ.");
+                }
+                productId = Integer.parseInt(decryptedId);
+            } catch (Exception e) {
+                model.addAttribute("errorMessage", "ID sản phẩm không hợp lệ hoặc bị thay đổi.");
+                return "error/404";  // Trả về trang lỗi nếu ID không hợp lệ
+            }
+
+            // Lấy sản phẩm từ cơ sở dữ liệu
             ProductEntity product = productDAO.getProductById(productId);
             if (product == null) {
                 model.addAttribute("errorMessage", "Không tìm thấy sản phẩm.");
                 return "error/404";  // Trả về trang lỗi nếu không tìm thấy sản phẩm
             }
-
+          
             // Lấy tất cả các đánh giá của sản phẩm
             List<ReviewEntity> reviews = reviewDAO.getAllReviewsByProductId(productId);
             Map<String, Object> ratingSummary = productDAO.getRatingSummary(productId);
@@ -160,13 +173,14 @@ public class ProductController extends BaseController {
             model.addAttribute("product", product);
             model.addAttribute("reviews", reviews);
             model.addAttribute("ratingSummary", ratingSummary);
+            model.addAttribute("mahoaID", encryptedId);
+
             return "product-all-reviews";  // Trả về view "product-all-reviews"
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Đã xảy ra lỗi trong quá trình xử lý.");
             return "error/404";  // Trả về trang lỗi nếu có lỗi trong quá trình xử lý
         }
     }
-    
-    
+
     
 }
