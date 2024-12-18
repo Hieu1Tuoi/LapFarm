@@ -38,6 +38,12 @@ public class BaseController {
 	
 	
 	public ModelAndView Init() {
+		try {
+			_mvShare.addObject("Zerocode",SecureUrlUtil.encrypt("0"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		  // Lấy danh sách Category
 	    List<CategoryEntity> categories = _baseService.getCategoryEntities();
 

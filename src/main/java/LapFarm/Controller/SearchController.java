@@ -95,6 +95,7 @@ public class SearchController extends BaseController {
                 e.printStackTrace();
             }
         }
+    	
 
         // Đưa các giá trị vào ModelAndView
         _mvShare.addObject("searchText", searchText);

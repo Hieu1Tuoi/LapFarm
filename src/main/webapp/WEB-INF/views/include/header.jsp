@@ -231,7 +231,7 @@
 						<form action="search" method="get">
 							<!-- Dropdown cho danh mục -->
 							<select class="input-select" name="idCategory">
-								<option value="0"
+								<option value="${Zerocode}"
 									${searchCategory == null || searchCategory == 0 ? 'selected' : ''}>Tất
 									cả</option>
 								<c:forEach var="cate" items="${categories}">
