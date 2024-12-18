@@ -6,6 +6,7 @@ public class ViewedItem {
     private String image;   // URL of the product image
     private long price;    // Price of the product
 
+    private String encryptedId; 
     // Default constructor
     public ViewedItem() {}
 
@@ -40,5 +41,13 @@ public class ViewedItem {
 
     public void setPrice(long l) {
         this.price = l;
+    }
+    
+    public String getEncryptedId() {
+        return encryptedId;
+    }
+
+    public void setEncryptedId(String encryptedId) {
+        this.encryptedId = encryptedId;
     }
 }

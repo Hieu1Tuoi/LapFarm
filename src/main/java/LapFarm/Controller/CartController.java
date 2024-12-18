@@ -17,11 +17,13 @@ import org.springframework.web.servlet.ModelAndView;
 import LapFarm.DAO.CartDAO;
 import LapFarm.DAO.ProductDAO;
 import LapFarm.DTO.CartDTO;
+import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.AccountEntity;
 import LapFarm.Entity.CartEntity;
 import LapFarm.Entity.ProductEntity;
 import LapFarm.Entity.UserInfoEntity;
 import LapFarm.Service.CartServiceImp;
+import LapFarm.Utils.SecureUrlUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -47,7 +49,18 @@ public class CartController extends BaseController {
 		if (user != null) {
 			// Nếu người dùng đã đăng nhập, đồng bộ giỏ hàng từ database vào session
 			HashMap<Integer, CartDTO> cart = cartService.getCartFromDatabase(user.getUserInfo().getUserId());
-			
+			// Duyệt qua giỏ hàng và mã hóa ID sản phẩm
+		    for (Map.Entry<Integer, CartDTO> entry : cart.entrySet()) {
+		        CartDTO cartDTO = entry.getValue();
+		        ProductDTO productDTO = cartDTO.getProduct();
+		        try {
+		            // Mã hóa ID sản phẩm và gán lại cho ProductDTO trong giỏ hàng
+		            String encryptedId = SecureUrlUtil.encrypt(String.valueOf(productDTO.getIdProduct()));
+		            productDTO.setEncryptedId(encryptedId);
+		        } catch (Exception e) {
+		            e.printStackTrace(); // Xử lý lỗi nếu có
+		        }
+		    }
 			// Cập nhật lại giỏ hàng trong session
 			session.setAttribute("Cart", cart);
 			session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
@@ -60,40 +73,64 @@ public class CartController extends BaseController {
 
 	@RequestMapping(value = "addCart/{id}", method = RequestMethod.GET)
 	public String addCart(HttpServletRequest request, HttpSession session, @PathVariable("id") Integer id) {
-		// Kiểm tra số lượng sản phẩm
-		if (!cartService.isProductAvailable(id)) {
-			// Nếu sản phẩm không còn, chuyển hướng về trang hiện tại và thêm tham số lỗi
-			String referer = request.getHeader("Referer");
-			return "redirect:" + referer + (referer.contains("?") ? "&" : "?") + "error=product-unavailable";
-		}
-		int userId = 0;
-		// Lấy thông tin người dùng
-		AccountEntity user = (AccountEntity) session.getAttribute("user");
-		HashMap<Integer, CartDTO> cart;
-		if (user != null) {
-			userId = user.getUserInfo().getUserId();
-			ProductEntity productEntity = productDAO.getProductById(id);
-			CartEntity cartEntity = new CartEntity(user.getUserInfo(), productEntity, 1);
-			cartDAO.createCart(cartEntity);
-			cart = cartDAO.getCartFromDatabase(userId);
+	    // Kiểm tra số lượng sản phẩm
+	    if (!cartService.isProductAvailable(id)) {
+	        // Nếu sản phẩm không còn, chuyển hướng về trang hiện tại và thêm tham số lỗi
+	        String referer = request.getHeader("Referer");
+	        return "redirect:" + referer + (referer.contains("?") ? "&" : "?") + "error=product-unavailable";
+	    }
 
-		} else {
-			// Lấy giỏ hàng từ session
-			cart = (HashMap<Integer, CartDTO>) session.getAttribute("Cart");
-			if (cart == null) {
-				cart = new HashMap<>();
+	    int userId = 0;
+	    // Lấy thông tin người dùng
+	    AccountEntity user = (AccountEntity) session.getAttribute("user");
+	    HashMap<Integer, CartDTO> cart;
+	    if (user != null) {
+	        userId = user.getUserInfo().getUserId();
+	        ProductEntity productEntity = productDAO.getProductById(id);
+	        CartEntity cartEntity = new CartEntity(user.getUserInfo(), productEntity, 1);
+
+	        // Mã hóa ID sản phẩm trước khi thêm vào giỏ hàng
+	        ProductDTO productDTO = new ProductDTO();
+	        productDTO.setIdProduct(productEntity.getIdProduct());
+	        try {
+				productDTO.setEncryptedId(SecureUrlUtil.encrypt(String.valueOf(productEntity.getIdProduct())));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			// Thêm sản phẩm vào giỏ
-			cart = cartService.AddCart(id, cart, userId);
-		}
 
-		// Cập nhật lại session
-		session.removeAttribute("Cart");
-		session.setAttribute("Cart", cart);
-		session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
-		session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
-		return "redirect:" + request.getHeader("Referer");
+	        CartDTO cartDTO = new CartDTO(1, productDTO, productEntity.getSalePrice());
+	        cartDAO.createCart(cartEntity);
+
+	        // Thêm sản phẩm vào giỏ hàng và mã hóa ID sản phẩm
+	        cart = cartDAO.getCartFromDatabase(userId);
+	    } else {
+	        // Lấy giỏ hàng từ session
+	        cart = (HashMap<Integer, CartDTO>) session.getAttribute("Cart");
+	        if (cart == null) {
+	            cart = new HashMap<>();
+	        }
+
+	        // Mã hóa ID sản phẩm trước khi thêm vào giỏ hàng
+	        ProductDTO productDTO = new ProductDTO();
+	        productDTO.setIdProduct(id);
+	        try {
+	            productDTO.setEncryptedId(SecureUrlUtil.encrypt(String.valueOf(id)));
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+
+	        cart = cartService.AddCart(id, cart, userId);
+	    }
+
+	    // Cập nhật lại session
+	    session.removeAttribute("Cart");
+	    session.setAttribute("Cart", cart);
+	    session.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
+	    session.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
+	    return "redirect:" + request.getHeader("Referer");
 	}
+
 
 	@ResponseBody
 	@RequestMapping(value = "/DeleteCart/{id}", method = RequestMethod.GET)

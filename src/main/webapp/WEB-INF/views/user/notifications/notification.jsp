@@ -121,7 +121,7 @@ body>div {
 				<!-- Nút Quay lại (đỏ) -->
 				<a href="home" class="btn btn-back">Quay lại</a>
 				<!-- Nút Chi tiết đơn hàng (xanh lam) -->
-				<a href="order-detail?orderId=${notification.orderId}" class="btn">Chi
+				<a href="order-detail?orderId=${notification.encryptOrderId}" class="btn">Chi
 					tiết đơn hàng</a>
 
 			</div>

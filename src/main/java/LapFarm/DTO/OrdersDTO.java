@@ -12,6 +12,7 @@ public class OrdersDTO {
     private byte paymentMethod;  // PaymentMethod (0 or 1)
     private String note;        // Order note
     private List<OrderDetailDTO> orderDetails; // List of order details (product info)
+    private String encryptedId; 
     
     public OrdersDTO(int orderId, Date time, String state, long totalPrice, String userFullname, byte paymentMethod, String note) {
         this.orderId = orderId;
@@ -86,6 +87,14 @@ public class OrdersDTO {
 
     public void setOrderDetails(List<OrderDetailDTO> orderDetails) {
         this.orderDetails = orderDetails;
+    }
+    
+    public String getEncryptedId() {
+        return encryptedId;
+    }
+
+    public void setEncryptedId(String encryptedId) {
+        this.encryptedId = encryptedId;
     }
 
     // toString() method

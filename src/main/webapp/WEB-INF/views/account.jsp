@@ -520,7 +520,7 @@ document.addEventListener('DOMContentLoaded', function() {
 									<c:when test="${order.paymentMethod == 1}">VNPAY</c:when>
 									<c:otherwise>Khác</c:otherwise>
 								</c:choose></td>
-							<td><a href="order-detail?orderId=${order.orderId}"
+							<td><a href="order-detail?orderId=${order.encryptedId}"
 								class="btn-detail"> <i class="fa fa-eye"></i> Xem chi tiết
 							</a></td>
 						</tr>
@@ -538,6 +538,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			<c:if test="${not empty viewedItems}">
 				<c:forEach var="item" items="${viewedItems}">
 					<div>
+<<<<<<< Updated upstream
 						<a
 							href="${pageContext.servletContext.contextPath}/product-detail/${item.id}">
 							<img src="${item.image}" alt="${item.name}" />
@@ -547,6 +548,13 @@ document.addEventListener('DOMContentLoaded', function() {
 									groupingUsed="true"></fmt:formatNumber>
 								đ
 							</p>
+=======
+						<a href="${pageContext.servletContext.contextPath}/product-detail/${item.encryptedId}">
+						<img src="${item.image}" alt="${item.name}" />
+						<p>${item.name} </p>
+						<p> <fmt:formatNumber value="${item.price}" type="number"
+									groupingUsed="true"></fmt:formatNumber>đ</p>
+>>>>>>> Stashed changes
 					</div>
 				</c:forEach>
 

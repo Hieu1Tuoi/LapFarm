@@ -14,6 +14,7 @@ import LapFarm.Entity.AccountEntity;
 import LapFarm.Service.BaseServiceImp;
 import LapFarm.Service.CartServiceImp;
 import LapFarm.Service.NotificationServiceImp;
+import LapFarm.Utils.SecureUrlUtil;
 import jakarta.servlet.http.HttpSession;
 
 @ControllerAdvice
@@ -42,37 +43,38 @@ public class GlobalController {
 	 * // Nếu chưa đăng nhập, trả về g iỏ hàng rỗng return new HashMap<>(); } }
 	 */
     
-    // Cung cấp danh sách thông báo cho tất cả các trang
+    // Mã hóa userId khi lấy thông báo
+    // Cung cấp danh sách thông báo với mã hóa notiId
     @ModelAttribute("notifications")
     public List<NotificationDTO> getNotifications(HttpSession session) {
         AccountEntity account = (AccountEntity) session.getAttribute("user");
-        // Kiểm tra xem account có null không
         if (account != null && account.getUserInfo() != null) {
             int userId = account.getUserInfo().getUserId();
-            // Gọi service để lấy thông báo
-            return notificationService.getNotificationsByUserId(userId);
+            List<NotificationDTO> notifications = notificationService.getNotificationsByUserId(userId);
+            // Mã hóa notiId cho mỗi thông báo
+            for (NotificationDTO notification : notifications) {
+                try {
+                    String encryptedNotiId = SecureUrlUtil.encrypt(String.valueOf(notification.getNotiId()));
+                    notification.setEncryptedId(encryptedNotiId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return notifications;
         } else {
-            // Trả về danh sách thông báo rỗng nếu chưa đăng nhập
             return new ArrayList<>();
         }
     }
 
+    // Mã hóa notiId khi lấy số lượng thông báo chưa đọc (nếu cần)
     @ModelAttribute("unreadNotificationsCount")
     public int getUnreadNotificationsCount(HttpSession session) {
         AccountEntity account = (AccountEntity) session.getAttribute("user");
-
-        // Kiểm tra xem account có null không
         if (account != null && account.getUserInfo() != null) {
             int userId = account.getUserInfo().getUserId();
-            // Gọi service để lấy số lượng thông báo chưa đọc
             return notificationService.getUnreadNotificationsCount(userId);
         } else {
-            // Trả về 0 nếu chưa đăng nhập
             return 0;
         }
-    
     }
-    
-    
-
 }

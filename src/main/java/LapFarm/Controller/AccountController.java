@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import LapFarm.DTO.OrderDetailDTO;
 import LapFarm.DTO.OrdersDTO;
+import LapFarm.DTO.ProductDTO;
 import LapFarm.DTO.ViewedItem;
 import LapFarm.Entity.AccountEntity;
 import LapFarm.Entity.OrderDetailsEntity;
 import LapFarm.Entity.UserInfoEntity;
 import LapFarm.Service.OrdersServiceImp;
+import LapFarm.Utils.SecureUrlUtil;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -48,7 +50,15 @@ public class AccountController {
 		// Load lịch sử đơn hàng
 		try {
 			List<OrdersDTO> ordersList = orderService.getOrdersByUserId(user.getUserInfo().getUserId());
-			System.out.println(ordersList);
+			
+			// Mã hóa ID sản phẩm trong danh sách top selling
+			ordersList.forEach(order -> {
+		        try {
+		        	order.setEncryptedId(SecureUrlUtil.encrypt(String.valueOf(order.getOrderId())));
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		        }
+		    });
 			model.addAttribute("orders", ordersList);
 		} catch (Exception e) {
 			System.out.println("Không thể tải lịch sử đơn hàng: " + e.getMessage());
@@ -60,6 +70,14 @@ public class AccountController {
 		if (viewedItems == null) {
 			viewedItems = new ArrayList<>();
 		}
+		// Mã hóa ID sản phẩm trong danh sách top selling
+		viewedItems.forEach(product -> {
+	        try {
+	            product.setEncryptedId(SecureUrlUtil.encrypt(String.valueOf(product.getId())));
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    });
 		model.addAttribute("viewedItems", viewedItems);
 
 		// Truyền tab đang hoạt động vào Model
@@ -153,20 +171,45 @@ public class AccountController {
 	}
 
 	@RequestMapping("/order-detail")
-	public String showOrderDetail(@RequestParam("orderId") int orderId, Model model) {
-		// Lấy thông tin chi tiết đơn hàng từ dịch vụ
-		List<OrderDetailDTO> orderDetail = orderService.getOrderDetail(orderId);
+	public String showOrderDetail(@RequestParam("orderId") String encryptedId, Model model) {
+	    int orderId = 0;
+	    try {
+	        // Giải mã orderId từ encryptedId
+	        orderId = Integer.parseInt(SecureUrlUtil.decrypt(encryptedId)); // Sử dụng phương thức giải mã
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        model.addAttribute("error", "Không thể giải mã ID đơn hàng.");
+	        return "error"; // Trả về trang lỗi nếu có vấn đề với việc giải mã
+	    }
 
-		// Tính tổng giá
-		double totalPrice = orderDetail.stream().mapToDouble(item -> item.getPrice() * item.getQuantity()).sum();
+	    // Lấy thông tin chi tiết đơn hàng từ dịch vụ
+	    List<OrderDetailDTO> orderDetails = orderService.getOrderDetail(orderId);
+	    
+	    // Duyệt qua từng chi tiết đơn hàng để mã hóa idProduct và tính tổng giá
+	    for (OrderDetailDTO orderDetail : orderDetails) {
+	        ProductDTO product = orderDetail.getProduct();
+	        try {
+	            // Mã hóa idProduct
+	            String encryptedProductId = SecureUrlUtil.encrypt(String.valueOf(product.getIdProduct()));
+	            product.setEncryptedId(encryptedProductId); // Gán id đã mã hóa vào product
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
 
-		// Thêm chi tiết đơn hàng và tổng giá vào model
-		model.addAttribute("orderDetail", orderDetail);
-		model.addAttribute("totalPrice", totalPrice);
-		model.addAttribute("stateOrder", orderService.getStateById(orderId));
+	    // Tính tổng giá
+	    double totalPrice = orderDetails.stream()
+	        .mapToDouble(item -> item.getPrice() * item.getQuantity())
+	        .sum();
 
-		// Trả về tên của JSP sẽ hiển thị chi tiết đơn hàng
-		return "user/orderdetails/orderdetail"; // Trang này sẽ hiển thị chi tiết đơn hàng
+	    // Thêm chi tiết đơn hàng và tổng giá vào model
+	    model.addAttribute("orderDetail", orderDetails);
+	    model.addAttribute("totalPrice", totalPrice);
+	    model.addAttribute("stateOrder", orderService.getStateById(orderId));
+
+	    // Trả về tên của JSP sẽ hiển thị chi tiết đơn hàng
+	    return "user/orderdetails/orderdetail"; // Trang này sẽ hiển thị chi tiết đơn hàng
 	}
+
 
 }

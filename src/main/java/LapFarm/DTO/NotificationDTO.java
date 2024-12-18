@@ -10,7 +10,8 @@ public class NotificationDTO {
     private LocalDateTime time;  // Sử dụng LocalDateTime cho dễ thao tác với thời gian
     private int state;
     private int orderId;  // Thêm idOrder từ bảng Orders
-
+    private String encryptOrderId;
+    private String encryptedId;
     // Constructors
     public NotificationDTO() {
     }
@@ -72,8 +73,25 @@ public class NotificationDTO {
     public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
+    
 
-    @Override
+    public String getEncryptOrderId() {
+		return encryptOrderId;
+	}
+
+	public void setEncryptOrderId(String encryptOrderId) {
+		this.encryptOrderId = encryptOrderId;
+	}
+
+	public String getEncryptedId() {
+		return encryptedId;
+	}
+
+	public void setEncryptedId(String encryptedId) {
+		this.encryptedId = encryptedId;
+	}
+
+	@Override
     public String toString() {
         return "NotificationDTO{" +
                 "notiId=" + notiId +

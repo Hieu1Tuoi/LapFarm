@@ -4,6 +4,7 @@ package LapFarm.Controller;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -104,16 +105,50 @@ public class BaseController {
 
 	public void addCartToSession(HttpSession session) {
 	    AccountEntity account = (AccountEntity) session.getAttribute("user");
+	    HashMap<Integer, CartDTO> cart;
+
 	    if (account != null) {
-	        // Lấy giỏ hàng từ cơ sở dữ liệu và lưu vào session
-	        HashMap<Integer, CartDTO> cart = cartService.getCartFromDatabase(account.getUserInfo().getUserId());
-	        session.setAttribute("Cart", cart);
+	        // Nếu người dùng đã đăng nhập, lấy giỏ hàng từ cơ sở dữ liệu
+	        cart = cartService.getCartFromDatabase(account.getUserInfo().getUserId());
+
+	        // Duyệt qua giỏ hàng và mã hóa ID sản phẩm
+	        for (Map.Entry<Integer, CartDTO> entry : cart.entrySet()) {
+	            CartDTO cartDTO = entry.getValue();
+	            ProductDTO productDTO = cartDTO.getProduct();
+	            try {
+	                // Mã hóa ID sản phẩm và gán lại cho ProductDTO trong giỏ hàng
+	                String encryptedId = SecureUrlUtil.encrypt(String.valueOf(productDTO.getIdProduct()));
+	                productDTO.setEncryptedId(encryptedId);
+	            } catch (Exception e) {
+	                e.printStackTrace(); // Xử lý lỗi nếu có
+	            }
+	        }
+//	        session.setAttribute("Cart", cart);
+	    } else {
+	        // Nếu chưa đăng nhập, lấy giỏ hàng từ session (hoặc khởi tạo giỏ hàng rỗng)
+	        cart = (HashMap<Integer, CartDTO>) session.getAttribute("Cart");
+	        if (cart == null) {
+	            cart = new HashMap<>();
+	        }
+
+	        // Duyệt qua giỏ hàng và mã hóa ID sản phẩm
+	        for (Map.Entry<Integer, CartDTO> entry : cart.entrySet()) {
+	            CartDTO cartDTO = entry.getValue();
+	            ProductDTO productDTO = cartDTO.getProduct();
+	            try {
+	                // Mã hóa ID sản phẩm và gán lại cho ProductDTO trong giỏ hàng
+	                String encryptedId = SecureUrlUtil.encrypt(String.valueOf(productDTO.getIdProduct()));
+	                productDTO.setEncryptedId(encryptedId);
+	            } catch (Exception e) {
+	                e.printStackTrace(); // Xử lý lỗi nếu có
+	            }
+	        }
 	    }
-//	    } else {
-//	        // Nếu chưa đăng nhập, khởi tạo giỏ hàng rỗng
-//	        session.setAttribute("Cart", new HashMap<Integer, CartDTO>());
-//	    }
+
+	    // Lưu giỏ hàng vào session
+	    session.setAttribute("Cart", cart);
 	}
+
 	
 	   @ModelAttribute("categories")
 	    public Object getCategories() {

@@ -131,27 +131,27 @@
                     <c:forEach var="od" items="${orderdetail}">
                         <tr>
                             <td>
-                                <a href="product-detail/${od.idProduct}">
+                                <a href="product-detail/${od.product.encryptedId}">
                                     <img class="order-detail-img" width="100" 
-                                         src="${od.image}" alt="" 
+                                         src="${od.product.image}" alt="" 
                                          onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'">
                                 </a>
                             </td>
                             <td>
-                                <a href="product-detail/${od.idProduct}" class="order-detail-product-name">
-                                    ${od.nameProduct}
+                                <a href="product-detail/${od.product.encryptedId}" class="order-detail-product-name">
+                                    ${od.product.nameProduct}
                                 </a>
                             </td>
-                            <td>${od.brandName}</td>
+                            <td>${od.product.brandName}</td>
                             <td>
                                 <!-- Định dạng salePrice --> 
-                                <fmt:formatNumber value="${od.salePrice}" 
+                                <fmt:formatNumber value="${od.product.salePrice}" 
                                                   type="number" groupingUsed="true" />
                                 VNĐ
                             </td>
-                            <td>${od.quantity}</td>
+                            <td>${od.product.quantity}</td>
                             <td>
-                                <fmt:formatNumber value="${od.salePrice * od.quantity}" 
+                                <fmt:formatNumber value="${od.product.salePrice * od.product.quantity}" 
                                                   type="number" groupingUsed="true" /> VNĐ
                             </td>
                         </tr>

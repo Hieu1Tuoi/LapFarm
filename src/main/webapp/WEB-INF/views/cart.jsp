@@ -223,10 +223,10 @@ Body Section
 									<c:if test="${cartIdSelecteds != null && cartIdSelecteds.contains(item.value.id)}">checked</c:if>>
 								</td>
 								<td><a
-									href="product-detail/${item.value.product.idProduct}" /><img
+									href="product-detail/${item.value.product.encryptedId}" /><img
 									width="100" src="${ item.value.product.image }" alt="" onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'"></td>
 								<td><a
-									href="product-detail/${item.value.product.idProduct}" />${ item.value.product.nameProduct }</td>
+									href="product-detail/${item.value.product.encryptedId}" />${ item.value.product.nameProduct }</td>
 								<td><a
 									href="products-brand?nameBrand=${item.value.product.brandName}" />${ item.value.product.brandName }</td>
 

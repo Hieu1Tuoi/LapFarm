@@ -333,7 +333,7 @@ function showSuccessMessage(event) {
 						<tr id="${item.product.idProduct}" class="orderdetail">
 							<td><a href="product-detail/${item.product.idProduct}"><img
 									src="${item.product.image} " " style="width: 35%" /></td>
-							<td><a href="product-detail/${item.product.idProduct}">${item.product.nameProduct}</td>
+							<td><a href="product-detail/${item.product.encryptedId}">${item.product.nameProduct}</td>
 							<td>${item.product.categoryName}</td>
 							<td>${item.product.brandName}</td>
 							<td>${item.quantity}</td>

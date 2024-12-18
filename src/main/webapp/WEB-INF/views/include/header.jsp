@@ -288,7 +288,7 @@
 											<li>
 												<!-- Liên kết sẽ đánh dấu thông báo đã đọc và chuyển tới chi tiết thông báo -->
 												<a
-												href="<c:url value='/notification/${notification.notiId}?state=1' />"
+												href="<c:url value='/notification/${notification.encryptedId}?state=1' />"
 												class="${notification.state == 0 ? 'unread' : 'read'}">
 													<!-- Icon chú ý bật/tắt --> <i
 													class="fa ${notification.state == 0 ? 'fa-exclamation-circle' : 'fa-check-circle'}"
