@@ -38,6 +38,7 @@
 <link type="text/css" rel="stylesheet"
 	href="<c:url value="/resources/css/style.css" />">
 </head>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <body>
 	<!-- HEADER -->
 	<header>
@@ -105,6 +106,11 @@
 							<div class="form-group">
 								<strong style="color: red;">${warning}</strong>
 							</div>
+							<!--  Captcha -->
+							<div class="form-group text-center">
+								<div class="g-recaptcha" data-sitekey="6LcMHp8qAAAAADwRM1JbSj3IJLwDuyTqsFx2uEGo"></div>
+							</div>
+
 							<div class="form-group">
 								<button type="submit" class="btn btn-primary btn-block">Đăng
 									Nhập</button>

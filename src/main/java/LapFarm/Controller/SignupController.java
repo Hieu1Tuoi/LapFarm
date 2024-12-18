@@ -11,17 +11,23 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
+
 import org.apache.commons.codec.binary.Hex;
 
 @Controller
@@ -61,8 +67,33 @@ public class SignupController {
 	@RequestMapping(value = "/forgotpassword", method = RequestMethod.POST)
 	public String resetPassword(ModelMap model, @RequestParam("password") String password,
 			@RequestParam("email") String email, @RequestParam("confirmPassword") String confirmPassword,
-			@RequestParam("verificationCode") String verificationCode, HttpSession verificationSession) {
-
+			@RequestParam("verificationCode") String verificationCode, HttpSession verificationSession, 
+			@RequestParam("g-recaptcha-response") String recaptchaResponse) {
+		try {
+	        // Verify reCAPTCHA
+	        String secretKey = "6LcMHp8qAAAAAOfjRaga9eSFLoV7lkQHY8-vb9sj"; //Secret Key từ Google reCAPTCHA
+	        String verifyUrl = "https://www.google.com/recaptcha/api/siteverify";
+	        
+	        RestTemplate restTemplate = new RestTemplate();
+	        MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+	        requestParams.add("secret", secretKey);
+	        requestParams.add("response", recaptchaResponse);
+	        
+	        ResponseEntity<Map> response = restTemplate.postForEntity(verifyUrl, requestParams, Map.class);
+	        Map<String, Object> responseBody = response.getBody();
+	        
+	        if (responseBody != null && Boolean.TRUE.equals(responseBody.get("success"))) {
+	            // reCAPTCHA validation passed
+	            System.out.println("reCAPTCHA validation succeeded.");
+	        } else {
+	            model.addAttribute("warning", "reCAPTCHA không hợp lệ. Vui lòng thử lại!");
+	            System.out.println("reCAPTCHA invalidation succeeded.");
+	            return "forgotpassword";
+	        }
+	    } catch (Exception e) {
+	        model.addAttribute("warning", "Lỗi khi xác thực reCAPTCHA: " + e.getMessage());
+	        return "forgotpassword";
+	    }
 		String codeFromSession = (String) verificationSession.getAttribute("verificationCode");
 
 		if (codeFromSession == null || !codeFromSession.equals(verificationCode)) {
@@ -110,8 +141,33 @@ public class SignupController {
 	public String signup(ModelMap model, @RequestParam("password") String password, @RequestParam("email") String email,
 			@RequestParam("confirmPassword") String confirmPassword,
 			@RequestParam("verificationCode") String verificationCode, @ModelAttribute("account") AccountEntity acc,
-			HttpSession verificationSession) {
-
+			HttpSession verificationSession, 
+			@RequestParam("g-recaptcha-response") String recaptchaResponse) {
+		try {
+	        // Verify reCAPTCHA
+	        String secretKey = "6LcMHp8qAAAAAOfjRaga9eSFLoV7lkQHY8-vb9sj"; //Secret Key từ Google reCAPTCHA
+	        String verifyUrl = "https://www.google.com/recaptcha/api/siteverify";
+	        
+	        RestTemplate restTemplate = new RestTemplate();
+	        MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+	        requestParams.add("secret", secretKey);
+	        requestParams.add("response", recaptchaResponse);
+	        
+	        ResponseEntity<Map> response = restTemplate.postForEntity(verifyUrl, requestParams, Map.class);
+	        Map<String, Object> responseBody = response.getBody();
+	        
+	        if (responseBody != null && Boolean.TRUE.equals(responseBody.get("success"))) {
+	            // reCAPTCHA validation passed
+	            System.out.println("reCAPTCHA validation succeeded.");
+	        } else {
+	            model.addAttribute("warning", "reCAPTCHA không hợp lệ. Vui lòng thử lại!");
+	            System.out.println("reCAPTCHA invalidation succeeded.");
+	            return "signup";
+	        }
+	    } catch (Exception e) {
+	        model.addAttribute("warning", "Lỗi khi xác thực reCAPTCHA: " + e.getMessage());
+	        return "signup";
+	    }
 		String codeFromSession = (String) verificationSession.getAttribute("verificationCode");
 
 		if (codeFromSession == null || !codeFromSession.equals(verificationCode)) {

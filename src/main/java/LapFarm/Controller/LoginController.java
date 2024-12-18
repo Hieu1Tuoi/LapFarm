@@ -31,9 +31,13 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -150,8 +154,34 @@ public class LoginController extends BaseController {
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String login(@RequestParam("email") String email, @RequestParam("password") String password, Model model,
+	public String login(@RequestParam("email") String email, @RequestParam("password") String password,
+			@RequestParam("g-recaptcha-response") String recaptchaResponse, Model model,
 			HttpSession httpSession) {
+		try {
+	        // Verify reCAPTCHA
+	        String secretKey = "6LcMHp8qAAAAAOfjRaga9eSFLoV7lkQHY8-vb9sj"; //Secret Key từ Google reCAPTCHA
+	        String verifyUrl = "https://www.google.com/recaptcha/api/siteverify";
+	        
+	        RestTemplate restTemplate = new RestTemplate();
+	        MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+	        requestParams.add("secret", secretKey);
+	        requestParams.add("response", recaptchaResponse);
+	        
+	        ResponseEntity<Map> response = restTemplate.postForEntity(verifyUrl, requestParams, Map.class);
+	        Map<String, Object> responseBody = response.getBody();
+	        
+	        if (responseBody != null && Boolean.TRUE.equals(responseBody.get("success"))) {
+	            // reCAPTCHA validation passed
+	            System.out.println("reCAPTCHA validation succeeded.");
+	        } else {
+	            model.addAttribute("warning", "reCAPTCHA không hợp lệ. Vui lòng thử lại!");
+	            System.out.println("reCAPTCHA invalidation succeeded.");
+	            return "login";
+	        }
+	    } catch (Exception e) {
+	        model.addAttribute("warning", "Lỗi khi xác thực reCAPTCHA: " + e.getMessage());
+	        return "login";
+	    }
 		Session session = factory.openSession();
 		Transaction t = session.beginTransaction();
 		try {

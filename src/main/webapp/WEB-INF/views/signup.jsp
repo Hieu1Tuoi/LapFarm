@@ -37,6 +37,7 @@
 <!-- Custom stlylesheet -->
 <link type="text/css" rel="stylesheet"
 	href="<c:url value="/resources/css/style.css" />">
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
 	<!-- HEADER -->
@@ -107,6 +108,12 @@
 									type="password" class="form-control" id="confirm-password"
 									value="${cfpw}" name="confirmPassword"
 									placeholder="Xác nhận mật khẩu của bạn" required>
+							</div>
+							
+							
+							<!--  Captcha -->
+							<div class="form-group text-center">
+								<div class="g-recaptcha" data-sitekey="6LcMHp8qAAAAADwRM1JbSj3IJLwDuyTqsFx2uEGo"></div>
 							</div>
 
 							<div class="form-group">
