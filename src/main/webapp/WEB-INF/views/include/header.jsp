@@ -166,9 +166,9 @@
 			<ul class="header-links pull-left">
 				<li><a href="https://www.youtube.com/watch?v=IzSYlr3VI1A"><i
 						class="fa fa-phone"></i> 0123456789</a></li>
-				<li><a href="https://www.youtube.com/watch?v=IzSYlr3VI1A"><i
+				<li><a href="https://mail.google.com/mail/?view=cm&to=nhom8@gmail.com" target="_blank"><i
 						class="fa fa-envelope-o"></i> nhom8@email.com</a></li>
-				<li><a href="https://g.co/kgs/AQVaPDg"><i
+				<li><a href="https://maps.app.goo.gl/aCnkqxqmdPdnekNb7"><i
 						class="fa fa-map-marker"></i> 97 Man Thiện</a></li>
 			</ul>
 			<ul class="header-links pull-right">
@@ -187,8 +187,9 @@
 								</c:if>
 
 								<!-- Liên kết cho người dùng -->
-								<a class="dropdown-item" href="<c:url value='/account' />">Thông
-									tin</a>
+								<%-- <a class="dropdown-item" href="<c:url value='/account' />">Thông
+									tin</a> --%>
+									<a class="dropdown-item" href="<c:url value='/account#profile' />">Thông tin</a>
 								<c:if test="${empty sessionScope.admin}">
 									<a class="dropdown-item"
 										href="<c:url value='/account#orders-history' />">Đơn hàng</a>
@@ -336,20 +337,31 @@
 	src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 <script>
-	$(document).ready(function() {
-		// Xử lý hiển thị/ẩn dropdown khi nhấp vào nút
-		$('.dropdown-toggle').on('click', function(e) {
-			e.preventDefault();
-			$(this).next('.dropdown-menu').toggle(); // Hiện/ẩn menu
-		});
+$(document).ready(function() {
+    // Account dropdown menu hover and click handling
+    $('.dropdown').each(function() {
+        const dropdown = $(this);
+        const dropdownToggle = dropdown.find('.dropdown-toggle');
+        const dropdownMenu = dropdown.find('.dropdown-menu');
 
-		// Đóng menu khi nhấp ra ngoài
-		$(document).on('click', function(e) {
-			if (!$(e.target).closest('.dropdown').length) {
-				$('.dropdown-menu').hide(); // Ẩn menu
-			}
-		});
-	});
+        // Show dropdown menu on mouse enter
+        dropdown.on('mouseenter', function() {
+            dropdownMenu.show();
+        });
+
+        // Hide dropdown menu on mouse leave
+        dropdown.on('mouseleave', function() {
+            dropdownMenu.hide();
+        });
+
+        // Close dropdown when clicking outside
+        $(document).on('click', function(e) {
+            if (!dropdown.is(e.target) && dropdown.has(e.target).length === 0) {
+                dropdownMenu.hide();
+            }
+        });
+    });
+});
 
 	document.addEventListener("DOMContentLoaded", function() {
 		const notificationContainer = document

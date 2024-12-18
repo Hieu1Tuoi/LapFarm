@@ -13,10 +13,12 @@
 						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
 							sed do eiusmod tempor incididunt ut.</p>
 						<ul class="footer-links">
-							<li><a href="#"><i class="fa fa-map-marker"></i>97 Man
-									Thiện</a></li>
+							<li><a href="https://maps.app.goo.gl/aCnkqxqmdPdnekNb7"><i
+						class="fa fa-map-marker"></i> 97 Man Thiện</a></li>
 							<li><a href="#"><i class="fa fa-phone"></i>0123456789</a></li>
-							<li><a href="#"><i class="fa fa-envelope-o"></i>nhom8@email.com</a></li>
+							<li><a href="https://mail.google.com/mail/?view=cm&to=nhom8@gmail.com" target="_blank"><i
+						class="fa fa-envelope-o"></i> nhom8@email.com</a></li>
+						
 						</ul>
 					</div>
 				</div>

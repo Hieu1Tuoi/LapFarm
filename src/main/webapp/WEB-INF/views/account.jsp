@@ -102,7 +102,6 @@ input[type="radio"] {
 	text-decoration: underline;
 }
 
-
 #viewed .container {
 	display: flex; /* Sử dụng Flexbox để tạo bố cục linh hoạt */
 	flex-wrap: wrap;
@@ -197,77 +196,230 @@ input[type="radio"] {
 
 /* Nút Xem chi tiết */
 .btn-detail {
-    display: inline-block;
-    padding: 10px 15px;
-    background-color: #333;  /* Nền đen */
-    color: #fff;  /* Chữ trắng */
-    text-decoration: none;
-    font-weight: bold;
-    border-radius: 4px;
-    transition: background-color 0.3s, color 0.3s;
-    display: flex;
-    align-items: center;  /* Căn giữa biểu tượng và chữ */
+	display: inline-block;
+	padding: 10px 15px;
+	background-color: #333; /* Nền đen */
+	color: #fff; /* Chữ trắng */
+	text-decoration: none;
+	font-weight: bold;
+	border-radius: 4px;
+	transition: background-color 0.3s, color 0.3s;
+	display: flex;
+	align-items: center; /* Căn giữa biểu tượng và chữ */
 }
 
 .btn-detail:hover {
-    background-color: #555;  /* Khi hover, nền chuyển thành xám */
-    color: #fff;  /* Chữ vẫn giữ màu trắng */
+	background-color: #555; /* Khi hover, nền chuyển thành xám */
+	color: #fff; /* Chữ vẫn giữ màu trắng */
 }
 
 /* Thay đổi màu cho biểu tượng */
 .btn-detail i {
-    margin-right: 5px;  /* Khoảng cách giữa biểu tượng và chữ */
+	margin-right: 5px; /* Khoảng cách giữa biểu tượng và chữ */
 }
 
 /* Thêm hiệu ứng hover cho biểu tượng */
 .btn-detail:hover i {
-    color: #fff;  /* Khi hover, màu biểu tượng cũng chuyển sang trắng */
+	color: #fff; /* Khi hover, màu biểu tượng cũng chuyển sang trắng */
+}
+/* Existing styles remain the same */
+/* Existing styles remain the same */
+.phone-container, .email-container {
+    display: flex;
+    align-items: center;
+    width: 40%;
 }
 
+.phone-input, .email-input {
+    flex-grow: 1;
+    margin-right: 10px;
+}
 
+.change-btn {
+    background-color: #d10024;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 10px;
+}
+
+.change-btn:hover {
+    background-color: #a00000;
+}
+
+.masked-info {
+    color: #666;
+}
 </style>
 <script>
 function showTab(tabId) {
+    // Hide all tabs first
     const tabs = document.querySelectorAll('.tab');
     tabs.forEach(tab => {
-        tab.classList.remove('active');
+        tab.style.display = 'none';
     });
 
+    // If no tabId is provided, default to 'profile'
+    if (!tabId) {
+        tabId = 'profile';
+    }
+
+    // Show the selected tab
+    const activeTab = document.getElementById(tabId);
+    if (activeTab) {
+        activeTab.style.display = 'block';
+    }
+
+    // Update active link
     const links = document.querySelectorAll('.tab-links a');
     links.forEach(link => {
         link.parentNode.classList.remove('active');
     });
 
-    const activeTab = document.getElementById(tabId);
-    activeTab.classList.add('active');
-
     const activeLink = document.querySelector(`a[href="#${tabId}"]`);
-    activeLink.parentNode.classList.add('active');
-
-    // Cập nhật URL hash
-    window.location.hash = tabId;
-
-    // Ẩn các phần tử khác nếu không phải tab "viewed" hoặc tab mới
-    const viewedTab = document.getElementById('viewed');
-    const orderDetailTab = document.getElementById('order-detail');
-    if (tabId !== 'viewed' && tabId !== 'order-detail') {
-        viewedTab.style.display = 'none';
-        orderDetailTab.style.display = 'none';
-    } else {
-        if (tabId === 'viewed') {
-            viewedTab.style.display = 'block';
-        } else {
-            orderDetailTab.style.display = 'block';
-        }
+    if (activeLink) {
+        activeLink.parentNode.classList.add('active');
     }
+
+    // Update URL hash
+    window.location.hash = tabId;
 }
 
-// Mở tab mặc định
+// On page load, ensure profile tab is shown
 document.addEventListener('DOMContentLoaded', function () {
-    const currentHash = window.location.hash.substring(1) || 'profile'; // Loại bỏ dấu "#" nếu có
-    showTab(currentHash);
+    // Check if there's a hash, if not, show profile
+    const currentHash = window.location.hash.substring(1);
+    showTab(currentHash || 'profile');
 });
+//phone,email
+document.addEventListener('DOMContentLoaded', function() {
+    // Phone number masking
+    const phoneContainer = document.querySelector('.phone-container');
+    const phoneInput = document.getElementById('phone');
+    const changePhoneBtn = document.createElement('button');
+    changePhoneBtn.className = 'change-btn change-phone-btn';
+    changePhoneBtn.type = 'button';
 
+    // Email masking
+    const emailContainer = document.querySelector('.email-container');
+    const emailInput = document.getElementById('email');
+    const changeEmailBtn = document.createElement('button');
+    changeEmailBtn.className = 'change-btn change-email-btn';
+    changeEmailBtn.type = 'button';
+
+    // Function to mask phone number
+    function maskPhoneNumber(phone) {
+        if (phone && phone.length === 10) {
+            return phone.substring(0, 3) + '****' + phone.substring(7);
+        }
+        return phone;
+    }
+
+    // Function to mask email
+    function maskEmail(email) {
+    if (!email) return '';
+    
+    // Split email into local part and domain
+    const [local, domain] = email.split('@');
+    
+    // If local part is too short to mask, return as is
+    if (local.length <= 3) {
+        return email;  // Return the email as is if local part is less than or equal to 3 characters
+    }
+    
+    // Show first 3 and last 3 characters of local part, mask the rest
+    const maskedLocal = local.slice(0, 3) + 
+                        local.slice(3, -3).replace(/./g, '*') + 
+                        local.slice(-3);
+    
+    return maskedLocal + '@' + domain;
+}
+
+
+    // Initial states
+    const originalPhone = phoneInput.value;
+    const originalEmail = emailInput.value;
+    
+    // Create spans to show masked phone and email
+    const phoneDisplay = document.createElement('span');
+    phoneDisplay.textContent = maskPhoneNumber(originalPhone);
+    phoneDisplay.className = 'masked-info';
+
+    const emailDisplay = document.createElement('span');
+    emailDisplay.textContent = maskEmail(originalEmail);
+    emailDisplay.className = 'masked-info';
+
+    // Phone number setup
+    let isPhoneEditable = false;
+    changePhoneBtn.textContent = 'Thay đổi';
+    phoneInput.style.display = 'none';
+    phoneContainer.insertBefore(phoneDisplay, phoneInput);
+    phoneContainer.appendChild(changePhoneBtn);
+
+    // Email setup
+    let isEmailVisible = false;
+    changeEmailBtn.textContent = 'Hiện';
+    emailInput.style.display = 'none';
+    emailContainer.insertBefore(emailDisplay, emailInput);
+    emailContainer.appendChild(changeEmailBtn);
+
+    // Change email button click handler
+    changeEmailBtn.addEventListener('click', function() {
+        if (!isEmailVisible) {
+            // Show full email
+            emailDisplay.textContent = originalEmail;
+            changeEmailBtn.textContent = 'Ẩn';
+            isEmailVisible = true;
+        } else {
+            // Mask email again
+            emailDisplay.textContent = maskEmail(originalEmail);
+            changeEmailBtn.textContent = 'Hiện';
+            isEmailVisible = false;
+        }
+    });
+
+    // Change phone button click handler
+    changePhoneBtn.addEventListener('click', function() {
+        if (!isPhoneEditable) {
+            // Switch to editable mode
+            phoneDisplay.style.display = 'none';
+            phoneInput.style.display = 'block';
+            phoneInput.value = originalPhone;
+            phoneInput.focus();
+            changePhoneBtn.textContent = 'Ẩn';
+            isPhoneEditable = true;
+        } else {
+            // Switch back to masked mode
+            phoneDisplay.style.display = 'block';
+            phoneInput.style.display = 'none';
+            changePhoneBtn.textContent = 'Thay đổi';
+            isPhoneEditable = false;
+        }
+    });
+
+    // Validation when manually submitting the form
+    const form = document.querySelector('form[action$="/profile/update"]');
+    form.addEventListener('submit', function(event) {
+        const phoneInput = document.querySelector('input[name="phone"]');
+        const phone = phoneInput.value.trim();
+        const errorElement = document.getElementById('error-phone');
+        
+        // Clear previous error message
+        errorElement.innerText = '';
+        
+        // Validation checks
+        if (!phone) {
+            errorElement.innerText = "Số điện thoại không được để trống.";
+            event.preventDefault();
+        } else if (!/^0\d{9}$/.test(phone)) {
+            errorElement.innerText = "Số điện thoại phải đúng 10 chữ số.";
+            event.preventDefault();
+        }
+    });
+});
 </script>
 <body>
 	<h1>Thông tin tài khoản</h1>
@@ -304,23 +456,29 @@ document.addEventListener('DOMContentLoaded', function () {
 					</div>
 				</div>
 				<div class="form-group">
-					<label for="phone">Số điện thoại</label> <input type="text"
-						id="phone" name="phone"
-						style="width: 40%; padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;"
-						value="${userInfo.phone}">
-				</div>
+                    <label for="phone">Số điện thoại</label>
+                    <div class="phone-container">
+                        <input type="text" id="phone" name="phone"
+                            style="width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;"
+                            value="${userInfo.phone}">
+                        <span class="error-message" id="error-phone" 
+                            style="color: red; margin-left: 10px; display: block;"></span>
+                    </div>
+                </div>
 				<div class="form-group">
 					<label for="address">Địa chỉ</label> <input type="text"
 						id="address" name="address"
 						style="width: 40%; padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;"
 						value="${userInfo.address}">
 				</div>
-				<div class="form-group">
-					<label for="email">Email</label> <input type="text" id="email"
-						name="email"
-						style="width: 40%; padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;"
-						value="${ userProfile.email}" readonly> 
-				</div>
+				 <div class="form-group">
+                    <label for="email">Email</label>
+                    <div class="email-container">
+                        <input type="text" id="email" name="email"
+                            style="width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;"
+                            value="${userProfile.email}" readonly>
+                    </div>
+                </div>
 				<div class="form-group">
 					<label for="dob">Ngày sinh</label> <input type="date" id="dob"
 						name="dob"
@@ -380,11 +538,15 @@ document.addEventListener('DOMContentLoaded', function () {
 			<c:if test="${not empty viewedItems}">
 				<c:forEach var="item" items="${viewedItems}">
 					<div>
-						<a href="${pageContext.servletContext.contextPath}/product-detail/${item.id}">
-						<img src="${item.image}" alt="${item.name}" />
-						<p>${item.name} </p>
-						<p> <fmt:formatNumber value="${item.price}" type="number"
-									groupingUsed="true"></fmt:formatNumber>đ</p>
+						<a
+							href="${pageContext.servletContext.contextPath}/product-detail/${item.id}">
+							<img src="${item.image}" alt="${item.name}" />
+							<p>${item.name}</p>
+							<p>
+								<fmt:formatNumber value="${item.price}" type="number"
+									groupingUsed="true"></fmt:formatNumber>
+								đ
+							</p>
 					</div>
 				</c:forEach>
 
