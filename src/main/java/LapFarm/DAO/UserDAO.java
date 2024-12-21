@@ -4,7 +4,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -16,9 +15,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.apache.commons.codec.binary.Hex;
 
+import LapFarm.Bean.Mailer;
 import LapFarm.DTO.UserInfoDTO;
 import LapFarm.Entity.AccountEntity;
-import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.UserInfoEntity;
 
 @Transactional
@@ -28,6 +27,8 @@ public class UserDAO {
 	private SessionFactory factory;
 	@Autowired
 	private OrdersDAO ordersDAO;
+	@Autowired
+    private Mailer mailer;
 
 	public List<UserInfoEntity> getAllUserInfo() {
 		Session session = factory.openSession();
@@ -242,27 +243,33 @@ public class UserDAO {
         }
         return false;
 	}
-	
-	public String getUserNameById(int userId) {
-	    // Mở session từ factory
+	public boolean verifyPassword(String email, String inputPassword) {
 	    Session session = factory.openSession();
 	    try {
-	        // Tạo câu lệnh HQL để tìm UserInfoEntity dựa trên userId
-	        String hql = "SELECT u.fullName FROM UserInfoEntity u WHERE u.userId = :userId";
-	        // Tạo query từ HQL
+	        // Find account by email
+	        String hql = "FROM AccountEntity WHERE email = :email";
 	        Query query = session.createQuery(hql);
-	        // Đặt giá trị tham số userId
-	        query.setParameter("userId", userId);
+	        query.setParameter("email", email);
+	        AccountEntity account = (AccountEntity) query.uniqueResult();
 	        
-	        // Lấy kết quả duy nhất (tên người dùng)
-	        String fullName = (String) query.uniqueResult();
-	        
-	        // Trả về tên người dùng nếu tìm thấy, ngược lại trả về null
-	        return fullName;
+	        if (account != null) {
+	            // Hash the input password
+	            String hashedInputPassword = hashPasswordWithMD5(inputPassword);
+	            
+	            // Compare the hashed input password with stored password
+	            return hashedInputPassword.equals(account.getPassword());
+	        }
+	        return false; // Account not found
 	    } finally {
-	        // Đóng session sau khi xong
 	        session.close();
 	    }
 	}
-
+	 public String sendVerificationCode(String email) {
+	        try {
+	            // Sử dụng phương thức VerifyCode có sẵn từ Mailer để gửi mã
+	            return mailer.VerifyCode(email);
+	        } catch (Exception e) {
+	            throw new RuntimeException("Lỗi khi gửi mã xác nhận: " + e.getMessage());
+	        }
+	    }
 }
