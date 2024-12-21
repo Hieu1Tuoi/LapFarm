@@ -86,5 +86,29 @@ public class CategoryDAO {
 	            return false; // Có lỗi xảy ra trong quá trình cập nhật
 	        }
 	    }
+		
+		@Transactional
+		public List<CategoryEntity> searchCategories(String searchQuery) {
+		    // Kiểm tra nếu người dùng tìm kiếm theo số
+		    boolean isNumeric = searchQuery.matches("^[0-9]+$"); // Kiểm tra nếu từ khóa tìm kiếm là số
+
+		    Session session = factory.getCurrentSession();
+		    String hql;
+
+		    if (isNumeric) {
+		        // Tìm kiếm theo ID, chuyển ID thành chuỗi và sử dụng LIKE
+		        hql = "FROM CategoryEntity c WHERE CAST(c.idCategory AS string) LIKE :searchQuery";
+		    } else {
+		        // Tìm kiếm theo tên, sử dụng LIKE
+		        hql = "FROM CategoryEntity c WHERE c.nameCategory LIKE :searchQuery";
+		    }
+
+		    Query<CategoryEntity> query = session.createQuery(hql, CategoryEntity.class);
+		    // Nếu tìm kiếm là số, thêm dấu % để tìm kiếm chứa chuỗi số đó ở bất kỳ đâu
+		    query.setParameter("searchQuery", isNumeric ? searchQuery + "%" : "%" + searchQuery + "%");
+		    
+		    return query.getResultList();
+		}
+
 	
 }

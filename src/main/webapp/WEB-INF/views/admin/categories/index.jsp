@@ -23,16 +23,20 @@
 				<div class="box-header">
 					<a href="admin/categories/add-category" class="btn btn-success">+ Thêm loại hàng</a>
 					<div class="box-tools">
-						<div class="input-group input-group-sm" style="width: 150px;">
-							<input type="text" name="table_search"
-								class="form-control pull-right" placeholder="Search">
-
-							<div class="input-group-btn">
-								<button type="submit" class="btn btn-default">
-									<i class="fa fa-search"></i>
-								</button>
+						<form 
+							action="${pageContext.request.contextPath}/search/admin/category"
+							method="post">
+							<div class="input-group input-group-sm" style="width: 150px;">
+								<input type="text" name="table_search"
+									class="form-control pull-right" placeholder="Search">
+	
+								<div class="input-group-btn">
+									<button type="submit" class="btn btn-default">
+										<i class="fa fa-search"></i>
+									</button>
+								</div>
 							</div>
-						</div>
+						</form>
 					</div>
 				</div>
 				<!-- /.box-header -->
