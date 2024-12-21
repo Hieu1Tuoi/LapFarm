@@ -242,4 +242,27 @@ public class UserDAO {
         }
         return false;
 	}
+	
+	public String getUserNameById(int userId) {
+	    // Mở session từ factory
+	    Session session = factory.openSession();
+	    try {
+	        // Tạo câu lệnh HQL để tìm UserInfoEntity dựa trên userId
+	        String hql = "SELECT u.fullName FROM UserInfoEntity u WHERE u.userId = :userId";
+	        // Tạo query từ HQL
+	        Query query = session.createQuery(hql);
+	        // Đặt giá trị tham số userId
+	        query.setParameter("userId", userId);
+	        
+	        // Lấy kết quả duy nhất (tên người dùng)
+	        String fullName = (String) query.uniqueResult();
+	        
+	        // Trả về tên người dùng nếu tìm thấy, ngược lại trả về null
+	        return fullName;
+	    } finally {
+	        // Đóng session sau khi xong
+	        session.close();
+	    }
+	}
+
 }

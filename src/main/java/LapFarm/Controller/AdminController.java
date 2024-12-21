@@ -32,11 +32,13 @@ import LapFarm.DAO.ImageDAO;
 import LapFarm.DAO.NotificationDAO;
 import LapFarm.DAO.OrderDetailDAO;
 import LapFarm.DAO.OrdersDAO;
+import LapFarm.DAO.PaymentDAO;
 import LapFarm.DAO.ProductDAO;
 import LapFarm.DAO.ProductDetailDAO;
 import LapFarm.DAO.UserDAO;
 import LapFarm.DTO.OrderDetailDTO;
 import LapFarm.DTO.OrdersDTO;
+import LapFarm.DTO.PaymentDTO;
 import LapFarm.DTO.ProductDTO;
 import LapFarm.DTO.UserInfoDTO;
 import LapFarm.Entity.BrandEntity;
@@ -44,8 +46,10 @@ import LapFarm.Entity.CategoryEntity;
 import LapFarm.Entity.ImageEntity;
 import LapFarm.Entity.NotificationEntity;
 import LapFarm.Entity.OrdersEntity;
+import LapFarm.Entity.PaymentEntity;
 import LapFarm.Entity.ProductDetailEntity;
 import LapFarm.Entity.ProductEntity;
+import LapFarm.Utils.SecureUrlUtil;
 import jakarta.servlet.ServletContext;
 
 @Controller
@@ -71,6 +75,8 @@ public class AdminController {
 	private ImageDAO imageDAO;
 	@Autowired
 	private NotificationDAO notificationDAO;
+	@Autowired
+	private PaymentDAO paymentDAO;
 
 	public static String normalizeString(String input) {
 		if (input == null || input.isEmpty()) {
@@ -806,5 +812,43 @@ public class AdminController {
 				model.addAttribute("categories", categories);
 				model.addAttribute("orders", orders);
 				return "/admin/user/userOrders";
+	}
+	
+	@RequestMapping(value = { "/payments" }, method = RequestMethod.GET)
+	public String paymentIndex(ModelMap model) {
+		// Lấy danh sách từ DAO
+		List<CategoryEntity> categories = categoryDAO.getAllCategories();
+		List<PaymentEntity> payments = paymentDAO.getAllPayments();
+		
+		// Chuyển đổi PaymentEntity thành PaymentDTO
+	    List<PaymentDTO> paymentDTOList = new ArrayList<>();
+	    payments.forEach(payment -> {
+	        PaymentDTO paymentDTO = new PaymentDTO();
+	        paymentDTO.setIdPayment(payment.getIdPayment());
+	        paymentDTO.setOrderPayment(payment.getOrderPayment());
+	        paymentDTO.setUserPayment(payment.getUserPayment());
+	        paymentDTO.setTimePayment(payment.getTimePayment());
+	        paymentDTO.setStatePayment(payment.getStatePayment());
+	        paymentDTO.setPricePayment(payment.getPricePayment());
+	        paymentDTO.setMethodPayment(payment.getMethodPayment());
+
+	        // Mã hóa idPayment
+	        try {
+	            String encryptedPaymentId = SecureUrlUtil.encrypt(String.valueOf(payment.getIdPayment()));
+	            paymentDTO.setEncryptedId(encryptedPaymentId);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+
+	        // Thêm PaymentDTO vào danh sách
+	        paymentDTOList.add(paymentDTO);
+	    });
+		// Đưa danh sách vào Model để đẩy sang view
+
+		model.addAttribute("categories", categories);
+		model.addAttribute("payments", paymentDTOList);
+
+		// Trả về view cho trang quản lý sản phẩm của danh mục
+		return "/admin/payment/index";
 	}
 }

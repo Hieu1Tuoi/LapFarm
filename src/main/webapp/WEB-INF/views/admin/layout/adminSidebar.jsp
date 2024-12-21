@@ -74,8 +74,13 @@
 					}
 
 				</script>
-
-
+				
+				<li><a href="admin/payments"> <i class="fa fa-credit-card-alt"></i> <span>Quản lý hóa đơn</span>
+						<span class="pull-right-container"> <small
+							class="label pull-right bg-green"></small>
+					</span>
+				</a></li>
+				
 				<li><a href="admin/manage-user"> <i class="fa fa-user"></i> <span>Quản lý người dùng</span>
 						<span class="pull-right-container"> <small
 							class="label pull-right bg-green"></small>
