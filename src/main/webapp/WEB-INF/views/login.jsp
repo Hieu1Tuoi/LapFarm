@@ -101,7 +101,7 @@
 								<label for="password">Mật khẩu:</label> <input type="password"
 									class="form-control" id="password" name="password"
 									value="${pw}" placeholder="Nhập mật khẩu của bạn" required>
-								<a href="<c:url value='/forgotpassword' />">Quên mật khẩu?</a>
+								<a href="<c:url value='/forgot-password' />">Quên mật khẩu?</a>
 							</div>
 							<div class="form-group">
 								<strong style="color: red;">${warning}</strong>
