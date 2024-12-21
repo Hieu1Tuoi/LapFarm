@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -258,4 +259,87 @@ public class LoginController extends BaseController {
 			throw new RuntimeException("MD5 algorithm not found", e);
 		}
 	}
+	
+	@RequestMapping("/forgot-password")
+	public String showForgotPasswordPage() {
+	    return "forgotpassword";
+	}
+	@RequestMapping(value = "/forgotpassword", method = RequestMethod.POST)
+	public String resetPassword(ModelMap model, @RequestParam("password") String password,
+	        @RequestParam("email") String email, @RequestParam("confirmPassword") String confirmPassword,
+	        @RequestParam("verificationCode") String verificationCode, HttpSession verificationSession, 
+	        @RequestParam("g-recaptcha-response") String recaptchaResponse) {
+	    try {
+	        // Verify reCAPTCHA
+	        String secretKey = "6LcMHp8qAAAAAOfjRaga9eSFLoV7lkQHY8-vb9sj"; // Secret Key từ Google reCAPTCHA
+	        String verifyUrl = "https://www.google.com/recaptcha/api/siteverify";
+	        
+	        RestTemplate restTemplate = new RestTemplate();
+	        MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+	        requestParams.add("secret", secretKey);
+	        requestParams.add("response", recaptchaResponse);
+	        
+	        ResponseEntity<Map> response = restTemplate.postForEntity(verifyUrl, requestParams, Map.class);
+	        Map<String, Object> responseBody = response.getBody();
+	        
+	        if (responseBody != null && Boolean.TRUE.equals(responseBody.get("success"))) {
+	            // reCAPTCHA validation passed
+	            System.out.println("reCAPTCHA validation succeeded.");
+	        } else {
+	            model.addAttribute("warning", "reCAPTCHA không hợp lệ. Vui lòng thử lại!");
+	            return "forgotpassword";
+	        }
+	    } catch (Exception e) {
+	        model.addAttribute("warning", "Lỗi khi xác thực reCAPTCHA: " + e.getMessage());
+	        return "forgotpassword";
+	    }
+
+	    // Kiểm tra mã xác minh
+	    String codeFromSession = (String) verificationSession.getAttribute("verificationCode");
+	    if (codeFromSession == null || !codeFromSession.equals(verificationCode)) {
+	        model.addAttribute("warning", "Mã xác nhận không chính xác!");
+	        model.addAttribute("email", email);
+	        model.addAttribute("pw", password);
+	        model.addAttribute("cfpw", confirmPassword);
+	        return "forgotpassword"; // Trang sửa mật khẩu
+	    }
+
+	    // Kiểm tra độ dài mật khẩu và mật khẩu bằng regex
+	    String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
+
+	    if (!password.matches(passwordRegex)) {
+	        model.addAttribute("warning", "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và kí tự đặc biệt!");
+	        model.addAttribute("email", email);
+	        model.addAttribute("pw", password);
+	        model.addAttribute("cfpw", confirmPassword);
+	        return "forgotpassword"; // Trang sửa mật khẩu
+	    } else if (!password.equals(confirmPassword)) {
+	        model.addAttribute("warning", "Xác nhận mật khẩu không giống nhau!");
+	        model.addAttribute("email", email);
+	        model.addAttribute("pw", password);
+	        model.addAttribute("cfpw", confirmPassword);
+	        return "forgotpassword"; // Trang sửa mật khẩu
+	    }
+
+	    // Tiến hành cập nhật mật khẩu
+	    try {
+	        if (!accountDAO.checkEmailExists(email)) {
+	            model.addAttribute("warning", "Email không tồn tại trong hệ thống!");
+	            model.addAttribute("email", email);
+	            model.addAttribute("pw", password);
+	            model.addAttribute("cfpw", confirmPassword);
+	            return "forgotpassword";
+	        }
+
+	        accountDAO.updatePassword(email, password);
+
+	        model.addAttribute("message", "Mật khẩu đã được cập nhật thành công!");
+	    } catch (Exception e) {
+	        model.addAttribute("warning", "Cập nhật mật khẩu thất bại! " + e.getMessage());
+	    }
+
+	    return "redirect:/login";
+	}
+
+
 }

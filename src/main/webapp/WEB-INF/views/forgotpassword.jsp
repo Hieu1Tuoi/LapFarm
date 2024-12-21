@@ -90,8 +90,8 @@
 			<div class="row">
 				<div class="col-md-6 col-md-offset-3">
 					<div class="sigup-form">
-						<h2 class="text-center">Đăng Ký</h2>
-						<form action="<c:url value='/signup' />" method="post">
+						<h2 class="text-center">Quên mật khẩu</h2>
+						<form action="<c:url value='/forgotpassword' />" method="post">
 							<div class="form-group">
 								<label for="sigup-email">Email:</label> <input type="email"
 									class="form-control" id="sigup-email" name="email"
@@ -131,8 +131,7 @@
 									style="color: green;">${message}</strong>
 							</div>
 							<div class="form-group">
-								<button type="submit" class="btn btn-primary btn-block">Đăng
-									Ký</button>
+								<button type="submit" class="btn btn-primary btn-block">Đổi mật khẩu</button>
 							</div>
 							<div class="text-center">
 								Bạn đã có tài khoản? <a href="<c:url value='/login' />">Đăng
@@ -201,21 +200,6 @@
 										});
 					});
 
-/* 	$(document)
-			.ready(
-					function() {
-						const currentPath = window.location.pathname;
 
-						if (currentPath.includes('/forgotpassword')) {
-							document.querySelector('.text-center').textContent = 'Quên mật khẩu';
-							document
-									.querySelector('label[for="sigup-password"]').textContent = 'Mật khẩu mới:';
-							document
-									.querySelector('label[for="confirm-password"]').textContent = 'Xác nhận mật khẩu mới:';
-							document.querySelector('.btn-primary').textContent = 'Đổi mật khẩu';
-							document.querySelector('form').setAttribute(
-									'action', 'forgotpassword');
-						}
-					}); */
 </script>
 </html>
