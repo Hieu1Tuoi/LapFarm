@@ -225,33 +225,33 @@ input[type="radio"] {
 /* Existing styles remain the same */
 /* Existing styles remain the same */
 .phone-container, .email-container {
-    display: flex;
-    align-items: center;
-    width: 40%;
+	display: flex;
+	align-items: center;
+	width: 40%;
 }
 
 .phone-input, .email-input {
-    flex-grow: 1;
-    margin-right: 10px;
+	flex-grow: 1;
+	margin-right: 10px;
 }
 
 .change-btn {
-    background-color: #d10024;
-    color: #fff;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-left: 10px;
+	background-color: #d10024;
+	color: #fff;
+	border: none;
+	padding: 8px 12px;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	margin-left: 10px;
 }
 
 .change-btn:hover {
-    background-color: #a00000;
+	background-color: #a00000;
 }
 
 .masked-info {
-    color: #666;
+	color: #666;
 }
 </style>
 <script>
@@ -327,15 +327,19 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // If local part is too short to mask, return as is
     if (local.length <= 3) {
-        return email;  // Return the email as is if local part is less than or equal to 3 characters
+    	return '*'.repeat(local.length) + '@' + domain;
+    }else if (local.length <= 6) {
+        // Nếu từ 4 đến 6 ký tự, hiện 3 ký tự đầu, phần còn lại che
+        return local.slice(0, 3) + '*'.repeat(local.length - 3) + '@' + domain;
+    } else {
+        // Nếu >= 7 ký tự, hiện 3 ký tự đầu và 3 ký tự cuối, che phần giữa
+        return (
+            local.slice(0, 3) +
+            '*'.repeat(local.length - 6) +
+            local.slice(-3) +
+            '@' + domain
+        );
     }
-    
-    // Show first 3 and last 3 characters of local part, mask the rest
-    const maskedLocal = local.slice(0, 3) + 
-                        local.slice(3, -3).replace(/./g, '*') + 
-                        local.slice(-3);
-    
-    return maskedLocal + '@' + domain;
 }
 
 
@@ -456,29 +460,29 @@ document.addEventListener('DOMContentLoaded', function() {
 					</div>
 				</div>
 				<div class="form-group">
-                    <label for="phone">Số điện thoại</label>
-                    <div class="phone-container">
-                        <input type="text" id="phone" name="phone"
-                            style="width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;"
-                            value="${userInfo.phone}">
-                        <span class="error-message" id="error-phone" 
-                            style="color: red; margin-left: 10px; display: block;"></span>
-                    </div>
-                </div>
+					<label for="phone">Số điện thoại</label>
+					<div class="phone-container">
+						<input type="text" id="phone" name="phone"
+							style="width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;"
+							value="${userInfo.phone}"> <span class="error-message"
+							id="error-phone"
+							style="color: red; margin-left: 10px; display: block;"></span>
+					</div>
+				</div>
 				<div class="form-group">
 					<label for="address">Địa chỉ</label> <input type="text"
 						id="address" name="address"
 						style="width: 40%; padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;"
 						value="${userInfo.address}">
 				</div>
-				 <div class="form-group">
-                    <label for="email">Email</label>
-                    <div class="email-container">
-                        <input type="text" id="email" name="email"
-                            style="width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;"
-                            value="${userProfile.email}" readonly>
-                    </div>
-                </div>
+				<div class="form-group">
+					<label for="email">Email</label>
+					<div class="email-container">
+						<input type="text" id="email" name="email"
+							style="width: 100%; padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;"
+							value="${userProfile.email}" readonly>
+					</div>
+				</div>
 				<div class="form-group">
 					<label for="dob">Ngày sinh</label> <input type="date" id="dob"
 						name="dob"
@@ -538,9 +542,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			<c:if test="${not empty viewedItems}">
 				<c:forEach var="item" items="${viewedItems}">
 					<div>
-<<<<<<< Updated upstream
 						<a
-							href="${pageContext.servletContext.contextPath}/product-detail/${item.id}">
+							href="${pageContext.servletContext.contextPath}/product-detail/${item.encryptedId}">
 							<img src="${item.image}" alt="${item.name}" />
 							<p>${item.name}</p>
 							<p>
@@ -548,13 +551,6 @@ document.addEventListener('DOMContentLoaded', function() {
 									groupingUsed="true"></fmt:formatNumber>
 								đ
 							</p>
-=======
-						<a href="${pageContext.servletContext.contextPath}/product-detail/${item.encryptedId}">
-						<img src="${item.image}" alt="${item.name}" />
-						<p>${item.name} </p>
-						<p> <fmt:formatNumber value="${item.price}" type="number"
-									groupingUsed="true"></fmt:formatNumber>đ</p>
->>>>>>> Stashed changes
 					</div>
 				</c:forEach>
 
