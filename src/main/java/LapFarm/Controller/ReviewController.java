@@ -6,6 +6,7 @@ import LapFarm.Entity.ReviewEntity;
 import LapFarm.Entity.UserInfoEntity;
 import LapFarm.Service.ReviewService;
 import LapFarm.Utils.SecureUrlUtil;
+import LapFarm.Utils.XSSUtils;
 import LapFarm.Service.ProductService;
 
 import java.security.Timestamp;
@@ -55,6 +56,12 @@ public class ReviewController {
             } catch (Exception e) {
                 model.addAttribute("errorMessage", "ID sản phẩm không hợp lệ hoặc bị thay đổi.");
                 return "redirect:/products"; // Chuyển hướng đến trang sản phẩm nếu ID không hợp lệ
+            }
+
+            // Kiểm tra nội dung đánh giá có chứa script hay không
+            if (XSSUtils.containsXSS(review)) {
+                model.addAttribute("errorMessage", "Đánh giá của bạn có chứa nội dung không hợp lệ.");
+                return "redirect:/product-detail/" + encryptedProductId; // Không cho phép lưu nếu có nội dung không hợp lệ
             }
 
             // Tìm sản phẩm từ ID

@@ -8,12 +8,18 @@ public class XSSUtils {
         return input.contains("&lt;") || input.contains("&gt;") || input.contains("&amp;");
     }
 
-    public static boolean containsXSS(String input) {
-        if (input == null) {
+    public static boolean containsXSS(String value) {
+        if (value == null || value.trim().isEmpty()) {
             return false;
         }
-        // Kiểm tra các ký tự đặc biệt XSS cơ bản như <, >, &, ", '
-        return input.contains("<") || input.contains(">") || input.contains("&") || input.contains("\"") || input.contains("'");
+        // Kiểm tra các ký tự và mẫu thường được dùng trong XSS
+        String[] patterns = {"<script>", "</script>", "javascript:", "onerror=", "onload=","alert("};
+        for (String pattern : patterns) {
+            if (value.toLowerCase().contains(pattern)) {
+                return true;
+            }
+        }
+        return value.matches(".*[<>&\"'].+");
     }
     
     // Phương thức mã hóa XSS

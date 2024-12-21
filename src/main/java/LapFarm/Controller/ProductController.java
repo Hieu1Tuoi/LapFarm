@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,12 +96,7 @@ public class ProductController extends BaseController {
             // Lấy dữ liệu đánh giá
             List<ReviewEntity> reviews = reviewDAO.getReviewsByProductIdWithPagination(productId, page, pageSize);
 
-            for (ReviewEntity review : reviews) {
-                // Kiểm tra nếu nhận xét chứa các ký tự đặc biệt
-                if (XSSUtils.containsXSS(review.getComment())) {
-                    review.setComment(XSSUtils.escapeXSS(review.getComment()));  // Mã hóa nhận xét nếu chứa ký tự XSS
-                }
-            }
+//            
             // Tính tổng số trang phân trang
             int totalReviews = reviewDAO.countReviewsByProductId(productId);
             int totalPages = (int) Math.ceil((double) totalReviews / pageSize);
