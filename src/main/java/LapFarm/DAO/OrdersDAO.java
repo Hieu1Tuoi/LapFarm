@@ -39,7 +39,7 @@ public class OrdersDAO {
 		return ordersList.stream()
 				.map(order -> new OrdersDTO(order.getIdOrder(), order.getTime(), order.getState(),
 						order.getTotalPrice(), order.getUserInfo().getFullName(), order.getPaymentMethod(),
-						order.getNote()))
+						order.getNote(), order.getAddress()))
 				.collect(Collectors.toList());
 	}
 
@@ -60,7 +60,7 @@ public class OrdersDAO {
 		return ordersList.stream()
 				.map(order -> new OrdersDTO(order.getIdOrder(), order.getTime(), order.getState(),
 						order.getTotalPrice(), order.getUserInfo().getFullName(), order.getPaymentMethod(),
-						order.getNote()))
+						order.getNote(), order.getAddress()))
 				.collect(Collectors.toList());
 	}
 
@@ -131,7 +131,7 @@ public class OrdersDAO {
 		return ordersList.stream()
 				.map(order -> new OrdersDTO(order.getIdOrder(), order.getTime(), order.getState(),
 						order.getTotalPrice(), order.getUserInfo().getFullName(), order.getPaymentMethod(),
-						order.getNote()))
+						order.getNote(), order.getAddress()))
 				.collect(Collectors.toList());
 	}
 
@@ -191,7 +191,7 @@ public class OrdersDAO {
 		return ordersList.stream()
 				.map(order -> new OrdersDTO(order.getIdOrder(), order.getTime(), order.getState(),
 						order.getTotalPrice(), order.getUserInfo().getFullName(), order.getPaymentMethod(),
-						order.getNote()))
+						order.getNote(), order.getAddress()))
 				.collect(Collectors.toList());
 	}
 
@@ -208,7 +208,7 @@ public class OrdersDAO {
 		return ordersList.stream()
 				.map(order -> new OrdersDTO(order.getIdOrder(), order.getTime(), order.getState(),
 						order.getTotalPrice(), order.getUserInfo().getFullName(), order.getPaymentMethod(),
-						order.getNote()))
+						order.getNote(), order.getAddress()))
 				.collect(Collectors.toList());
 	}
 

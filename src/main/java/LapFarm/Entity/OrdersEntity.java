@@ -30,6 +30,9 @@ public class OrdersEntity {
 
     @Column(name = "Note", columnDefinition = "TEXT COLLATE utf8mb4_general_ci", nullable = true)
     private String note; // Note (TEXT)
+    
+    @Column(name = "Address", columnDefinition = "TEXT COLLATE utf8mb4_general_ci", nullable = true)
+    private String address; // Note (TEXT)
 
     // Getters and Setters
     public int getIdOrder() {
@@ -88,7 +91,15 @@ public class OrdersEntity {
         this.note = note;
     }
 
-    @Override
+    public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	@Override
     public String toString() {
         return "OrdersEntity{" +
                 "idOrder=" + idOrder +
@@ -98,6 +109,7 @@ public class OrdersEntity {
                 ", totalPrice=" + totalPrice +
                 ", paymentMethod=" + paymentMethod +
                 ", note='" + note + '\'' +
+                ", address='" + address + '\'' +
                 '}';
     }
 }

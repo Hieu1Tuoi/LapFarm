@@ -358,6 +358,12 @@ function showSuccessMessage(event) {
 						<td><strong><fmt:formatNumber value="${totalPrice}"
 									type="currency" currencySymbol="₫" /> </strong></td>
 					</tr>
+					<tr>
+						<td style="text-align: right; font-weight: bold;">Địa
+							chỉ giao hàng:</td>
+						<td colspan="6" style="text-align: left;" >${order.address}</td>
+					</tr>
+
 					<div id="success-message"
 						style="display: none; padding: 10px; margin-top: 20px; background-color: #28a745; color: white; text-align: center; border-radius: 5px;">
 						Thêm sản phẩm vào giỏ hàng thành công!</div>

@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import LapFarm.DAO.OrdersDAO;
 import LapFarm.DTO.OrderDetailDTO;
 import LapFarm.DTO.OrdersDTO;
 import LapFarm.DTO.ProductDTO;
 import LapFarm.DTO.ViewedItem;
 import LapFarm.Entity.AccountEntity;
 import LapFarm.Entity.OrderDetailsEntity;
+import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.UserInfoEntity;
 import LapFarm.Service.OrdersServiceImp;
 import LapFarm.Utils.SecureUrlUtil;
@@ -201,8 +203,11 @@ public class AccountController {
 	    double totalPrice = orderDetails.stream()
 	        .mapToDouble(item -> item.getPrice() * item.getQuantity())
 	        .sum();
+	    
+	    OrdersEntity order = orderService.getOrderById(orderId);
 
 	    // Thêm chi tiết đơn hàng và tổng giá vào model
+	    model.addAttribute("order", order);
 	    model.addAttribute("orderDetail", orderDetails);
 	    model.addAttribute("totalPrice", totalPrice);
 	    model.addAttribute("stateOrder", orderService.getStateById(orderId));

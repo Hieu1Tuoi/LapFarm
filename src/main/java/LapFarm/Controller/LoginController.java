@@ -250,7 +250,7 @@ public class LoginController extends BaseController {
 		httpSession.removeAttribute("accessToken");
 		return "redirect:/login";
 	}
-
+	
 	private String hashPasswordWithMD5(String password) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
