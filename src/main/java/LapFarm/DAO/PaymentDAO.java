@@ -30,4 +30,19 @@ public class PaymentDAO {
 		
 		return query.list();
 	}
+	
+	@Transactional
+	// Hàm lấy danh sách tất cả thanh toán
+	public void addPayment(PaymentEntity payment) {
+		// Lấy session từ factory
+		Session session = factory.getCurrentSession();
+
+		 try {
+	            // Lưu vào cơ sở dữ liệu
+	            session.persist(payment);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            throw new RuntimeException("Lỗi khi lưu thông tin thanh toán vào cơ sở dữ liệu: " + e.getMessage());
+	        }
+	}
 }

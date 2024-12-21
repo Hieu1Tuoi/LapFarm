@@ -3,6 +3,7 @@ package LapFarm.Controller;
 import LapFarm.DAO.CartDAO;
 import LapFarm.DAO.NotificationDAO;
 import LapFarm.DAO.OrdersDAO;
+import LapFarm.DAO.PaymentDAO;
 import LapFarm.DAO.ProductDAO;
 import LapFarm.DAO.UserDAO;
 import LapFarm.DTO.CartProductDTO;
@@ -13,6 +14,7 @@ import LapFarm.Entity.NotificationEntity;
 import LapFarm.Entity.OrderDetailId;
 import LapFarm.Entity.OrderDetailsEntity;
 import LapFarm.Entity.OrdersEntity;
+import LapFarm.Entity.PaymentEntity;
 import LapFarm.Entity.ProductEntity;
 import LapFarm.Entity.UserInfoEntity;
 import LapFarm.Model.Config;
@@ -60,6 +62,9 @@ public class PaymentController {
 	
 	@Autowired
 	private NotificationDAO notificationDAO;
+	
+	@Autowired
+	private PaymentDAO paymentDAO;
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String index(HttpSession httpSession, Model model) {
@@ -181,7 +186,7 @@ public class PaymentController {
 			order.setTotalPrice(totalAmount);
 
 			order.setTime(new Timestamp(System.currentTimeMillis())); // Thời gian hiện tại
-			order.getUserInfo().setAddress(address);
+			order.setAddress(address);
 			order.getUserInfo().setPhone(tel);
 			order.setNote(note);
 
@@ -219,6 +224,15 @@ public class PaymentController {
 				cartDAO.deleteCartById(cartId);
 			}
 			orderMap.put("orderdetail", productsDTO);
+			
+			// Lưu thanh toán
+			PaymentEntity payment = new PaymentEntity();
+			payment.setOrderPayment(order);
+			payment.setUserPayment(account.getUserInfo());
+			payment.setStatePayment("Thành công");
+			payment.setPricePayment(totalAmount);
+			payment.setMethodPayment((byte)0);
+			paymentDAO.addPayment(payment);
 			
 			// Tạo thông báo người dùng
 			NotificationEntity notification = new NotificationEntity();
@@ -308,7 +322,7 @@ public class PaymentController {
 			// phẩm
 			// trong giỏ hàng
 			order.setTime(new Timestamp(System.currentTimeMillis())); // Thời gian hiện tại
-			order.getUserInfo().setAddress(address);
+			order.setAddress(address);
 			order.getUserInfo().setPhone(tel);
 			order.setNote(note);
 			orderMap.put("order", order);
@@ -389,6 +403,16 @@ public class PaymentController {
 					userDAO.updateUserinfo(account.getEmail(), fullName, account.getUserInfo().getDob(), tel, address,
 							account.getUserInfo().getSex());
 					account = userDAO.getAccountByEmail(account.getEmail());
+					
+					// Lưu thanh toán
+					PaymentEntity payment = new PaymentEntity();
+					payment.setOrderPayment(order);
+					payment.setUserPayment(account.getUserInfo());
+					payment.setStatePayment("Thành công");
+					payment.setPricePayment(order.getTotalPrice());
+					payment.setMethodPayment((byte)1);
+					paymentDAO.addPayment(payment);
+					
 					httpSession.removeAttribute("user");
 					httpSession.setAttribute("user", account);
 					// Xóa giỏ hàng sau khi thanh toán
@@ -398,6 +422,16 @@ public class PaymentController {
 					model.addAttribute("message", "Thanh toán thành công!");
 				} else {
 					// Giao dịch không thành công
+					
+					// Lưu thanh toán
+					PaymentEntity payment = new PaymentEntity();
+					payment.setOrderPayment(order);
+					payment.setUserPayment(account.getUserInfo());
+					payment.setStatePayment("Thất bại");
+					payment.setPricePayment(order.getTotalPrice());
+					payment.setMethodPayment((byte)1);
+					paymentDAO.addPayment(payment);
+					
 					model.addAttribute("message", "Thanh toán không thành công!");
 
 				}
