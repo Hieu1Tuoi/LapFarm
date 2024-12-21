@@ -91,7 +91,7 @@
 				<div class="col-md-6 col-md-offset-3">
 					<div class="sigup-form">
 						<h2 class="text-center">Quên mật khẩu</h2>
-						<form action="<c:url value='/forgotpassword' />" method="post">
+						<form action="<c:url value='/forgot-password' />" method="post">
 							<div class="form-group">
 								<label for="sigup-email">Email:</label> <input type="email"
 									class="form-control" id="sigup-email" name="email"
@@ -109,11 +109,12 @@
 									value="${cfpw}" name="confirmPassword"
 									placeholder="Xác nhận mật khẩu của bạn" required>
 							</div>
-							
-							
+
+
 							<!--  Captcha -->
 							<div class="form-group text-center">
-								<div class="g-recaptcha" data-sitekey="6LcMHp8qAAAAADwRM1JbSj3IJLwDuyTqsFx2uEGo"></div>
+								<div class="g-recaptcha"
+									data-sitekey="6LcMHp8qAAAAADwRM1JbSj3IJLwDuyTqsFx2uEGo"></div>
 							</div>
 
 							<div class="form-group">
@@ -131,7 +132,8 @@
 									style="color: green;">${message}</strong>
 							</div>
 							<div class="form-group">
-								<button type="submit" class="btn btn-primary btn-block">Đổi mật khẩu</button>
+								<button type="submit" class="btn btn-primary btn-block">Đổi
+									mật khẩu</button>
 							</div>
 							<div class="text-center">
 								Bạn đã có tài khoản? <a href="<c:url value='/login' />">Đăng
@@ -157,49 +159,48 @@
 	<!-- /FOOTER -->
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-	$(document)
-			.ready(
-					function() {
-						$('#send-code-btn')
-								.click(
-										function() {
-											const email = $('#sigup-email')
-													.val();
+    $(document).ready(function() {
+        // Kiểm tra nếu có message thành công
+        var message = "${message}";
+        
+        if (message) {
+            // Nếu có message thành công, chuyển hướng đến trang đăng nhập
+            setTimeout(function() {
+                window.location.href = "<c:url value='/login' />";
+            }, 3000); // Đợi 3 giây trước khi chuyển hướng
+        }
 
-											// Kiểm tra email có được nhập vào hay không
-											if (!email) {
-												alert("Vui lòng nhập email để nhận mã xác minh!");
-												return;
-											}
+        $('#send-code-btn').click(function() {
+            const email = $('#sigup-email').val();
 
-											// Gửi yêu cầu AJAX
-											$
-													.ajax({
-														url : 'sendVerifyCode', // Endpoint gửi mã
-														type : 'POST',
-														data : {
-															email : email
-														},
-														success : function(
-																response) {
-															// Hiển thị thông báo thành công
-															$('#code-message')
-																	.text(
-																			"Mã xác nhận đã được gửi đến email của bạn!")
-																	.show();
-															alert("Email gửi mã xác minh đã thành công!");
-														},
-														error : function(xhr,
-																status, error) {
-															// Hiển thị thông báo lỗi nếu có
-															alert("Có lỗi xảy ra khi gửi mã xác minh: "
-																	+ "-.-");
-														}
-													});
-										});
-					});
+            // Kiểm tra email có được nhập vào hay không
+            if (!email) {
+                alert("Vui lòng nhập email để nhận mã xác minh!");
+                return;
+            }
 
-
+            // Gửi yêu cầu AJAX
+            $.ajax({
+                url: 'sendVerifyCode', // Endpoint gửi mã
+                type: 'POST',
+                data: { email: email },
+                success: function(response) {
+                    // Hiển thị thông báo thành công
+                    $('#code-message').text("Mã xác nhận đã được gửi đến email của bạn!").show();
+                    alert("Email gửi mã xác minh đã thành công!");
+                },
+                error: function(xhr, status, error) {
+                    // Hiển thị thông báo lỗi nếu có
+                    alert("Có lỗi xảy ra khi gửi mã xác minh: " + "-.-");
+                }
+            });
+        });
+    });
 </script>
+
+
+
+
 </html>

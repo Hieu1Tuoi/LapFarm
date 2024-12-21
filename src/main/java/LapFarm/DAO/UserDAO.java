@@ -2,6 +2,7 @@ package LapFarm.DAO;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -181,29 +182,36 @@ public class UserDAO {
 	}
 
 	public void updatePassword(String email, String newPassword) {
-		Session session = factory.openSession();
-		Transaction t = session.beginTransaction();
+	    Session session = factory.openSession();
+	    Transaction t = session.beginTransaction();
 
-		try {
-			String hql = "FROM AccountEntity WHERE email = :email";
-			Query query = session.createQuery(hql);
-			query.setParameter("email", email);
-			AccountEntity existingAccount = (AccountEntity) query.uniqueResult();
+	    try {
+	        // Tìm tài khoản theo email
+	        String hql = "FROM AccountEntity WHERE email = :email";
+	        Query query = session.createQuery(hql);
+	        query.setParameter("email", email);
+	        AccountEntity existingAccount = (AccountEntity) query.uniqueResult();
 
-			if (existingAccount != null) {
-				String hashedPassword = hashPasswordWithMD5(newPassword);
-				existingAccount.setPassword(hashedPassword);
-				session.update(existingAccount);
-				t.commit();
-			} else {
-				throw new RuntimeException("Email không tồn tại trong hệ thống!");
-			}
-		} catch (Exception e) {
-			t.rollback();
-			throw e;
-		} finally {
-			session.close();
-		}
+	        if (existingAccount != null) {
+	            // Mã hóa mật khẩu mới
+	            String hashedPassword = hashPasswordWithMD5(newPassword);
+	            existingAccount.setPassword(hashedPassword);
+
+	            // Cập nhật ngày thay đổi mật khẩu
+	            existingAccount.setLastPasswordChangeDate(LocalDateTime.now());  // Cập nhật ngày thay đổi mật khẩu
+
+	            // Cập nhật tài khoản
+	            session.update(existingAccount);
+	            t.commit();
+	        } else {
+	            throw new RuntimeException("Email không tồn tại trong hệ thống!");
+	        }
+	    } catch (Exception e) {
+	        t.rollback();
+	        throw e;
+	    } finally {
+	        session.close();
+	    }
 	}
 
 	private String hashPasswordWithMD5(String password) {

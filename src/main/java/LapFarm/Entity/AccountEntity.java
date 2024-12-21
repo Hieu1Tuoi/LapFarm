@@ -1,5 +1,7 @@
 package LapFarm.Entity;
 import java.io.ObjectInputFilter.Status;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 @Entity
 @Table(name = "account")
@@ -64,5 +66,17 @@ public class AccountEntity {
     @Override
     public String toString() {
         return "AccountEntity{" + "email='" + email + '\'' + ", state='" + state + '\'' + ", role=" + role + '}';
+    }
+    
+    @Column(name = "lastPasswordChangeDate")
+    private LocalDateTime lastPasswordChangeDate;
+
+    // Getter và setter cho lastPasswordChangeDate
+    public LocalDateTime getLastPasswordChangeDate() {
+        return lastPasswordChangeDate;
+    }
+
+    public void setLastPasswordChangeDate(LocalDateTime lastPasswordChangeDate) {
+        this.lastPasswordChangeDate = lastPasswordChangeDate;
     }
 }

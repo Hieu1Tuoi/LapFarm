@@ -39,6 +39,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -264,11 +265,14 @@ public class LoginController extends BaseController {
 	public String showForgotPasswordPage() {
 	    return "forgotpassword";
 	}
-	@RequestMapping(value = "/forgotpassword", method = RequestMethod.POST)
-	public String resetPassword(ModelMap model, @RequestParam("password") String password,
-	        @RequestParam("email") String email, @RequestParam("confirmPassword") String confirmPassword,
-	        @RequestParam("verificationCode") String verificationCode, HttpSession verificationSession, 
-	        @RequestParam("g-recaptcha-response") String recaptchaResponse) {
+	@RequestMapping(value = "/forgot-password", method = RequestMethod.POST)
+	public String resetPassword(RedirectAttributes redirectAttributes, 
+	                             @RequestParam("password") String password,
+	                             @RequestParam("email") String email, 
+	                             @RequestParam("confirmPassword") String confirmPassword,
+	                             @RequestParam("verificationCode") String verificationCode, 
+	                             HttpSession verificationSession, 
+	                             @RequestParam("g-recaptcha-response") String recaptchaResponse) {
 	    try {
 	        // Verify reCAPTCHA
 	        String secretKey = "6LcMHp8qAAAAAOfjRaga9eSFLoV7lkQHY8-vb9sj"; // Secret Key từ Google reCAPTCHA
@@ -286,60 +290,61 @@ public class LoginController extends BaseController {
 	            // reCAPTCHA validation passed
 	            System.out.println("reCAPTCHA validation succeeded.");
 	        } else {
-	            model.addAttribute("warning", "reCAPTCHA không hợp lệ. Vui lòng thử lại!");
-	            return "forgotpassword";
+	            redirectAttributes.addFlashAttribute("warning", "reCAPTCHA không hợp lệ. Vui lòng thử lại!");
+	            return "redirect:/forgot-password";
 	        }
 	    } catch (Exception e) {
-	        model.addAttribute("warning", "Lỗi khi xác thực reCAPTCHA: " + e.getMessage());
-	        return "forgotpassword";
+	        redirectAttributes.addFlashAttribute("warning", "Lỗi khi xác thực reCAPTCHA: " + e.getMessage());
+	        return "redirect:/forgot-password";
 	    }
 
 	    // Kiểm tra mã xác minh
 	    String codeFromSession = (String) verificationSession.getAttribute("verificationCode");
 	    if (codeFromSession == null || !codeFromSession.equals(verificationCode)) {
-	        model.addAttribute("warning", "Mã xác nhận không chính xác!");
-	        model.addAttribute("email", email);
-	        model.addAttribute("pw", password);
-	        model.addAttribute("cfpw", confirmPassword);
-	        return "forgotpassword"; // Trang sửa mật khẩu
+	        redirectAttributes.addFlashAttribute("warning", "Mã xác nhận không chính xác!");
+	        redirectAttributes.addFlashAttribute("email", email);
+	        redirectAttributes.addFlashAttribute("pw", password);
+	        redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
+	        return "redirect:/forgot-password"; // Trang sửa mật khẩu
 	    }
 
 	    // Kiểm tra độ dài mật khẩu và mật khẩu bằng regex
 	    String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
 
 	    if (!password.matches(passwordRegex)) {
-	        model.addAttribute("warning", "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và kí tự đặc biệt!");
-	        model.addAttribute("email", email);
-	        model.addAttribute("pw", password);
-	        model.addAttribute("cfpw", confirmPassword);
-	        return "forgotpassword"; // Trang sửa mật khẩu
+	        redirectAttributes.addFlashAttribute("warning", "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và kí tự đặc biệt!");
+	        redirectAttributes.addFlashAttribute("email", email);
+	        redirectAttributes.addFlashAttribute("pw", password);
+	        redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
+	        return "redirect:/forgot-password"; // Trang sửa mật khẩu
 	    } else if (!password.equals(confirmPassword)) {
-	        model.addAttribute("warning", "Xác nhận mật khẩu không giống nhau!");
-	        model.addAttribute("email", email);
-	        model.addAttribute("pw", password);
-	        model.addAttribute("cfpw", confirmPassword);
-	        return "forgotpassword"; // Trang sửa mật khẩu
+	        redirectAttributes.addFlashAttribute("warning", "Xác nhận mật khẩu không giống nhau!");
+	        redirectAttributes.addFlashAttribute("email", email);
+	        redirectAttributes.addFlashAttribute("pw", password);
+	        redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
+	        return "redirect:/forgot-password"; // Trang sửa mật khẩu
 	    }
 
 	    // Tiến hành cập nhật mật khẩu
 	    try {
 	        if (!accountDAO.checkEmailExists(email)) {
-	            model.addAttribute("warning", "Email không tồn tại trong hệ thống!");
-	            model.addAttribute("email", email);
-	            model.addAttribute("pw", password);
-	            model.addAttribute("cfpw", confirmPassword);
-	            return "forgotpassword";
+	            redirectAttributes.addFlashAttribute("warning", "Email không tồn tại trong hệ thống!");
+	            redirectAttributes.addFlashAttribute("email", email);
+	            redirectAttributes.addFlashAttribute("pw", password);
+	            redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
+	            return "redirect:/forgot-password";
 	        }
 
 	        accountDAO.updatePassword(email, password);
 
-	        model.addAttribute("message", "Mật khẩu đã được cập nhật thành công!");
+	        redirectAttributes.addFlashAttribute("message", "Mật khẩu đã được cập nhật thành công!");
 	    } catch (Exception e) {
-	        model.addAttribute("warning", "Cập nhật mật khẩu thất bại! " + e.getMessage());
+	        redirectAttributes.addFlashAttribute("warning", "Cập nhật mật khẩu thất bại! " + e.getMessage());
 	    }
 
-	    return "redirect:/login";
+	    return "redirect:/forgot-password"; 
 	}
+
 
 
 }

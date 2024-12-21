@@ -46,7 +46,7 @@
 	</filter-mapping>
 
 	<session-config>
-		<session-timeout>30</session-timeout> <!-- Đơn vị: phút -->
+		<session-timeout>120</session-timeout> <!-- Đơn vị: phút -->
 	</session-config>
 
 	<welcome-file-list>

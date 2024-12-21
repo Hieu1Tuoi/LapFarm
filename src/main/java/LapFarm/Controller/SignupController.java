@@ -26,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Hex;
@@ -74,7 +75,7 @@ public class SignupController {
 	        @RequestParam("g-recaptcha-response") String recaptchaResponse) {
 	    try {
 	        // Verify reCAPTCHA
-	        String secretKey = "6LcMHp8qAAAAAOfjRaga9eSFLoV7lkQHY8-vb9sj"; //Secret Key từ Google reCAPTCHA
+	        String secretKey = "6LcMHp8qAAAAAOfjRaga9eSFLoV7lkQHY8-vb9sj"; // Secret Key từ Google reCAPTCHA
 	        String verifyUrl = "https://www.google.com/recaptcha/api/siteverify";
 	        
 	        RestTemplate restTemplate = new RestTemplate();
@@ -109,10 +110,8 @@ public class SignupController {
 
 	    // Kiểm tra độ dài mật khẩu và mật khẩu bằng regex
 	    String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
- // Biểu thức regex
-
 	    if (!password.matches(passwordRegex)) {
-	    	 model.addAttribute("warning", "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và kí tự đặc biệt!");
+	        model.addAttribute("warning", "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và kí tự đặc biệt!");
 	        model.addAttribute("email", email);
 	        model.addAttribute("pw", password);
 	        model.addAttribute("cfpw", confirmPassword);
@@ -126,7 +125,7 @@ public class SignupController {
 	    }
 
 	    try {
-	        // Check if email already exists
+	        // Kiểm tra email đã tồn tại chưa
 	        if (accountDAO.checkEmailExists(email)) {
 	            model.addAttribute("warning", "Email đã tồn tại!");
 	            model.addAttribute("email", email);
@@ -135,8 +134,11 @@ public class SignupController {
 	            return "signup";
 	        }
 
-	        accountDAO.saveAccount(acc);
-	        accountDAO.createUserinfo(email);
+	        // Cập nhật thời gian đổi mật khẩu trước khi lưu tài khoản
+	        acc.setLastPasswordChangeDate(LocalDateTime.now());  // Cập nhật thời gian đổi mật khẩu
+
+	        accountDAO.saveAccount(acc);  // Lưu tài khoản vào database
+	        accountDAO.createUserinfo(email);  // Lưu thông tin người dùng
 
 	        model.addAttribute("message", "Đăng ký thành công!");
 	    } catch (Exception e) {
