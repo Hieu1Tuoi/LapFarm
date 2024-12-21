@@ -13,7 +13,7 @@ public class XSSUtils {
             return false;
         }
         // Kiểm tra các ký tự và mẫu thường được dùng trong XSS
-        String[] patterns = {"<script>", "</script>", "javascript:", "onerror=", "onload=","alert("};
+        String[] patterns = {"<script>", "</script>", "javascript:", "onerror=", "onload=","alert(","&lt;","&amp;","&gt;"};
         for (String pattern : patterns) {
             if (value.toLowerCase().contains(pattern)) {
                 return true;
