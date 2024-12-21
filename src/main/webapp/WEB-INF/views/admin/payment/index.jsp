@@ -68,9 +68,6 @@
 									<a
 										href="${pageContext.request.contextPath}/admin/orders/detail-order/${p.orderPayment.idOrder}"
 										class="btn btn-success">Xem đơn hàng</a>
-									<a
-										href="${pageContext.request.contextPath}/admin/payments/detail-payment/${p.idPayment}"
-										class="btn btn-success">Xem hóa đơn</a>
 									</td>
 								</tr>
 							</c:forEach>

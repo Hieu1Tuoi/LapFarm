@@ -6,14 +6,19 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import LapFarm.Bean.Mailer;
+import LapFarm.DAO.BrandDAO;
+import LapFarm.DAO.CategoryDAO;
 import LapFarm.DTO.PaginatesDto;
 import LapFarm.DTO.ProductDTO;
+import LapFarm.Entity.BrandEntity;
+import LapFarm.Entity.CategoryEntity;
 import LapFarm.Service.CategoryServiceImp;
 import LapFarm.Service.PaginatesServiceImp;
 import LapFarm.Service.ProductServiceImp;
@@ -33,6 +38,12 @@ public class SearchController extends BaseController {
 
     @Autowired
     private PaginatesServiceImp paginateService;
+    
+    @Autowired
+    private CategoryDAO categoryDAO;
+    
+    @Autowired
+    private BrandDAO brandDAO;
 
     private final int totalProductPage = 9;
 
@@ -182,5 +193,33 @@ public class SearchController extends BaseController {
         }
 
         return "";
+    }
+    
+    @RequestMapping(value = "/admin/category", method = RequestMethod.POST)
+    public String searchCategory(@RequestParam("table_search") String searchQuery, ModelMap model) {
+        // Tìm kiếm các category theo tên hoặc ID
+        List<CategoryEntity> categories = categoryDAO.searchCategories(searchQuery);
+        //List<CategoryEntity> categories = categoryDAO.getAllCategories();
+
+        // Thêm kết quả tìm kiếm vào model
+       // model.addAttribute("categoriesSearch", categoriesSearch);
+        model.addAttribute("categories", categories);
+
+        // Trả về view để hiển thị danh sách category đã tìm kiếm
+        return "/admin/categories/index";
+    }
+    
+    @RequestMapping(value = "/admin/brand", method = RequestMethod.POST)
+    public String searchBrand(@RequestParam("table_search") String searchQuery, ModelMap model) {
+        // Tìm kiếm các category theo tên hoặc ID
+        List<CategoryEntity> categories = categoryDAO.getAllCategories();
+        List<BrandEntity> brands = brandDAO.searchBrands(searchQuery);
+
+        // Thêm kết quả tìm kiếm vào model
+        model.addAttribute("categories", categories);
+        model.addAttribute("brands", brands);
+
+        // Trả về view để hiển thị danh sách category đã tìm kiếm
+        return "/admin/brands/index";
     }
 }
