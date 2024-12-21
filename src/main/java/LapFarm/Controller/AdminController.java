@@ -843,6 +843,14 @@ public class AdminController {
 	        // Thêm PaymentDTO vào danh sách
 	        paymentDTOList.add(paymentDTO);
 	    });
+	    
+	 // Sắp xếp danh sách PaymentDTO theo idPayment giảm dần
+        Collections.sort(paymentDTOList, new Comparator<PaymentDTO>() {
+            @Override
+            public int compare(PaymentDTO o1, PaymentDTO o2) {
+                return Integer.compare(o2.getIdPayment(), o1.getIdPayment()); // Sắp xếp giảm dần theo idPayment
+            }
+        });
 		// Đưa danh sách vào Model để đẩy sang view
 
 		model.addAttribute("categories", categories);

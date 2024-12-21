@@ -229,9 +229,10 @@ public class PaymentController {
 			PaymentEntity payment = new PaymentEntity();
 			payment.setOrderPayment(order);
 			payment.setUserPayment(account.getUserInfo());
-			payment.setStatePayment("Thành công");
+			payment.setStatePayment("Chờ thanh toán");
 			payment.setPricePayment(totalAmount);
 			payment.setMethodPayment((byte)0);
+			payment.setTimePayment(new Timestamp(System.currentTimeMillis()));
 			paymentDAO.addPayment(payment);
 			
 			// Tạo thông báo người dùng
@@ -411,6 +412,7 @@ public class PaymentController {
 					payment.setStatePayment("Thành công");
 					payment.setPricePayment(order.getTotalPrice());
 					payment.setMethodPayment((byte)1);
+					payment.setTimePayment(new Timestamp(System.currentTimeMillis()));
 					paymentDAO.addPayment(payment);
 					
 					httpSession.removeAttribute("user");
@@ -430,6 +432,7 @@ public class PaymentController {
 					payment.setStatePayment("Thất bại");
 					payment.setPricePayment(order.getTotalPrice());
 					payment.setMethodPayment((byte)1);
+					payment.setTimePayment(new Timestamp(System.currentTimeMillis()));
 					paymentDAO.addPayment(payment);
 					
 					model.addAttribute("message", "Thanh toán không thành công!");
