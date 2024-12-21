@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const minPriceLabel = document.getElementById('minPriceLabel');
     const maxPriceLabel = document.getElementById('maxPriceLabel');
     const idBrandInput = document.getElementById('idBrandInput');
-
+    
     // Lấy tham số từ URL
     const urlParams = new URLSearchParams(window.location.search);
     let priceRange = urlParams.get('priceRange');
@@ -35,16 +35,19 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Điều chỉnh giá trị minPriceSlider và maxPriceSlider khi thay đổi
-    function handleSliderChange(slider, otherSlider) {
+    function handleSliderChange(slider) {
+        const minValue = parseInt(minPriceSlider.value);
+        const maxValue = parseInt(maxPriceSlider.value);
+
         if (slider === minPriceSlider) {
-            // Kiểm tra xem minPriceSlider có lớn hơn maxPriceSlider không
-            if (parseInt(minPriceSlider.value) >= parseInt(maxPriceSlider.value)) {
-                minPriceSlider.value = parseInt(maxPriceSlider.value) - 1; // Đặt giá trị minPriceSlider nhỏ hơn maxPriceSlider ít nhất 1
+            // Đảm bảo min không lớn hơn nửa max
+            if (minValue > maxValue / 2) {
+                slider.value = Math.floor(maxValue / 2);
             }
         } else if (slider === maxPriceSlider) {
-            // Kiểm tra xem maxPriceSlider có nhỏ hơn minPriceSlider không
-            if (parseInt(maxPriceSlider.value) <= parseInt(minPriceSlider.value)) {
-                maxPriceSlider.value = parseInt(minPriceSlider.value) + 1; // Đặt giá trị maxPriceSlider lớn hơn minPriceSlider ít nhất 1
+            // Đảm bảo max không nhỏ hơn 2 lần min
+            if (maxValue < minValue * 2) {
+                slider.value = minValue * 2;
             }
         }
         updatePriceLabels();
@@ -52,11 +55,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Lắng nghe sự kiện thay đổi giá trị của các thanh trượt
     minPriceSlider.addEventListener('input', function() {
-        handleSliderChange(minPriceSlider, maxPriceSlider);
+        handleSliderChange(minPriceSlider);
     });
 
     maxPriceSlider.addEventListener('input', function() {
-        handleSliderChange(maxPriceSlider, minPriceSlider);
+        handleSliderChange(maxPriceSlider);
     });
 
     // Khởi tạo giá trị ban đầu

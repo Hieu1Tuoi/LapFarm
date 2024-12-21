@@ -19,7 +19,7 @@
 	<script src="<c:url value='/resources/js/slick.min.js' />"></script>
 	<script src="<c:url value='/resources/js/nouislider.min.js' />"></script>
 	<script src="<c:url value='/resources/js/jquery.zoom.min.js' />"></script>
-	<script src="<c:url value='/resources/js/filter.js' />"></script>
+	<script src="<c:url value='/resources/js/filter2.js' />"></script>
 
 </body>
 </html>

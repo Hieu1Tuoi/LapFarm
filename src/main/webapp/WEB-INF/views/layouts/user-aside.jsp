@@ -4,6 +4,8 @@
 <style>
 </style>
 
+<%-- <script src="<c:url value='/resources/js/filter.js' />" defer></script> --%>
+
 <div class="section">
 	<!-- container -->
 	<div class="container">
@@ -122,3 +124,6 @@
 				<!-- /aside Widget -->
 			</div>
 			<!-- /ASIDE -->
+			
+		
+			

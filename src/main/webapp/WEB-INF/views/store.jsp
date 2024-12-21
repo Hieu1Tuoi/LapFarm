@@ -20,7 +20,11 @@
 <div id="store" class="col-md-9">
 	<%-- <h1>${user.userInfo.userId}</h1>
 	<h2>${ProductsPaginate != null ? ProductsPaginate.size() : 0}</h2> --%>
-	
+	<c:if test="${not empty passwordChangeReminder}">
+    <div class="alert alert-warning">
+        ${passwordChangeReminder}
+    </div>
+</c:if>
 	<h3>
 		TẤT CẢ SẢN PHẨM:
 		<fmt:formatNumber value="${products.size()}" type="number"

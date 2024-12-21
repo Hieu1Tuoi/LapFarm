@@ -29,7 +29,7 @@
 						<c:forEach var="cate" items="${categories}">
 							<ul class="footer-links">
 								<li><a
-									href="products-category?idCategory=${cate.idCategory}">${cate.nameCategory}</a></li>
+									href="products-category?idCategory=${cate.encryptedId}">${cate.nameCategory}</a></li>
 									<br>
 							</ul>
 						</c:forEach>

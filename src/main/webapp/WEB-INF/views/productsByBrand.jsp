@@ -157,11 +157,11 @@
 				<c:if test="${(loop.index)==paginateInfo.currentPage }">
 
 					<li class="active"><a
-						href="products-brand?idBrand=${brand.idBrand}&page=${loop.index}">${loop.index}</li>
+						href="products-brand?idBrand=${brand.encryptedId}&page=${loop.index}">${loop.index}</li>
 				</c:if>
 				<c:if test="${(loop.index)!=paginateInfo.currentPage}">
 					<li><a
-						href="products-brand?idBrand=${brand.idBrand}&page=${loop.index}">${loop.index}</a></li>
+						href="products-brand?idBrand=${brand.encryptedId}&page=${loop.index}">${loop.index}</a></li>
 				</c:if>
 		</c:forEach>
 		<!-- Nút điều hướng đến trang tiếp theo -->
