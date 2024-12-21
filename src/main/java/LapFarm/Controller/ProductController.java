@@ -31,6 +31,7 @@ import LapFarm.Entity.ProductEntity;
 import LapFarm.Entity.ReviewEntity;
 import LapFarm.Entity.UserInfoEntity;
 import LapFarm.Utils.SecureUrlUtil;
+import LapFarm.Utils.XSSUtils;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -94,6 +95,12 @@ public class ProductController extends BaseController {
             // Lấy dữ liệu đánh giá
             List<ReviewEntity> reviews = reviewDAO.getReviewsByProductIdWithPagination(productId, page, pageSize);
 
+            for (ReviewEntity review : reviews) {
+                // Kiểm tra nếu nhận xét chứa các ký tự đặc biệt
+                if (XSSUtils.containsXSS(review.getComment())) {
+                    review.setComment(XSSUtils.escapeXSS(review.getComment()));  // Mã hóa nhận xét nếu chứa ký tự XSS
+                }
+            }
             // Tính tổng số trang phân trang
             int totalReviews = reviewDAO.countReviewsByProductId(productId);
             int totalPages = (int) Math.ceil((double) totalReviews / pageSize);

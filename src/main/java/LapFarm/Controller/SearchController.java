@@ -18,6 +18,7 @@ import LapFarm.Service.CategoryServiceImp;
 import LapFarm.Service.PaginatesServiceImp;
 import LapFarm.Service.ProductServiceImp;
 import LapFarm.Utils.SecureUrlUtil;
+import org.springframework.web.util.HtmlUtils; // Thêm để escape HTML
 import jakarta.servlet.ServletContext;
 
 @Controller
@@ -36,19 +37,19 @@ public class SearchController extends BaseController {
     private final int totalProductPage = 9;
 
     @RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
-    public ModelAndView Index(@RequestParam("idCategory") String idCategory,
+    public ModelAndView Index(@RequestParam(value = "idCategory", defaultValue = "0") String idCategory,
                               @RequestParam("searchtext") String searchText,
                               @RequestParam("priceRange") String priceRange,
                               @RequestParam(value = "idBrand", required = false) Integer idBrand,
                               @RequestParam(value = "page", defaultValue = "1") int currentPage) {
 
-    	Init();
-        // Giải mã idCategory
+        Init();
+
+        // Giải mã idCategory và escape nó để tránh XSS
         String decryptedIdCategory;
         try {
             decryptedIdCategory = SecureUrlUtil.decrypt(idCategory);
         } catch (Exception e) {
-            // Xử lý nếu giải mã thất bại
             decryptedIdCategory = "0"; // Giá trị mặc định nếu giải mã không thành công
             e.printStackTrace();
         }
@@ -58,6 +59,9 @@ public class SearchController extends BaseController {
             idBrand = 0;
         }
         priceRange = validatePriceRange(priceRange);
+        
+        // Escape searchText trước khi sử dụng để tránh XSS
+        searchText = HtmlUtils.htmlEscape(searchText);
 
         // Lấy danh sách tất cả sản phẩm và áp dụng bộ lọc
         List<ProductDTO> allProducts = productService.getAllProductsDTO();
@@ -95,7 +99,6 @@ public class SearchController extends BaseController {
                 e.printStackTrace();
             }
         }
-    	
 
         // Đưa các giá trị vào ModelAndView
         _mvShare.addObject("searchText", searchText);
@@ -113,7 +116,6 @@ public class SearchController extends BaseController {
         _mvShare.setViewName("search");
         return _mvShare;
     }
-
 
     // Phương thức lọc sản phẩm
     public List<ProductDTO> filter(List<ProductDTO> list, String searchText, int idCategory, String priceRange,
