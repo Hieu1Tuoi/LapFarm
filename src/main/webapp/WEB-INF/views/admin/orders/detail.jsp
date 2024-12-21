@@ -71,6 +71,9 @@
 								groupingUsed="true" />
 							VNĐ
 						</div>
+						<br />
+						<div class="btn" style="margin-bottom: 20px; font-weight: bold;">
+							Địa chỉ giao hàng: ${order.address }</div>
 
 						<!-- Form to submit the order status -->
 						<form

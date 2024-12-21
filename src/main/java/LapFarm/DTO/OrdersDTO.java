@@ -13,8 +13,9 @@ public class OrdersDTO {
     private String note;        // Order note
     private List<OrderDetailDTO> orderDetails; // List of order details (product info)
     private String encryptedId; 
+    private String address;
     
-    public OrdersDTO(int orderId, Date time, String state, long totalPrice, String userFullname, byte paymentMethod, String note) {
+    public OrdersDTO(int orderId, Date time, String state, long totalPrice, String userFullname, byte paymentMethod, String note, String address) {
         this.orderId = orderId;
         this.time = time;
         this.state = state;
@@ -22,6 +23,7 @@ public class OrdersDTO {
         this.userFullname = userFullname;
         this.paymentMethod = paymentMethod;
         this.note = note;
+        this.address = address;
     }
 
     // Getters and Setters
@@ -96,8 +98,18 @@ public class OrdersDTO {
     public void setEncryptedId(String encryptedId) {
         this.encryptedId = encryptedId;
     }
+    
+    
 
-    // toString() method
+    public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	// toString() method
     @Override
     public String toString() {
         return "OrdersDTO{" +
@@ -109,6 +121,7 @@ public class OrdersDTO {
                 ", paymentMethod=" + paymentMethod +
                 ", note='" + note + '\'' +
                 ", orderDetails=" + orderDetails +
+                ", address" + address +
                 '}';
     }
 }

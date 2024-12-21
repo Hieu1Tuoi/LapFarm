@@ -9,6 +9,7 @@ import LapFarm.DAO.OrdersDAO;
 import LapFarm.DTO.OrderDetailDTO;
 import LapFarm.DTO.OrdersDTO;
 import LapFarm.Entity.OrderDetailsEntity;
+import LapFarm.Entity.OrdersEntity;
 @Service
 public class OrdersServiceImp implements IOrdersService {
 
@@ -31,6 +32,12 @@ public class OrdersServiceImp implements IOrdersService {
 	public List<OrderDetailDTO> getOrderDetail(int orderId) {
 		// TODO Auto-generated method stub
 		return orderDao.getOrderDetail(orderId);
+	}
+	
+	@Override
+	public OrdersEntity getOrderById(int orderId) {
+		// TODO Auto-generated method stub
+		return orderDao.getOrderById(orderId);
 	}
 
 	@Override
