@@ -166,8 +166,10 @@
 			<ul class="header-links pull-left">
 				<li><a href="https://www.youtube.com/watch?v=IzSYlr3VI1A"><i
 						class="fa fa-phone"></i> 0123456789</a></li>
-				<li><a href="https://mail.google.com/mail/?view=cm&to=nhom8@gmail.com" target="_blank"><i
-						class="fa fa-envelope-o"></i> nhom8@email.com</a></li>
+				<li><a
+					href="https://mail.google.com/mail/?view=cm&to=nhom8@gmail.com"
+					target="_blank"><i class="fa fa-envelope-o"></i>
+						nhom8@email.com</a></li>
 				<li><a href="https://maps.app.goo.gl/aCnkqxqmdPdnekNb7"><i
 						class="fa fa-map-marker"></i> 97 Man Thiện</a></li>
 			</ul>
@@ -189,7 +191,8 @@
 								<!-- Liên kết cho người dùng -->
 								<%-- <a class="dropdown-item" href="<c:url value='/account' />">Thông
 									tin</a> --%>
-									<a class="dropdown-item" href="<c:url value='/account#profile' />">Thông tin</a>
+								<a class="dropdown-item"
+									href="<c:url value='/account#profile' />">Thông tin</a>
 								<c:if test="${empty sessionScope.admin}">
 									<a class="dropdown-item"
 										href="<c:url value='/account#orders-history' />">Đơn hàng</a>
@@ -233,7 +236,7 @@
 							<!-- Dropdown cho danh mục -->
 							<select class="input-select" name="idCategory">
 								<option value="${Zerocode}"
-									${searchCategory == null || searchCategory == 0 ? 'selected' : ''}>Tất
+									${empty searchCategory || searchCategory == 0 ? 'selected' : ''}>Tất
 									cả</option>
 								<c:forEach var="cate" items="${categories}">
 									<option value="${cate.encryptedId}"
@@ -241,7 +244,6 @@
 										${cate.nameCategory}</option>
 								</c:forEach>
 							</select>
-
 
 							<!-- Ô nhập từ khóa tìm kiếm -->
 							<input value="${searchText}" id="searchInput" class="input"
@@ -258,6 +260,7 @@
 
 							<!-- Nút tìm kiếm -->
 							<button type="submit" class="search-btn">Tìm Kiếm</button>
+
 						</form>
 					</div>
 				</div>

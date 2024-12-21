@@ -17,6 +17,10 @@
 .add-to-cart-btn.disabled i {
 	color: #808080; /* Màu xám cho biểu tượng */
 }
+
+.review-body p {
+    word-wrap: break-word;
+}
 </style>
 <div class="container">
 	<!-- Kiểm tra nếu không có sản phẩm -->

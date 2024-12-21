@@ -25,7 +25,7 @@ public class Mailer {
 			MimeMessage mail = mailer.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(mail, false, "utf-8");
 
-			helper.setFrom("n21dcat035@student.ptithcm.edu.vn");
+			helper.setFrom("n21dcat037@student.ptithcm.edu.vn");
 			helper.setTo(to);
 			helper.setSubject("Mã Xác Minh!!!");
 			helper.setText(code, false);
