@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const categorySelect = document.getElementById('categorySelect');
     idCategory = categorySelect ? categorySelect.value : idCategory; // đảm bảo không bị null
 
+    // Cập nhật giá trị ban đầu nếu có giá trị trong priceRange
     if (priceRange) {
         const prices = priceRange.split('-');
         if (prices.length === 2 && prices[0] && prices[1]) {
@@ -24,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    // Cập nhật nhãn giá trị của thanh trượt
     function updatePriceLabels() {
         const minPrice = parseInt(minPriceSlider.value);
         const maxPrice = parseInt(maxPriceSlider.value);
@@ -32,12 +34,35 @@ document.addEventListener("DOMContentLoaded", function() {
         maxPriceLabel.textContent = maxPrice.toLocaleString('vi-VN') + ' ₫';
     }
 
-    minPriceSlider.addEventListener('input', updatePriceLabels);
-    maxPriceSlider.addEventListener('input', updatePriceLabels);
+    // Điều chỉnh giá trị minPriceSlider và maxPriceSlider khi thay đổi
+    function handleSliderChange(slider, otherSlider) {
+        if (slider === minPriceSlider) {
+            // Kiểm tra xem minPriceSlider có lớn hơn maxPriceSlider không
+            if (parseInt(minPriceSlider.value) >= parseInt(maxPriceSlider.value)) {
+                minPriceSlider.value = parseInt(maxPriceSlider.value) - 1; // Đặt giá trị minPriceSlider nhỏ hơn maxPriceSlider ít nhất 1
+            }
+        } else if (slider === maxPriceSlider) {
+            // Kiểm tra xem maxPriceSlider có nhỏ hơn minPriceSlider không
+            if (parseInt(maxPriceSlider.value) <= parseInt(minPriceSlider.value)) {
+                maxPriceSlider.value = parseInt(minPriceSlider.value) + 1; // Đặt giá trị maxPriceSlider lớn hơn minPriceSlider ít nhất 1
+            }
+        }
+        updatePriceLabels();
+    }
+
+    // Lắng nghe sự kiện thay đổi giá trị của các thanh trượt
+    minPriceSlider.addEventListener('input', function() {
+        handleSliderChange(minPriceSlider, maxPriceSlider);
+    });
+
+    maxPriceSlider.addEventListener('input', function() {
+        handleSliderChange(maxPriceSlider, minPriceSlider);
+    });
 
     // Khởi tạo giá trị ban đầu
     updatePriceLabels();
 
+    // Hàm áp dụng bộ lọc
     window.applyFilter = function() {
         const minPrice = minPriceSlider.value;
         const maxPrice = maxPriceSlider.value;
@@ -55,11 +80,12 @@ document.addEventListener("DOMContentLoaded", function() {
         if (currentPriceRange !== newPriceRange) {
             let newUrl;
 
+            // Nếu URL có chứa search
             if (window.location.href.includes('/search?')) {
-                // Đã có search trong URL
                 urlParams.set('priceRange', newPriceRange);
                 newUrl = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
             } else {
+                // Nếu không có search trong URL
                 if (idBrandInput && idBrandInput.value) {
                     const idBrandValue = idBrandInput.value;
                     newUrl = `${window.location.origin}/LapFarm/search?idCategory=${encodeURIComponent(idCategory)}&searchtext=${encodeURIComponent(searchtext)}&priceRange=${encodeURIComponent(newPriceRange)}&idBrand=${encodeURIComponent(idBrandValue)}`;
@@ -70,11 +96,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
             window.location.href = newUrl;
         }
-    }
+    };
 
+    // Hàm reset bộ lọc
     window.resetFilter = function() {
         minPriceSlider.value = minPriceSlider.min;
         maxPriceSlider.value = maxPriceSlider.max;
         updatePriceLabels();
-    }
+    };
 });
