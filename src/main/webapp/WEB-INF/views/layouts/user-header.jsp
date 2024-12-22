@@ -64,7 +64,7 @@
 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
 
-
+ <link rel="icon" href="<c:url value='/resources/img/icons8-laptop-32.png' />" type="image/png">
 </head>
 
 <body>
