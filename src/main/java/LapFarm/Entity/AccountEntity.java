@@ -31,7 +31,7 @@ public class AccountEntity {
     // Constructors
     public AccountEntity() {
         this.role = new RoleEntity(0, "user");
-        this.state = "normal";
+        this.state = "Hoạt động";
     }
     public AccountEntity(String email, String password) {
         this.email = email;
