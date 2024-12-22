@@ -31,6 +31,7 @@ import LapFarm.DTO.OrdersDTO;
 import LapFarm.DTO.ProductDTO;
 import LapFarm.DTO.ViewedItem;
 import LapFarm.Entity.AccountEntity;
+import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.PaymentEntity;
 import LapFarm.Entity.UserInfoEntity;
 import LapFarm.Service.OrdersServiceImp;
@@ -224,8 +225,10 @@ public class AccountController {
 
 		// Tính tổng giá
 		double totalPrice = orderDetails.stream().mapToDouble(item -> item.getPrice() * item.getQuantity()).sum();
-
+		OrdersEntity order = orderService.getOrderById(orderId);
+		
 		// Thêm chi tiết đơn hàng và tổng giá vào model
+		model.addAttribute("order", order);
 		model.addAttribute("orderDetail", orderDetails);
 		model.addAttribute("totalPrice", totalPrice);
 		model.addAttribute("stateOrder", orderService.getStateById(orderId));
