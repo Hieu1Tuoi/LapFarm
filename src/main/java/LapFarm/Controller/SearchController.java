@@ -1,5 +1,8 @@
 package LapFarm.Controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,10 +18,16 @@ import org.springframework.web.servlet.ModelAndView;
 import LapFarm.Bean.Mailer;
 import LapFarm.DAO.BrandDAO;
 import LapFarm.DAO.CategoryDAO;
+import LapFarm.DAO.OrdersDAO;
+import LapFarm.DAO.PaymentDAO;
+import LapFarm.DTO.OrdersDTO;
 import LapFarm.DTO.PaginatesDto;
+import LapFarm.DTO.PaymentDTO;
 import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.BrandEntity;
 import LapFarm.Entity.CategoryEntity;
+import LapFarm.Entity.OrdersEntity;
+import LapFarm.Entity.PaymentEntity;
 import LapFarm.Service.CategoryServiceImp;
 import LapFarm.Service.PaginatesServiceImp;
 import LapFarm.Service.ProductServiceImp;
@@ -44,6 +53,12 @@ public class SearchController extends BaseController {
     
     @Autowired
     private BrandDAO brandDAO;
+    
+    @Autowired
+    private OrdersDAO orderDAO;
+    
+    @Autowired
+    private PaymentDAO paymentDAO;
 
     private final int totalProductPage = 9;
 
@@ -221,5 +236,65 @@ public class SearchController extends BaseController {
 
         // Trả về view để hiển thị danh sách category đã tìm kiếm
         return "/admin/brands/index";
+    }
+    
+    @RequestMapping(value = "/admin/order", method = RequestMethod.POST)
+    public String searchOrder(@RequestParam("table_search") String searchQuery, ModelMap model) {
+        // Tìm kiếm các category theo tên hoặc ID
+        List<CategoryEntity> categories = categoryDAO.getAllCategories();
+        List<OrdersDTO> orders = orderDAO.searchOrders(searchQuery);
+
+        // Thêm kết quả tìm kiếm vào model
+        model.addAttribute("categories", categories);
+        model.addAttribute("orders", orders);
+
+        // Trả về view để hiển thị danh sách category đã tìm kiếm
+        return "/admin/orders/index";
+    }
+    
+    @RequestMapping(value = "/admin/payment", method = RequestMethod.POST)
+    public String searchPayment(@RequestParam("table_search") String searchQuery, ModelMap model) {
+        // Tìm kiếm các category theo tên hoặc ID
+        List<CategoryEntity> categories = categoryDAO.getAllCategories();
+        List<PaymentEntity> payments = paymentDAO.searchPayments(searchQuery);
+        
+     // Chuyển đổi PaymentEntity thành PaymentDTO
+	    List<PaymentDTO> paymentDTOList = new ArrayList<>();
+	    payments.forEach(payment -> {
+	        PaymentDTO paymentDTO = new PaymentDTO();
+	        paymentDTO.setIdPayment(payment.getIdPayment());
+	        paymentDTO.setOrderPayment(payment.getOrderPayment());
+	        paymentDTO.setUserPayment(payment.getUserPayment());
+	        paymentDTO.setTimePayment(payment.getTimePayment());
+	        paymentDTO.setStatePayment(payment.getStatePayment());
+	        paymentDTO.setPricePayment(payment.getPricePayment());
+	        paymentDTO.setMethodPayment(payment.getMethodPayment());
+
+	        // Mã hóa idPayment
+	        try {
+	            String encryptedPaymentId = SecureUrlUtil.encrypt(String.valueOf(payment.getIdPayment()));
+	            paymentDTO.setEncryptedId(encryptedPaymentId);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+
+	        // Thêm PaymentDTO vào danh sách
+	        paymentDTOList.add(paymentDTO);
+	    });
+	    
+	 // Sắp xếp danh sách PaymentDTO theo idPayment giảm dần
+        Collections.sort(paymentDTOList, new Comparator<PaymentDTO>() {
+            @Override
+            public int compare(PaymentDTO o1, PaymentDTO o2) {
+                return Integer.compare(o2.getIdPayment(), o1.getIdPayment()); // Sắp xếp giảm dần theo idPayment
+            }
+        });
+
+        // Thêm kết quả tìm kiếm vào model
+        model.addAttribute("categories", categories);
+        model.addAttribute("payments", paymentDTOList);
+
+        // Trả về view để hiển thị danh sách category đã tìm kiếm
+        return "/admin/payment/index";
     }
 }

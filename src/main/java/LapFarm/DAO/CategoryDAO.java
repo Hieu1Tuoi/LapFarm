@@ -105,7 +105,8 @@ public class CategoryDAO {
 
 		    Query<CategoryEntity> query = session.createQuery(hql, CategoryEntity.class);
 		    // Nếu tìm kiếm là số, thêm dấu % để tìm kiếm chứa chuỗi số đó ở bất kỳ đâu
-		    query.setParameter("searchQuery", isNumeric ? searchQuery + "%" : "%" + searchQuery + "%");
+		 // Thiết lập tham số tìm kiếm, thêm dấu % nếu tìm kiếm theo fullName
+		    query.setParameter("searchQuery", isNumeric ? "%" + Integer.parseInt(searchQuery) + "%" : "%" + searchQuery + "%");
 		    
 		    return query.getResultList();
 		}

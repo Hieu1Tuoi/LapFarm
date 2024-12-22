@@ -1,6 +1,7 @@
 package LapFarm.DAO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -8,6 +9,9 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import LapFarm.DTO.OrdersDTO;
+import LapFarm.DTO.PaymentDTO;
+import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.PaymentEntity;
 import jakarta.transaction.Transactional;
 
@@ -59,4 +63,34 @@ public class PaymentDAO {
 	            throw new RuntimeException("Lỗi khi lấy lịch sử thanh toán: " + e.getMessage());
 	        }
 	    }
+	 
+	 @Transactional
+		public List<PaymentEntity> searchPayments(String searchQuery) {
+		    // Kiểm tra nếu người dùng tìm kiếm theo số
+		    boolean isNumeric = searchQuery.matches("^[0-9]+$");
+
+		    // Lấy phiên làm việc hiện tại
+		    Session session = factory.getCurrentSession();
+		    String hql;
+
+		    if (isNumeric) {
+		        // Tìm kiếm theo ID (sử dụng LIKE để tìm theo chuỗi số)
+		        hql = "SELECT p FROM PaymentEntity p WHERE CAST(p.idPayment AS string) LIKE :searchQuery OR CAST(p.orderPayment.idOrder AS string) LIKE :searchQuery ORDER BY p.timePayment DESC";
+		    } else {
+		        // Tìm kiếm theo fullName (sử dụng LIKE để tìm kiếm tên chứa chuỗi tìm kiếm)
+		        hql = "SELECT p FROM PaymentEntity p WHERE p.userPayment.fullName LIKE :searchQuery";
+		    }
+
+		    // Tạo truy vấn
+		    Query<PaymentEntity> query = session.createQuery(hql, PaymentEntity.class);
+
+		    // Thiết lập tham số tìm kiếm, thêm dấu % nếu tìm kiếm theo fullName
+		    query.setParameter("searchQuery", isNumeric ? "%" + Integer.parseInt(searchQuery) + "%" : "%" + searchQuery + "%");
+
+		    // Lấy danh sách kết quả
+		    List<PaymentEntity> payments = query.getResultList();
+
+		    // Chuyển đổi từ OrdersEntity sang OrdersDTO
+		    return payments;
+		}
 }

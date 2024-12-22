@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import LapFarm.Entity.BrandEntity;
 import LapFarm.Entity.OrderDetailsEntity;
 import LapFarm.Entity.OrdersEntity;
 import jakarta.transaction.Transactional;
@@ -294,5 +296,40 @@ public class OrdersDAO {
 
 		return productCountByCategory;
 	}
+	
+	@Transactional
+	public List<OrdersDTO> searchOrders(String searchQuery) {
+	    // Kiểm tra nếu người dùng tìm kiếm theo số
+	    boolean isNumeric = searchQuery.matches("^[0-9]+$");
+
+	    // Lấy phiên làm việc hiện tại
+	    Session session = factory.getCurrentSession();
+	    String hql;
+
+	    if (isNumeric) {
+	        // Tìm kiếm theo ID (sử dụng LIKE để tìm theo chuỗi số)
+	        hql = "SELECT o FROM OrdersEntity o JOIN FETCH o.userInfo u WHERE CAST(o.idOrder AS string) LIKE :searchQuery";
+	    } else {
+	        // Tìm kiếm theo fullName (sử dụng LIKE để tìm kiếm tên chứa chuỗi tìm kiếm)
+	        hql = "SELECT o FROM OrdersEntity o JOIN FETCH o.userInfo u WHERE u.fullName LIKE :searchQuery";
+	    }
+
+	    // Tạo truy vấn
+	    Query<OrdersEntity> query = session.createQuery(hql, OrdersEntity.class);
+
+	    // Thiết lập tham số tìm kiếm, thêm dấu % nếu tìm kiếm theo fullName
+	    query.setParameter("searchQuery", isNumeric ? "%" + Integer.parseInt(searchQuery) + "%" : "%" + searchQuery + "%");
+
+	    // Lấy danh sách kết quả
+	    List<OrdersEntity> ordersList = query.getResultList();
+
+	    // Chuyển đổi từ OrdersEntity sang OrdersDTO
+	    return ordersList.stream()
+	            .map(order -> new OrdersDTO(order.getIdOrder(), order.getTime(), order.getState(),
+	                    order.getTotalPrice(), order.getUserInfo().getFullName(), order.getPaymentMethod(),
+	                    order.getNote(), order.getAddress()))
+	            .collect(Collectors.toList());
+	}
+
 
 }
