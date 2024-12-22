@@ -25,10 +25,18 @@ public class Mailer {
 			MimeMessage mail = mailer.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(mail, false, "utf-8");
 
-			helper.setFrom("n21dcat037@student.ptithcm.edu.vn");
+			helper.setFrom("n21dcat002@student.ptithcm.edu.vn");
 			helper.setTo(to);
-			helper.setSubject("Mã Xác Minh!!!");
-			helper.setText(code, false);
+			helper.setSubject("Mã xác minh");
+			String htmlContent = "<html><body>"
+				    + "<h1>Chào bạn!</h1>"
+				    + "<p>Sau đây là mã xác minh của bạn:</p>"
+				    + "<h2>" + code + "</h2>"
+				    + "<p>Mã xác minh này có hiệu lực trong 10 phút.</p>"
+				    + "<p>Bạn đang xác minh địa chỉ e-mail của mình. Nếu bạn không yêu cầu, hãy bỏ qua thư này.</p>"
+				    + "</body></html>";
+				helper.setText(htmlContent, true);
+
 			mailer.send(mail);
 			System.out.println("Email đã được gửi thành công tới: " + to);
 
@@ -40,17 +48,24 @@ public class Mailer {
 	}
 	
 	public String send(String to, ServletContext context) {
+		String code = generateRandomString();
 		try {
 			MimeMessage mail = mailer.createMimeMessage();
 			// Đặt multipart là true để hỗ trợ gửi file đính kèm
 			MimeMessageHelper helper = new MimeMessageHelper(mail, true, "utf-8");
 
-			helper.setFrom("n21dcat035@student.ptithcm.edu.vn");
+			helper.setFrom("n21dcat002@student.ptithcm.edu.vn");
 			helper.setTo(to);
 			helper.setSubject("DU MA!!!");
 
 			// Email content with HTML formatting
-			String htmlContent = "<html><body><h1>AO THAT DAY!!!</h1></body></html>";
+			String htmlContent = "<html><body>"
+	                + "<h2>Chào bạn!</h2>"
+	                + "<p>Sau đây là mã xác minh của bạn:</p>"
+	                + "<h2>" + code + "</h2>"
+	                + "<p>Mã xác minh này có hiệu lực trong 10 phút.</p>"
+	                + "<p>Bạn đang xác minh địa chỉ e-mail của mình. Nếu bạn không yêu cầu, hãy bỏ qua thư này.</p>"
+	                + "</body></html>";
 			helper.setText(htmlContent, true);
 
 			// File path for the attachment

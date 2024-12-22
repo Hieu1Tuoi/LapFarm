@@ -331,6 +331,15 @@ public class AccountController {
 				redirectAttributes.addFlashAttribute("warning", "Mã xác nhận không chính xác hoặc đã hết hạn!");
 				return "redirect:/change-password";
 			}
+			
+			// Kiểm tra mật khẩu mới không trùng với mật khẩu cũ
+			if (oldPassword.equals(password)) {
+			    redirectAttributes.addFlashAttribute("warning", "Mật khẩu mới không được trùng với mật khẩu cũ!");
+			    redirectAttributes.addFlashAttribute("pw", password);
+			    redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
+			    return "redirect:/change-password"; // Trang sửa mật khẩu
+			}
+
 
 // Kiểm tra độ dài mật khẩu và mật khẩu bằng regex
 			String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
