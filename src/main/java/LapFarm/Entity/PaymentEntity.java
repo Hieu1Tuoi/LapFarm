@@ -17,7 +17,7 @@ public class PaymentEntity {
     private OrdersEntity orderPayment;
 
     @ManyToOne
-    @JoinColumn(name = "UserPayment", nullable = false)
+    @JoinColumn(name = "UserPayment",referencedColumnName = "UserId", nullable = false)
     private UserInfoEntity userPayment;
 
     @Column(name = "TimePayment", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")

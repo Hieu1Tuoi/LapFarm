@@ -45,4 +45,18 @@ public class PaymentDAO {
 	            throw new RuntimeException("Lỗi khi lưu thông tin thanh toán vào cơ sở dữ liệu: " + e.getMessage());
 	        }
 	}
+	
+	 @Transactional
+	    public List<PaymentEntity> getPaymentsByUserId(int userId) {
+	        try {
+	            Session session = factory.getCurrentSession();
+	            String hql = "FROM PaymentEntity p WHERE p.userPayment.id = :userId ORDER BY p.timePayment DESC";
+	            return session.createQuery(hql, PaymentEntity.class)
+	                         .setParameter("userId", userId)
+	                         .getResultList();
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            throw new RuntimeException("Lỗi khi lấy lịch sử thanh toán: " + e.getMessage());
+	        }
+	    }
 }

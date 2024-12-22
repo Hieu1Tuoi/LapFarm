@@ -24,13 +24,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import LapFarm.DAO.PaymentDAO;
 import LapFarm.DAO.UserDAO;
 import LapFarm.DTO.OrderDetailDTO;
 import LapFarm.DTO.OrdersDTO;
 import LapFarm.DTO.ProductDTO;
 import LapFarm.DTO.ViewedItem;
 import LapFarm.Entity.AccountEntity;
-import LapFarm.Entity.OrderDetailsEntity;
+import LapFarm.Entity.PaymentEntity;
 import LapFarm.Entity.UserInfoEntity;
 import LapFarm.Service.OrdersServiceImp;
 import LapFarm.Utils.SecureUrlUtil;
@@ -43,6 +44,8 @@ public class AccountController {
 
 	@Autowired
 	private UserDAO accountDAO;
+	@Autowired
+    private PaymentDAO paymentDAO;
 	@Autowired
 	private OrdersServiceImp orderService;
 
@@ -92,7 +95,16 @@ public class AccountController {
 			}
 		});
 		model.addAttribute("viewedItems", viewedItems);
-
+		
+		try {
+	        List<PaymentEntity> payments = paymentDAO.getPaymentsByUserId(user.getUserInfo().getUserId());
+	        model.addAttribute("payments", payments);
+	        System.out.println("Số lượng payment: " + (payments != null ? payments.size() : 0));
+	    } catch (Exception e) {
+	        System.out.println("Lỗi khi tải lịch sử thanh toán: " + e.getMessage());
+	        e.printStackTrace();
+	        model.addAttribute("paymentError", "Không thể tải lịch sử thanh toán");
+	    }
 		// Truyền tab đang hoạt động vào Model
 		model.addAttribute("activeTab", tab);
 
@@ -348,4 +360,17 @@ public class AccountController {
 			return "redirect:/change-password";
 		}
 	}
+	@GetMapping("/payment-history")
+    public String showPaymentHistory(Model model, HttpSession session) {
+        // Lấy userId từ session
+        Integer userId = (Integer) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        
+        List<PaymentEntity> payments = paymentDAO.getPaymentsByUserId(userId);
+        model.addAttribute("payments", payments);
+        return "payment-history";
+    }
+	
 }

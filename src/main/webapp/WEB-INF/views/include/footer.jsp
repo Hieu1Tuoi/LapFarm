@@ -10,8 +10,7 @@
 				<div class="col-md-3 col-xs-6">
 					<div class="footer">
 						<h3 class="footer-title">About Us</h3>
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-							sed do eiusmod tempor incididunt ut.</p>
+						<p>Laptop đỉnh – Giá chuẩn – Phục vụ tận tâm!</p>
 						<ul class="footer-links">
 							<li><a href="https://maps.app.goo.gl/aCnkqxqmdPdnekNb7"><i
 						class="fa fa-map-marker"></i> 97 Man Thiện</a></li>

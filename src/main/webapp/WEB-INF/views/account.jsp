@@ -253,6 +253,76 @@ input[type="radio"] {
 .masked-info {
 	color: #666;
 }
+.payment-history-table {
+	width: 100%;
+	border-collapse: collapse; /* Gộp các đường viền */
+	margin: 20px 0;
+	font-size: 16px;
+	text-align: left;
+	background-color: #fff;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	overflow: hidden; /* Để các góc bo tròn không bị ảnh hưởng */
+}
+
+.payment-history-table thead {
+	background-color: #d10024;
+	color: #fff;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+
+.payment-history-table th, .payment-history-table td {
+	padding: 12px 15px;
+	border-bottom: 1px solid #ddd; /* Đường viền dưới của mỗi ô */
+}
+
+.payment-history-table th {
+	text-align: center; /* Căn giữa tiêu đề cột */
+}
+
+.payment-history-table tbody tr:hover {
+	background-color: #f9f9f9; /* Đổi màu nền khi di chuột qua hàng */
+}
+
+.payment-history-table tbody tr:last-child td {
+	border-bottom: none; /* Loại bỏ đường viền dưới cho hàng cuối */
+}
+
+.payment-history-table td {
+	text-align: center; /* Căn giữa nội dung trong các ô */
+}
+
+/* Thêm kiểu cho các nút chi tiết */
+.payment-history-table a.btn-detail {
+	display: inline-block;
+	background-color: #d10024;
+	color: #fff;
+	padding: 8px 12px;
+	border-radius: 4px;
+	text-decoration: none;
+	font-weight: bold;
+	transition: background-color 0.3s;
+}
+
+.payment-history-table a.btn-detail:hover {
+	background-color: #a00000; /* Màu đậm hơn khi hover */
+}
+
+/* Alert styles cho lỗi thanh toán */
+.alert {
+	padding: 15px;
+	margin: 20px;
+	border-radius: 4px;
+}
+
+.alert-danger {
+	background-color: #f8d7da;
+	color: #721c24;
+	border: 1px solid #f5c6cb;
+}
+
+
 </style>
 <script>
 function showTab(tabId) {
@@ -285,7 +355,9 @@ function showTab(tabId) {
     }
 
     // Update URL hash
-    window.location.hash = tabId;
+    /* window.location.hash = tabId; */
+    console.log(window.location.hash);
+
 }
 
 // On page load, ensure profile tab is shown
@@ -294,6 +366,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const currentHash = window.location.hash.substring(1);
     showTab(currentHash || 'profile');
 });
+
 //phone,email
 document.addEventListener('DOMContentLoaded', function() {
     // Phone number masking
@@ -341,8 +414,6 @@ document.addEventListener('DOMContentLoaded', function() {
         );
     }
 }
-
-
     // Initial states
     const originalPhone = phoneInput.value;
     const originalEmail = emailInput.value;
@@ -435,6 +506,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		<li><a href="account#viewed" onclick="showTab('viewed');">Sản
 				phẩm đã xem</a></li>
+		<li><a href="account#paid" onclick="showTab('paid');">Lịch sử
+				thanh toán</a></li>
 	</ul>
 
 	<div id="profile" class="tab">
@@ -533,7 +606,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			</table>
 		</c:if>
 		<c:if test="${empty orders}">
-			<p>Bạn chưa có đơn hàng nào.</p>
+		<p style="text-align: center; margin: 20px;">Bạn chưa có dơn hàng nào.</p>
 		</c:if>
 	</div>
 	<div id="viewed" class="tab">
@@ -557,10 +630,61 @@ document.addEventListener('DOMContentLoaded', function() {
 				</tbody>
 			</c:if>
 			<c:if test="${empty viewedItems}">
-				<p>Bạn chưa xem sản phẩm nào.</p>
+				<p style="text-align: center; margin: 20px;">Bạn chưa xem sản
+					phẩm nào.</p>
 			</c:if>
 
 		</div>
+	</div>
+	<div id="paid" class="tab">
+		<h1>Lịch sử thanh toán</h1>
+		<c:if test="${not empty paymentError}">
+			<div class="alert alert-danger">${paymentError}</div>
+		</c:if>
+
+		<c:if test="${not empty payments}">
+			<table class="payment-history-table">
+				<thead>
+					<tr>
+						<th>Mã giao dịch</th>
+						<th>Thời gian</th>
+						<th>Số tiền</th>
+						<th>Hình thức thanh toán</th>
+						<th>Trạng thái</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach var="payment" items="${payments}">
+						<tr>
+							<td>${payment.idPayment}</td>
+							<td><fmt:formatDate value="${payment.timePayment}"
+									pattern="dd/MM/yyyy HH:mm:ss" /></td>
+							<td><fmt:formatNumber value="${payment.pricePayment}"
+									type="currency" currencySymbol="₫" /></td>
+							<td><c:choose>
+									<c:when test="${payment.methodPayment == 0}">
+										<span>Tiền mặt</span>
+									</c:when>
+									<c:when test="${payment.methodPayment == 1}">
+										<span>VNPAY </span>
+									</c:when>
+									<c:otherwise>
+										<span>Phương thức thanh toán chưa xác định</span>
+									</c:otherwise>
+								</c:choose></td>
+							<td>${payment.statePayment}</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+		</c:if>
+
+		<c:if test="${empty payments}">
+			<p style="text-align: center; margin: 20px;">Bạn chưa có giao
+				dịch thanh toán nào.</p>
+		</c:if>
+	</div>
+
 </body>
 </html>
 <%@ include file="/WEB-INF/views/layouts/user-footer.jsp"%>
