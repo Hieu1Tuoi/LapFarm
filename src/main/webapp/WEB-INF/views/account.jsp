@@ -655,26 +655,28 @@ document.addEventListener('DOMContentLoaded', function() {
 				</thead>
 				<tbody>
 					<c:forEach var="payment" items="${payments}">
-						<tr>
-							<td>${payment.idPayment}</td>
-							<td><fmt:formatDate value="${payment.timePayment}"
-									pattern="dd/MM/yyyy HH:mm:ss" /></td>
-							<td><fmt:formatNumber value="${payment.pricePayment}"
-									type="currency" currencySymbol="₫" /></td>
-							<td><c:choose>
-									<c:when test="${payment.methodPayment == 0}">
-										<span>Tiền mặt</span>
-									</c:when>
-									<c:when test="${payment.methodPayment == 1}">
-										<span>VNPAY </span>
-									</c:when>
-									<c:otherwise>
-										<span>Phương thức thanh toán chưa xác định</span>
-									</c:otherwise>
-								</c:choose></td>
-							<td>${payment.statePayment}</td>
-						</tr>
-					</c:forEach>
+                    <c:if test="${payment.statePayment == 'Thành công'}">
+                        <tr>
+                            <td>${payment.idPayment}</td>
+                            <td><fmt:formatDate value="${payment.timePayment}"
+                                    pattern="dd/MM/yyyy HH:mm:ss" /></td>
+                            <td><fmt:formatNumber value="${payment.pricePayment}"
+                                    type="currency" currencySymbol="₫" /></td>
+                            <td><c:choose>
+                                    <c:when test="${payment.methodPayment == 0}">
+                                        <span>Tiền mặt</span>
+                                    </c:when>
+                                    <c:when test="${payment.methodPayment == 1}">
+                                        <span>VNPAY </span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span>Phương thức thanh toán chưa xác định</span>
+                                    </c:otherwise>
+                                </c:choose></td>
+                            <td>${payment.statePayment}</td>
+                        </tr>
+                    </c:if>
+                </c:forEach>
 				</tbody>
 			</table>
 		</c:if>
