@@ -198,8 +198,11 @@
 										href="<c:url value='/account#orders-history' />">Đơn hàng</a>
 									<a class="dropdown-item"
 										href="<c:url value='/account#viewed' />">Đã xem gần đây</a>
-									<a class="dropdown-item"
-										href="<c:url value='/change-password' />">Đổi mật khẩu</a>
+
+									<c:if test="${empty sessionScope.isGoogleLogin}">
+										<a class="dropdown-item"
+											href="<c:url value='/change-password' />">Đổi mật khẩu</a>
+									</c:if>
 								</c:if>
 
 								<a class="dropdown-item" href="<c:url value='/logout' />">Đăng

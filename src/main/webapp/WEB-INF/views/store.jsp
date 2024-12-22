@@ -11,6 +11,51 @@
 	height: 250px;
 	object-fit: cover; /* Cắt ảnh để vừa khung */
 }
+
+.alert-warning {
+    background-color: #fff3cd; /* Nền vàng nhạt cho phần cảnh báo */
+    color: #856404; /* Màu chữ vàng đậm */
+    border: 1px solid #ffeeba; /* Đường viền vàng nhạt */
+    border-radius: 5px; /* Bo góc */
+    padding: 15px;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+    font-family: 'Arial', sans-serif; /* Chọn kiểu phông chữ phù hợp */
+    font-weight: bold; /* Đậm chữ */
+}
+
+.alert-warning .warning-text {
+    font-family: 'Courier New', monospace; /* Phông chữ dễ đọc cho thông báo */
+    font-size: 18px; /* Kích thước phông chữ lớn hơn */
+    color: #856404; /* Màu chữ vàng đậm */
+    text-shadow: 1px 1px 2px #ffcc00; /* Hiệu ứng đổ bóng nhẹ cho chữ */
+    letter-spacing: 0.5px; /* Khoảng cách giữa các chữ */
+}
+
+.alert-warning a {
+    background-color: #dc3545; /* Màu nền nút đỏ */
+    color: white; /* Chữ màu trắng */
+    text-decoration: none; /* Xóa gạch dưới */
+    padding: 10px 20px; /* Khoảng cách xung quanh chữ */
+    border-radius: 4px; /* Bo góc nút */
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Hiệu ứng chuyển màu và hiệu ứng nhấn */
+    display: inline-block;
+}
+
+.alert-warning a:hover {
+    background-color: #c82333; /* Màu nền khi hover (đỏ đậm hơn) */
+    transform: scale(1.05); /* Hiệu ứng phóng to nhẹ khi hover */
+}
+
+.alert-warning a:active {
+    background-color: #bd2130; /* Màu nền khi nhấn (đỏ tối hơn) */
+    transform: scale(0.98); /* Hiệu ứng thu nhỏ khi nhấn */
+}
+
 </style>
 <!-- SECTION -->
 <link type="text/css" rel="stylesheet"
@@ -18,13 +63,11 @@
 
 <!-- STORE -->
 <div id="store" class="col-md-9">
-	<%-- <h1>${user.userInfo.userId}</h1>
-	<h2>${ProductsPaginate != null ? ProductsPaginate.size() : 0}</h2> --%>
-	<c:if test="${not empty passwordChangeReminder}">
-    <div class="alert alert-warning">
-        ${passwordChangeReminder}
-    </div>
-</c:if>
+	<c:if test="${not empty passwordWarning}">
+		<div class="alert alert-warning">
+			${passwordWarning} <a href="change-password">Đổi mật khẩu ngay!</a>
+		</div>
+	</c:if>
 	<h3>
 		TẤT CẢ SẢN PHẨM:
 		<fmt:formatNumber value="${products.size()}" type="number"
@@ -81,30 +124,39 @@
 										</del>
 									</c:if>
 								</h6>
-	<style>
-		.fa-star {color: red;}
-		.fa-star-half-o {color: red;}
-		.fa-star-o {color: red;}
-	</style>                
-    <c:if test="${not empty p.ratingSummary}">
-        <div class="product-rating">
-            <div class="rating-stars">
-                <c:forEach var="star" begin="1" end="5">
-                    <c:choose>
-                        <c:when test="${star <= p.ratingSummary.average}">
-                            <i class="fa fa-star"></i>
-                        </c:when>
-                        <c:when test="${star - 0.5 <= p.ratingSummary.average && star > p.ratingSummary.average}">
-                            <i class="fa fa-star-half-o"></i>
-                        </c:when>
-                        <c:otherwise>
-                            <i class="fa fa-star-o"></i>
-                        </c:otherwise>
-                    </c:choose>
-                </c:forEach>
-            </div>
-        </div>
-    </c:if>
+								<style>
+.fa-star {
+	color: red;
+}
+
+.fa-star-half-o {
+	color: red;
+}
+
+.fa-star-o {
+	color: red;
+}
+</style>
+								<c:if test="${not empty p.ratingSummary}">
+									<div class="product-rating">
+										<div class="rating-stars">
+											<c:forEach var="star" begin="1" end="5">
+												<c:choose>
+													<c:when test="${star <= p.ratingSummary.average}">
+														<i class="fa fa-star"></i>
+													</c:when>
+													<c:when
+														test="${star - 0.5 <= p.ratingSummary.average && star > p.ratingSummary.average}">
+														<i class="fa fa-star-half-o"></i>
+													</c:when>
+													<c:otherwise>
+														<i class="fa fa-star-o"></i>
+													</c:otherwise>
+												</c:choose>
+											</c:forEach>
+										</div>
+									</div>
+								</c:if>
 
 
 								<div class="product-btns">
@@ -145,13 +197,13 @@
 
 					<c:if
 						test="${(loop.index +1)%3==0 || (loop.index +1)==ProductsPaginate.size() }">
-			
-			<c:if test="${(loop.index +1)< ProductsPaginate.size() }">
-				<ul class="thumbnails">
-			</c:if>
-		</c:if>
-		</c:forEach>
-		</ul>
+
+						<c:if test="${(loop.index +1)< ProductsPaginate.size() }">
+							<ul class="thumbnails">
+						</c:if>
+					</c:if>
+				</c:forEach>
+			</ul>
 		</c:if>
 
 		<!-- /product -->

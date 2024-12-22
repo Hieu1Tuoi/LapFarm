@@ -18,6 +18,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,6 +147,7 @@ public class LoginController extends BaseController {
 			// Add user info to model for display or further processing
 			model.addAttribute("userInfo", userInfo);
 			httpSession.setAttribute("user", acc);
+			httpSession.setAttribute("isGoogleLogin", true);
 
 			// Redirect to home or dashboard
 			return "redirect:/home";
@@ -195,6 +198,20 @@ public class LoginController extends BaseController {
 			AccountEntity acc = (AccountEntity) query.uniqueResult();
 
 			if (acc != null) {
+				
+				  // Kiểm tra đăng nhập qua Google
+	            Boolean isGoogleLogin = (Boolean) httpSession.getAttribute("isGoogleLogin");
+	            if (isGoogleLogin != null && isGoogleLogin) {
+	                httpSession.setAttribute("user", acc);
+	                // Reset trạng thái đăng nhập qua Google
+	                httpSession.removeAttribute("isGoogleLogin");
+	            } else {
+	                // Kiểm tra trạng thái mật khẩu
+	                if (acc.getLastPasswordChangeDate() == null || isPasswordExpired(acc.getLastPasswordChangeDate())) {
+	                    httpSession.setAttribute("passwordWarning", "Mật khẩu của bạn cần được thay đổi sau 90 ngày.");
+	                }
+	            }
+
 				if (acc.getRole().getId() == 1) {
 					httpSession.setAttribute("admin", acc);
 				} else if (acc.getRole().getId() == 0) {
@@ -223,6 +240,8 @@ public class LoginController extends BaseController {
 					httpSession.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
 				}
 
+				
+
 				t.commit();
 				return "redirect:/home";
 			} else {
@@ -240,6 +259,14 @@ public class LoginController extends BaseController {
 		}
 	}
 
+	private boolean isPasswordExpired(LocalDateTime passwordChangedAt) {
+	    if (passwordChangedAt == null) {
+	        return true; // Nếu ngày thay đổi mật khẩu chưa được đặt, coi là hết hạn.
+	    }
+	    // Thêm 90 ngày vào thời điểm thay đổi mật khẩu
+	    LocalDateTime expiryDate = passwordChangedAt.plusDays(90);
+	    return LocalDateTime.now().isAfter(expiryDate);
+	}
 	@RequestMapping("/logout")
 	public String logout(HttpSession httpSession) {
 		httpSession.removeAttribute("user");
