@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -16,8 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.apache.commons.codec.binary.Hex;
 
 import LapFarm.Bean.Mailer;
+import LapFarm.DTO.OrdersDTO;
 import LapFarm.DTO.UserInfoDTO;
 import LapFarm.Entity.AccountEntity;
+import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.UserInfoEntity;
 
 @Transactional
@@ -266,10 +269,62 @@ public class UserDAO {
 	}
 	 public String sendVerificationCode(String email) {
 	        try {
-	            // Sử dụng phương thức VerifyCode có sẵn từ Mailer để gửi mã
-	            return mailer.VerifyCode(email);
-	        } catch (Exception e) {
-	            throw new RuntimeException("Lỗi khi gửi mã xác nhận: " + e.getMessage());
-	        }
-	    }
-}
+				// Sử dụng phương thức VerifyCode có sẵn từ Mailer để gửi mã
+				return mailer.VerifyCode(email);
+			} catch (Exception e) {
+				throw new RuntimeException("Lỗi khi gửi mã xác nhận: " + e.getMessage());
+			}
+		}
+
+	 @Transactional
+	 public List<UserInfoDTO> searchUsers(String searchQuery) {
+	     // Kiểm tra nếu người dùng tìm kiếm theo số
+	     boolean isNumeric = searchQuery.matches("^[0-9]+$");
+	     boolean isPhoneNumber = searchQuery.matches("^[0-9]{10}$"); // Kiểm tra định dạng số điện thoại (10-11 chữ số)
+
+	     // Lấy phiên làm việc hiện tại
+	     Session session = factory.getCurrentSession();
+	     String hql;
+
+	     if (isNumeric) {
+	         if (isPhoneNumber) {
+	             // Tìm kiếm theo ID hoặc số điện thoại
+	             hql = "SELECT u FROM UserInfoEntity u WHERE (CAST(u.userId AS string) LIKE :searchQuery OR u.phone LIKE :searchQuery) AND u.account.role.id = 0";
+	         } else {
+	             // Tìm kiếm chỉ theo ID
+	             hql = "SELECT u FROM UserInfoEntity u WHERE CAST(u.userId AS string) LIKE :searchQuery AND u.account.role.id = 0";
+	         }
+	     } else {
+	         // Tìm kiếm theo fullName
+	         hql = "SELECT u FROM UserInfoEntity u WHERE u.fullName LIKE :searchQuery AND u.account.role.id = 0";
+	     }
+
+	     // Tạo truy vấn
+	     Query<UserInfoEntity> query = session.createQuery(hql, UserInfoEntity.class);
+
+	     // Thiết lập tham số tìm kiếm, thêm dấu % nếu tìm kiếm không phải số chính xác
+	     query.setParameter("searchQuery", "%" + searchQuery + "%");
+
+	     // Lấy danh sách kết quả
+	     List<UserInfoEntity> userInfoList = query.getResultList();
+
+	     // Duyệt qua tất cả người dùng và thêm số lượng đơn hàng
+	     List<UserInfoDTO> userInfoDTOList = new ArrayList<>();
+	     for (UserInfoEntity userInfo : userInfoList) {
+	         // Gọi OrdersDAO để lấy số lượng đơn hàng của người dùng này
+	         long numberOfOrders = ordersDAO.countOrdersByUserId(userInfo.getUserId());
+
+	         // Lấy trạng thái (state) từ AccountEntity
+	         String state = userInfo.getAccount() != null ? userInfo.getAccount().getState() : null;
+
+	         // Tạo UserInfoDTO và thêm vào danh sách
+	         UserInfoDTO userInfoDTO = new UserInfoDTO(userInfo.getUserId(), userInfo.getAccount().getEmail(),
+	                 userInfo.getFullName(), userInfo.getDob(), userInfo.getSex(), userInfo.getPhone(),
+	                 userInfo.getAvatar(), userInfo.getAddress(), numberOfOrders, state);
+	         userInfoDTOList.add(userInfoDTO);
+	     }
+
+	     return userInfoDTOList;
+	 }
+
+	}

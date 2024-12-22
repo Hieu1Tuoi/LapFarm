@@ -20,10 +20,12 @@ import LapFarm.DAO.BrandDAO;
 import LapFarm.DAO.CategoryDAO;
 import LapFarm.DAO.OrdersDAO;
 import LapFarm.DAO.PaymentDAO;
+import LapFarm.DAO.UserDAO;
 import LapFarm.DTO.OrdersDTO;
 import LapFarm.DTO.PaginatesDto;
 import LapFarm.DTO.PaymentDTO;
 import LapFarm.DTO.ProductDTO;
+import LapFarm.DTO.UserInfoDTO;
 import LapFarm.Entity.BrandEntity;
 import LapFarm.Entity.CategoryEntity;
 import LapFarm.Entity.OrdersEntity;
@@ -59,6 +61,9 @@ public class SearchController extends BaseController {
     
     @Autowired
     private PaymentDAO paymentDAO;
+    
+    @Autowired
+    private UserDAO userDAO;
 
     private final int totalProductPage = 9;
 
@@ -296,5 +301,19 @@ public class SearchController extends BaseController {
 
         // Trả về view để hiển thị danh sách category đã tìm kiếm
         return "/admin/payment/index";
+    }
+    
+    @RequestMapping(value = "/admin/user", method = RequestMethod.POST)
+    public String searchUser(@RequestParam("table_search") String searchQuery, ModelMap model) {
+        // Tìm kiếm các category theo tên hoặc ID
+        List<CategoryEntity> categories = categoryDAO.getAllCategories();
+        List<UserInfoDTO> userInfoDTO = userDAO.searchUsers(searchQuery);
+
+        // Thêm kết quả tìm kiếm vào model
+        model.addAttribute("categories", categories);
+        model.addAttribute("userInfoDTO", userInfoDTO);
+
+        // Trả về view để hiển thị danh sách category đã tìm kiếm
+        return "/admin/user/index";
     }
 }
