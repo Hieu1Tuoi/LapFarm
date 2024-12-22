@@ -17,7 +17,7 @@
 	background-color: #000; /* Đổi nền sang màu đen */
 	border: 1px solid rgba(255, 255, 255, 0.15);
 	/* Đường viền nhẹ màu trắng */
-	border-radius: 0.25rem;
+	border-radius: 0px;
 	box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
 }
 
@@ -198,6 +198,8 @@
 										href="<c:url value='/account#orders-history' />">Đơn hàng</a>
 									<a class="dropdown-item"
 										href="<c:url value='/account#viewed' />">Đã xem gần đây</a>
+									<a class="dropdown-item"
+										href="<c:url value='/account#paid' />">Lịch sử thanh toán</a>
 
 									<c:if test="${empty sessionScope.isGoogleLogin}">
 										<a class="dropdown-item"
