@@ -20,6 +20,7 @@ import LapFarm.DAO.BrandDAO;
 import LapFarm.DAO.CategoryDAO;
 import LapFarm.DAO.OrdersDAO;
 import LapFarm.DAO.PaymentDAO;
+import LapFarm.DAO.ProductDAO;
 import LapFarm.DAO.UserDAO;
 import LapFarm.DTO.OrdersDTO;
 import LapFarm.DTO.PaginatesDto;
@@ -64,6 +65,9 @@ public class SearchController extends BaseController {
     
     @Autowired
     private UserDAO userDAO;
+    
+    @Autowired
+    private ProductDAO productDAO;
 
     private final int totalProductPage = 9;
 
@@ -213,6 +217,20 @@ public class SearchController extends BaseController {
         }
 
         return "";
+    }
+    
+    @RequestMapping(value = "/admin/product", method = RequestMethod.POST)
+    public String searchProducts(@RequestParam("table_search") String searchQuery, ModelMap model) {
+        // Tìm kiếm các category theo tên hoặc ID
+        List<CategoryEntity> categories = categoryDAO.getAllCategories();
+        List<ProductDTO> productDTO = productDAO.searchProducts(searchQuery);
+
+        // Thêm kết quả tìm kiếm vào model
+        model.addAttribute("categories", categories);
+        model.addAttribute("products", productDTO);
+
+        // Trả về view để hiển thị danh sách category đã tìm kiếm
+        return "/admin/products/category";
     }
     
     @RequestMapping(value = "/admin/category", method = RequestMethod.POST)

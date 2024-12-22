@@ -13,10 +13,12 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import LapFarm.DTO.OrdersDTO;
 import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.BrandEntity;
 import LapFarm.Entity.CategoryEntity;
 import LapFarm.Entity.ImageEntity;
+import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.ProductEntity;
 import jakarta.transaction.Transactional;
 
@@ -152,7 +154,7 @@ public class ProductDAO {
 		Session session = factory.getCurrentSession();
 
 		String hql = "SELECT p FROM ProductEntity p WHERE p.category.idCategory = :idCategory";
-		Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+			Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
 		query.setParameter("idCategory", idCategory);
 
 		List<ProductEntity> products = query.list();
@@ -703,6 +705,47 @@ public class ProductDAO {
 		long count = query.uniqueResult();
 
 		return count > 0;
+	}
+	
+	@Transactional
+	public List<ProductDTO> searchProducts(String searchQuery) {
+	    // Kiểm tra nếu người dùng tìm kiếm theo số
+	    boolean isNumeric = searchQuery.matches("^[0-9]+$");
+
+	    // Lấy phiên làm việc hiện tại
+	    Session session = factory.getCurrentSession();
+	    String hql;
+
+	    if (isNumeric) {
+	        // Tìm kiếm theo ID (sử dụng LIKE để tìm theo chuỗi số)
+	        hql = "SELECT p FROM ProductEntity p WHERE CAST(p.idProduct AS string) LIKE :searchQuery";
+	    } else {
+	        // Tìm kiếm theo fullName (sử dụng LIKE để tìm kiếm tên chứa chuỗi tìm kiếm)
+	        hql = "SELECT p FROM ProductEntity p WHERE p.nameProduct LIKE :searchQuery OR p.brand.nameBrand LIKE :searchQuery";
+	    }
+
+	    // Tạo truy vấn
+	    Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
+
+	    // Thiết lập tham số tìm kiếm, thêm dấu % nếu tìm kiếm theo fullName
+	    query.setParameter("searchQuery", isNumeric ? "%" + Integer.parseInt(searchQuery) + "%" : "%" + searchQuery + "%");
+
+	    List<ProductEntity> products = query.list();
+
+		// Chuyển đổi từ ProductEntity sang ProductDTO
+		return products.stream().map(product -> {
+			String image = product.getImages() != null && !product.getImages().isEmpty()
+					? product.getImages().get(0).getImageUrl()
+					: null;
+
+			return new ProductDTO(product.getIdProduct(), product.getNameProduct(),
+					product.getBrand() != null ? product.getBrand().getIdBrand() : null,
+					product.getBrand() != null ? product.getBrand().getNameBrand() : null,
+					product.getCategory() != null ? product.getCategory().getNameCategory() : null,
+					product.getCategory().getIdCategory(), product.getDescription(), product.getQuantity(),
+					product.getDiscount(), product.getOriginalPrice(), product.getSalePrice(), product.getState(),
+					image);
+		}).toList();
 	}
 
 }
