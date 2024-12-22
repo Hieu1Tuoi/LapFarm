@@ -15,10 +15,13 @@ import org.springframework.web.servlet.ModelAndView;
 import LapFarm.Bean.Mailer;
 import LapFarm.DAO.BrandDAO;
 import LapFarm.DAO.CategoryDAO;
+import LapFarm.DAO.OrdersDAO;
+import LapFarm.DTO.OrdersDTO;
 import LapFarm.DTO.PaginatesDto;
 import LapFarm.DTO.ProductDTO;
 import LapFarm.Entity.BrandEntity;
 import LapFarm.Entity.CategoryEntity;
+import LapFarm.Entity.OrdersEntity;
 import LapFarm.Service.CategoryServiceImp;
 import LapFarm.Service.PaginatesServiceImp;
 import LapFarm.Service.ProductServiceImp;
@@ -44,6 +47,9 @@ public class SearchController extends BaseController {
     
     @Autowired
     private BrandDAO brandDAO;
+    
+    @Autowired
+    private OrdersDAO orderDAO;
 
     private final int totalProductPage = 9;
 
@@ -221,5 +227,19 @@ public class SearchController extends BaseController {
 
         // Trả về view để hiển thị danh sách category đã tìm kiếm
         return "/admin/brands/index";
+    }
+    
+    @RequestMapping(value = "/admin/order", method = RequestMethod.POST)
+    public String searchOrder(@RequestParam("table_search") String searchQuery, ModelMap model) {
+        // Tìm kiếm các category theo tên hoặc ID
+        List<CategoryEntity> categories = categoryDAO.getAllCategories();
+        List<OrdersDTO> orders = orderDAO.searchOrders(searchQuery);
+
+        // Thêm kết quả tìm kiếm vào model
+        model.addAttribute("categories", categories);
+        model.addAttribute("orders", orders);
+
+        // Trả về view để hiển thị danh sách category đã tìm kiếm
+        return "/admin/orders/index";
     }
 }
