@@ -187,18 +187,20 @@ a.shopBtn:hover {
 Body Section 
 -->
 	<div class="row">
+
 		<div class="span12">
-			<ul class="breadcrumb">
+
+			<!-- <ul class="breadcrumb">
 				<li><a href="home">Home</a> <span class="divider"></span></li>
-				<li class="active">Check Out</li>
+				
 			</ul>
-
+ -->
 			<div class="well well-small">
+				<div
+					style="display: flex; justify-content: center; align-items: center; ">
+					<h1 style="text-align: center;">Giỏ hàng của bạn</h1>
+				</div>
 
-				<%-- <h1>
-					Giỏ hàng<small class="pull-right"> ${TotalQuantyCart} sản
-						phẩm </small>
-				</h1> --%>
 				<hr class="soften" />
 
 				<table class="table table-bordered table-condensed">
@@ -224,7 +226,8 @@ Body Section
 								</td>
 								<td><a
 									href="product-detail/${item.value.product.encryptedId}" /><img
-									width="100" src="${ item.value.product.image }" alt="" onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'"></td>
+									width="100" src="${ item.value.product.image }" alt=""
+									onerror="this.src='/LapFarm/resources/img/soicodoc.jpg'"></td>
 								<td><a
 									href="product-detail/${item.value.product.encryptedId}" />${ item.value.product.nameProduct }</td>
 								<td><a

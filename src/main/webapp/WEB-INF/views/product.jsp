@@ -35,6 +35,7 @@
 		<div class="row align-items-center">
 			<!-- Product main img -->
 			<div class="col-md-6 col-md-push-1">
+				<br>
 				<div id="product-main-img">
 					<c:if test="${not empty product.images}">
 						<!-- Hiển thị ảnh chính -->
@@ -360,9 +361,9 @@
                   action="${pageContext.request.contextPath}/submitReview">
                 <!-- Truyền ID sản phẩm đã mã hóa -->
                 <input type="hidden" name="encryptedProductId" value="${mahoaID}" />
-                <textarea class="input" name="review" placeholder="Your Review" required></textarea>
+                <textarea class="input" name="review" placeholder="Hãy viết nội dung đánh giá..." required></textarea>
                 <div class="input-rating">
-                    <span>Your Rating: </span>
+                    <span>Số sao: </span>
                     <div class="stars">
                         <input id="star5" name="rating" value="5" type="radio" required>
                         <label for="star5"></label>
@@ -376,7 +377,7 @@
                         <label for="star1"></label>
                     </div>
                 </div>
-                <button class="primary-btn" type="submit">Submit</button>
+                <button class="primary-btn" type="submit">Đánh giá</button>
             </form>
             <!-- Thông báo thành công hoặc lỗi -->
             <div id="successMessage" style="display: none;" class="alert alert-success"></div>

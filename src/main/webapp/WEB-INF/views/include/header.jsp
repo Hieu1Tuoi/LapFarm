@@ -252,7 +252,7 @@
 
 							<!-- Ô nhập từ khóa tìm kiếm -->
 							<input value="${searchText}" id="searchInput" class="input"
-								name="searchtext" placeholder="Search here..." />
+								name="searchtext" placeholder="Tìm sản phẩm ở đây..." />
 
 							<!-- Ô nhập giá hoặc các tham số ẩn -->
 							<input type="hidden" value="${priceRange}" name="priceRange" />
