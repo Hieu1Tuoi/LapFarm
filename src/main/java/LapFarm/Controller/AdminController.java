@@ -763,34 +763,19 @@ public class AdminController {
 		return "/admin/user/index";
 	}
 
-	@RequestMapping(value = "/lock-user/{userId}", method = RequestMethod.POST)
-	public ResponseEntity<String> lockUser(@PathVariable("userId") int userId) {
-		try {
-			boolean result = userDAO.updateUserState(userId, "Đã khóa");
-			if (result) {
-				return ResponseEntity.ok("Tài khoản đã bị khóa thành công.");
-			} else {
-				return ResponseEntity.badRequest().body("Không thể khóa tài khoản.");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(500).body("Có lỗi xảy ra khi khóa tài khoản.");
-		}
-	}
-
-	@RequestMapping(value = "/unlock-user/{userId}", method = RequestMethod.POST)
-	public ResponseEntity<String> unlockUser(@PathVariable("userId") int userId) {
-		try {
-			boolean result = userDAO.updateUserState(userId, "Hoạt động");
-			if (result) {
-				return ResponseEntity.ok("Tài khoản đã được mở khóa thành công.");
-			} else {
-				return ResponseEntity.badRequest().body("Không thể mở khóa tài khoản.");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(500).body("Có lỗi xảy ra khi mở khóa tài khoản.");
-		}
+	@RequestMapping(value = "/manage-user/change-state", method = RequestMethod.POST)
+	public String changeUserState(@RequestParam("userId") int userId, 
+	                              @RequestParam("currentState") String currentState) {
+	    // Kiểm tra trạng thái hiện tại
+	    if ("Hoạt động".equals(currentState)) {
+	        // Chuyển trạng thái sang "Bị khóa"
+	        userDAO.changeUserState(userId, "Bị khóa");
+	    } else {
+	        // Chuyển trạng thái sang "Hoạt động"
+	        userDAO.changeUserState(userId, "Hoạt động");
+	    }
+	    // Redirect về trang quản lý người dùng
+	    return "redirect:/admin/manage-user";
 	}
 	
 	@RequestMapping(value = "/manage-user/history/{id}", method = RequestMethod.GET)

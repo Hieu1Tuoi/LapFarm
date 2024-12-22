@@ -326,5 +326,50 @@ public class UserDAO {
 
 	     return userInfoDTOList;
 	 }
+	 
+	 @Transactional
+	 public boolean changeUserState(int userId, String newState) {
+	     try {
+	         // Lấy phiên làm việc hiện tại
+	         Session session = factory.getCurrentSession();
+
+	         // HQL để lấy thông tin UserInfoEntity theo userId
+	         String hqlUserInfo = "SELECT u FROM UserInfoEntity u WHERE u.userId = :userId";
+	         Query<UserInfoEntity> queryUserInfo = session.createQuery(hqlUserInfo, UserInfoEntity.class);
+	         queryUserInfo.setParameter("userId", userId);
+
+	         // Kiểm tra nếu UserInfoEntity tồn tại
+	         UserInfoEntity userInfo = queryUserInfo.uniqueResult();
+	         if (userInfo == null) {
+	             System.out.println("Không tìm thấy UserInfoEntity với userId: " + userId);
+	             return false;
+	         }
+
+	         // Lấy AccountEntity từ email của UserInfoEntity
+	         String email = userInfo.getAccount().getEmail();
+	         String hqlAccount = "SELECT a FROM AccountEntity a WHERE a.email = :email";
+	         Query<AccountEntity> queryAccount = session.createQuery(hqlAccount, AccountEntity.class);
+	         queryAccount.setParameter("email", email);
+
+	         AccountEntity account = queryAccount.uniqueResult();
+	         if (account == null) {
+	             System.out.println("Không tìm thấy AccountEntity với email: " + email);
+	             return false;
+	         }
+
+	         // Thay đổi state của AccountEntity
+	         account.setState(newState);
+	         session.merge(account);
+
+	         System.out.println("Đã thay đổi trạng thái của userId " + userId + " thành: " + newState);
+	         return true;
+
+	     } catch (Exception e) {
+	         e.printStackTrace();
+	         return false;
+	     }
+	 }
+
+
 
 	}
