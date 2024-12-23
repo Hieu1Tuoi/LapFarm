@@ -160,33 +160,32 @@ public class LoginController extends BaseController {
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(@RequestParam("email") String email, @RequestParam("password") String password,
-			@RequestParam("g-recaptcha-response") String recaptchaResponse, Model model,
-			HttpSession httpSession) {
+			@RequestParam("g-recaptcha-response") String recaptchaResponse, Model model, HttpSession httpSession) {
 		try {
-	        // Verify reCAPTCHA
-	        String secretKey = "6LcMHp8qAAAAAOfjRaga9eSFLoV7lkQHY8-vb9sj"; //Secret Key từ Google reCAPTCHA
-	        String verifyUrl = "https://www.google.com/recaptcha/api/siteverify";
-	        
-	        RestTemplate restTemplate = new RestTemplate();
-	        MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
-	        requestParams.add("secret", secretKey);
-	        requestParams.add("response", recaptchaResponse);
-	        
-	        ResponseEntity<Map> response = restTemplate.postForEntity(verifyUrl, requestParams, Map.class);
-	        Map<String, Object> responseBody = response.getBody();
-	        
-	        if (responseBody != null && Boolean.TRUE.equals(responseBody.get("success"))) {
-	            // reCAPTCHA validation passed
-	            System.out.println("reCAPTCHA validation succeeded.");
-	        } else {
-	            model.addAttribute("warning", "reCAPTCHA không hợp lệ. Vui lòng thử lại!");
-	            System.out.println("reCAPTCHA invalidation succeeded.");
-	            return "login";
-	        }
-	    } catch (Exception e) {
-	        model.addAttribute("warning", "Lỗi khi xác thực reCAPTCHA: " + e.getMessage());
-	        return "login";
-	    }
+			// Verify reCAPTCHA
+			String secretKey = "6LcMHp8qAAAAAOfjRaga9eSFLoV7lkQHY8-vb9sj"; // Secret Key từ Google reCAPTCHA
+			String verifyUrl = "https://www.google.com/recaptcha/api/siteverify";
+
+			RestTemplate restTemplate = new RestTemplate();
+			MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+			requestParams.add("secret", secretKey);
+			requestParams.add("response", recaptchaResponse);
+
+			ResponseEntity<Map> response = restTemplate.postForEntity(verifyUrl, requestParams, Map.class);
+			Map<String, Object> responseBody = response.getBody();
+
+			if (responseBody != null && Boolean.TRUE.equals(responseBody.get("success"))) {
+				// reCAPTCHA validation passed
+				System.out.println("reCAPTCHA validation succeeded.");
+			} else {
+				model.addAttribute("warning", "reCAPTCHA không hợp lệ. Vui lòng thử lại!");
+				System.out.println("reCAPTCHA invalidation succeeded.");
+				return "login";
+			}
+		} catch (Exception e) {
+			model.addAttribute("warning", "Lỗi khi xác thực reCAPTCHA: " + e.getMessage());
+			return "login";
+		}
 		Session session = factory.openSession();
 		Transaction t = session.beginTransaction();
 		try {
@@ -198,19 +197,19 @@ public class LoginController extends BaseController {
 			AccountEntity acc = (AccountEntity) query.uniqueResult();
 
 			if (acc != null) {
-				
-				  // Kiểm tra đăng nhập qua Google
-	            Boolean isGoogleLogin = (Boolean) httpSession.getAttribute("isGoogleLogin");
-	            if (isGoogleLogin != null && isGoogleLogin) {
-	                httpSession.setAttribute("user", acc);
-	                // Reset trạng thái đăng nhập qua Google
-	                httpSession.removeAttribute("isGoogleLogin");
-	            } else {
-	                // Kiểm tra trạng thái mật khẩu
-	                if (acc.getLastPasswordChangeDate() == null || isPasswordExpired(acc.getLastPasswordChangeDate())) {
-	                    httpSession.setAttribute("passwordWarning", "Mật khẩu của bạn cần được thay đổi sau 90 ngày.");
-	                }
-	            }
+
+				// Kiểm tra đăng nhập qua Google
+				Boolean isGoogleLogin = (Boolean) httpSession.getAttribute("isGoogleLogin");
+				if (isGoogleLogin != null && isGoogleLogin) {
+					httpSession.setAttribute("user", acc);
+					// Reset trạng thái đăng nhập qua Google
+					httpSession.removeAttribute("isGoogleLogin");
+				} else {
+					// Kiểm tra trạng thái mật khẩu
+					if (acc.getLastPasswordChangeDate() == null || isPasswordExpired(acc.getLastPasswordChangeDate())) {
+						httpSession.setAttribute("passwordWarning", "Mật khẩu của bạn cần được thay đổi sau 90 ngày.");
+					}
+				}
 
 				if (acc.getRole().getId() == 1) {
 					httpSession.setAttribute("admin", acc);
@@ -240,8 +239,6 @@ public class LoginController extends BaseController {
 					httpSession.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
 				}
 
-				
-
 				t.commit();
 				return "redirect:/home";
 			} else {
@@ -260,13 +257,14 @@ public class LoginController extends BaseController {
 	}
 
 	private boolean isPasswordExpired(LocalDateTime passwordChangedAt) {
-	    if (passwordChangedAt == null) {
-	        return true; // Nếu ngày thay đổi mật khẩu chưa được đặt, coi là hết hạn.
-	    }
-	    // Thêm 90 ngày vào thời điểm thay đổi mật khẩu
-	    LocalDateTime expiryDate = passwordChangedAt.plusDays(90);
-	    return LocalDateTime.now().isAfter(expiryDate);
+		if (passwordChangedAt == null) {
+			return true; // Nếu ngày thay đổi mật khẩu chưa được đặt, coi là hết hạn.
+		}
+		// Thêm 90 ngày vào thời điểm thay đổi mật khẩu
+		LocalDateTime expiryDate = passwordChangedAt.plusDays(90);
+		return LocalDateTime.now().isAfter(expiryDate);
 	}
+
 	@RequestMapping("/logout")
 	public String logout(HttpSession httpSession) {
 		httpSession.removeAttribute("user");
@@ -275,9 +273,10 @@ public class LoginController extends BaseController {
 		httpSession.removeAttribute("viewedItems");
 		httpSession.removeAttribute("order");
 		httpSession.removeAttribute("accessToken");
+		httpSession.removeAttribute("passwordWarning");
 		return "redirect:/login";
 	}
-	
+
 	private String hashPasswordWithMD5(String password) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
@@ -287,91 +286,88 @@ public class LoginController extends BaseController {
 			throw new RuntimeException("MD5 algorithm not found", e);
 		}
 	}
-	
+
 	@RequestMapping("/forgot-password")
 	public String showForgotPasswordPage() {
-	    return "forgotpassword";
+		return "forgotpassword";
 	}
+
 	@RequestMapping(value = "/forgot-password", method = RequestMethod.POST)
-	public String resetPassword(RedirectAttributes redirectAttributes, 
-	                             @RequestParam("password") String password,
-	                             @RequestParam("email") String email, 
-	                             @RequestParam("confirmPassword") String confirmPassword,
-	                             @RequestParam("verificationCode") String verificationCode, 
-	                             HttpSession verificationSession, 
-	                             @RequestParam("g-recaptcha-response") String recaptchaResponse) {
-	    try {
-	        // Verify reCAPTCHA
-	        String secretKey = "6LcMHp8qAAAAAOfjRaga9eSFLoV7lkQHY8-vb9sj"; // Secret Key từ Google reCAPTCHA
-	        String verifyUrl = "https://www.google.com/recaptcha/api/siteverify";
-	        
-	        RestTemplate restTemplate = new RestTemplate();
-	        MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
-	        requestParams.add("secret", secretKey);
-	        requestParams.add("response", recaptchaResponse);
-	        
-	        ResponseEntity<Map> response = restTemplate.postForEntity(verifyUrl, requestParams, Map.class);
-	        Map<String, Object> responseBody = response.getBody();
-	        
-	        if (responseBody != null && Boolean.TRUE.equals(responseBody.get("success"))) {
-	            // reCAPTCHA validation passed
-	            System.out.println("reCAPTCHA validation succeeded.");
-	        } else {
-	            redirectAttributes.addFlashAttribute("warning", "reCAPTCHA không hợp lệ. Vui lòng thử lại!");
-	            return "redirect:/forgot-password";
-	        }
-	    } catch (Exception e) {
-	        redirectAttributes.addFlashAttribute("warning", "Lỗi khi xác thực reCAPTCHA: " + e.getMessage());
-	        return "redirect:/forgot-password";
-	    }
+	public String resetPassword(RedirectAttributes redirectAttributes, @RequestParam("password") String password,
+			@RequestParam("email") String email, @RequestParam("confirmPassword") String confirmPassword,
+			@RequestParam("verificationCode") String verificationCode, HttpSession verificationSession,
+			@RequestParam("g-recaptcha-response") String recaptchaResponse) {
+		try {
+			// Verify reCAPTCHA
+			String secretKey = "6LcMHp8qAAAAAOfjRaga9eSFLoV7lkQHY8-vb9sj"; // Secret Key từ Google reCAPTCHA
+			String verifyUrl = "https://www.google.com/recaptcha/api/siteverify";
 
-	    // Kiểm tra mã xác minh
-	    String codeFromSession = (String) verificationSession.getAttribute("verificationCode");
-	    if (codeFromSession == null || !codeFromSession.equals(verificationCode)) {
-	        redirectAttributes.addFlashAttribute("warning", "Mã xác nhận không chính xác!");
-	        redirectAttributes.addFlashAttribute("email", email);
-	        redirectAttributes.addFlashAttribute("pw", password);
-	        redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
-	        return "redirect:/forgot-password"; // Trang sửa mật khẩu
-	    }
+			RestTemplate restTemplate = new RestTemplate();
+			MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+			requestParams.add("secret", secretKey);
+			requestParams.add("response", recaptchaResponse);
 
-	    // Kiểm tra độ dài mật khẩu và mật khẩu bằng regex
-	    String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
+			ResponseEntity<Map> response = restTemplate.postForEntity(verifyUrl, requestParams, Map.class);
+			Map<String, Object> responseBody = response.getBody();
 
-	    if (!password.matches(passwordRegex)) {
-	        redirectAttributes.addFlashAttribute("warning", "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và kí tự đặc biệt!");
-	        redirectAttributes.addFlashAttribute("email", email);
-	        redirectAttributes.addFlashAttribute("pw", password);
-	        redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
-	        return "redirect:/forgot-password"; // Trang sửa mật khẩu
-	    } else if (!password.equals(confirmPassword)) {
-	        redirectAttributes.addFlashAttribute("warning", "Xác nhận mật khẩu không giống nhau!");
-	        redirectAttributes.addFlashAttribute("email", email);
-	        redirectAttributes.addFlashAttribute("pw", password);
-	        redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
-	        return "redirect:/forgot-password"; // Trang sửa mật khẩu
-	    }
+			if (responseBody != null && Boolean.TRUE.equals(responseBody.get("success"))) {
+				// reCAPTCHA validation passed
+				System.out.println("reCAPTCHA validation succeeded.");
+			} else {
+				redirectAttributes.addFlashAttribute("warning", "reCAPTCHA không hợp lệ. Vui lòng thử lại!");
+				return "redirect:/forgot-password";
+			}
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("warning", "Lỗi khi xác thực reCAPTCHA: " + e.getMessage());
+			return "redirect:/forgot-password";
+		}
 
-	    // Tiến hành cập nhật mật khẩu
-	    try {
-	        if (!accountDAO.checkEmailExists(email)) {
-	            redirectAttributes.addFlashAttribute("warning", "Email không tồn tại trong hệ thống!");
-	            redirectAttributes.addFlashAttribute("email", email);
-	            redirectAttributes.addFlashAttribute("pw", password);
-	            redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
-	            return "redirect:/forgot-password";
-	        }
+		// Kiểm tra mã xác minh
+		String codeFromSession = (String) verificationSession.getAttribute("verificationCode");
+		if (codeFromSession == null || !codeFromSession.equals(verificationCode)) {
+			redirectAttributes.addFlashAttribute("warning", "Mã xác nhận không chính xác!");
+			redirectAttributes.addFlashAttribute("email", email);
+			redirectAttributes.addFlashAttribute("pw", password);
+			redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
+			return "redirect:/forgot-password"; // Trang sửa mật khẩu
+		}
 
-	        accountDAO.updatePassword(email, password);
+		// Kiểm tra độ dài mật khẩu và mật khẩu bằng regex
+		String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
 
-	        redirectAttributes.addFlashAttribute("message", "Mật khẩu đã được cập nhật thành công!");
-	    } catch (Exception e) {
-	        redirectAttributes.addFlashAttribute("warning", "Cập nhật mật khẩu thất bại! " + e.getMessage());
-	    }
+		if (!password.matches(passwordRegex)) {
+			redirectAttributes.addFlashAttribute("warning",
+					"Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và kí tự đặc biệt!");
+			redirectAttributes.addFlashAttribute("email", email);
+			redirectAttributes.addFlashAttribute("pw", password);
+			redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
+			return "redirect:/forgot-password"; // Trang sửa mật khẩu
+		} else if (!password.equals(confirmPassword)) {
+			redirectAttributes.addFlashAttribute("warning", "Xác nhận mật khẩu không giống nhau!");
+			redirectAttributes.addFlashAttribute("email", email);
+			redirectAttributes.addFlashAttribute("pw", password);
+			redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
+			return "redirect:/forgot-password"; // Trang sửa mật khẩu
+		}
 
-	    return "redirect:/forgot-password"; 
+		// Tiến hành cập nhật mật khẩu
+		try {
+			if (!accountDAO.checkEmailExists(email)) {
+				redirectAttributes.addFlashAttribute("warning", "Email không tồn tại trong hệ thống!");
+				redirectAttributes.addFlashAttribute("email", email);
+				redirectAttributes.addFlashAttribute("pw", password);
+				redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
+				return "redirect:/forgot-password";
+			}
+
+			accountDAO.updatePassword(email, password);
+
+			redirectAttributes.addFlashAttribute("message", "Mật khẩu đã được cập nhật thành công!");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("warning", "Cập nhật mật khẩu thất bại! " + e.getMessage());
+		}
+
+		return "redirect:/forgot-password";
 	}
-
-
 
 }
