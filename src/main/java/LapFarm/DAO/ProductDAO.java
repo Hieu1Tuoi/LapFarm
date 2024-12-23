@@ -20,6 +20,7 @@ import LapFarm.Entity.CategoryEntity;
 import LapFarm.Entity.ImageEntity;
 import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.ProductEntity;
+import LapFarm.Utils.SecureUrlUtil;
 import jakarta.transaction.Transactional;
 
 @Repository
@@ -165,13 +166,22 @@ public class ProductDAO {
 					? product.getImages().get(0).getImageUrl()
 					: null;
 
-			return new ProductDTO(product.getIdProduct(), product.getNameProduct(),
+			ProductDTO productDTO = new ProductDTO(product.getIdProduct(), product.getNameProduct(),
 					product.getBrand() != null ? product.getBrand().getIdBrand() : null,
 					product.getBrand() != null ? product.getBrand().getNameBrand() : null,
 					product.getCategory() != null ? product.getCategory().getNameCategory() : null,
 					product.getCategory().getIdCategory(), product.getDescription(), product.getQuantity(),
 					product.getDiscount(), product.getOriginalPrice(), product.getSalePrice(), product.getState(),
 					image);
+			String encryptedProductId = "";
+			try {
+				encryptedProductId = SecureUrlUtil.encrypt(String.valueOf(product.getIdProduct()));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			productDTO.setEncryptedId(encryptedProductId);
+			return productDTO;
 		}).toList();
 	}
 

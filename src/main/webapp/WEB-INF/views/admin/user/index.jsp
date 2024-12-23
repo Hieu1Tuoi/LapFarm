@@ -69,10 +69,20 @@
 									<td>${u.state}</td>
 									<td><a
 										href="${pageContext.request.contextPath}/admin/manage-user/history/${u.userId}"
-										class="btn btn-success">Xem</a></td>
+										class="btn btn-success">Xem</a> <!-- Form POST để khóa/mở khóa tài khoản -->
+										<form method="post"
+											action="${pageContext.request.contextPath}/admin/manage-user/change-state"
+											style="display: inline;">
+											<input type="hidden" name="userId" value="${u.userId}" /> <input
+												type="hidden" name="currentState" value="${u.state}" />
+											<button type="submit"
+												class="btn ${u.state == 'Hoạt động' ? 'btn-danger' : 'btn-primary'}">
+												${u.state == 'Hoạt động' ? 'Khóa TK' : 'Mở Khóa'}</button>
+										</form></td>
 								</tr>
 							</c:forEach>
 						</tbody>
+
 					</table>
 				</div>
 

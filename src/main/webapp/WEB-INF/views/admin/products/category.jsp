@@ -65,7 +65,7 @@
 									<td>${p.idProduct}</td>
 									<td>${p.brandName}</td>
 									<td><a
-										href="${pageContext.request.contextPath}/product-detail/${p.idProduct}"
+										href="${pageContext.request.contextPath}/product-detail/${p.encryptedId}"
 										style="color: black;">${p.nameProduct}</a></td>
 									<td>${p.quantity}</td>
 									<td><fmt:formatNumber value="${p.calOriginalPrice()}"
@@ -76,7 +76,7 @@
 											type="number" groupingUsed="true" /> VNĐ</td>
 									<td>${p.state}</td>
 									<td><a
-										href="${pageContext.request.contextPath}/product-detail/${p.idProduct}"
+										href="${pageContext.request.contextPath}/product-detail/${p.encryptedId}"
 										class="btn btn-success">Xem</a> <a
 										href="${pageContext.request.contextPath}/admin/product/edit-product/${p.idProduct}"
 										class="btn btn-success">Sửa</a></td>
