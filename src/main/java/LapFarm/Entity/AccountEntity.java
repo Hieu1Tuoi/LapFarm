@@ -79,4 +79,30 @@ public class AccountEntity {
     public void setLastPasswordChangeDate(LocalDateTime lastPasswordChangeDate) {
         this.lastPasswordChangeDate = lastPasswordChangeDate;
     }
+    
+
+    @Column(name = "failedAttempts")
+    private Integer failedAttempts; // Thay đổi từ int thành Integer
+
+    // Các getter và setter
+    public Integer getFailedAttempts() {
+        return failedAttempts;
+    }
+
+    public void setFailedAttempts(Integer failedAttempts) {
+        this.failedAttempts = failedAttempts;
+    }
+    
+    @Column(name = "lockedUntil")
+    private LocalDateTime lockedUntil;
+
+    // Getter và setter cho lockedUntil
+    public LocalDateTime getLockedUntil() {
+        return lockedUntil;
+    }
+
+    public void setLockedUntil(LocalDateTime lockedUntil) {
+        this.lockedUntil = lockedUntil;
+    }
+
 }

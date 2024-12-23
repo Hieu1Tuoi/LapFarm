@@ -19,6 +19,7 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -160,101 +161,141 @@ public class LoginController extends BaseController {
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(@RequestParam("email") String email, @RequestParam("password") String password,
-			@RequestParam("g-recaptcha-response") String recaptchaResponse, Model model, HttpSession httpSession) {
-		try {
-			// Verify reCAPTCHA
-			String secretKey = "6LcMHp8qAAAAAOfjRaga9eSFLoV7lkQHY8-vb9sj"; // Secret Key từ Google reCAPTCHA
-			String verifyUrl = "https://www.google.com/recaptcha/api/siteverify";
+	        @RequestParam("g-recaptcha-response") String recaptchaResponse, Model model, HttpSession httpSession) {
+	    try {
+	        // Verify reCAPTCHA
+	        String secretKey = "6LcMHp8qAAAAAOfjRaga9eSFLoV7lkQHY8-vb9sj"; // Secret Key từ Google reCAPTCHA
+	        String verifyUrl = "https://www.google.com/recaptcha/api/siteverify";
 
-			RestTemplate restTemplate = new RestTemplate();
-			MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
-			requestParams.add("secret", secretKey);
-			requestParams.add("response", recaptchaResponse);
+	        RestTemplate restTemplate = new RestTemplate();
+	        MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+	        requestParams.add("secret", secretKey);
+	        requestParams.add("response", recaptchaResponse);
 
-			ResponseEntity<Map> response = restTemplate.postForEntity(verifyUrl, requestParams, Map.class);
-			Map<String, Object> responseBody = response.getBody();
+	        ResponseEntity<Map> response = restTemplate.postForEntity(verifyUrl, requestParams, Map.class);
+	        Map<String, Object> responseBody = response.getBody();
 
-			if (responseBody != null && Boolean.TRUE.equals(responseBody.get("success"))) {
-				// reCAPTCHA validation passed
-				System.out.println("reCAPTCHA validation succeeded.");
-			} else {
-				model.addAttribute("warning", "reCAPTCHA không hợp lệ. Vui lòng thử lại!");
-				System.out.println("reCAPTCHA invalidation succeeded.");
-				return "login";
-			}
-		} catch (Exception e) {
-			model.addAttribute("warning", "Lỗi khi xác thực reCAPTCHA: " + e.getMessage());
-			return "login";
-		}
-		Session session = factory.openSession();
-		Transaction t = session.beginTransaction();
-		try {
-			String hql = "FROM AccountEntity WHERE email = :email AND password = :password";
-			Query query = session.createQuery(hql);
-			query.setParameter("email", email);
-			query.setParameter("password", hashPasswordWithMD5(password));
+	        if (responseBody != null && Boolean.TRUE.equals(responseBody.get("success"))) {
+	            // reCAPTCHA validation passed
+	            System.out.println("reCAPTCHA validation succeeded.");
+	        } else {
+	            model.addAttribute("warning", "reCAPTCHA không hợp lệ. Vui lòng thử lại!");
+	            System.out.println("reCAPTCHA invalidation succeeded.");
+	            return "login";
+	        }
+	    } catch (Exception e) {
+	        model.addAttribute("warning", "Lỗi khi xác thực reCAPTCHA: " + e.getMessage());
+	        return "login";
+	    }
 
-			AccountEntity acc = (AccountEntity) query.uniqueResult();
+	    Session session = factory.openSession();
+	    Transaction t = session.beginTransaction();
 
-			if (acc != null) {
+	    try {
+	        String hql = "FROM AccountEntity WHERE email = :email";
+	        Query query = session.createQuery(hql);
+	        query.setParameter("email", email);
 
-				// Kiểm tra đăng nhập qua Google
-				Boolean isGoogleLogin = (Boolean) httpSession.getAttribute("isGoogleLogin");
-				if (isGoogleLogin != null && isGoogleLogin) {
-					httpSession.setAttribute("user", acc);
-					// Reset trạng thái đăng nhập qua Google
-					httpSession.removeAttribute("isGoogleLogin");
-				} else {
-					// Kiểm tra trạng thái mật khẩu
-					if (acc.getLastPasswordChangeDate() == null || isPasswordExpired(acc.getLastPasswordChangeDate())) {
-						httpSession.setAttribute("passwordWarning", "Mật khẩu của bạn cần được thay đổi sau 90 ngày.");
-					}
-				}
+	        AccountEntity acc = (AccountEntity) query.uniqueResult();
 
-				if (acc.getRole().getId() == 1) {
-					httpSession.setAttribute("admin", acc);
-				} else if (acc.getRole().getId() == 0) {
-					httpSession.setAttribute("user", acc);
-				}
+	        if (acc != null) {
+	            // Kiểm tra xem tài khoản có bị khóa không
+	            if (acc.getLockedUntil() != null && acc.getLockedUntil().isAfter(LocalDateTime.now())) {
+	                // Tính toán thời gian mở khóa tài khoản
+	                LocalDateTime lockedUntil = acc.getLockedUntil();
+	                String unlockTime = lockedUntil.format(DateTimeFormatter.ofPattern("HH:mm, dd-MM-yyyy"));
+	                model.addAttribute("warning", "Tài khoản của bạn đã bị khóa. Vui lòng thử lại sau, sau thời gian " + unlockTime + ".");
+	                return "login";
+	            }
 
-				// Lấy giỏ hàng từ session
-				HashMap<Integer, CartDTO> cart = (HashMap<Integer, CartDTO>) httpSession.getAttribute("Cart");
+	            String hashedPassword = hashPasswordWithMD5(password);
+	            if (!hashedPassword.equals(acc.getPassword())) { // Mật khẩu mã hóa
+	                Integer failedAttempts = acc.getFailedAttempts();
+	                if (failedAttempts == null) {
+	                    failedAttempts = 0; // Nếu failedAttempts là null, khởi tạo giá trị mặc định
+	                }
 
-				// Kiểm tra giỏ hàng không null và không rỗng
-				if (cart != null && !cart.isEmpty()) {
-					// Duyệt qua từng mục trong giỏ hàng
-					for (Map.Entry<Integer, CartDTO> entry : cart.entrySet()) {
-						Integer productId = entry.getKey(); // Lấy key (ID sản phẩm)
-						CartDTO cartItem = entry.getValue(); // Lấy giá trị (CartDTO)
+	                failedAttempts++; // Tăng số lần thất bại
+	                accountDAO.updateFailedAttempts(failedAttempts, email); // Cập nhật số lần đăng nhập thất bại
 
-						ProductEntity productEntity = productDAO.getProductById(cartItem.getProduct().getIdProduct());
-						CartEntity cartEntity = new CartEntity(acc.getUserInfo(), productEntity, 1);
-						cartDAO.createCart(cartEntity);
-					}
-					cart = cartDAO.getCartFromDatabase(acc.getUserInfo().getUserId());
+	                if (failedAttempts >= 3) {
+	                    // Set thời gian khóa tài khoản là hiện tại cộng 10 phút
+	                    LocalDateTime lockTime = LocalDateTime.now();
+	                    LocalDateTime unlockTime = lockTime.plusMinutes(10);
+	                    accountDAO.lockAccount(email, unlockTime);
+	                    String unlockFormattedTime = unlockTime.format(DateTimeFormatter.ofPattern("HH:mm, dd-MM-yyyy"));
+	                    accountDAO.changeUserState(email, "Bị khóa");
+	                    model.addAttribute("warning", "Bạn đã nhập sai mật khẩu 3 lần. Tài khoản đã bị khóa trong 10 phút và sẽ mở lại vào lúc " + unlockFormattedTime + ".");
+	                } else {
+	                    model.addAttribute("warning", "Sai mật khẩu. Thử lại.");
+	                }
+	                return "login";
+	            }
 
-					// Cập nhật lại session
-					httpSession.setAttribute("Cart", cart);
-					httpSession.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
-					httpSession.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
-				}
+	            // Nếu đăng nhập thành công, đặt lại failedAttempts về 0
+	            accountDAO.resetFailedAttempts(email); // Đặt lại số lần thất bại về 0
+	            accountDAO.resetLockedUntil(email);  // Xóa thời gian khóa nếu đăng nhập thành công
+	            accountDAO.changeUserState(email, "Hoạt động");
 
-				t.commit();
-				return "redirect:/home";
-			} else {
-				model.addAttribute("warning", "Email hoặc mật khẩu không đúng!");
-				model.addAttribute("email", email);
-				model.addAttribute("pw", password);
-				return "login";
-			}
-		} catch (Exception e) {
-			t.rollback();
-			model.addAttribute("warning", "Đăng nhập thất bại! " + e);
-			return "login";
-		} finally {
-			session.close();
-		}
+	            // Kiểm tra đăng nhập qua Google
+	            Boolean isGoogleLogin = (Boolean) httpSession.getAttribute("isGoogleLogin");
+	            if (isGoogleLogin != null && isGoogleLogin) {
+	                httpSession.setAttribute("user", acc);
+	                // Reset trạng thái đăng nhập qua Google
+	                httpSession.removeAttribute("isGoogleLogin");
+	            } else {
+	                // Kiểm tra trạng thái mật khẩu
+	                if (acc.getLastPasswordChangeDate() == null || isPasswordExpired(acc.getLastPasswordChangeDate())) {
+	                    httpSession.setAttribute("passwordWarning", "Mật khẩu của bạn cần được thay đổi sau 90 ngày.");
+	                }
+	            }
+
+	            if (acc.getRole().getId() == 1) {
+	                httpSession.setAttribute("admin", acc);
+	            } else if (acc.getRole().getId() == 0) {
+	                httpSession.setAttribute("user", acc);
+	            }
+
+	            // Lấy giỏ hàng từ session
+	            HashMap<Integer, CartDTO> cart = (HashMap<Integer, CartDTO>) httpSession.getAttribute("Cart");
+
+	            // Kiểm tra giỏ hàng không null và không rỗng
+	            if (cart != null && !cart.isEmpty()) {
+	                // Duyệt qua từng mục trong giỏ hàng
+	                for (Map.Entry<Integer, CartDTO> entry : cart.entrySet()) {
+	                    Integer productId = entry.getKey(); // Lấy key (ID sản phẩm)
+	                    CartDTO cartItem = entry.getValue(); // Lấy giá trị (CartDTO)
+
+	                    ProductEntity productEntity = productDAO.getProductById(cartItem.getProduct().getIdProduct());
+	                    CartEntity cartEntity = new CartEntity(acc.getUserInfo(), productEntity, 1);
+	                    cartDAO.createCart(cartEntity);
+	                }
+	                cart = cartDAO.getCartFromDatabase(acc.getUserInfo().getUserId());
+
+	                // Cập nhật lại session
+	                httpSession.setAttribute("Cart", cart);
+	                httpSession.setAttribute("TotalQuantyCart", cartService.TotalQuanty(cart));
+	                httpSession.setAttribute("TotalPriceCart", cartService.TotalPrice(cart));
+	            }
+
+	            t.commit();
+	            return "redirect:/home";
+	        } else {
+	            model.addAttribute("warning", "Email hoặc mật khẩu không đúng!");
+	            model.addAttribute("email", email);
+	            model.addAttribute("pw", password);
+	            return "login";
+	        }
+	    } catch (Exception e) {
+	        t.rollback();
+	        model.addAttribute("warning", "Đăng nhập thất bại! " + e);
+	        return "login";
+	    } finally {
+	        session.close();
+	    }
 	}
+
+
 
 	private boolean isPasswordExpired(LocalDateTime passwordChangedAt) {
 		if (passwordChangedAt == null) {

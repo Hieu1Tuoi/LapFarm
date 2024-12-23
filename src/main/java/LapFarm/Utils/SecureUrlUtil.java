@@ -7,7 +7,7 @@ import java.util.Base64;
 
 public class SecureUrlUtil {
     private static final String ALGORITHM = "AES";
-    private static final String SECRET_KEY = "1234567890123456"; // Thay bằng khóa bí mật mạnh hơn (32 ký tự)
+    private static final String SECRET_KEY = "0912200315112001"; // Thay bằng khóa bí mật mạnh hơn (32 ký tự)
 
     // Tạo khóa bí mật (Optional nếu không muốn sử dụng key cố định)
     public static String generateSecretKey() throws Exception {

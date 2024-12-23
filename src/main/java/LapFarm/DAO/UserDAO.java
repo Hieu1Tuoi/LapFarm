@@ -369,7 +369,119 @@ public class UserDAO {
 	         return false;
 	     }
 	 }
+	 @Transactional
+	 public void changeUserState(String email, String state) {
+	        Session session = factory.openSession();
+	        Transaction t = session.beginTransaction();
 
+	        try {
+	            String hql = "UPDATE AccountEntity SET state = :state WHERE email = :email";
+	            Query query = session.createQuery(hql);
+	            query.setParameter("state", state);
+	            query.setParameter("email", email);
+
+	            int result = query.executeUpdate();
+	            if (result > 0) {
+	                System.out.println("Cập nhật trạng thái thành công!");
+	            }
+
+	            t.commit();
+	        } catch (Exception e) {
+	            t.rollback();
+	            System.out.println("Lỗi khi cập nhật trạng thái: " + e.getMessage());
+	        } finally {
+	            session.close();
+	        }
+	    }
+
+	 public void updateFailedAttempts(int failedAttempts, String email) {
+		    Session session = factory.openSession();
+		    Transaction t = session.beginTransaction();
+		    try {
+		        String hql = "UPDATE AccountEntity SET failedAttempts = :failedAttempts WHERE email = :email";
+		        Query query = session.createQuery(hql);
+		        query.setParameter("failedAttempts", failedAttempts);
+		        query.setParameter("email", email);
+		        query.executeUpdate();
+		        t.commit();
+		    } catch (Exception e) {
+		        t.rollback();
+		        throw new RuntimeException("Lỗi khi cập nhật số lần đăng nhập thất bại: " + e.getMessage());
+		    } finally {
+		        session.close();
+		    }
+		}
+
+	 public void changeState(String email, String state) {
+		    Session session = factory.openSession();
+		    Transaction t = session.beginTransaction();
+		    try {
+		        String hql = "UPDATE AccountEntity SET state = :state WHERE email = :email";
+		        Query query = session.createQuery(hql);
+		        query.setParameter("state", state);
+		        query.setParameter("email", email);
+		        query.executeUpdate();
+		        t.commit();
+		    } catch (Exception e) {
+		        t.rollback();
+		        throw new RuntimeException("Lỗi khi thay đổi trạng thái tài khoản: " + e.getMessage());
+		    } finally {
+		        session.close();
+		    }
+		}
+
+	 public void resetFailedAttempts(String email) {
+		    Session session = factory.openSession();
+		    Transaction t = session.beginTransaction();
+		    try {
+		        String hql = "UPDATE AccountEntity SET failedAttempts = 0 WHERE email = :email";
+		        Query query = session.createQuery(hql);
+		        query.setParameter("email", email);
+		        query.executeUpdate();
+		        t.commit();
+		    } catch (Exception e) {
+		        t.rollback();
+		        throw new RuntimeException("Lỗi khi reset số lần đăng nhập thất bại: " + e.getMessage());
+		    } finally {
+		        session.close();
+		    }
+		}
+	// Cập nhật thời gian khóa tài khoản
+	 public void lockAccount(String email, LocalDateTime lockedUntil) {
+	     Session session = factory.openSession();
+	     Transaction t = session.beginTransaction();
+	     try {
+	         String hql = "UPDATE AccountEntity SET lockedUntil = :lockedUntil WHERE email = :email";
+	         Query query = session.createQuery(hql);
+	         query.setParameter("lockedUntil", lockedUntil);
+	         query.setParameter("email", email);
+	         query.executeUpdate();
+	         t.commit();
+	     } catch (Exception e) {
+	         t.rollback();
+	         throw new RuntimeException("Error locking account", e);
+	     } finally {
+	         session.close();
+	     }
+	 }
+
+	 // Reset thời gian khóa khi đăng nhập thành công
+	 public void resetLockedUntil(String email) {
+	     Session session = factory.openSession();
+	     Transaction t = session.beginTransaction();
+	     try {
+	         String hql = "UPDATE AccountEntity SET lockedUntil = NULL WHERE email = :email";
+	         Query query = session.createQuery(hql);
+	         query.setParameter("email", email);
+	         query.executeUpdate();
+	         t.commit();
+	     } catch (Exception e) {
+	         t.rollback();
+	         throw new RuntimeException("Error resetting lockedUntil", e);
+	     } finally {
+	         session.close();
+	     }
+	 }
 
 
 	}
