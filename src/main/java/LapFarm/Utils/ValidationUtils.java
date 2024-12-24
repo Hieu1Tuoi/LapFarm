@@ -76,18 +76,52 @@ public final class ValidationUtils {
 
 	// Password Validation Methods
 	public static ValidationResult validatePassword(String password, String confirmPassword) {
-		if (password == null) {
-			return new ValidationResult(false, "Mật khẩu không được để trống");
-		}
-		String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
-		if (!password.matches(passwordRegex)) {
-			return new ValidationResult(false,
-					"Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và kí tự đặc biệt!");
-		}
-		if (confirmPassword != null && !password.equals(confirmPassword)) {
-			return new ValidationResult(false, "Xác nhận mật khẩu không giống nhau!");
-		}
-		return new ValidationResult(true, null);
+	    // Kiểm tra null
+	    if (password == null) {
+	        return new ValidationResult(false, "Mật khẩu không được để trống");
+	    }
+
+	    // Kiểm tra độ dài tối thiểu và tối đa
+	    if (password.length() < 8) {
+	        return new ValidationResult(false, "Mật khẩu phải có ít nhất 8 ký tự");
+	    }
+	    if (password.length() > MAX_PASSWORD_LENGTH) {
+	        return new ValidationResult(false, "Mật khẩu không được vượt quá " + MAX_PASSWORD_LENGTH + " ký tự");
+	    }
+
+	    // Kiểm tra các yêu cầu về độ phức tạp của mật khẩu
+	    if (!password.matches(".*[a-z].*")) {
+	        return new ValidationResult(false, "Mật khẩu phải chứa ít nhất một chữ cái thường");
+	    }
+	    if (!password.matches(".*[A-Z].*")) {
+	        return new ValidationResult(false, "Mật khẩu phải chứa ít nhất một chữ cái hoa");
+	    }
+	    if (!password.matches(".*\\d.*")) {
+	        return new ValidationResult(false, "Mật khẩu phải chứa ít nhất một chữ số");
+	    }
+	    if (!password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*")) {
+	        return new ValidationResult(false, "Mật khẩu phải chứa ít nhất một ký tự đặc biệt");
+	    }
+
+	    // Kiểm tra mật khẩu xác nhận
+	    if (confirmPassword != null && !password.equals(confirmPassword)) {
+	        return new ValidationResult(false, "Xác nhận mật khẩu không giống nhau!");
+	    }
+
+	    // Kiểm tra các ký tự không hợp lệ
+	    if (password.contains(" ")) {
+	        return new ValidationResult(false, "Mật khẩu không được chứa khoảng trắng");
+	    }
+
+	    // Kiểm tra mẫu regex tổng thể
+	    String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
+	    if (!password.matches(passwordRegex)) {
+	        return new ValidationResult(false, 
+	            "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và kí tự đặc biệt!");
+	    }
+
+	    // Nếu tất cả điều kiện đều thỏa mãn
+	    return new ValidationResult(true, null);
 	}
 
 	// kiem tra do dai

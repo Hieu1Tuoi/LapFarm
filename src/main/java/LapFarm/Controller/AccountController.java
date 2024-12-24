@@ -322,10 +322,15 @@ public class AccountController {
 				return "redirect:/login";
 			}
 		}
+		if (XSSUtils.containsXSS(oldPassword) || XSSUtils.containsXSS(password) || XSSUtils.containsXSS(confirmPassword)
+				|| XSSUtils.containsXSS(verificationCode)) {
+			redirectAttributes.addFlashAttribute("warning", "Dữ liệu nhập vào chứa nội dung không hợp lệ.");
+			return "redirect:/change-password";
+		}
 
 		String email = user.getEmail();
 		try {
-// Verify reCAPTCHA
+			// Verify reCAPTCHA
 			String secretKey = "6LcMHp8qAAAAAOfjRaga9eSFLoV7lkQHY8-vb9sj"; // Secret Key từ Google reCAPTCHA
 			String verifyUrl = "https://www.google.com/recaptcha/api/siteverify";
 
@@ -338,7 +343,7 @@ public class AccountController {
 			Map<String, Object> responseBody = response.getBody();
 
 			if (responseBody != null && Boolean.TRUE.equals(responseBody.get("success"))) {
-// reCAPTCHA validation passed
+				// reCAPTCHA validation passed
 				System.out.println("reCAPTCHA validation succeeded.");
 			} else {
 				redirectAttributes.addFlashAttribute("warning", "reCAPTCHA không hợp lệ. Vui lòng thử lại!");
@@ -355,7 +360,7 @@ public class AccountController {
 				return "redirect:/change-password";
 			}
 
-// Kiểm tra mã xác minh
+			// Kiểm tra mã xác minh
 			String savedCode = (String) session.getAttribute("verificationCode");
 			LocalDateTime expireTime = (LocalDateTime) session.getAttribute("codeExpireTime");
 
@@ -373,7 +378,7 @@ public class AccountController {
 				return "redirect:/change-password"; // Trang sửa mật khẩu
 			}
 
-// Kiểm tra độ dài mật khẩu và mật khẩu bằng regex
+			// Kiểm tra độ dài mật khẩu và mật khẩu bằng regex
 			String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
 
 			if (!password.matches(passwordRegex)) {
@@ -389,18 +394,16 @@ public class AccountController {
 				return "redirect:/change-password"; // Trang sửa mật khẩu
 			}
 			ValidationResult passwordValidation = ValidationUtils.validatePassword(password, confirmPassword);
-	        if (!passwordValidation.isValid()) {
-	            redirectAttributes.addFlashAttribute("warning", passwordValidation.getMessage());
-	            addPasswordToFlashAttributes(redirectAttributes, password, confirmPassword);
-	            return "redirect:/change-password";
-	        }
+			if (!passwordValidation.isValid()) {
+				redirectAttributes.addFlashAttribute("warning", passwordValidation.getMessage());
+				addPasswordToFlashAttributes(redirectAttributes, password, confirmPassword);
+				return "redirect:/change-password";
+			}
 
-	        // Sanitize password input
-	        String sanitizedPassword = ValidationUtils.safeSetString(password, ValidationUtils.MAX_PASSWORD_LENGTH);
+			// Sanitize password input
+			String sanitizedPassword = ValidationUtils.safeSetString(password, ValidationUtils.MAX_PASSWORD_LENGTH);
 
-
-
-// Tiến hành cập nhật mật khẩu
+			// Tiến hành cập nhật mật khẩu
 			accountDAO.updatePassword(email, password);
 			redirectAttributes.addFlashAttribute("message", "Mật khẩu đã được cập nhật thành công!");
 			SecurityContextHolder.clearContext(); // Xóa thông tin đăng nhập hiện tại
@@ -435,9 +438,11 @@ public class AccountController {
 		model.addAttribute("address", address);
 		return "redirect:/account#profile";
 	}
-	private void addPasswordToFlashAttributes(RedirectAttributes redirectAttributes, String password, String confirmPassword) {
-	    redirectAttributes.addFlashAttribute("pw", password);
-	    redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
+
+	private void addPasswordToFlashAttributes(RedirectAttributes redirectAttributes, String password,
+			String confirmPassword) {
+		redirectAttributes.addFlashAttribute("pw", password);
+		redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
 	}
 
 }
