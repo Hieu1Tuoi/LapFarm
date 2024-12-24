@@ -361,7 +361,7 @@
                   action="${pageContext.request.contextPath}/submitReview">
                 <!-- Truyền ID sản phẩm đã mã hóa -->
                 <input type="hidden" name="encryptedProductId" value="${mahoaID}" />
-                <textarea class="input" name="review" placeholder="Hãy viết nội dung đánh giá..." required></textarea>
+                <textarea class="input" name="review" placeholder="Hãy viết nội dung đánh giá..." maxlength="500" required></textarea>
                 <div class="input-rating">
                     <span>Số sao: </span>
                     <div class="stars">

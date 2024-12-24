@@ -94,7 +94,7 @@
 						<form action="<c:url value='/login' />" method="post">
 							<div class="form-group">
 								<label for="email">Email:</label> <input type="email"
-									class="form-control" id="email" name="email" value="${email}"
+									class="form-control" id="email" name="email" value="${email}" maxlength="50"
 									placeholder="Nhập email của bạn" required>
 							</div>
 							<div class="form-group">

@@ -95,18 +95,18 @@
 							<div class="form-group">
 								<label for="sigup-email">Email:</label> <input type="email"
 									class="form-control" id="sigup-email" name="email"
-									value="${email}" placeholder="Nhập email của bạn" required>
+									value="${email}" maxlength="50" placeholder="Nhập email của bạn" required>
 							</div>
 							<div class="form-group">
 								<label for="sigup-password">Mật khẩu:</label> <input
 									type="password" class="form-control" id="sigup-password"
-									value="${pw}" name="password" minlength="6"
+									value="${pw}" name="password" minlength="8" maxlength="50"
 									placeholder="Nhập mật khẩu của bạn" required>
 							</div>
 							<div class="form-group">
 								<label for="confirm-password">Xác nhận Mật khẩu:</label> <input
 									type="password" class="form-control" id="confirm-password"
-									value="${cfpw}" name="confirmPassword"
+									value="${cfpw}" name="confirmPassword" maxlength="50"
 									placeholder="Xác nhận mật khẩu của bạn" required>
 							</div>
 							
@@ -120,7 +120,7 @@
 								<label for="verification-code">Mã xác nhận:</label>
 								<div class="input-group">
 									<input type="text" class="form-control" id="verification-code"
-										name="verificationCode" placeholder="Nhập mã xác nhận"
+										name="verificationCode" maxlength="6" placeholder="Nhập mã xác nhận"
 										required>
 									<button type="button" id="send-code-btn">Gửi mã</button>
 								</div>
