@@ -14,6 +14,10 @@ public final class ValidationUtils {
 	public static final String ERROR_PHONE_FORMAT = "Số điện thoại không đúng định dạng";
 	public static final String ERROR_EMAIL_FORMAT = "Email không đúng định dạng";
 	public static final String ERROR_PASSWORD_FORMAT = "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và kí tự đặc biệt!";
+	// Add new constant for review
+    public static final int MAX_REVIEW_WORDS = 500;
+    public static final String ERROR_REVIEW_LENGTH = "Đánh giá không được vượt quá %d từ";
+    public static final String ERROR_REVIEW_EMPTY = "Nội dung đánh giá không được để trống";
 
 	private ValidationUtils() {
 		// Private constructor to prevent instantiation
@@ -61,17 +65,18 @@ public final class ValidationUtils {
 
 	// Kiem tra email
 	public static ValidationResult validateEmail(String email) {
-		if (email == null) {
-			return new ValidationResult(false, "Email không được để trống");
-		}
-		String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
-		if (!email.matches(emailRegex)) {
-			return new ValidationResult(false, "Email không đúng định dạng");
-		}
-		if (email.length() > MAX_EMAIL_LENGTH) {
-			return new ValidationResult(false, "Email không được vượt quá " + MAX_EMAIL_LENGTH + " ký tự");
-		}
-		return new ValidationResult(true, null);
+	    if (email == null) {
+	        return new ValidationResult(false, "Email không được để trống");
+	    }
+	    // More strict email regex that requires proper domain format
+	    String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+	    if (!email.matches(emailRegex)) {
+	        return new ValidationResult(false, "Email không đúng định dạng");
+	    }
+	    if (email.length() > MAX_EMAIL_LENGTH) {
+	        return new ValidationResult(false, "Email không được vượt quá " + MAX_EMAIL_LENGTH + " ký tự");
+	    }
+	    return new ValidationResult(true, null);
 	}
 
 	// Password Validation Methods
@@ -123,6 +128,37 @@ public final class ValidationUtils {
 	    // Nếu tất cả điều kiện đều thỏa mãn
 	    return new ValidationResult(true, null);
 	}
+	//Kiem tra review 
+	public static ValidationResult validateReview(String review) {
+        if (review == null || review.trim().isEmpty()) {
+            return new ValidationResult(false, ERROR_REVIEW_EMPTY);
+        }
+
+        // Normalize the review text
+        String normalizedReview = normalizeInput(review);
+
+        // Count words by splitting on whitespace
+        String[] words = normalizedReview.split("\\s+");
+        
+        if (words.length > MAX_REVIEW_WORDS) {
+            return new ValidationResult(false, 
+                String.format(ERROR_REVIEW_LENGTH, MAX_REVIEW_WORDS));
+        }
+
+        // Check for potential XSS or malicious content
+        if (containsHtmlTags(normalizedReview)) {
+            return new ValidationResult(false, 
+                "Đánh giá không được chứa mã HTML hoặc script");
+        }
+
+        // Basic profanity check (you might want to expand this)
+        if (containsProfanity(normalizedReview)) {
+            return new ValidationResult(false, 
+                "Đánh giá không được chứa từ ngữ không phù hợp");
+        }
+
+        return new ValidationResult(true, null);
+    }
 
 	// kiem tra do dai
 	public static ValidationResult validateLength(String input, int maxLength, String fieldName) {
@@ -142,6 +178,21 @@ public final class ValidationUtils {
 		}
 		return input.replaceAll("[\\p{Cntrl}&&[^\r\n\t]]", "").replaceAll("\\s+", " ").trim();
 	}
+	private static boolean containsHtmlTags(String text) {
+        return text.matches(".*<[^>]+>.*");
+    }
+	private static boolean containsProfanity(String text) {
+        // Add your list of prohibited words here
+        String[] profanityList = {"xxx", "yyy", "zzz"}; // Replace with actual prohibited words
+        
+        String lowerText = text.toLowerCase();
+        for (String word : profanityList) {
+            if (lowerText.contains(word.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 	public static String sanitizeInput(String input) {
 		if (input == null) {

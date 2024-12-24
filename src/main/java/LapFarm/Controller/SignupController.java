@@ -1,9 +1,7 @@
 package LapFarm.Controller;
 
-import LapFarm.Bean.Mailer;
-import LapFarm.DAO.UserDAO;
-import LapFarm.Entity.AccountEntity;
-import jakarta.servlet.http.HttpSession;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +17,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
-import java.time.LocalDateTime;
-import java.util.Map;
+
+import LapFarm.Bean.Mailer;
+import LapFarm.DAO.UserDAO;
+import LapFarm.Entity.AccountEntity;
+import LapFarm.Utils.ValidationUtils;
+import LapFarm.Utils.ValidationUtils.ValidationResult;
+import jakarta.servlet.http.HttpSession;
 
 
 @Controller
@@ -66,6 +69,8 @@ public class SignupController {
 	        HttpSession verificationSession, 
 	        @RequestParam("g-recaptcha-response") String recaptchaResponse) {
 	    try {
+	    	
+	    	
 	        // Verify reCAPTCHA
 	        String secretKey = "6LcMHp8qAAAAAOfjRaga9eSFLoV7lkQHY8-vb9sj"; // Secret Key từ Google reCAPTCHA
 	        String verifyUrl = "https://www.google.com/recaptcha/api/siteverify";
@@ -100,25 +105,44 @@ public class SignupController {
 	        return "signup";
 	    }
 
-	    // Kiểm tra độ dài mật khẩu và mật khẩu bằng regex
-	    String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
-	    if (!password.matches(passwordRegex)) {
-	        model.addAttribute("warning", "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và kí tự đặc biệt!");
-	        model.addAttribute("email", email);
-	        model.addAttribute("pw", password);
-	        model.addAttribute("cfpw", confirmPassword);
-	        return "signup";
-	    } else if (!password.equals(confirmPassword)) {
-	        model.addAttribute("warning", "Xác nhận mật khẩu không giống nhau!");
-	        model.addAttribute("email", email);
-	        model.addAttribute("pw", password);
-	        model.addAttribute("cfpw", confirmPassword);
-	        return "signup";
-	    }
+		/*
+		 * // Kiểm tra độ dài mật khẩu và mật khẩu bằng regex String passwordRegex =
+		 * "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
+		 * if (!password.matches(passwordRegex)) { model.addAttribute("warning",
+		 * "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và kí tự đặc biệt!"
+		 * ); model.addAttribute("email", email); model.addAttribute("pw", password);
+		 * model.addAttribute("cfpw", confirmPassword); return "signup"; } else if
+		 * (!password.equals(confirmPassword)) { model.addAttribute("warning",
+		 * "Xác nhận mật khẩu không giống nhau!"); model.addAttribute("email", email);
+		 * model.addAttribute("pw", password); model.addAttribute("cfpw",
+		 * confirmPassword); return "signup"; }
+		 */
+	 // Validate email first
+        ValidationResult emailValidation = ValidationUtils.validateEmail(email);
+        if (!emailValidation.isValid()) {
+            model.addAttribute("warning", emailValidation.getMessage());
+            addToModel(model, email, password, confirmPassword);
+            return "signup";
+        }
+
+        // Sanitize email input
+        String sanitizedEmail = ValidationUtils.safeSetString(email, ValidationUtils.MAX_EMAIL_LENGTH);
+        acc.setEmail(sanitizedEmail);
+        //Validate password
+	    ValidationResult passwordValidation = ValidationUtils.validatePassword(password, confirmPassword);
+        if (!passwordValidation.isValid()) {
+            model.addAttribute("warning", passwordValidation.getMessage());
+            addToModel(model, email, password, confirmPassword);
+            return "signup";
+        }
+
+        // Sanitize password input
+        String sanitizedPassword = ValidationUtils.safeSetString(password, ValidationUtils.MAX_PASSWORD_LENGTH);
+        acc.setPassword(sanitizedPassword);
 
 	    try {
 	        // Kiểm tra email đã tồn tại chưa
-	        if (accountDAO.checkEmailExists(email)) {
+	        if (accountDAO.checkEmailExists(sanitizedEmail)) {
 	            model.addAttribute("warning", "Email đã tồn tại!");
 	            model.addAttribute("email", email);
 	            model.addAttribute("pw", password);
@@ -130,7 +154,7 @@ public class SignupController {
 	        acc.setLastPasswordChangeDate(LocalDateTime.now());  // Cập nhật thời gian đổi mật khẩu
 
 	        accountDAO.saveAccount(acc);  // Lưu tài khoản vào database
-	        accountDAO.createUserinfo(email);  // Lưu thông tin người dùng
+	        accountDAO.createUserinfo(sanitizedEmail);  // Lưu thông tin người dùng
 
 	        model.addAttribute("message", "Đăng ký thành công!");
 	    } catch (Exception e) {
@@ -139,5 +163,10 @@ public class SignupController {
 
 	    return "signup";
 	}
+	 private void addToModel(ModelMap model, String email, String password, String confirmPassword) {
+	        model.addAttribute("email", email);
+	        model.addAttribute("pw", password);
+	        model.addAttribute("cfpw", confirmPassword);
+	    }
 
 }

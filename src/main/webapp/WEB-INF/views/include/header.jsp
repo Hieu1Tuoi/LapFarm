@@ -256,7 +256,7 @@
 
 							<!-- Ô nhập từ khóa tìm kiếm -->
 							<input value="${searchText}" id="searchInput" class="input"
-								name="searchtext" placeholder="Tìm sản phẩm ở đây..." />
+								name="searchtext" maxlength="400" placeholder="Tìm sản phẩm ở đây..." />
 
 							<!-- Ô nhập giá hoặc các tham số ẩn -->
 							<input type="hidden" value="${priceRange}" name="priceRange" />
@@ -438,6 +438,4 @@ document.addEventListener("DOMContentLoaded", function() {
         notificationBox.style.display = "none";
     });
 });
-
-	
 </script>

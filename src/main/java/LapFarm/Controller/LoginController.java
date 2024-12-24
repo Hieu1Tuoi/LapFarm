@@ -8,6 +8,8 @@ import LapFarm.Entity.AccountEntity;
 import LapFarm.Entity.CartEntity;
 import LapFarm.Entity.ProductEntity;
 import LapFarm.Service.GoogleService;
+import LapFarm.Utils.ValidationUtils;
+import LapFarm.Utils.ValidationUtils.ValidationResult;
 import LapFarm.Utils.XSSUtils;
 
 import java.io.BufferedReader;
@@ -158,6 +160,20 @@ public class LoginController extends BaseController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(@RequestParam("email") String email, @RequestParam("password") String password,
 			@RequestParam("g-recaptcha-response") String recaptchaResponse, Model model, HttpSession httpSession) {
+		ValidationResult emailValidation = ValidationUtils.validateEmail(email);
+	    if (!emailValidation.isValid()) {
+	        model.addAttribute("warning", emailValidation.getMessage());
+	        model.addAttribute("email", email);
+	        model.addAttribute("pw", password);
+	        return "login";
+	    }
+
+	    // Sanitize email input
+	    String sanitizedEmail = ValidationUtils.safeSetString(email, ValidationUtils.MAX_EMAIL_LENGTH);
+	    
+	    // Sanitize password input 
+	    String sanitizedPassword = ValidationUtils.safeSetString(password, ValidationUtils.MAX_PASSWORD_LENGTH);
+
 		try {
 			// Verify reCAPTCHA
 			String secretKey = "6LcMHp8qAAAAAOfjRaga9eSFLoV7lkQHY8-vb9sj"; // Secret Key từ Google reCAPTCHA
@@ -190,7 +206,7 @@ public class LoginController extends BaseController {
 		try {
 			String hql = "FROM AccountEntity WHERE email = :email";
 			Query query = session.createQuery(hql);
-			query.setParameter("email", email);
+			query.setParameter("email", sanitizedEmail);
 
 			AccountEntity acc = (AccountEntity) query.uniqueResult();
 
@@ -205,7 +221,7 @@ public class LoginController extends BaseController {
 					return "login";
 				}
 
-				String hashedPassword = hashPasswordWithMD5(password);
+				String hashedPassword = hashPasswordWithMD5(sanitizedPassword);
 				if (!hashedPassword.equals(acc.getPassword())) { // Mật khẩu mã hóa
 					Integer failedAttempts = acc.getFailedAttempts();
 					if (failedAttempts == null) {
@@ -379,23 +395,18 @@ public class LoginController extends BaseController {
 			return "redirect:/forgot-password"; // Trang sửa mật khẩu
 		}
 
-		// Kiểm tra độ dài mật khẩu và mật khẩu bằng regex
-		String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
+		 // Validate password using ValidationUtils
+        ValidationResult passwordValidation = ValidationUtils.validatePassword(password, confirmPassword);
+        if (!passwordValidation.isValid()) {
+            redirectAttributes.addFlashAttribute("warning", passwordValidation.getMessage());
+            addToFlashAttributes(redirectAttributes, email, password, confirmPassword);
+            return "redirect:/forgot-password";
+        }
 
-		if (!password.matches(passwordRegex)) {
-			redirectAttributes.addFlashAttribute("warning",
-					"Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và kí tự đặc biệt!");
-			redirectAttributes.addFlashAttribute("email", email);
-			redirectAttributes.addFlashAttribute("pw", password);
-			redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
-			return "redirect:/forgot-password"; // Trang sửa mật khẩu
-		} else if (!password.equals(confirmPassword)) {
-			redirectAttributes.addFlashAttribute("warning", "Xác nhận mật khẩu không giống nhau!");
-			redirectAttributes.addFlashAttribute("email", email);
-			redirectAttributes.addFlashAttribute("pw", password);
-			redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
-			return "redirect:/forgot-password"; // Trang sửa mật khẩu
-		}
+        // Sanitize password input
+        String sanitizedPassword = ValidationUtils.safeSetString(password, ValidationUtils.MAX_PASSWORD_LENGTH);
+
+
 
 		// Tiến hành cập nhật mật khẩu
 		try {
@@ -415,6 +426,12 @@ public class LoginController extends BaseController {
 		}
 
 		return "redirect:/forgot-password";
+	}
+	// Helper method to reduce code duplication
+	private void addToFlashAttributes(RedirectAttributes redirectAttributes, String email, String password, String confirmPassword) {
+	    redirectAttributes.addFlashAttribute("email", email);
+	    redirectAttributes.addFlashAttribute("pw", password);
+	    redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
 	}
 
 }

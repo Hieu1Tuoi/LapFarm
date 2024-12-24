@@ -6,6 +6,8 @@ import LapFarm.Entity.ReviewEntity;
 import LapFarm.Entity.UserInfoEntity;
 import LapFarm.Service.ReviewService;
 import LapFarm.Utils.SecureUrlUtil;
+import LapFarm.Utils.ValidationUtils;
+import LapFarm.Utils.ValidationUtils.ValidationResult;
 import LapFarm.Utils.XSSUtils;
 import LapFarm.Service.ProductService;
 
@@ -43,7 +45,12 @@ public class ReviewController {
             model.addAttribute("errorMessage", "Bạn cần đăng nhập để gửi đánh giá.");
             return "redirect:/login"; // Chuyển hướng người dùng đến trang đăng nhập
         }
-
+     // Validate review content
+        ValidationResult reviewValidation = ValidationUtils.validateReview(review);
+        if (!reviewValidation.isValid()) {
+            model.addAttribute("errorMessage", reviewValidation.getMessage());
+            return "redirect:/product-detail/" + encryptedProductId;
+        }
         try {
             // Giải mã encryptedProductId để lấy productId
             int productId;
