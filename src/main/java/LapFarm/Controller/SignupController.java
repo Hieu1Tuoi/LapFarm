@@ -3,13 +3,9 @@ package LapFarm.Controller;
 import LapFarm.Bean.Mailer;
 import LapFarm.DAO.UserDAO;
 import LapFarm.Entity.AccountEntity;
-import LapFarm.Entity.RoleEntity;
 import jakarta.servlet.http.HttpSession;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,13 +19,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-import org.apache.commons.codec.binary.Hex;
 
 @Controller
 public class SignupController {

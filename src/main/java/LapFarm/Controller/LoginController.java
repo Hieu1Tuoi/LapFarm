@@ -7,10 +7,7 @@ import LapFarm.DTO.CartDTO;
 import LapFarm.Entity.AccountEntity;
 import LapFarm.Entity.CartEntity;
 import LapFarm.Entity.ProductEntity;
-import LapFarm.Entity.RoleEntity;
 import LapFarm.Service.GoogleService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -20,9 +17,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import jakarta.servlet.http.HttpSession;
@@ -187,6 +182,8 @@ public class LoginController extends BaseController {
 	        model.addAttribute("warning", "Lỗi khi xác thực reCAPTCHA: " + e.getMessage());
 	        return "login";
 	    }
+	    
+	    
 
 	    Session session = factory.openSession();
 	    Transaction t = session.beginTransaction();

@@ -36,6 +36,9 @@ import LapFarm.Entity.PaymentEntity;
 import LapFarm.Entity.UserInfoEntity;
 import LapFarm.Service.OrdersServiceImp;
 import LapFarm.Utils.SecureUrlUtil;
+import LapFarm.Utils.ValidationUtils;
+import LapFarm.Utils.ValidationUtils.ValidationResult;
+import LapFarm.Utils.XSSUtils;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -46,7 +49,7 @@ public class AccountController {
 	@Autowired
 	private UserDAO accountDAO;
 	@Autowired
-    private PaymentDAO paymentDAO;
+	private PaymentDAO paymentDAO;
 	@Autowired
 	private OrdersServiceImp orderService;
 
@@ -96,16 +99,16 @@ public class AccountController {
 			}
 		});
 		model.addAttribute("viewedItems", viewedItems);
-		
+
 		try {
-	        List<PaymentEntity> payments = paymentDAO.getPaymentsByUserId(user.getUserInfo().getUserId());
-	        model.addAttribute("payments", payments);
-	        System.out.println("Số lượng payment: " + (payments != null ? payments.size() : 0));
-	    } catch (Exception e) {
-	        System.out.println("Lỗi khi tải lịch sử thanh toán: " + e.getMessage());
-	        e.printStackTrace();
-	        model.addAttribute("paymentError", "Không thể tải lịch sử thanh toán");
-	    }
+			List<PaymentEntity> payments = paymentDAO.getPaymentsByUserId(user.getUserInfo().getUserId());
+			model.addAttribute("payments", payments);
+			System.out.println("Số lượng payment: " + (payments != null ? payments.size() : 0));
+		} catch (Exception e) {
+			System.out.println("Lỗi khi tải lịch sử thanh toán: " + e.getMessage());
+			e.printStackTrace();
+			model.addAttribute("paymentError", "Không thể tải lịch sử thanh toán");
+		}
 		// Truyền tab đang hoạt động vào Model
 		model.addAttribute("activeTab", tab);
 
@@ -134,6 +137,33 @@ public class AccountController {
 			if (user == null) {
 				return "redirect:/login";
 			}
+		}
+
+		// Validate phone number
+		ValidationResult phoneResult = ValidationUtils.validatePhone(phone);
+		if (!phoneResult.isValid()) {
+			model.addAttribute("error", phoneResult.getMessage());
+			return returnWithParams(model, fullName, dob, sex, phone, address);
+		}
+		// Validate name length
+		ValidationResult nameResult = ValidationUtils.validateLength(fullName, ValidationUtils.MAX_NAME_LENGTH,
+				"Họ tên");
+		if (!nameResult.isValid()) {
+			model.addAttribute("error", nameResult.getMessage());
+			return returnWithParams(model, fullName, dob, sex, phone, address);
+		}
+		// Validate address length
+		ValidationResult addressResult = ValidationUtils.validateLength(address, ValidationUtils.MAX_ADDRESS_LENGTH,
+				"Địa chỉ");
+		if (!addressResult.isValid()) {
+			model.addAttribute("error", addressResult.getMessage());
+			return returnWithParams(model, fullName, dob, sex, phone, address);
+		}
+
+		if (XSSUtils.containsXSS(fullName) || XSSUtils.containsXSS(phone) || XSSUtils.containsXSS(address)
+				|| (sex != null && XSSUtils.containsXSS(sex)) || XSSUtils.containsXSS(dob)) {
+			model.addAttribute("error", "Dữ liệu nhập vào chứa nội dung không hợp lệ");
+			return "redirect:/account#profile";
 		}
 
 		Session session = factory.openSession();
@@ -226,7 +256,7 @@ public class AccountController {
 		// Tính tổng giá
 		double totalPrice = orderDetails.stream().mapToDouble(item -> item.getPrice() * item.getQuantity()).sum();
 		OrdersEntity order = orderService.getOrderById(orderId);
-		
+
 		// Thêm chi tiết đơn hàng và tổng giá vào model
 		model.addAttribute("order", order);
 		model.addAttribute("orderDetail", orderDetails);
@@ -334,15 +364,14 @@ public class AccountController {
 				redirectAttributes.addFlashAttribute("warning", "Mã xác nhận không chính xác hoặc đã hết hạn!");
 				return "redirect:/change-password";
 			}
-			
+
 			// Kiểm tra mật khẩu mới không trùng với mật khẩu cũ
 			if (oldPassword.equals(password)) {
-			    redirectAttributes.addFlashAttribute("warning", "Mật khẩu mới không được trùng với mật khẩu cũ!");
-			    redirectAttributes.addFlashAttribute("pw", password);
-			    redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
-			    return "redirect:/change-password"; // Trang sửa mật khẩu
+				redirectAttributes.addFlashAttribute("warning", "Mật khẩu mới không được trùng với mật khẩu cũ!");
+				redirectAttributes.addFlashAttribute("pw", password);
+				redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
+				return "redirect:/change-password"; // Trang sửa mật khẩu
 			}
-
 
 // Kiểm tra độ dài mật khẩu và mật khẩu bằng regex
 			String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
@@ -359,6 +388,17 @@ public class AccountController {
 				redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
 				return "redirect:/change-password"; // Trang sửa mật khẩu
 			}
+			ValidationResult passwordValidation = ValidationUtils.validatePassword(password, confirmPassword);
+	        if (!passwordValidation.isValid()) {
+	            redirectAttributes.addFlashAttribute("warning", passwordValidation.getMessage());
+	            addPasswordToFlashAttributes(redirectAttributes, password, confirmPassword);
+	            return "redirect:/change-password";
+	        }
+
+	        // Sanitize password input
+	        String sanitizedPassword = ValidationUtils.safeSetString(password, ValidationUtils.MAX_PASSWORD_LENGTH);
+
+
 
 // Tiến hành cập nhật mật khẩu
 			accountDAO.updatePassword(email, password);
@@ -372,17 +412,32 @@ public class AccountController {
 			return "redirect:/change-password";
 		}
 	}
+
 	@GetMapping("/payment-history")
-    public String showPaymentHistory(Model model, HttpSession session) {
-        // Lấy userId từ session
-        Integer userId = (Integer) session.getAttribute("userId");
-        if (userId == null) {
-            return "redirect:/login";
-        }
-        
-        List<PaymentEntity> payments = paymentDAO.getPaymentsByUserId(userId);
-        model.addAttribute("payments", payments);
-        return "payment-history";
-    }
-	
+	public String showPaymentHistory(Model model, HttpSession session) {
+		// Lấy userId từ session
+		Integer userId = (Integer) session.getAttribute("userId");
+		if (userId == null) {
+			return "redirect:/login";
+		}
+
+		List<PaymentEntity> payments = paymentDAO.getPaymentsByUserId(userId);
+		model.addAttribute("payments", payments);
+		return "payment-history";
+	}
+
+	private String returnWithParams(Model model, String fullName, String dob, String sex, String phone,
+			String address) {
+		model.addAttribute("fullName", fullName);
+		model.addAttribute("dob", dob);
+		model.addAttribute("sex", sex);
+		model.addAttribute("phone", phone);
+		model.addAttribute("address", address);
+		return "redirect:/account#profile";
+	}
+	private void addPasswordToFlashAttributes(RedirectAttributes redirectAttributes, String password, String confirmPassword) {
+	    redirectAttributes.addFlashAttribute("pw", password);
+	    redirectAttributes.addFlashAttribute("cfpw", confirmPassword);
+	}
+
 }

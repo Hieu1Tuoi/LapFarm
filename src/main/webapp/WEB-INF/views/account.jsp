@@ -485,14 +485,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Clear previous error message
         errorElement.innerText = '';
         
-        // Validation checks
+         // Validation checks
         if (!phone) {
             errorElement.innerText = "Số điện thoại không được để trống.";
             event.preventDefault();
         } else if (!/^0\d{9}$/.test(phone)) {
             errorElement.innerText = "Số điện thoại phải đúng 10 chữ số.";
             event.preventDefault();
-        }
+        } 
     });
 });
 </script>
