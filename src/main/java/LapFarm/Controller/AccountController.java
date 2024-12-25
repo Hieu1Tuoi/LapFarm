@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -44,7 +45,12 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class AccountController {
 	@Autowired
+	@Qualifier("sessionFactory")
 	SessionFactory factory;
+	
+	@Autowired
+	@Qualifier("sessionFactoryUser")
+	SessionFactory factoryUser;
 
 	@Autowired
 	private UserDAO accountDAO;
@@ -139,6 +145,7 @@ public class AccountController {
 			}
 		}
 
+
 		// Validate phone number
 		ValidationResult phoneResult = ValidationUtils.validatePhone(phone);
 		if (!phoneResult.isValid()) {
@@ -167,6 +174,7 @@ public class AccountController {
 		}
 
 		Session session = factory.openSession();
+
 		Transaction t = session.beginTransaction();
 		try {
 			AccountEntity account = session.get(AccountEntity.class, user.getEmail());
@@ -208,7 +216,7 @@ public class AccountController {
 	}
 
 	private void loadUserProfile(String email, Model model) {
-		Session session = factory.openSession();
+		Session session = factoryUser.openSession();
 		Transaction t = session.beginTransaction();
 		try {
 			AccountEntity account = session.get(AccountEntity.class, email);

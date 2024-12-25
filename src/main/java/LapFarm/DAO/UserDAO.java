@@ -12,6 +12,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.apache.commons.codec.binary.Hex;
@@ -23,10 +24,11 @@ import LapFarm.Entity.AccountEntity;
 import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.UserInfoEntity;
 
-@Transactional
+@Transactional("transactionManager")
 @Repository
 public class UserDAO {
 	@Autowired
+	@Qualifier("sessionFactory")
 	private SessionFactory factory;
 	@Autowired
 	private OrdersDAO ordersDAO;
@@ -93,7 +95,7 @@ public class UserDAO {
 		acc.setPassword(hashPasswordWithMD5(acc.getPassword()));
 
 		try {
-			session.save(acc);
+			session.merge(acc);
 			t.commit();
 		} catch (Exception e) {
 			t.rollback();

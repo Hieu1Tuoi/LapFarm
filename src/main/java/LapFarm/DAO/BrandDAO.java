@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,19 +16,24 @@ import LapFarm.Entity.CategoryEntity;
 @Repository
 public class BrandDAO {
     @Autowired
+    @Qualifier("sessionFactory")
     private SessionFactory factory;
+    
+    @Autowired
+    @Qualifier("sessionFactoryVisitor")
+    private SessionFactory factoryVisitor;
 
-    @Transactional
+    @Transactional("transactionManagerVisitor")
     public List<BrandEntity> getAllBrands() {
-        Session session = factory.getCurrentSession();
+        Session session = factoryVisitor.getCurrentSession();
         String hql = "FROM BrandEntity";
         Query<BrandEntity> query = session.createQuery(hql, BrandEntity.class);
         return query.list();
     }
     
-    @Transactional
+    @Transactional("transactionManagerVisitor")
     public BrandEntity getBrandById(int idBrand) {
-        Session session = factory.getCurrentSession();
+        Session session = factoryVisitor.getCurrentSession();
 
         // HQL để lấy thông tin Category theo idCategory
         String hql = "FROM BrandEntity b WHERE b.idBrand = :idBrand";
@@ -37,9 +43,9 @@ public class BrandDAO {
         return query.uniqueResult();
     }
     
-    @Transactional
+    @Transactional("transactionManagerVisitor")
     public BrandEntity getBrandByName(String brandName) {
-        Session session = factory.getCurrentSession();
+        Session session = factoryVisitor.getCurrentSession();
         String hql = "FROM BrandEntity b WHERE b.nameBrand = :brandName";
         Query<BrandEntity> query = session.createQuery(hql, BrandEntity.class);
         query.setParameter("brandName", brandName);
@@ -47,7 +53,7 @@ public class BrandDAO {
     }
 
     
-    @Transactional
+    @Transactional("transactionManager")
     public boolean checkBrandByName(String brandName) {
         Session session = factory.getCurrentSession();
 
@@ -60,7 +66,7 @@ public class BrandDAO {
         return query.uniqueResult() > 0;
     }
     
-    @Transactional
+    @Transactional("transactionManager")
     public void saveBrand(BrandEntity brand) {
         Session session = factory.getCurrentSession();
 
@@ -68,7 +74,7 @@ public class BrandDAO {
         session.persist(brand);
     }
     
-    @Transactional
+    @Transactional("transactionManager")
     public boolean updateBrand(BrandEntity brand) {
         Session session = factory.getCurrentSession();
 
@@ -82,12 +88,12 @@ public class BrandDAO {
         }
     }
     
-    @Transactional
+    @Transactional("transactionManagerVisitor")
 	public List<BrandEntity> searchBrands(String searchQuery) {
 	    // Kiểm tra nếu người dùng tìm kiếm theo số
 	    boolean isNumeric = searchQuery.matches("^[0-9]+$"); // Kiểm tra nếu từ khóa tìm kiếm là số
 
-	    Session session = factory.getCurrentSession();
+	    Session session = factoryVisitor.getCurrentSession();
 	    String hql;
 
 	    if (isNumeric) {
