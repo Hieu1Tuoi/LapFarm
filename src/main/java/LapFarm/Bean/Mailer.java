@@ -56,7 +56,7 @@ public class Mailer {
 
 			helper.setFrom("n21dcat002@student.ptithcm.edu.vn");
 			helper.setTo(to);
-			helper.setSubject("DU MA!!!");
+			helper.setSubject("!!!");
 
 			// Email content with HTML formatting
 			String htmlContent = "<html><body>"

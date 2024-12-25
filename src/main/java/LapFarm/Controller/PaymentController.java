@@ -19,6 +19,7 @@ import LapFarm.Entity.ProductEntity;
 import LapFarm.Entity.UserInfoEntity;
 import LapFarm.Model.Config;
 import LapFarm.Service.PaymentService;
+import LapFarm.Utils.XSSUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.JsonObject;
 
@@ -117,9 +119,31 @@ public class PaymentController {
 	public String vnpay(@RequestParam("totalAmount") long totalAmount, @RequestParam("fullName") String fullName,
 			@RequestParam("address") String address, @RequestParam("tel") String tel,
 			@RequestParam(value = "note", required = false) String note, HttpSession httpSession, Model model,
-			HttpServletRequest request) {
+			HttpServletRequest request,RedirectAttributes redirectAttributes) {
 		String language = "vn";
 		System.out.println(totalAmount);
+		// Kiểm tra XSS
+		boolean hasXSS = false;
+		if (XSSUtils.containsXSS(fullName)) {
+		    redirectAttributes.addFlashAttribute("errorFullName", "Họ và tên chứa ký tự không hợp lệ.");
+		    hasXSS = true;
+		}
+		if (XSSUtils.containsXSS(address)) {
+		    redirectAttributes.addFlashAttribute("errorAddress", "Địa chỉ chứa ký tự không hợp lệ.");
+		    hasXSS = true;
+		}
+		if (XSSUtils.containsXSS(tel)) {
+		    redirectAttributes.addFlashAttribute("errorTel", "Số điện thoại chứa ký tự không hợp lệ.");
+		    hasXSS = true;
+		}
+		if (note != null && XSSUtils.containsXSS(note)) {
+		    redirectAttributes.addFlashAttribute("errorNote", "Ghi chú chứa ký tự không hợp lệ.");
+		    hasXSS = true;
+		}
+	    // Nếu phát hiện lỗi, quay lại form với thông báo lỗi
+	    if (hasXSS) {
+	        return "redirect:/payment";
+	    }
 		Map<String, Object> OrderInfo = new HashMap<String, Object>();
 		OrderInfo.put("totalAmount", totalAmount);
 		OrderInfo.put("address", address);
@@ -155,8 +179,31 @@ public class PaymentController {
 	@RequestMapping(value = "/success", method = RequestMethod.GET)
 	public String perform(@RequestParam("totalAmount") int totalAmount, @RequestParam("fullName") String fullName,
 			@RequestParam("address") String address, @RequestParam("tel") String tel,
-			@RequestParam(value = "note", required = false) String note, HttpSession httpSession, Model model) {
+			@RequestParam(value = "note", required = false) String note, HttpSession httpSession, Model model,RedirectAttributes redirectAttributes) {
 
+		// Kiểm tra XSS
+		boolean hasXSS = false;
+		if (XSSUtils.containsXSS(fullName)) {
+		    redirectAttributes.addFlashAttribute("errorFullName", "Họ và tên chứa ký tự không hợp lệ.");
+		    hasXSS = true;
+		}
+		if (XSSUtils.containsXSS(address)) {
+		    redirectAttributes.addFlashAttribute("errorAddress", "Địa chỉ chứa ký tự không hợp lệ.");
+		    hasXSS = true;
+		}
+		if (XSSUtils.containsXSS(tel)) {
+		    redirectAttributes.addFlashAttribute("errorTel", "Số điện thoại chứa ký tự không hợp lệ.");
+		    hasXSS = true;
+		}
+		if (note != null && XSSUtils.containsXSS(note)) {
+		    redirectAttributes.addFlashAttribute("errorNote", "Ghi chú chứa ký tự không hợp lệ.");
+		    hasXSS = true;
+		}
+
+	    // Nếu phát hiện lỗi, quay lại form với thông báo lỗi
+	    if (hasXSS) {
+	        return "redirect:/payment";
+	    }
 		fullName = fullName.replaceAll("^(,\\s*|\\s*,)|((\\s*,\\s*)$)", "").trim();
 		address = address.replaceAll("^(,\\s*|\\s*,)|((\\s*,\\s*)$)", "").trim();
 		tel = tel.replaceAll("^(,\\s*|\\s*,)|((\\s*,\\s*)$)", "").trim();
@@ -191,7 +238,7 @@ public class PaymentController {
 			order.setNote(note);
 			orderMap.put("order", order);
 			// Lưu đơn hàng vào database
-			ordersDAO.saveOrder(order);
+			int idOrder = ordersDAO.saveOrder(order);
 			List<ProductDTO> productsDTO = new ArrayList<ProductDTO>();
 
 			// Lưu chi tiết đơn hàng (OrderDetails) cho từng sản phẩm trong giỏ hàng
@@ -207,7 +254,8 @@ public class PaymentController {
 				productDTO = productDAO.findProductDTOById(cartItem.getProduct().getIdProduct());
 				productDTO.setQuantity(cartItem.getQuantity());
 				productsDTO.add(productDTO);
-
+				System.out.println("order id ne " + idOrder);
+				order.setIdOrder(idOrder);
 				orderDetails.setId(orderDetailId);
 				orderDetails.setOrder(order);
 				orderDetails.setProduct(cartItem.getProduct());
@@ -377,7 +425,7 @@ public class PaymentController {
 				if ("00".equals(vnp_TransactionStatus)) {
 
 					// Lưu đơn hàng vào database
-					ordersDAO.saveOrder(order);
+					int idOrder = ordersDAO.saveOrder(order);
 					for (int cartId : cartIds) {
 						CartEntity cartItem = cartDAO.getCartById(cartId);
 						OrderDetailsEntity orderDetails = new OrderDetailsEntity();
@@ -386,6 +434,7 @@ public class PaymentController {
 						orderDetailId.setProduct(cartItem.getProduct().getIdProduct());
 
 						orderDetails.setId(orderDetailId);
+						order.setIdOrder(idOrder);
 						orderDetails.setOrder(order);
 						orderDetails.setProduct(cartItem.getProduct());
 						orderDetails.setQuantity(cartItem.getQuantity());

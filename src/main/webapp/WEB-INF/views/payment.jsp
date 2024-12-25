@@ -77,9 +77,9 @@
 					<div class="col-md-3">
 						<div class="header-logo">
 							<a href="<c:url value='/home' />" class="logo"> <img
-							src="<c:url value='/resources/img/Lapfarm.png' />" alt=""
-							style="max-width: 340px;">
-						</a>
+								src="<c:url value='/resources/img/Lapfarm.png' />" alt=""
+								style="max-width: 340px;">
+							</a>
 						</div>
 					</div>
 				</div>
@@ -134,7 +134,7 @@
 							<div class="form-group">
 								<input class="input" type="text" name="fullName"
 									placeholder="Họ và tên" value="${userInfo.fullName}"><span
-									class="error-message" id="error-fullname"></span>
+									class="error-message" id="error-fullname">${errorFullName}</span>
 							</div>
 
 							<!-- Email -->
@@ -148,14 +148,14 @@
 							<div class="form-group">
 								<input class="input" type="text" name="address"
 									placeholder="Địa chỉ" value="${userInfo.address}"> <span
-									class="error-message" id="error-address"></span>
+									class="error-message" id="error-address">${errorAddress}</span>
 							</div>
 
 							<!-- Số điện thoại -->
 							<div class="form-group">
 								<input class="input" type="tel" name="tel"
 									placeholder="Số điện thoại" value="${userInfo.phone}">
-								<span class="error-message" id="error-tel"></span>
+								<span class="error-message" id="error-tel">${errorTel}</span>
 							</div>
 
 							<div class="form-group">
@@ -225,6 +225,7 @@
 						<!-- Order notes -->
 						<div class="order-notes">
 							<textarea name="note" class="input" placeholder="Order Notes"></textarea>
+							<span class="error-message">${errorNote}</span>
 						</div>
 						<!-- /Order notes -->
 					</div>
@@ -272,7 +273,7 @@
 							</div>
 						</div>
 						<!-- Phương thức thanh toán -->
-						<div class="payment-method">
+					 <div class="payment-method">
 							<div class="input-radio">
 								<input type="radio" name="payment" value="0" id="payment-1"
 									value="bank-transfer"> <label for="payment-1"><span></span>
@@ -284,7 +285,10 @@
 									Thanh toán qua VNPAY</label>
 							</div>
 							<span class="error-message" id="error-payment"></span>
-						</div>
+						</div> 
+
+						
+
 
 						<!-- Điều khoản -->
 						<div class="input-checkbox">
@@ -293,7 +297,8 @@
 									khoản và điều kiện</a>
 							</label> <span class="error-message" id="error-terms"></span>
 						</div>
-						<input type="hidden" name="totalAmount" value="${totalAmountDefaut}">
+						<input type="hidden" name="totalAmount"
+							value="${totalAmountDefaut}">
 						<button style="width: 425px;" type="submit"
 							class="primary-btn order-submit">Thanh toán</button>
 					</div>
@@ -305,38 +310,6 @@
 		</div>
 		<!-- /SECTION -->
 	</form>
-	<!-- NEWSLETTER -->
-	<div id="newsletter" class="section">
-		<!-- container -->
-		<div class="container">
-			<!-- row -->
-			<div class="row">
-				<div class="col-md-12">
-					<div class="newsletter">
-						<p>
-							Sign Up for the <strong>NEWSLETTER</strong>
-						</p>
-						<form action="home/send">
-							<input name="email" class="input" type="email"
-								placeholder="Enter Your Email">
-							<button class="newsletter-btn">
-								<i class="fa fa-envelope"></i> Subscribe
-							</button>
-						</form>
-						<ul class="newsletter-follow">
-							<li><a href="#"><i class="fa fa-facebook"></i></a></li>
-							<li><a href="#"><i class="fa fa-twitter"></i></a></li>
-							<li><a href="#"><i class="fa fa-instagram"></i></a></li>
-							<li><a href="#"><i class="fa fa-pinterest"></i></a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<!-- /row -->
-		</div>
-		<!-- /container -->
-	</div>
-	<!-- /NEWSLETTER -->
 
 	<!-- FOOTER -->
 	<%@ include file="/WEB-INF/views/include/footer.jsp"%>
@@ -394,7 +367,7 @@
 	        isValid = false;
 	    }
 
-	    // Thay đổi action của form dựa trên phương thức thanh toán
+	     // Thay đổi action của form dựa trên phương thức thanh toán
 	    if (paymentMethod) {
 	        const form = document.querySelector("form");
 	        if (paymentMethod.value === "0") {
@@ -402,7 +375,9 @@
 	        } else if (paymentMethod.value === "1") {
 	            form.action = "payment/vnpay"; // Thanh toán qua VNPAY
 	        }
-	    }
+	    } 
+	
+
 
 	    // Ngăn form submit nếu có lỗi
 	    if (!isValid) {

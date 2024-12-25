@@ -64,6 +64,7 @@
 		</property>
 	</bean>
 	
+	
 	<bean id="sessionFactoryVisitor"
 		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSourceVisitor" />

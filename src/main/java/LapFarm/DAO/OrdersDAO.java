@@ -25,6 +25,7 @@ import LapFarm.Entity.OrderDetailsEntity;
 import LapFarm.Entity.OrdersEntity;
 
 @Repository
+@Transactional("transactionManager")
 public class OrdersDAO {
 
 	@Autowired
@@ -76,11 +77,20 @@ public class OrdersDAO {
 		return order;
 	}
 
+//	@Transactional("transactionManager")
+//	public void saveOrder(OrdersEntity order) {
+//		Session session = factory.getCurrentSession();
+//		session.merge(order); // Save or update the order if it already exists
+//	}
+	
 	@Transactional("transactionManager")
-	public void saveOrder(OrdersEntity order) {
+	public int saveOrder(OrdersEntity order) {
 		Session session = factory.getCurrentSession();
-		session.merge(order); // Save or update the order if it already exists
+	    session.persist(order); // Lưu order
+	    session.flush(); // Đẩy ngay lập tức để MySQL cấp phát ID
+	    return order.getIdOrder(); // Lấy ID vừa được cấp phát
 	}
+
 
 	@Transactional("transactionManager")
 	public void saveOrderDetail(OrderDetailsEntity orderDetails) {

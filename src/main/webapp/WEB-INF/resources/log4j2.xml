@@ -1,17 +1,21 @@
-<Configuration status="WARN">
+<Configuration status="TRACE"> <!-- TRACE để kiểm tra hoạt động của Log4j2 -->
     <Appenders>
+        <!-- Ghi log ra console -->
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" />
         </Console>
-        <File name="File" fileName="C:\Users\khoap\OneDrive\Desktop\log\app.log">
+
+        <!-- Ghi log vào file -->
+        <File name="File" fileName="C:\Users\khoap\app.log">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" />
         </File>
     </Appenders>
 
     <Loggers>
+        <!-- Cấu hình log cho các logger cụ thể nếu cần -->
         <Root level="info">
-            <AppenderRef ref="Console" />
-            <AppenderRef ref="File" />
+            <AppenderRef ref="Console" /> <!-- Log ra console -->
+            <AppenderRef ref="File" />    <!-- Log vào file -->
         </Root>
     </Loggers>
 </Configuration>
