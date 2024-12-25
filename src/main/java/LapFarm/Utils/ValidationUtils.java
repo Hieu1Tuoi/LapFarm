@@ -95,28 +95,6 @@ public final class ValidationUtils {
 	    }
 
 	    // Kiểm tra các yêu cầu về độ phức tạp của mật khẩu
-	    if (!password.matches(".*[a-z].*")) {
-	        return new ValidationResult(false, "Mật khẩu phải chứa ít nhất một chữ cái thường");
-	    }
-	    if (!password.matches(".*[A-Z].*")) {
-	        return new ValidationResult(false, "Mật khẩu phải chứa ít nhất một chữ cái hoa");
-	    }
-	    if (!password.matches(".*\\d.*")) {
-	        return new ValidationResult(false, "Mật khẩu phải chứa ít nhất một chữ số");
-	    }
-	    if (!password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*")) {
-	        return new ValidationResult(false, "Mật khẩu phải chứa ít nhất một ký tự đặc biệt");
-	    }
-
-	    // Kiểm tra mật khẩu xác nhận
-	    if (confirmPassword != null && !password.equals(confirmPassword)) {
-	        return new ValidationResult(false, "Xác nhận mật khẩu không giống nhau!");
-	    }
-
-	    // Kiểm tra các ký tự không hợp lệ
-	    if (password.contains(" ")) {
-	        return new ValidationResult(false, "Mật khẩu không được chứa khoảng trắng");
-	    }
 
 	    // Kiểm tra mẫu regex tổng thể
 	    String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$";
