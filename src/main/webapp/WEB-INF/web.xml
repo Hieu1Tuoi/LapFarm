@@ -49,6 +49,15 @@
 		<session-timeout>1</session-timeout> <!-- Đơn vị: phút -->
 	</session-config>
 
+<security-constraint>
+    <web-resource-collection>
+        <web-resource-name>SecureApp</web-resource-name>
+        <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+        <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+</security-constraint>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.jsp</welcome-file>
