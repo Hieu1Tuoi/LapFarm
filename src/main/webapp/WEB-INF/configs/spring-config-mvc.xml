@@ -31,13 +31,54 @@
 			value="com.mysql.cj.jdbc.Driver" />
 		<property name="url"
 			value="jdbc:mysql://localhost:3306/lapfarm" />
-		<property name="username" value="root" />
-		<property name="password" value="Pttktt@8" />
+	<property name="username" value="root" />
+	<property name="password" value="Pttktt@8" />
 	</bean>
 
+	<bean id="dataSourceVisitor"
+	    class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	    <property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+	    <property name="url" value="jdbc:mysql://localhost:3306/lapfarm" />
+	    <property name="username" value="visitor" />
+	    <property name="password" value="Atudwvcsdl#8" />
+	</bean>
+
+	<bean id="dataSourceUser"
+	    class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	    <property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+	    <property name="url" value="jdbc:mysql://localhost:3306/lapfarm" />
+	    <property name="username" value="user" />
+	    <property name="password" value="Atudwvcsdl@8" />
+	</bean>
+	
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="LapFarm.Entity" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="sessionFactoryVisitor"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceVisitor" />
+		<property name="packagesToScan" value="LapFarm.Entity" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="sessionFactoryUser"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceUser" />
 		<property name="packagesToScan" value="LapFarm.Entity" />
 		<property name="hibernateProperties">
 			<props>
@@ -51,6 +92,15 @@
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="transactionManagerVisitor"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactoryVisitor" />
+	</bean>
+	<bean id="transactionManagerUser"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactoryUser" />
 	</bean>
 
 	<tx:annotation-driven

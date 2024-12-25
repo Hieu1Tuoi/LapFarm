@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,11 +16,16 @@ import LapFarm.Entity.CategoryEntity;
 @Repository
 public class CategoryDAO {
     @Autowired
+    @Qualifier("sessionFactory")
     private SessionFactory factory;
     
-    @Transactional
+    @Autowired
+    @Qualifier("sessionFactoryVisitor")
+    private SessionFactory factoryVisitor;
+    
+    @Transactional("transactionManagerVisitor")
     public List<CategoryEntity> getAllCategories() {
-        Session session = factory.getCurrentSession();
+        Session session = factoryVisitor.getCurrentSession();
         String hql = "FROM CategoryEntity";
         Query<CategoryEntity> query = session.createQuery(hql, CategoryEntity.class);
         return query.list();
@@ -27,9 +33,9 @@ public class CategoryDAO {
     
 
   
-    @Transactional
+    @Transactional("transactionManagerVisitor")
     public CategoryEntity getCategoryById(int idCategory) {
-        Session session = factory.getCurrentSession();
+        Session session = factoryVisitor.getCurrentSession();
 
         // HQL để lấy thông tin Category theo idCategory
         String hql = "FROM CategoryEntity c WHERE c.idCategory = :idCategory";
@@ -39,9 +45,9 @@ public class CategoryDAO {
         return query.uniqueResult();
     }
     
-    @Transactional
+    @Transactional("transactionManagerVisitor")
     public CategoryEntity getCategoryByName(String nameCategory) {
-        Session session = factory.getCurrentSession();
+        Session session = factoryVisitor.getCurrentSession();
 
         // HQL để lấy thông tin Category theo nameCategory
         String hql = "FROM CategoryEntity c WHERE c.nameCategory = :nameCategory";
@@ -52,7 +58,7 @@ public class CategoryDAO {
     }
 
 
-    @Transactional
+    @Transactional("transactionManager")
     public void saveCategory(CategoryEntity category) {
         Session session = factory.getCurrentSession();
 
@@ -60,9 +66,9 @@ public class CategoryDAO {
         session.persist(category);
     }
 
-    @Transactional
+    @Transactional("transactionManagerVisitor")
     public boolean checkCategoryByName(String categoryName) {
-        Session session = factory.getCurrentSession();
+        Session session = factoryVisitor.getCurrentSession();
 
         // HQL để kiểm tra sự tồn tại của loại hàng
         String hql = "SELECT count(c) FROM CategoryEntity c WHERE c.nameCategory = :categoryName";
@@ -73,7 +79,7 @@ public class CategoryDAO {
         return query.uniqueResult() > 0;
     }
     
-		@Transactional
+		@Transactional("transactionManager")
 	    public boolean updateCategory(CategoryEntity category) {
 	        Session session = factory.getCurrentSession();
 	
@@ -87,12 +93,12 @@ public class CategoryDAO {
 	        }
 	    }
 		
-		@Transactional
+		@Transactional("transactionManagerVisitor")
 		public List<CategoryEntity> searchCategories(String searchQuery) {
 		    // Kiểm tra nếu người dùng tìm kiếm theo số
 		    boolean isNumeric = searchQuery.matches("^[0-9]+$"); // Kiểm tra nếu từ khóa tìm kiếm là số
 
-		    Session session = factory.getCurrentSession();
+		    Session session = factoryVisitor.getCurrentSession();
 		    String hql;
 
 		    if (isNumeric) {

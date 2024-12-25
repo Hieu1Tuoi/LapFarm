@@ -11,6 +11,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import LapFarm.DTO.OrdersDTO;
@@ -21,19 +22,25 @@ import LapFarm.Entity.ImageEntity;
 import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.ProductEntity;
 import LapFarm.Utils.SecureUrlUtil;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class ProductDAO {
 
 	@Autowired
+	@Qualifier("sessionFactory")
 	private SessionFactory factory;
+	
+    @Autowired
+    @Qualifier("sessionFactoryVisitor")
+    private SessionFactory factoryVisitor;
 
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	// Hàm lấy danh sách tất cả sản phẩm
 	public List<ProductEntity> getAllProducts() {
 		// Lấy session từ factory
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// Viết câu truy vấn HQL để lấy tất cả sản phẩm
 		String hql = "SELECT p FROM ProductEntity p JOIN FETCH p.images"; // Truy vấn tất cả sản phẩm từ bảng
@@ -43,9 +50,9 @@ public class ProductDAO {
 		return query.list();
 	}
 
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public List<ProductDTO> getAllProductsDTO() {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// Truy vấn để lấy tất cả các sản phẩm
 		String hql = "SELECT p FROM ProductEntity p";
@@ -69,9 +76,9 @@ public class ProductDAO {
 		}).toList();
 	}
 
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public Map<Integer, Long> getProductCountByAllCategories(List<CategoryEntity> categories) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// HQL đếm số lượng sản phẩm group theo idCategory
 		String hql = "SELECT p.category.idCategory, COUNT(p) FROM ProductEntity p GROUP BY p.category.idCategory";
@@ -93,9 +100,9 @@ public class ProductDAO {
 		return countMap;
 	}
 
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public Map<Integer, Long> getProductCountByAllBrands(List<BrandEntity> brands) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// HQL đếm số lượng sản phẩm group theo idBrand
 		String hql = "SELECT p.brand.idBrand, COUNT(p) FROM ProductEntity p GROUP BY p.brand.idBrand";
@@ -117,9 +124,9 @@ public class ProductDAO {
 		return countMap;
 	}
 	// TOP SELLING
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public List<ProductDTO> getTop5ProductsByLowestQuantity() {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// Truy vấn lấy sản phẩm cùng với ảnh (dùng JOIN FETCH nếu cần)
 		String hql = "SELECT p FROM ProductEntity p LEFT JOIN FETCH p.images ORDER BY p.quantity ASC";
@@ -150,9 +157,9 @@ public class ProductDAO {
 
 
 	
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public List<ProductDTO> getProductsByCategory(int idCategory) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		String hql = "SELECT p FROM ProductEntity p WHERE p.category.idCategory = :idCategory";
 			Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
@@ -185,10 +192,10 @@ public class ProductDAO {
 		}).toList();
 	}
 
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public List<ProductEntity> getProductsByCategoryEn(Integer categoryId) {
 		// Lấy session từ factory
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// Viết câu truy vấn HQL để lấy sản phẩm theo categoryId
 		String hql = "SELECT p FROM ProductEntity p JOIN FETCH p.images WHERE p.category.idCategory = :categoryId";
@@ -200,10 +207,10 @@ public class ProductDAO {
 		return query.list();
 	}
 
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public Long getTotalProductQuantity() {
 		// Lấy session từ SessionFactory
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// Truy vấn HQL để tính tổng số lượng sản phẩm
 		String hql = "SELECT SUM(p.quantity) FROM ProductEntity p";
@@ -213,10 +220,10 @@ public class ProductDAO {
 		return totalQuantity != null ? totalQuantity : 0L;
 	}
 
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public List<ProductEntity> getProductsByBrandId(Integer brandId) {
 		// Lấy session từ factory
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// Viết câu truy vấn HQL để lấy sản phẩm theo brandId
 		String hql = "SELECT p FROM ProductEntity p JOIN FETCH p.images WHERE p.brand.idBrand = :brandId";
@@ -233,9 +240,9 @@ public class ProductDAO {
 		return query.list();
 	}
 
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public List<ProductDTO> getProductsByBrand(int idBrand) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// HQL query để lấy danh sách sản phẩm theo idBrand
 		String hql = "SELECT p FROM ProductEntity p WHERE p.brand.idBrand = :idBrand";
@@ -262,9 +269,9 @@ public class ProductDAO {
 	}
 
 	// lấy product theo tên bran
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public List<ProductDTO> getProductsByBrandName(String nameBrand) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// HQL query để lấy danh sách sản phẩm theo nameBrand
 		String hql = "SELECT p FROM ProductEntity p WHERE p.brand.nameBrand = :nameBrand";
@@ -291,10 +298,10 @@ public class ProductDAO {
 		}).toList();
 	}
 
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public List<ProductDTO> getDataProductPaginates(int start, int end, String searchText, Integer idCategory,
 			String priceRange, Integer idBrand) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// Xử lý giá trị priceMin và priceMax từ priceRange
 		double priceMin = Double.MIN_VALUE;
@@ -390,9 +397,9 @@ public class ProductDAO {
 		}).collect(Collectors.toList());
 	}
 
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public ProductEntity getProductById(int idProduct) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 		String hql = "SELECT p FROM ProductEntity p JOIN FETCH p.images WHERE p.idProduct = :idProduct";
 		Query<ProductEntity> query = session.createQuery(hql, ProductEntity.class);
 		query.setParameter("idProduct", idProduct);
@@ -400,10 +407,10 @@ public class ProductDAO {
 		return query.uniqueResult(); // Trả về sản phẩm hoặc null nếu không tìm thấy
 	}
 	
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public ProductDTO getProductById2(int productId) {
 	    // Lấy session từ factory
-	    Session session = factory.getCurrentSession();
+	    Session session = factoryVisitor.getCurrentSession();
 
 	    // Truy vấn lấy sản phẩm theo ID
 	    String hql = "SELECT p FROM ProductEntity p LEFT JOIN FETCH p.images WHERE p.idProduct = :productId";
@@ -442,9 +449,9 @@ public class ProductDAO {
 
 	
 
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public Map<String, Double> getMinMaxPrices() {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// HQL để tính giá trị nhỏ nhất và lớn nhất của SalePrice sau khi áp dụng
 		// discount
@@ -472,9 +479,9 @@ public class ProductDAO {
 		return minMaxPrices;
 	}
 
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public List<ProductDTO> getRelatedProductsByBrand(int brandId, int excludeProductId, int limit) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// HQL query để lấy sản phẩm cùng brand nhưng không bao gồm sản phẩm hiện tại
 		String hql = "SELECT p FROM ProductEntity p "
@@ -505,9 +512,9 @@ public class ProductDAO {
 	}
 
 	// Đếm ản phẩm theo idBrand( THANH NHẬT)
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public Long countProductsByBrand(int brandId) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// HQL query để đếm số lượng sản phẩm theo brand
 		String hql = "SELECT COUNT(p) FROM ProductEntity p WHERE p.brand.idBrand = :brandId";
@@ -519,9 +526,9 @@ public class ProductDAO {
 	}
 
 	// Lấy tất cả Products theo idBrand(Thanh Nhật)
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public List<ProductDTO> getAllProductsByBrand(int idBrand) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// HQL query để lấy tất cả sản phẩm thuộc thương hiệu
 		String hql = "SELECT p FROM ProductEntity p WHERE p.brand.idBrand = :idBrand";
@@ -548,10 +555,10 @@ public class ProductDAO {
 	}
 
 	// Tìm sản phẩm theo idProduct để thêm giỏ hàng (Thanh Nhật)
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public ProductDTO findProductDTOById(int idProduct) {
 		// Lấy session từ factory
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// HQL để truy vấn sản phẩm theo idProduct
 		String hql = "SELECT p FROM ProductEntity p LEFT JOIN FETCH p.images LEFT JOIN FETCH p.brand LEFT JOIN FETCH p.category WHERE p.idProduct = :idProduct";
@@ -598,9 +605,9 @@ public class ProductDAO {
 				product.getState(), image);
 	}
 
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public Map<String, Object> getRatingSummary(int productId) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// Tính điểm trung bình và số lượng đánh giá cho từng mức rating
 		String hql = "SELECT AVG(r.rating), " + "SUM(CASE WHEN r.rating = 5 THEN 1 ELSE 0 END), "
@@ -622,6 +629,7 @@ public class ProductDAO {
 		return ratingSummary;
 	}
 
+	@Transactional("transactionManagerVisitor")
 	public List<Map<String, Object>> getAllRatingSummaries(List<Integer> productIds) {
 		List<Map<String, Object>> ratingSummaries = new ArrayList<>();
 
@@ -634,6 +642,7 @@ public class ProductDAO {
 		return ratingSummaries;
 	}
 
+	@Transactional("transactionManager")
 	public boolean updateProduct(ProductEntity product) {
 		// Sử dụng try-with-resources để tự động đóng session khi hoàn thành
 		try (Session session = factory.openSession()) {
@@ -667,13 +676,14 @@ public class ProductDAO {
 		System.err.println(message);
 		e.printStackTrace();
 	}
-
+	
+	@Transactional("transactionManagerVisitor")
 	public ProductEntity findProductById(int productId) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 		return session.get(ProductEntity.class, productId);
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	public void addProduct(ProductEntity product) {
 		Session session = factory.getCurrentSession();
 		try {
@@ -689,9 +699,9 @@ public class ProductDAO {
 		}
 	}
 
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public List<ProductEntity> getProductsByName(String nameProduct) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// HQL để truy vấn sản phẩm theo tên
 		String hql = "FROM ProductEntity p WHERE p.nameProduct = :nameProduct";
@@ -702,9 +712,9 @@ public class ProductDAO {
 		return query.list();
 	}
 
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public boolean checkProductByName(String nameProduct) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryVisitor.getCurrentSession();
 
 		// HQL để kiểm tra sự tồn tại của sản phẩm theo tên
 		String hql = "SELECT COUNT(p) FROM ProductEntity p WHERE p.nameProduct = :nameProduct";
@@ -717,13 +727,13 @@ public class ProductDAO {
 		return count > 0;
 	}
 	
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public List<ProductDTO> searchProducts(String searchQuery) {
 	    // Kiểm tra nếu người dùng tìm kiếm theo số
 	    boolean isNumeric = searchQuery.matches("^[0-9]+$");
 
 	    // Lấy phiên làm việc hiện tại
-	    Session session = factory.getCurrentSession();
+	    Session session = factoryVisitor.getCurrentSession();
 	    String hql;
 
 	    if (isNumeric) {

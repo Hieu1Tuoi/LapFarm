@@ -10,12 +10,12 @@ public class OrderDetailsEntity {
     private OrderDetailId id;
 
     @MapsId("order")  // Liên kết với trường trong OrderDetailId
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "OrderDetail", nullable = false)
     private OrdersEntity order;
 
     @MapsId("product")  // Liên kết với trường trong OrderDetailId
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ProductOrder", nullable = false)
     private ProductEntity product;
 

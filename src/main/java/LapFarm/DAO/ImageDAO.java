@@ -6,19 +6,26 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import LapFarm.Entity.ImageEntity;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class ImageDAO {
 	@Autowired
+	@Qualifier("sessionFactory")
 	private SessionFactory factory;
 	
-	@Transactional
+    @Autowired
+    @Qualifier("sessionFactoryVisitor")
+    private SessionFactory factoryVisitor;
+	
+	@Transactional("transactionManagerVisitor")
 	public List<ImageEntity> getImagesByProductId(int idProduct) {
-	    Session session = factory.getCurrentSession();
+	    Session session = factoryVisitor.getCurrentSession();
 
 	    // HQL query để lấy danh sách ImageEntity theo idProduct
 	    String hql = "FROM ImageEntity i WHERE i.product.idProduct = :idProduct";
@@ -29,7 +36,7 @@ public class ImageDAO {
 	    return query.list();
 	}
 	
-	@Transactional
+	@Transactional("transactionManager")
 	public void deleteImageById(int id) {
 	    Session session = factory.getCurrentSession();
 

@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
 import LapFarm.Entity.ProductDetailEntity;
@@ -14,9 +15,14 @@ import org.springframework.stereotype.Repository;
 public class ProductDetailDAO {
 	
 	@Autowired
+	@Qualifier("sessionFactory")
 	private SessionFactory factory;
 	
-	@Transactional
+    @Autowired
+    @Qualifier("sessionFactoryVisitor")
+    private SessionFactory factoryVisitor;
+	
+	@Transactional("transactionManager")
 	public void addProductDetail(ProductDetailEntity productDetail) {
         // Lấy session từ factory
 		Session session = factory.getCurrentSession();
@@ -25,10 +31,10 @@ public class ProductDetailDAO {
         session.persist(productDetail);
     }
 	
-	@Transactional
+	@Transactional("transactionManagerVisitor")
 	public ProductDetailEntity getProductDetailById(int idProduct) {
 	    // Lấy session từ factory
-	    Session session = factory.getCurrentSession();
+	    Session session = factoryVisitor.getCurrentSession();
 	    
 	    // Viết câu lệnh HQL để lấy ProductDetail theo IdProduct
 	    String hql = "FROM ProductDetailEntity pd " +
@@ -43,7 +49,7 @@ public class ProductDetailDAO {
 	    return query.uniqueResult();
 	}
 	
-	@Transactional
+	@Transactional("transactionManager")
 	public void updateProductDetail(ProductDetailEntity productDetail) {
 	    // Lấy session từ factory
 	    Session session = factory.getCurrentSession();
