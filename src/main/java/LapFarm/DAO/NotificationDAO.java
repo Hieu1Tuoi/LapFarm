@@ -113,11 +113,11 @@ public class NotificationDAO {
         return count != null ? count.intValue() : 0;
     }
     
+    @Transactional("transactionManager")
     public void addNotification(NotificationEntity note) {
         Session session = factory.getCurrentSession();
-
-        // Sử dụng phương thức persist để lưu đối tượng vào database
-        session.persist(note);
+        session.persist(note); // Sử dụng phương thức persist để lưu đối tượng vào database
     }
+
     
 }

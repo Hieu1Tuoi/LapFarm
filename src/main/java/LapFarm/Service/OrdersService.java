@@ -16,7 +16,7 @@ public class OrdersService  {
     @Autowired
     private OrdersDAO ordersDAO;
 
-    @Transactional("transactionManager")
+//    @Transactional("transactionManager")
     public String processPayment(int orderId, byte paymentMethod, long paymentAmount) {
         // Fetch the order based on the orderId
         OrdersEntity order = ordersDAO.getOrderById(orderId);

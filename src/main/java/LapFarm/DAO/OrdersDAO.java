@@ -25,6 +25,7 @@ import LapFarm.Entity.OrderDetailsEntity;
 import LapFarm.Entity.OrdersEntity;
 
 @Repository
+@Transactional("transactionManager")
 public class OrdersDAO {
 
 	@Autowired
