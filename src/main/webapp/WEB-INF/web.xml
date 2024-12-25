@@ -57,4 +57,23 @@
 		<welcome-file>default.jsp</welcome-file>
 		<welcome-file>default.htm</welcome-file>
 	</welcome-file-list>
+	<filter>
+    <filter-name>rateLimitingFilter</filter-name>
+    <filter-class>LapFarm.Filter.RateLimitingFilter</filter-class>
+</filter>
+
+<filter-mapping>
+    <filter-name>rateLimitingFilter</filter-name>
+    <url-pattern>/*</url-pattern> <!-- Áp dụng cho tất cả các URL -->
+</filter-mapping>
+	<filter>
+    <filter-name>RequestLoggingFilter</filter-name>
+    <filter-class>LapFarm.Filter.RequestLoggingFilter</filter-class>
+</filter>
+
+<filter-mapping>
+    <filter-name>RequestLoggingFilter</filter-name>
+    <url-pattern>/*</url-pattern> <!-- Áp dụng cho tất cả các URL -->
+</filter-mapping>
+	
 </web-app>
