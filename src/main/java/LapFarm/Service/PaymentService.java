@@ -66,7 +66,7 @@ public class PaymentService {
 		vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
 
 		// Thêm tham số ReturnUrl
-		String returnUrl = "http://localhost:8080/LapFarm/payment/result"; // Đặt URL trả về sau khi thanh toán
+		String returnUrl = "http://localhost:8433/LapFarm/payment/result"; // Đặt URL trả về sau khi thanh toán
 		vnp_Params.put("vnp_ReturnUrl", returnUrl);
 
 		// Tạo danh sách tham số và mã hóa

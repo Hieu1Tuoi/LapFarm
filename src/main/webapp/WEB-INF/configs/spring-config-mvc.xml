@@ -132,7 +132,7 @@
 		<property name="clientSecret"
 			value="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" />
 		<property name="redirectUri"
-			value="http://localhost:8080/LapFarm/oauth2/callback/google" />
+			value="http://localhost:8433/LapFarm/oauth2/callback/google" />
 	</bean>
 
 	<context:component-scan base-package="LapFarm.*" />
