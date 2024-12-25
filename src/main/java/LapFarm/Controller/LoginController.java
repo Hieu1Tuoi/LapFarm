@@ -32,6 +32,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,7 +49,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class LoginController extends BaseController {
 
 	@Autowired
+	@Qualifier("sessionFactory")
 	SessionFactory factory;
+	
+	@Autowired
+	@Qualifier("sessionFactoryUser")
+	SessionFactory factoryUser;
+	
+	@Autowired
+	@Qualifier("sessionFactoryVisitor")
+	SessionFactory factoryVisitor;
 
 	@Autowired
 	ProductDAO productDAO;

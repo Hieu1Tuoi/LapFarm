@@ -236,7 +236,6 @@ public class PaymentController {
 			order.setAddress(address);
 			order.getUserInfo().setPhone(tel);
 			order.setNote(note);
-
 			orderMap.put("order", order);
 			// Lưu đơn hàng vào database
 			ordersDAO.saveOrder(order);

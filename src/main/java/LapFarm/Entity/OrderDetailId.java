@@ -16,8 +16,14 @@ public class OrderDetailId implements Serializable {
 
     public int getProduct() { return product; }
     public void setProduct(int product) { this.product = product; }
+    
+    
 
-    @Override
+    public OrderDetailId() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

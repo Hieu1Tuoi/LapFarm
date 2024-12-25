@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,16 +17,21 @@ import LapFarm.Entity.NotificationEntity;
 import java.time.LocalDateTime;
 import java.sql.Timestamp;
 
-@Transactional
 @Repository
 public class NotificationDAO {
 
     @Autowired
+    @Qualifier("sessionFactory")
     private SessionFactory factory;
+    
+    @Autowired
+    @Qualifier("sessionFactoryUser")
+    private SessionFactory factoryUser;
 
     // Hàm lấy thông báo theo idUser và sắp xếp theo thời gian (mới nhất lên đầu)
+    @Transactional("transactionManagerUser")
     public List<NotificationDTO> getNotificationsByUserId(int userId) {
-        Session session = factory.getCurrentSession();
+        Session session = factoryUser.getCurrentSession();
 
         String hql = "FROM NotificationEntity ne WHERE ne.userNoti.userId = :userId ORDER BY ne.time DESC";
         Query<NotificationEntity> query = session.createQuery(hql, NotificationEntity.class);
@@ -55,8 +61,9 @@ public class NotificationDAO {
     }
 
     // Hàm cập nhật trạng thái thông báo
+    @Transactional("transactionManagerUser")
     public boolean updateNotificationStatus(int notiId, int state) {
-        Session session = factory.getCurrentSession();
+        Session session = factoryUser.getCurrentSession();
 
         // Tìm thông báo theo ID
         NotificationEntity notification = session.get(NotificationEntity.class, notiId);
@@ -72,8 +79,9 @@ public class NotificationDAO {
     }
     
  // Hàm lấy thông báo chi tiết theo notiId
+    @Transactional("transactionManagerUser")
     public NotificationDTO getNotificationDetails(int notiId) {
-        Session session = factory.getCurrentSession();
+        Session session = factoryUser.getCurrentSession();
         NotificationEntity notification = session.get(NotificationEntity.class, notiId);
 
         if (notification != null) {
@@ -91,8 +99,9 @@ public class NotificationDAO {
     }
 
     // Hàm lấy số lượng thông báo chưa đọc
+    @Transactional("transactionManagerUser")
     public int getUnreadNotificationsCount(int userId) {
-        Session session = factory.getCurrentSession();
+        Session session = factoryUser.getCurrentSession();
 
         // Sử dụng HQL để đếm số lượng thông báo chưa đọc (state = 0)
         String hql = "SELECT COUNT(ne) FROM NotificationEntity ne WHERE ne.userNoti.userId = :userId AND ne.state = 0";

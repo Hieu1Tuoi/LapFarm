@@ -3,6 +3,7 @@ package LapFarm.DAO;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -25,24 +26,29 @@ import java.util.Map;
 public class CartDAO {
 
 	@Autowired
-	private SessionFactory factory;
+	@Qualifier("sessionFactoryUser")
+	private SessionFactory factoryUser;
+	
+	@Autowired
+	@Qualifier("sessionFactoryVisitor")
+	private SessionFactory factoryVisitor;
 
 	@Autowired
 	ProductDAO productDAO = new ProductDAO();
 
-	@Transactional
+	@Transactional("transactionManagerUser")
 	public List<CartEntity> getCartByUserEmail(String email) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryUser.getCurrentSession();
 		String hql = "FROM CartEntity ce WHERE ce.userInfo.account.email = :email";
 		Query<CartEntity> query = session.createQuery(hql, CartEntity.class);
 		query.setParameter("email", email);
 		return query.getResultList();
 	}
 	
-	@Transactional
+	@Transactional("transactionManagerUser")
 	public CartEntity getCartItem(UserInfoEntity userInfoEntity, ProductEntity productEntity) {
 	    // Lấy session hiện tại
-	    Session session = factory.getCurrentSession();
+	    Session session = factoryUser.getCurrentSession();
 
 	    // Tạo câu lệnh HQL
 	    String hql = "FROM CartEntity c WHERE c.userInfo = :userInfo AND c.product = :product";
@@ -61,23 +67,24 @@ public class CartDAO {
 	    }
 	}
 
-	@Transactional
+	@Transactional("transactionManagerUser")
 	public CartEntity getCartById(int id) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryUser.getCurrentSession();
 		String hql = "FROM CartEntity ce WHERE ce.id = :id";
 		Query<CartEntity> query = session.createQuery(hql, CartEntity.class);
 		query.setParameter("id", id);
 		return query.uniqueResult(); // Trả về duy nhất một đối tượng
 	}
 
-	@Transactional
+	@Transactional("transactionManagerUser")
 	public void deleteCartById(int cartId) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryUser.getCurrentSession();
 		String hql = "DELETE FROM CartEntity c WHERE c.id = :cartId";
 		session.createQuery(hql).setParameter("cartId", cartId).executeUpdate();
 	}
 
 	// Tạo mới Cart
+	@Transactional("transactionManagerUser")
 	public boolean createCart(CartEntity cartEntity) {
 		Session session = null;
 		Transaction transaction = null;
@@ -85,7 +92,7 @@ public class CartDAO {
 		CartEntity cartEntity0 = getCartItem(cartEntity.getUserInfo(), cartEntity.getProduct());
 		if(cartEntity0 == null) {
 			try {
-				session = factory.openSession();
+				session = factoryUser.openSession();
 				transaction = session.beginTransaction();
 				session.save(cartEntity); // Sử dụng save để tạo mới
 				transaction.commit();
@@ -105,11 +112,12 @@ public class CartDAO {
 	}
 
 	// Cập nhật Cart
+	@Transactional("transactionManagerUser")
 	public boolean updateCart(CartEntity cartEntity) {
 		Session session = null;
 		Transaction transaction = null;
 		try {
-			session = factory.openSession();
+			session = factoryUser.openSession();
 			transaction = session.beginTransaction();
 			session.update(cartEntity); // Sử dụng update để cập nhật
 			transaction.commit();
@@ -123,9 +131,9 @@ public class CartDAO {
 		}
 	}
 
-	@Transactional
+	@Transactional("transactionManagerUser")
 	public void syncProductQuantityToDatabase(int userId, int productId, int increment) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryUser.getCurrentSession();
 
 		// Kiểm tra sản phẩm đã tồn tại trong giỏ hàng chưa
 		String hql = "FROM CartEntity c WHERE c.userInfo.userId = :userId AND c.product.idProduct = :productId";
@@ -158,9 +166,9 @@ public class CartDAO {
 	}
 
 	// Them gio hang
-	@Transactional
+	@Transactional("transactionManagerUser")
 	public HashMap<Integer, CartDTO> AddCart(int id, HashMap<Integer, CartDTO> cart, int userId) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryUser.getCurrentSession();
 
 		// Lấy thông tin sản phẩm từ database
 		ProductDTO product = productDAO.findProductDTOById(id);
@@ -192,7 +200,7 @@ public class CartDAO {
 	}
 
 	// Chỉnh sửa giỏ hàng
-	@Transactional
+	@Transactional("transactionManagerUser")
 	public HashMap<Integer, CartDTO> EditCart(int id, int quanty, HashMap<Integer, CartDTO> cart) {
 		if (cart == null) {
 			return cart;
@@ -209,7 +217,7 @@ public class CartDAO {
 	}
 
 	// Xóa khỏi giỏ hàng
-	@Transactional
+	@Transactional("transactionManagerUser")
 	public HashMap<Integer, CartDTO> DeleteCart(int id, HashMap<Integer, CartDTO> cart) {
 		if (cart == null) {
 			return cart;
@@ -221,7 +229,7 @@ public class CartDAO {
 	}
 
 	// Tính tổng số lượng trong giỏ
-	@Transactional
+	@Transactional("transactionManagerUser")
 	public int TotalQuanty(HashMap<Integer, CartDTO> cart) {
 		int totalQuanty = 0;
 		for (Map.Entry<Integer, CartDTO> itemCart : cart.entrySet()) {
@@ -231,7 +239,7 @@ public class CartDAO {
 	}
 
 	// Tính tổng giá tiền trong giỏ
-	@Transactional
+	@Transactional("transactionManagerUser")
 	public double TotalPrice(HashMap<Integer, CartDTO> cart) {
 		int totalPrice = 0;
 		for (Map.Entry<Integer, CartDTO> itemCart : cart.entrySet()) {
@@ -241,9 +249,9 @@ public class CartDAO {
 	}
 
 	// Lưu product cart với có user đăng nhập
-	@Transactional
+	@Transactional("transactionManagerUser")
 	public void saveCartToDatabase(AccountEntity user, HashMap<Integer, CartDTO> cartSession) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryUser.getCurrentSession();
 		HashMap<Integer, CartDTO> cartDatabase = getCartFromDatabase(user.getUserInfo().getUserId());
 
 		for (Map.Entry<Integer, CartDTO> entry : cartSession.entrySet()) {
@@ -266,13 +274,13 @@ public class CartDAO {
 		}
 	}
 
-	@Transactional
+	@Transactional("transactionManagerUser")
 	public HashMap<Integer, CartDTO> getCartFromDatabase(int userId) {
 	    HashMap<Integer, CartDTO> cart = new HashMap<>();
 	    Session session = null;
 	    
 	    try {
-	        session = factory.getCurrentSession();
+	        session = factoryUser.getCurrentSession();
 	        String hql = "FROM CartEntity c WHERE c.userInfo.userId = :userId";
 	        Query<CartEntity> query = session.createQuery(hql, CartEntity.class);
 	        query.setParameter("userId", userId);
@@ -297,9 +305,9 @@ public class CartDAO {
 	    return cart;
 	}
 
-	@Transactional
+	@Transactional("transactionManagerUser")
 	public void syncCartToDatabase(int userId, HashMap<Integer, CartDTO> cart) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryUser.getCurrentSession();
 
 		// Duyệt qua tất cả các sản phẩm trong giỏ hàng (cart)
 		for (CartDTO cartDTO : cart.values()) {
@@ -329,9 +337,9 @@ public class CartDAO {
 		}
 	}
 
-	@Transactional
+	@Transactional("transactionManagerUser")
 	public void deleteCartFromDatabase(int userId, int productId) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryUser.getCurrentSession();
 		String hql = "DELETE FROM CartEntity c WHERE c.userInfo.userId = :userId AND c.product.idProduct = :productId";
 		Query query = session.createQuery(hql);
 		query.setParameter("userId", userId);
@@ -339,9 +347,9 @@ public class CartDAO {
 		query.executeUpdate();
 	}
 
-	@Transactional
+	@Transactional("transactionManagerUser")
 	public void updateProductQuantityInDatabase(int userId, int idCart, int quantity) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryUser.getCurrentSession();
 
 		// Tìm sản phẩm trong giỏ hàng của người dùng
 		String hql = "FROM CartEntity c WHERE c.id = :idCart";
@@ -359,8 +367,9 @@ public class CartDAO {
 	}
 
 	// lấy số luong product theo id (Thanh Nhat)
+	@Transactional("transactionManagerUser")
 	public int getProductQuantity(int productId) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryUser.getCurrentSession();
 
 		// Viết câu truy vấn HQL để lấy quantity của product
 		String hql = "SELECT p.quantity FROM ProductEntity p WHERE p.id = :productId";

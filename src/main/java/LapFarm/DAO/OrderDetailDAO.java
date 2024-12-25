@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +22,16 @@ import LapFarm.Entity.ProductEntity;
 public class OrderDetailDAO {
 
 	@Autowired
+	@Qualifier("sessionFactory")
 	private SessionFactory factory;
+	
+    @Autowired
+    @Qualifier("sessionFactoryUser")
+    private SessionFactory factoryUser;
 
-	@Transactional
+	@Transactional("transactionManagerUser")
 	public List<OrderDetailDTO> getOrderDetailById(int id) {
-		Session session = factory.getCurrentSession();
+		Session session = factoryUser.getCurrentSession();
 
 		// Truy vấn lấy danh sách OrderDetailsEntity theo idOrder
 		String hqlOrderDetails = "FROM OrderDetailsEntity o WHERE o.order.idOrder = :orderId";
@@ -82,7 +88,7 @@ public class OrderDetailDAO {
 		return orderDetailDTOs;
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	public int countSalesByProductId(int productId) {
 		Session session = factory.getCurrentSession();
 

@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,8 @@ import jakarta.transaction.Transactional;
 @Controller
 public class StoreController {
 	@Autowired
-	SessionFactory factory;
+	@Qualifier("sessionFactoryVisitor")
+	SessionFactory factoryVisitor;
 	@Autowired
 	private CategoryDAO categoryDAO;
 
