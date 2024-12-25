@@ -238,7 +238,7 @@ public class PaymentController {
 			order.setNote(note);
 			orderMap.put("order", order);
 			// Lưu đơn hàng vào database
-			ordersDAO.saveOrder(order);
+			int idOrder = ordersDAO.saveOrder(order);
 			List<ProductDTO> productsDTO = new ArrayList<ProductDTO>();
 
 			// Lưu chi tiết đơn hàng (OrderDetails) cho từng sản phẩm trong giỏ hàng
@@ -254,7 +254,8 @@ public class PaymentController {
 				productDTO = productDAO.findProductDTOById(cartItem.getProduct().getIdProduct());
 				productDTO.setQuantity(cartItem.getQuantity());
 				productsDTO.add(productDTO);
-
+				System.out.println("order id ne " + idOrder);
+				order.setIdOrder(idOrder);
 				orderDetails.setId(orderDetailId);
 				orderDetails.setOrder(order);
 				orderDetails.setProduct(cartItem.getProduct());
@@ -424,7 +425,7 @@ public class PaymentController {
 				if ("00".equals(vnp_TransactionStatus)) {
 
 					// Lưu đơn hàng vào database
-					ordersDAO.saveOrder(order);
+					int idOrder = ordersDAO.saveOrder(order);
 					for (int cartId : cartIds) {
 						CartEntity cartItem = cartDAO.getCartById(cartId);
 						OrderDetailsEntity orderDetails = new OrderDetailsEntity();
@@ -433,6 +434,7 @@ public class PaymentController {
 						orderDetailId.setProduct(cartItem.getProduct().getIdProduct());
 
 						orderDetails.setId(orderDetailId);
+						order.setIdOrder(idOrder);
 						orderDetails.setOrder(order);
 						orderDetails.setProduct(cartItem.getProduct());
 						orderDetails.setQuantity(cartItem.getQuantity());
