@@ -94,16 +94,10 @@ public class LoginController extends BaseController {
 				response.append(line);
 			}
 			reader.close();
-
 			// You can parse the response to get user info or other details (e.g., sub,
 			// email)
 			ObjectMapper objectMapper = new ObjectMapper();
 			Map<String, Object> userInfo = objectMapper.readValue(response.toString(), Map.class);
-			// Duyệt qua Map và in các key và giá trị
-			/*
-			 * for (Map.Entry<String, Object> entry : userInfo.entrySet()) {
-			 * System.out.println(entry.getKey() + ": " + entry.getValue()); }
-			 */
 
 			AccountEntity acc;
 			String email = (String) userInfo.get("email");
