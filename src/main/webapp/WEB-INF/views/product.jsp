@@ -446,7 +446,7 @@
 				</c:forEach>
 				<!-- Nút "Xem tất cả sản phẩm liên quan" -->
 				<div class="col-md-12 text-center">
-					<a href="products-brand?idBrand=${product.brand.encryptedId}"
+					<a href="products-brand?idBrand=${mahoaIDBrand}"
 						class="btn btn-danger">Xem tất cả</a>
 				</div>
 

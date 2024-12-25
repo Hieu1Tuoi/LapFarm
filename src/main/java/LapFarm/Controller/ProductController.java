@@ -85,6 +85,8 @@ public class ProductController extends BaseController {
 
             // Lấy danh sách sản phẩm liên quan theo thương hiệu (dựa vào productId đã giải mã)
             int brandId = product.getBrand().getIdBrand();
+            String encryptedProductIdBrand = SecureUrlUtil.encrypt(String.valueOf(brandId));
+            
             List<ProductDTO> relatedProducts = productDAO.getRelatedProductsByBrand(brandId, productId, 4); // Sử dụng brandId và productId
 
 
@@ -136,6 +138,7 @@ public class ProductController extends BaseController {
             model.addAttribute("ratingSummary", ratingSummary);
             model.addAttribute("salesCount", salesCount);
             model.addAttribute("mahoaID", encryptedId);
+            model.addAttribute("mahoaIDBrand", encryptedProductIdBrand);
             return "product"; // Trả về view "product"
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Đã xảy ra lỗi trong quá trình xử lý.");
