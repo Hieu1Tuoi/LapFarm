@@ -8,12 +8,14 @@ import java.util.stream.Collectors;
 import LapFarm.Entity.BrandEntity;
 import LapFarm.Entity.OrderDetailsEntity;
 import LapFarm.Entity.OrdersEntity;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import LapFarm.DTO.OrderDetailDTO;
@@ -23,12 +25,14 @@ import LapFarm.Entity.OrderDetailsEntity;
 import LapFarm.Entity.OrdersEntity;
 
 @Repository
+@Transactional("transactionManager")
 public class OrdersDAO {
 
 	@Autowired
+	@Qualifier("sessionFactory")
 	private SessionFactory factory;
 
-	@Transactional
+	@Transactional("transactionManager")
 	public List<OrdersDTO> getAllOrdersWithUserFullname() {
 		Session session = factory.getCurrentSession();
 
@@ -45,7 +49,7 @@ public class OrdersDAO {
 				.collect(Collectors.toList());
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	public List<OrdersDTO> getOrdersWithUserFullnameByUserId(int id) {
 		// Lấy phiên làm việc hiện tại
 		Session session = factory.getCurrentSession();
@@ -66,26 +70,37 @@ public class OrdersDAO {
 				.collect(Collectors.toList());
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	public OrdersEntity getOrderById(int orderId) {
 		Session session = factory.getCurrentSession();
 		OrdersEntity order = session.get(OrdersEntity.class, orderId);
 		return order;
 	}
 
-	@Transactional
-	public void saveOrder(OrdersEntity order) {
+//	@Transactional("transactionManager")
+//	public void saveOrder(OrdersEntity order) {
+//		Session session = factory.getCurrentSession();
+//		session.merge(order); // Save or update the order if it already exists
+//	}
+	
+	@Transactional("transactionManager")
+	public int saveOrder(OrdersEntity order) {
 		Session session = factory.getCurrentSession();
-		session.saveOrUpdate(order); // Save or update the order if it already exists
+	    session.persist(order); // Lưu order
+	    session.flush(); // Đẩy ngay lập tức để MySQL cấp phát ID
+	    return order.getIdOrder(); // Lấy ID vừa được cấp phát
 	}
 
-	@Transactional
+
+	@Transactional("transactionManager")
 	public void saveOrderDetail(OrderDetailsEntity orderDetails) {
+		System.out.println(orderDetails);
+		System.out.println(orderDetails.getOrder());
 		Session session = factory.getCurrentSession();
-		session.saveOrUpdate(orderDetails); // This will save or update the order detail entity
+		session.merge(orderDetails); // This will save or update the order detail entity
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	public Long countOrdersByUserId(int userId) {
 		Session session = factory.getCurrentSession();
 		try {
@@ -99,7 +114,7 @@ public class OrdersDAO {
 		}
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	public boolean updateStateById(int id, String state) {
 		// Lấy session hiện tại từ factory
 		Session session = factory.getCurrentSession();
@@ -120,7 +135,7 @@ public class OrdersDAO {
 	}
 
 	// Thanh Nhật thêm
-	@Transactional
+	@Transactional("transactionManager")
 	public List<OrdersDTO> getOrdersByUserId(int userId) {
 		Session session = factory.getCurrentSession();
 
@@ -138,7 +153,7 @@ public class OrdersDAO {
 	}
 
 	// Lấy chi tiết đơn hàng
-	@Transactional
+	@Transactional("transactionManager")
 	public List<OrderDetailDTO> getOrderDetail(int orderId) {
 		Session session = factory.getCurrentSession();
 
@@ -163,7 +178,7 @@ public class OrdersDAO {
 		)).collect(Collectors.toList());
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	public String getStateById(int orderId) {
 		Session session = factory.getCurrentSession();
 
@@ -180,7 +195,7 @@ public class OrdersDAO {
 		return null;
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	public List<OrdersDTO> getOrdersByYear(int year) {
 		Session session = factory.getCurrentSession();
 
@@ -197,7 +212,7 @@ public class OrdersDAO {
 				.collect(Collectors.toList());
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	public List<OrdersDTO> getOrdersByMonthAndYear(int month, int year) {
 		Session session = factory.getCurrentSession();
 
@@ -214,7 +229,7 @@ public class OrdersDAO {
 				.collect(Collectors.toList());
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	public int getTotalRevenueByMonthAndYear(int month, int year) {
 		Session session = factory.getCurrentSession();
 
@@ -227,7 +242,7 @@ public class OrdersDAO {
 		return totalRevenue != null ? totalRevenue.intValue() : 0;
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	public int getCompletedRevenueByMonthAndYear(int month, int year) {
 		Session session = factory.getCurrentSession();
 
@@ -243,7 +258,7 @@ public class OrdersDAO {
 		return totalRevenue != null ? totalRevenue.intValue() : 0;
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	public Map<String, Map<Integer, Integer>> getProductCountByBrandForYears(List<Integer> years) {
 		Session session = factory.getCurrentSession();
 
@@ -270,7 +285,7 @@ public class OrdersDAO {
 		return productCountByBrand;
 	}
 
-	@Transactional
+	@Transactional("transactionManager")
 	public Map<String, Map<Integer, Integer>> getProductCountByCategoryForYears(List<Integer> years) {
 		Session session = factory.getCurrentSession();
 
@@ -297,7 +312,7 @@ public class OrdersDAO {
 		return productCountByCategory;
 	}
 	
-	@Transactional
+	@Transactional("transactionManager")
 	public List<OrdersDTO> searchOrders(String searchQuery) {
 	    // Kiểm tra nếu người dùng tìm kiếm theo số
 	    boolean isNumeric = searchQuery.matches("^[0-9]+$");

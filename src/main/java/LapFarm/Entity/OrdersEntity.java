@@ -12,14 +12,14 @@ public class OrdersEntity {
     @Column(name = "IdOrder")
     private int idOrder;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "UserOrder", nullable = false)
     private UserInfoEntity userInfo;
 
     @Column(name = "Time", nullable = false)
     private Timestamp time;
 
-    @Column(name = "State", nullable = false, length = 20)
+    @Column(name = "State", columnDefinition = "TEXT COLLATE utf8mb4_general_ci", nullable = false, length = 30)
     private String state;
 
     @Column(name = "TotalPrice", nullable = false)
@@ -31,7 +31,7 @@ public class OrdersEntity {
     @Column(name = "Note", columnDefinition = "TEXT COLLATE utf8mb4_general_ci", nullable = true)
     private String note; // Note (TEXT)
     
-    @Column(name = "Address", columnDefinition = "TEXT COLLATE utf8mb4_general_ci", nullable = true)
+    @Column(name = "Address", columnDefinition = "TEXT COLLATE utf8mb4_general_ci", nullable = false)
     private String address; // Note (TEXT)
 
     // Getters and Setters

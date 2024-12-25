@@ -7,21 +7,28 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import LapFarm.DTO.OrdersDTO;
 import LapFarm.DTO.PaymentDTO;
 import LapFarm.Entity.OrdersEntity;
 import LapFarm.Entity.PaymentEntity;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class PaymentDAO {
 	
 	@Autowired
+	@Qualifier("sessionFactory")
 	private SessionFactory factory;
 	
-	@Transactional
+    @Autowired
+    @Qualifier("sessionFactoryUser")
+    private SessionFactory factoryUser;
+	
+	@Transactional("transactionManager")
 	// Hàm lấy danh sách tất cả thanh toán
 	public List<PaymentEntity> getAllPayments() {
 		// Lấy session từ factory
@@ -35,7 +42,7 @@ public class PaymentDAO {
 		return query.list();
 	}
 	
-	@Transactional
+	@Transactional("transactionManager")
 	// Hàm lấy danh sách tất cả thanh toán
 	public void addPayment(PaymentEntity payment) {
 		// Lấy session từ factory
@@ -50,10 +57,10 @@ public class PaymentDAO {
 	        }
 	}
 	
-	 @Transactional
+	 @Transactional("transactionManagerUser")
 	    public List<PaymentEntity> getPaymentsByUserId(int userId) {
 	        try {
-	            Session session = factory.getCurrentSession();
+	            Session session = factoryUser.getCurrentSession();
 	            String hql = "FROM PaymentEntity p WHERE p.userPayment.id = :userId ORDER BY p.timePayment DESC";
 	            return session.createQuery(hql, PaymentEntity.class)
 	                         .setParameter("userId", userId)
@@ -64,13 +71,13 @@ public class PaymentDAO {
 	        }
 	    }
 	 
-	 @Transactional
+	 @Transactional("transactionManagerUser")
 		public List<PaymentEntity> searchPayments(String searchQuery) {
 		    // Kiểm tra nếu người dùng tìm kiếm theo số
 		    boolean isNumeric = searchQuery.matches("^[0-9]+$");
 
 		    // Lấy phiên làm việc hiện tại
-		    Session session = factory.getCurrentSession();
+		    Session session = factoryUser.getCurrentSession();
 		    String hql;
 
 		    if (isNumeric) {

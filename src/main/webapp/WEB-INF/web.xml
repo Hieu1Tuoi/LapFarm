@@ -14,6 +14,11 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>/WEB-INF/configs/*.xml</param-value>
 		</init-param>
+		<init-param>
+			<param-name>listings</param-name>
+			<param-value>false</param-value>
+		</init-param>
+
 		<load-on-startup>1</load-on-startup>
 		<multipart-config>
 			<max-file-size>3145728</max-file-size> <!-- 5MB -->
@@ -21,6 +26,7 @@
 			<file-size-threshold>0</file-size-threshold>
 		</multipart-config>
 	</servlet>
+
 
 	<servlet-mapping>
 		<servlet-name>spring</servlet-name>
@@ -46,7 +52,7 @@
 	</filter-mapping>
 
 	<session-config>
-		<session-timeout>1</session-timeout> <!-- Đơn vị: phút -->
+		<session-timeout>120</session-timeout> <!-- Đơn vị: phút -->
 	</session-config>
 
 <security-constraint>
